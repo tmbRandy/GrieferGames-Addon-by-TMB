@@ -8,6 +8,8 @@ import org.example.core.listener.ExampleGameTickListener;
 @AddonMain
 public class ExampleAddon extends LabyAddon<ExampleConfiguration> {
 
+  private static ExampleAddon SharedInstance;
+
   @Override
   protected void enable() {
     this.registerSettingCategory();
@@ -15,11 +17,17 @@ public class ExampleAddon extends LabyAddon<ExampleConfiguration> {
     this.registerListener(new ExampleGameTickListener(this));
     this.registerCommand(new ExamplePingCommand());
 
+    SharedInstance = this;
+
     this.logger().info("Enabled the Addon");
   }
 
   @Override
   protected Class<ExampleConfiguration> configurationClass() {
     return ExampleConfiguration.class;
+  }
+
+  public static ExampleAddon getSharedInstance() {
+    return SharedInstance;
   }
 }
