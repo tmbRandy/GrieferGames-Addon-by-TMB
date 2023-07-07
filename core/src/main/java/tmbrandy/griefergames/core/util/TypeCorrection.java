@@ -78,7 +78,7 @@ public class TypeCorrection {
 
   @Subscribe
   public void messageSend(ChatMessageSendEvent event) {
-    if(!Laby.labyAPI().serverController().getCurrentServerData().getName().equals("GrieferGames")) {
+    if(!Addon.isGG()) {
       return;
     }
 

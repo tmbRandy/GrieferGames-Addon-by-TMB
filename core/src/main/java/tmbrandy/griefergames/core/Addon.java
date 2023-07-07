@@ -1,8 +1,10 @@
 package tmbrandy.griefergames.core;
 
+import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import tmbrandy.griefergames.core.commands.ExamplePingCommand;
+import tmbrandy.griefergames.core.util.TooltipExtension;
 import tmbrandy.griefergames.core.util.TypeCorrection;
 
 @AddonMain
@@ -15,6 +17,7 @@ public class Addon extends LabyAddon<Configuration> {
     this.registerSettingCategory();
 
     this.registerListener(new TypeCorrection());
+    this.registerListener(new TooltipExtension());
     this.registerCommand(new ExamplePingCommand());
 
     SharedInstance = this;
@@ -29,5 +32,9 @@ public class Addon extends LabyAddon<Configuration> {
 
   public static Addon getSharedInstance() {
     return SharedInstance;
+  }
+
+  public static boolean isGG() {
+    return Laby.labyAPI().serverController().getCurrentServerData().getName().equals("GrieferGames");
   }
 }
