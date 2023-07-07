@@ -1,4 +1,4 @@
-package org.example.core.commands;
+package tmbrandy.griefergames.core.commands;
 
 import net.labymod.api.client.chat.command.SubCommand;
 import net.labymod.api.client.component.Component;
