@@ -4,8 +4,10 @@ import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import tmbrandy.griefergames.core.commands.ExamplePingCommand;
+import tmbrandy.griefergames.core.util.NewsBlocker;
 import tmbrandy.griefergames.core.util.TooltipExtension;
 import tmbrandy.griefergames.core.util.TypeCorrection;
+import java.util.Objects;
 
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
@@ -18,6 +20,7 @@ public class Addon extends LabyAddon<Configuration> {
 
     this.registerListener(new TypeCorrection());
     this.registerListener(new TooltipExtension());
+    this.registerListener(new NewsBlocker());
     this.registerCommand(new ExamplePingCommand());
 
     SharedInstance = this;
@@ -35,6 +38,10 @@ public class Addon extends LabyAddon<Configuration> {
   }
 
   public static boolean isGG() {
-    return Laby.labyAPI().serverController().getCurrentServerData().getName().equals("GrieferGames");
+    if(!Laby.labyAPI().serverController().isConnected()) {
+      return false;
+    }
+
+    return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).getName().equals("GrieferGames");
   }
 }
