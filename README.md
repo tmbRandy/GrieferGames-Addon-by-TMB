@@ -1,5 +1,5 @@
 # GrieferGames Addon by TMB
-
+ 
 Dieses Addon wurde speziell für das GrieferGames 1.8 Netzwerk entwickelt und bietet einige nützliche Funktionen, insbesondere um den Chat zu verbessern:
 
 Item Schutz
