@@ -16,6 +16,12 @@ Chatfunktionen
 Validierung von Zahlungen
 Bei eingehenden Zahlungen wird überprüft, ob es eine echte Zahlung, oder Fake Money ist. Hinter der Zahlung siehst du eine entsprechende Nachricht.
 
+Autokorrektur
+Die Autokorrektur verhindert die gängigsten Rechtschreibfehler. Gibst du z.B. "7msg AbgegrieftHD Hallo" ein, wird das 7msg durch ein /msg ersetzt, sodass die Nachricht ankommt und nicht im Chat erscheint.
+
+Aufteilung von /msg
+Wenn du eine /msg oder /r versendest, die das 100-Zeichen Limit von GrieferGames überschreitet, wird diese in mehrere Nachrichten aufgeteilt. Du kannst die Chatzeile also bedenkenlos ausnutzen, ohne dir Gedanken darüber zu machen, ob sie abgeschnitten wird.
+
 Entfernung von Leerzeilen
 Leerzeilen werden aus dem Chat entfernt, um den Chat übersichtlicher zu halten. Damit wird auch ein /clearchat umgangen.
 
@@ -30,9 +36,6 @@ Der Chat cleaner entfernt einige GrieferGames seitige Nachrichten, die keinen wi
 
 Streamer mute
 Falls du keine Benachrichtigungen sehen willst, wenn Streamer live gehen, kannst du diese Nachrichten ausblenden.
-
-Autokorrektur
-Die Autokorrektur verhindert die gängigsten Rechtschreibfehler. Gibst du z.B. "7msg AbgegrieftHD Hallo" ein, wird das 7msg durch ein /msg ersetzt, sodass die Nachricht ankommt und nicht im Chat erscheint.
 
 Folgende Tippfehler werden ausgebessert:
 "7r" => "/r"
