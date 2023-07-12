@@ -1,15 +1,15 @@
-package tmbrandy.griefergames.core.util;
+package tmb.randy.griefergames.core.util.chat;
 
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
-import tmbrandy.griefergames.core.Addon;
+import tmb.randy.griefergames.core.Addon;
 
 public class NewsBlocker {
 
   private boolean isBlocking = false;
   @Subscribe
   public void blockNews(ChatReceiveEvent event) {
-    if(!Addon.isGG()) {
+    if(!Addon.isGG() || !Addon.getSharedInstance().configuration().getChatConfig().getHideNews().get()) {
       return;
     }
 
@@ -21,8 +21,6 @@ public class NewsBlocker {
 
     if(message.equals("------------ [ News ] ------------")) {
       isBlocking = !isBlocking;
-    } else {
-      Addon.getSharedInstance().logger().info("Message: " + message);
     }
 
     if(isBlocking) {

@@ -1,0 +1,89 @@
+{
+    "griefergames": {
+        "settings": {
+            "name": "GrieferGames Addon",
+            "header": {
+                "plotSwitch": {
+                    "name": "Schneller Plotwechsel",
+                    "description": "Lege Tastenkombinationen fest, mit denen du schnell zwischen den Plots eines Spielers wechseln kannst."
+                }
+            },
+            "enabled": {
+                "name": "Aktiviert",
+                "description": "Aktiviert oder deaktiviert das gesamte Addon."
+            },
+            "chatConfig": {
+                "name": "Chat",
+                "typeCorrection": {
+                    "name": "Autokorrektur",
+                    "description": "Korrigiert gängige Fehler in Befehlen, wie z.B. 7ec, (msg or t/r."
+                },
+                "messageSplit": {
+                    "name": "/msg Teiler",
+                    "description": "Wenn du eine Nachricht versendest, die das 100-Zeichen Limit von GrieferGames überschreitet, wird die Nachricht automatisch in mehrere /msg Befehle aufgeteilt. Funktioniert mit /msg und /r."
+                },
+                "hideNews": {
+                    "name": "News verbergen",
+                    "description": "Entfernt die GrieferGames News aus dem Chat."
+                },
+                "antiFakeMoney": {
+                    "name": "Anti Fakemoney",
+                    "description": "Zeigt dir hinter eingehenden Zahlungen an, ob die Zahlung echt oder gefälscht ist."
+                },
+                "cooldownNotifier": {
+                    "name": "Benachrichtigung für Cooldowns",
+                    "description": "Benachrichtigt dich im Chat, sobald ein Cooldown für /wand /rand /boden /sign oder /anticopy abgelaufen ist."
+                },
+                "cleanChat": {
+                    "name": "Vereinfachter Chat",
+                    "description": "GrieferGames zeigt im Chat einige überflüssige Nachrichten im Chat an (z.B. \"Du befindest dich jetzt im Portalraum...\". Hiermit werden solche Nachrichten ausgeblendet."
+                },
+                "hideEmptyLines": {
+                    "name": "Leerzeilen entfernen",
+                    "description": "Entfernt alle Leerzeilen aus dem Chat und umgeht damit gleichzeitig /clearchat."
+                }
+            },
+            "itemProtection": {
+                "name": "Itemschutz",
+                "description": "Verhindert das Nutzen von wertvollen Items wie Bonze Klinge, Birth Klinge, Birth Bogen, setzen eines SoS. ACHTUNG! Diese Funktion verhindert lediglich Klicks, welche vom Spieler selbst ausgeführt werden. Softwareseitige Klicks (z.B. durch einen Autoclicker) können ein SoS trotzdem setzen oder mit einer Bonze Klinge zuschlagen."
+            },
+            "tooltipConfig": {
+                "name": "Tooltip Info",
+                "showCompTooltip": {
+                    "name": "Tooltip Info für komprimierte Items",
+                    "description": "Bewege die Maus über ein oder mehrere komprimierte Items um zu sehen, um die genaue Menge in DKs, Stacks und Items anzuzeigen."
+                },
+                "showAdventurerTooltip": {
+                    "name": "Tooltip Info für Adventurer-Werkzeuge",
+                    "description": "Bewege die Maus über ein Adventurer-Werkzeug, um deinen Fortschritt in Prozent zu sehen. Du siehst außerdem, wie viele DKs, Stacks und Items du noch abbauen musst."
+                }
+            },
+            "nextPlot": {
+                "name": "Nächstes Plot",
+                "description": "Springe zum nächsten GS des Spielers (/p h <spieler> +1)"
+            },
+            "previousPlot": {
+                "name": "Vorheriges Plot",
+                "description": "Springe zum vorherigen GS des Spielers (/p h <spieler> -1)"
+            }
+        },
+        "chat": {
+            "realMoney": "VERIFIZIERT",
+            "fakeMoney": "FAKE MONEY",
+            "cooldownWand": "Der Cooldown für /wand ist abgelaufen.",
+            "cooldownRand": "Der Cooldown für /rand ist abgelaufen.",
+            "cooldownBoden": "Der Cooldown für /boden ist abgelaufen.",
+            "cooldownSign": "Der Cooldown für /sign ist abgelaufen.",
+            "cooldownAnticopy": "Der Cooldown für /anticopy ist abgelaufen."
+        },
+        "itemSaver": {
+            "item_saver_message_sword": "Dieses Schwert ist zu wertvoll, um es zu benutzen!",
+            "item_saver_message_sos": "Diesen Kürbis zu setzen wäre ein gruselig teurer Spaß!",
+            "item_saver_message_birth_bow": "Manche Bögen sind zum Schießen da. Dieser hier eher nicht!"
+        },
+        "tooltip": {
+            "compressedTooltip": "§6%s §eDKs §6%s §e Stacks §6%s §eItems",
+            "adventurerTooltip": "§6 %s%% §f| §eRest: §6 %s §eDKs §6 %s §eStacks §6 %s §eItems"
+        }
+    }
+}

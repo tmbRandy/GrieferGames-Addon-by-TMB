@@ -4,20 +4,24 @@ plugins {
     id("net.labymod.gradle.addon")
 }
 
-group = "org.example"
-version = "1.0.0"
+group = "tmb.randy"
+version = "1.0"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
 labyMod {
-    defaultPackageName = "org.example" //change this to your main package name (used by all modules)
+    defaultPackageName = "tmb.randy.griefergames"
     addonInfo {
-        namespace = "example"
-        displayName = "ExampleAddon"
-        author = "Example Author"
-        description = "Example Description"
+        namespace = "griefergames"
+        displayName = "GrieferGames Addon by TMB"
+        author = "TMB Clan"
+        description = "Eine Sammlung nützlicher Erweiterungen für das GrieferGames Netzwerk."
         minecraftVersion = "*"
-        version = System.getenv().getOrDefault("VERSION", "0.0.1")
+        version = System.getenv().getOrDefault("VERSION", "1.0")
     }
 
     minecraft {
@@ -29,7 +33,8 @@ labyMod {
                 "1.18.2",
                 "1.19.2",
                 "1.19.3",
-                "1.19.4"
+                "1.19.4",
+                "1.20.1"
         ) { version, provider ->
             configureRun(provider, version)
         }
@@ -42,7 +47,7 @@ labyMod {
     }
 
     addonDev {
-        snapshotRelease()
+        productionRelease()
     }
 }
 

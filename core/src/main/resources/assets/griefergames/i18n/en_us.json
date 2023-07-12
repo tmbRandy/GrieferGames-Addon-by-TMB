@@ -1,0 +1,89 @@
+{
+    "griefergames": {
+        "settings": {
+            "name": "GrieferGames Addon",
+            "header": {
+                "plotSwitch": {
+                    "name": "quick plot switch",
+                    "description": "Set a pair of keys to switch through the plots of a player."
+                }
+            },
+            "enabled": {
+                "name": "enabled",
+                "description": "Activates or disables the functionality of this addon."
+            },
+            "chatConfig": {
+                "name": "chat",
+                "typeCorrection": {
+                    "name": "type correction",
+                    "description": "This will prevent you from common typing errors like 7ec, (msg or t/r"
+                },
+                "messageSplit": {
+                    "name": "/msg splitter",
+                    "description": "Splits a /msg or /r message into multiple messages if it is longer than the 100 character limit of GrieferGames."
+                },
+                "hideNews": {
+                    "name": "hide news",
+                    "description": "Removes the GrieferGames news ticker from the chat."
+                },
+                "antiFakeMoney": {
+                    "name": "anti fake money",
+                    "description": "Verifies incoming payments and detects fake money."
+                },
+                "cooldownNotifier": {
+                    "name": "cooldown notification",
+                    "description": "Shows a notification as soon as a cooldown like /wand /rand /boden /sign /anticopy is over."
+                },
+                "cleanChat": {
+                    "name": "clean chat",
+                    "description": "GrieferGames sends some unimportant messages in the chat. This function removes such messages and makes the chat much cleaner."
+                },
+                "hideEmptyLines": {
+                    "name": "hide empty lines",
+                    "description": "Removes empty lines from the chat."
+                }
+            },
+            "itemProtection": {
+                "name": "item protection",
+                "description": "Prevents you from using expensive farming items like Bonze Klinge, Birth Klinge, Birth Bogen, placing of SoS. CAUTION! This function will only work for clicks performed by the user. Software based clicks (performed by an auto clicker) will still damage or set your item."
+            },
+            "tooltipConfig": {
+                "name": "tooltip info",
+                "showCompTooltip": {
+                    "name": "tooltip info for compressed items",
+                    "description": "Hover over compressed items or blocks to see how many double chests, stacks and single items the item contains."
+                },
+                "showAdventurerTooltip": {
+                    "name": "tooltip info for adventurer tools",
+                    "description": "Hover over an adventurer tool to see your farming progress in percent and the remaining number in double chests, stacks and single items."
+                }
+            },
+            "nextPlot": {
+                "name": "next plot",
+                "description": "Go to the next plot (/p h <player> +1)"
+            },
+            "previousPlot": {
+                "name": "previous plot",
+                "description": "Go to the previous plot (/p h <player> -1)"
+            }
+        },
+        "chat": {
+            "realMoney": "VERIFIED",
+            "fakeMoney": "FAKE MONEY",
+            "cooldownWand": "The cooldown for /wand is over.",
+            "cooldownRand": "The cooldown for /rand is over.",
+            "cooldownBoden": "The cooldown for /boden is over.",
+            "cooldownSign": "The cooldown for /sign is over.",
+            "cooldownAnticopy": "The cooldown for /anticopy is over."
+        },
+        "itemSaver": {
+            "item_saver_message_sword": "This sword is too valuable to use it!",
+            "item_saver_message_sos": "This pumpkin doesn't want to be placed!",
+            "item_saver_message_birth_bow": "This bow is too valuable to shoot with it!"
+        },
+        "tooltip": {
+            "compressedTooltip": "§6%s §edouble chests §6%s §e stacks §6%s §eitems",
+            "adventurerTooltip": "§6 %s%% §f| §erest: §6 %s §edouble chests §6 %s §estacks §6 %s §eitems"
+        }
+    }
+}

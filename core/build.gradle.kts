@@ -4,6 +4,14 @@ plugins {
     id("java-library")
 }
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     api(project(":api"))
 

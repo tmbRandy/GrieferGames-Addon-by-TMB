@@ -1,15 +1,14 @@
-package tmbrandy.griefergames.core.util;
+package tmb.randy.griefergames.core.util.chat;
 
-import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
-import tmbrandy.griefergames.core.Addon;
+import tmb.randy.griefergames.core.Addon;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TypeCorrection {
 
-  private final Map<String, String> replacements = new HashMap<String, String>() {
+  private final Map<String, String> replacements = new HashMap<>() {
     {
       put("7r", "/r");
       put("(r", "/r");
@@ -78,17 +77,21 @@ public class TypeCorrection {
 
   @Subscribe
   public void messageSend(ChatMessageSendEvent event) {
-    if(!Addon.isGG()) {
+    if(!Addon.isGG() || (!Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get() && !Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get())) {
       return;
     }
 
     String message = event.getMessage();
 
-    for (Map.Entry<String, String> entry : replacements.entrySet()) {
-      message = message.replace(entry.getKey(), entry.getValue());
+    // Type correction
+    if(Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get()) {
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            message = message.replace(entry.getKey(), entry.getValue());
+        }
     }
 
-    if(message.length() > 100 && (message.toLowerCase().startsWith("/msg ") || message.toLowerCase().startsWith("/r "))) {
+    // Message split
+    if(message.length() > 100 && (message.toLowerCase().startsWith("/msg ") || message.toLowerCase().startsWith("/r ")) && Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get()) {
       String[] messageArray;
 
       messageArray = message.split("(?<=\\G.{" + 97 + "})");
