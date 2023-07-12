@@ -19,7 +19,9 @@ public class ChatCleaner {
         "[GrieferGames] Bitte warte 12 Sekunden zwischen jedem Teleport.",
         "[GGAuth] Du wurdest erfolgreich verifiziert.",
         "Already connecting to this server!",
-        "[GrieferGames] Du wurdest zum Grundstück teleportiert."
+        "[GrieferGames] Du wurdest zum Grundstück teleportiert.",
+        "[GrieferGames] Deine Tageszeit wurde vom Grundstück aktualisiert.",
+        "[GrieferGames] Deine Tageszeit wurde wiederhergestellt."
     );
 
     @Subscribe

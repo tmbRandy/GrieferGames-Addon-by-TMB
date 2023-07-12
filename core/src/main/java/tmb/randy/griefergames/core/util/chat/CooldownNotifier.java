@@ -29,26 +29,26 @@ public class CooldownNotifier {
         String str = event.getMessage().toLowerCase();
 
         for (Cooldown cooldown : cooldowns) {
-            if(str.matches(cooldown.command)) {
+            if(str.matches(cooldown.getCommand())) {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
                         try {
-                            Addon.getSharedInstance().displayNotification("§f" + I18n.translate(cooldown.notificationKey));
+                            Addon.getSharedInstance().displayNotification("§f" + I18n.translate(cooldown.getNotificationKey()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
                     }
-                }, cooldown.cooldown);
+                }, cooldown.getCooldown());
             }
         }
     }
 
-    private class Cooldown {
-        private String command;
-        private long cooldown;
-        private String notificationKey;
+    private static class Cooldown {
+        private final String command;
+        private final long cooldown;
+        private final String notificationKey;
         Cooldown(String command, long cooldown, String notificationKey) {
             this.command = command;
             this.cooldown = cooldown;

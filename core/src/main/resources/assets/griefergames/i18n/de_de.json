@@ -41,6 +41,10 @@
                 "hideEmptyLines": {
                     "name": "Leerzeilen entfernen",
                     "description": "Entfernt alle Leerzeilen aus dem Chat und umgeht damit gleichzeitig /clearchat."
+                },
+                "muteStreamer": {
+                    "name": "Streamer Nachrichten entfernen",
+                    "description": "Entfernt die Chat Benachrichtigungen, wenn Streamer live gehen."
                 }
             },
             "itemProtection": {

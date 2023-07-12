@@ -35,6 +35,10 @@ public class ChatSubConfig extends Config {
     @SpriteSlot(size = 21, x = 1, y = 1)
     private final ConfigProperty<Boolean> cleanChat = new ConfigProperty<>(true);
 
+    @SwitchSetting
+    @SpriteSlot(size = 21, x = 1, y = 2)
+    private final ConfigProperty<Boolean> muteStreamer = new ConfigProperty<>(false);
+
 
 
 
@@ -52,4 +56,6 @@ public class ChatSubConfig extends Config {
     public ConfigProperty<Boolean> getCleanChat() {return this.cleanChat;}
 
     public ConfigProperty<Boolean> getHideEmptyLines() {return this.hideEmptyLines;}
+
+    public ConfigProperty<Boolean> getMuteStreamer() {return this.muteStreamer;}
 }

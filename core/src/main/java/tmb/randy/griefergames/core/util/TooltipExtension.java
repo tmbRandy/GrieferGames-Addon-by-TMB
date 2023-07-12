@@ -9,7 +9,6 @@ import java.util.Objects;
 
 public class TooltipExtension {
 
-  private ItemStack lastRenderedTooltipItemStack;
   @Subscribe
   public void renderTooltip(ItemStackTooltipEvent event) {
     if(!Addon.isGG()) {
@@ -17,7 +16,6 @@ public class TooltipExtension {
     }
 
     ItemStack stack = event.itemStack();
-    this.lastRenderedTooltipItemStack = stack;
 
     if(stack.hasNBTTag()) {
 

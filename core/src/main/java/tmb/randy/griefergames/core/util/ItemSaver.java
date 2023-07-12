@@ -7,10 +7,7 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.util.I18n;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import tmb.randy.griefergames.core.Addon;
-import java.util.Objects;
 
 public class ItemSaver {
 

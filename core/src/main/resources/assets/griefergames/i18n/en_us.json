@@ -41,6 +41,10 @@
                 "hideEmptyLines": {
                     "name": "hide empty lines",
                     "description": "Removes empty lines from the chat."
+                },
+                "muteStreamer": {
+                    "name": "remove streamer messages",
+                    "description": "removes the messages that appear, when a streamer goes live."
                 }
             },
             "itemProtection": {

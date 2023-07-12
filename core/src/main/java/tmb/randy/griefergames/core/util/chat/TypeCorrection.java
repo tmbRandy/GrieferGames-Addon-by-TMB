@@ -22,6 +22,14 @@ public class TypeCorrection {
       put("(msg", "/msg");
       put("t/msg", "/msg");
 
+      put("7pay", "/pay");
+      put("(pay", "/pay");
+      put("t/pay", "/pay");
+
+      put("7bank", "/bank");
+      put("(bank", "/bank");
+      put("t/bank", "/bank");
+
       put("7craft", "/craft");
       put("(craft", "/craft");
       put("t/craft", "/craft");
@@ -100,10 +108,9 @@ public class TypeCorrection {
         messageArray[i] = "/r " + messageArray[i];
       }
 
-
-      for (int i = 0; i < messageArray.length; i++) {
-        Addon.getSharedInstance().sendMessage(messageArray[i]);
-      }
+        for (String s : messageArray) {
+            Addon.getSharedInstance().sendMessage(s);
+        }
 
       message = "";
       event.setCancelled(true);

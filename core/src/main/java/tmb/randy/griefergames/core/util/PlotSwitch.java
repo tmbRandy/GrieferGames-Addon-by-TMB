@@ -2,14 +2,22 @@ package tmb.randy.griefergames.core.util;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.key.Key;
+import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
+import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import tmb.randy.griefergames.core.Addon;
 
 public class PlotSwitch {
 
+    private static final int COMMAND_COOLDOWN = 25;
+    private static int COMMAND_COOLDOWN_COUNTER = 0;
+    private String nextCommand = null;
+
+    private boolean waitingForPlotSwitch = false;
     private enum DIRECTION {
         PREVIOUS, NEXT
     }
@@ -24,8 +32,35 @@ public class PlotSwitch {
     }
 
     @Subscribe
+    public void tickEvent(GameTickEvent event) {
+        if(event.phase() == Phase.PRE) {
+            if(COMMAND_COOLDOWN_COUNTER > 0) {
+                COMMAND_COOLDOWN_COUNTER--;
+                Addon.getSharedInstance().logger().info("Counting: " + COMMAND_COOLDOWN_COUNTER);
+                return;
+            }
+
+            if(nextCommand != null && Laby.labyAPI().minecraft().getClientPlayer() != null) {
+                COMMAND_COOLDOWN_COUNTER = COMMAND_COOLDOWN;
+                waitingForPlotSwitch = true;
+                Laby.labyAPI().minecraft().chatExecutor().chat(nextCommand);
+                nextCommand = null;
+            }
+        }
+    }
+
+    @Subscribe
+    public void chatMessageReceived(ChatReceiveEvent event) {
+        String message = event.chatMessage().getPlainText();
+
+        if(message.equals("[GrieferGames] Du wurdest zum Grundstück teleportiert.") && waitingForPlotSwitch) {
+            waitingForPlotSwitch = false;
+        }
+    }
+
+    @Subscribe
     public void keyDownEvent(KeyEvent event) {
-        if(lastPlot == null) {
+        if(lastPlot == null || nextCommand != null) {
             return;
         }
 
@@ -44,7 +79,7 @@ public class PlotSwitch {
             }
 
             if(command != null) {
-                Laby.labyAPI().minecraft().chatExecutor().chat(command);
+                nextCommand = command;
             }
         }
     }

@@ -2,7 +2,6 @@ package tmb.randy.griefergames.core;
 
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
-import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import tmb.randy.griefergames.core.config.Configuration;
 import tmb.randy.griefergames.core.util.ItemSaver;
