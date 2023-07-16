@@ -14,7 +14,7 @@ tasks.withType<JavaCompile> {
 }
 
 labyMod {
-    defaultPackageName = "tmb.randy.griefergames"
+    defaultPackageName = "tmb.randy.tmbgriefergames"
     addonInfo {
         namespace = "tmbgriefergames"
         displayName = "GrieferGames Addon by TMB"

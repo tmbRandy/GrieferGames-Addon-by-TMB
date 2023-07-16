@@ -1,18 +1,18 @@
-package tmb.randy.griefergames.core;
+package tmb.randy.tmbgriefergames.core;
 
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.models.addon.annotation.AddonMain;
-import tmb.randy.griefergames.core.config.Configuration;
-import tmb.randy.griefergames.core.util.ItemSaver;
-import tmb.randy.griefergames.core.util.PlotSwitch;
-import tmb.randy.griefergames.core.util.chat.ChatCleaner;
-import tmb.randy.griefergames.core.util.chat.CooldownNotifier;
-import tmb.randy.griefergames.core.util.chat.EmptyLinesRemover;
-import tmb.randy.griefergames.core.util.chat.NewsBlocker;
-import tmb.randy.griefergames.core.util.chat.PaymentValidator;
-import tmb.randy.griefergames.core.util.TooltipExtension;
-import tmb.randy.griefergames.core.util.chat.TypeCorrection;
+import tmb.randy.tmbgriefergames.core.config.Configuration;
+import tmb.randy.tmbgriefergames.core.util.ItemSaver;
+import tmb.randy.tmbgriefergames.core.util.PlotSwitch;
+import tmb.randy.tmbgriefergames.core.util.chat.ChatCleaner;
+import tmb.randy.tmbgriefergames.core.util.chat.CooldownNotifier;
+import tmb.randy.tmbgriefergames.core.util.chat.EmptyLinesRemover;
+import tmb.randy.tmbgriefergames.core.util.chat.NewsBlocker;
+import tmb.randy.tmbgriefergames.core.util.chat.PaymentValidator;
+import tmb.randy.tmbgriefergames.core.util.TooltipExtension;
+import tmb.randy.tmbgriefergames.core.util.chat.TypeCorrection;
 import java.util.Objects;
 
 @AddonMain

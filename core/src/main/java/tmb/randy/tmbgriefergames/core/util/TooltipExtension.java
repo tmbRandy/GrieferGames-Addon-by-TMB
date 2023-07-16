@@ -1,10 +1,10 @@
-package tmb.randy.griefergames.core.util;
+package tmb.randy.tmbgriefergames.core.util;
 
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
-import tmb.randy.griefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Addon;
 import java.util.Objects;
 
 public class TooltipExtension {

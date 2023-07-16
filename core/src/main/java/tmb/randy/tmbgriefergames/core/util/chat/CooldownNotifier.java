@@ -1,9 +1,9 @@
-package tmb.randy.griefergames.core.util.chat;
+package tmb.randy.tmbgriefergames.core.util.chat;
 
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.util.I18n;
-import tmb.randy.griefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Addon;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;

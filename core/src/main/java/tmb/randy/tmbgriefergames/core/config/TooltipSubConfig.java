@@ -1,4 +1,4 @@
-package tmb.randy.griefergames.core.config;
+package tmb.randy.tmbgriefergames.core.config;
 
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.Config;

@@ -1,4 +1,4 @@
-package tmb.randy.griefergames.core.util;
+package tmb.randy.tmbgriefergames.core.util;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.world.item.ItemStack;
@@ -7,7 +7,7 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.util.I18n;
-import tmb.randy.griefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Addon;
 
 public class ItemSaver {
 

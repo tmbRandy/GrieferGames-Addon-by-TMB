@@ -37,5 +37,5 @@ jobs:
               uses: ncipollo/release-action@v1
               with:
                   name: Release ${{ github.ref_name }}
-                  artifacts: ./build/libs/GrieferGames.jar
+                  artifacts: ./build/libs/griefergames-addon-by-tmb.jar
                   artifactContentType: application/java-archive

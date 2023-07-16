@@ -1,4 +1,4 @@
-package tmb.randy.griefergames.core.config;
+package tmb.randy.tmbgriefergames.core.config;
 
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.gui.screen.key.Key;

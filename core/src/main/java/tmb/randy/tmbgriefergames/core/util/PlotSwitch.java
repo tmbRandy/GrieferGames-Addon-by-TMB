@@ -1,4 +1,4 @@
-package tmb.randy.griefergames.core.util;
+package tmb.randy.tmbgriefergames.core.util;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -9,7 +9,7 @@ import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import tmb.randy.griefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Addon;
 
 public class PlotSwitch {
 
