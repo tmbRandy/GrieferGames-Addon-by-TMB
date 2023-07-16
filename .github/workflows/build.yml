@@ -1,28 +1,41 @@
-name: LabyAddon Build
+name: Build
 
 on:
     push:
-        branches: [ "master", "main" ]
-    pull_request:
-        branches: [ "master", "main" ]
-    workflow_dispatch:
+        tags:
+            - 'v*'
 
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - name: Checkout code
+              uses: actions/checkout@v3
             - name: Set up JDK 17
               uses: actions/setup-java@v3
               with:
-                  distribution: 'corretto'
-                  java-version: '17'
+                  distribution: temurin
+                  java-version: 17
+            - uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
             - name: Grant execute permission for gradlew
               run: chmod +x gradlew
             - name: Build with Gradle
-              run: ./gradlew build --full-stacktrace
-            - name: Upload Artifact
-              uses: actions/upload-artifact@v3
+              run: ./gradlew build
+            - name: Rename output JAR
+              run: mv ./build/libs/griefergames-addon-by-tmb-release.jar ./build/libs/griefergames-addon-by-tmb.jar
+
+            - name: Create Release
+              id: create_release
+              uses: ncipollo/release-action@v1
               with:
-                  name: Artifacts
-                  path: build/libs/*-release.jar
+                  name: Release ${{ github.ref_name }}
+                  artifacts: ./build/libs/GrieferGames.jar
+                  artifactContentType: application/java-archive

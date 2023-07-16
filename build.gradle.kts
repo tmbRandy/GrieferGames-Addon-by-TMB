@@ -16,7 +16,7 @@ tasks.withType<JavaCompile> {
 labyMod {
     defaultPackageName = "tmb.randy.griefergames"
     addonInfo {
-        namespace = "griefergames"
+        namespace = "tmbgriefergames"
         displayName = "GrieferGames Addon by TMB"
         author = "TMB Clan"
         description = "Eine Sammlung nützlicher Erweiterungen für das GrieferGames Netzwerk."
