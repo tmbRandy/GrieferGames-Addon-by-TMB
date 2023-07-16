@@ -37,7 +37,7 @@ public class TooltipExtension {
             int stacks = rest / maxStackSize;
             int items = rest - (stacks * maxStackSize);
 
-            event.getTooltipLines().add(Component.translatable("griefergames.tooltip.compressedTooltip", Component.text(DKs), Component.text(stacks), Component.text(items)));
+            event.getTooltipLines().add(Component.translatable("tmbgriefergames.tooltip.compressedTooltip", Component.text(DKs), Component.text(stacks), Component.text(items)));
         } else if(Addon.getSharedInstance().configuration().getTooltipConfig().getShowAdventurerTooltip().get() && Objects.requireNonNull(stack.getNBTTag()).contains("adventure")) {
             // Show extended adventurer tool data
             int amount = stack.getNBTTag().getCompound("adventure").getInt("adventure.amount");
@@ -54,7 +54,7 @@ public class TooltipExtension {
             int items = rest - (stacks * 64);
 
             float percentRounded = Math.round(percent * 10) / 10.0f;
-            event.getTooltipLines().add(Component.translatable("griefergames.tooltip.adventurerTooltip", Component.text(percentRounded), Component.text(DKs), Component.text(stacks), Component.text(items)));
+            event.getTooltipLines().add(Component.translatable("tmbgriefergames.tooltip.adventurerTooltip", Component.text(percentRounded), Component.text(DKs), Component.text(stacks), Component.text(items)));
         }
     }
   }

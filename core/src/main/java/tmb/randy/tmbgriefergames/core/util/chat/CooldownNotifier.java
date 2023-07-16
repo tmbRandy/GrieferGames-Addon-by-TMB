@@ -13,11 +13,11 @@ import java.util.TimerTask;
 public class CooldownNotifier {
 
     private final List<Cooldown> cooldowns = Arrays.asList(
-        new Cooldown("/wand", 30000, "griefergames.chat.cooldownWand"),
-        new Cooldown("/rand", 30000, "griefergames.chat.cooldownRand"),
-        new Cooldown("/boden", 30000, "griefergames.chat.cooldownBoden"),
-        new Cooldown("^/sign.*", 3000, "griefergames.chat.cooldownSign"),
-        new Cooldown("/anticopy", 5000, "griefergames.chat.cooldownAnticopy")
+        new Cooldown("/wand", 30000, "tmbgriefergames.chat.cooldownWand"),
+        new Cooldown("/rand", 30000, "tmbgriefergames.chat.cooldownRand"),
+        new Cooldown("/boden", 30000, "tmbgriefergames.chat.cooldownBoden"),
+        new Cooldown("^/sign.*", 3000, "tmbgriefergames.chat.cooldownSign"),
+        new Cooldown("/anticopy", 5000, "tmbgriefergames.chat.cooldownAnticopy")
     );
 
     @Subscribe

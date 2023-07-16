@@ -33,13 +33,13 @@ public class ItemSaver {
                         if(event.action() == Action.CLICK) {
                             if((enchantments.equals(NBTTagStringBonze) || enchantments.equals(NBTTagStringBirthSword)) && event.button().isLeft()) {
                                 event.setCancelled(true);
-                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("griefergames.itemSaver.item_saver_message_sword"));
+                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_sword"));
                             } else if(enchantments.equals(NBTTagStringSoS) && event.button().isRight()) {
                                 event.setCancelled(true);
-                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("griefergames.itemSaver.item_saver_message_sos"));
+                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_sos"));
                             } else if(enchantments.equals(NBTTagStringBirthBow) && event.button().isRight()) {
                                 event.setCancelled(true);
-                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("griefergames.itemSaver.item_saver_message_birth_bow"));
+                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_birth_bow"));
                             }
                         }
                     }

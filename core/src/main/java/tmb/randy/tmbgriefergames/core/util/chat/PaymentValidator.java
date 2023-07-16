@@ -26,10 +26,10 @@ public class PaymentValidator {
             }
 
             if(isValid) {
-                final String VALID_PREFIX = "§2§l[§a§l✔ " + I18n.translate("griefergames.chat.realMoney") + "§2§l]";
+                final String VALID_PREFIX = "§2§l[§a§l✔ " + I18n.translate("tmbgriefergames.chat.realMoney") + "§2§l]";
                 event.setMessage(event.message().append(Component.text(VALID_PREFIX)));
             } else {
-                final String FAKEMONEY_PREFIX = "§4§l[§c§l✖ " + I18n.translate("griefergames.chat.fakeMoney") + "§4§l]";
+                final String FAKEMONEY_PREFIX = "§4§l[§c§l✖ " + I18n.translate("tmbgriefergames.chat.fakeMoney") + "§4§l]";
                 event.setMessage(event.message().append(Component.text(FAKEMONEY_PREFIX)));
             }
         }
