@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "tmb.randy"
-version = "1.0"
+version = "1.0.1"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -21,7 +21,7 @@ labyMod {
         author = "TMB Clan"
         description = "Eine Sammlung nützlicher Erweiterungen für das GrieferGames Netzwerk."
         minecraftVersion = "*"
-        version = System.getenv().getOrDefault("VERSION", "1.0")
+        version = System.getenv().getOrDefault("VERSION", "1.0.1")
     }
 
     minecraft {
