@@ -26,6 +26,10 @@ public class PlotSwitch {
 
     @Subscribe
     public void messageSend(ChatMessageSendEvent event) {
+        if(!Addon.isGG()) {
+            return;
+        }
+
         if(event.getMessage().toLowerCase().startsWith("/p h")) {
             lastPlot = event.getMessage();
         }
@@ -60,7 +64,7 @@ public class PlotSwitch {
 
     @Subscribe
     public void keyDownEvent(KeyEvent event) {
-        if(lastPlot == null || nextCommand != null) {
+        if(lastPlot == null || nextCommand != null || !Addon.isGG()) {
             return;
         }
 
