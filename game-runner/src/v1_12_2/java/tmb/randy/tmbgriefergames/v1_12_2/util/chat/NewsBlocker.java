@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.core.util.chat;
+package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
 
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
@@ -7,11 +7,9 @@ import tmb.randy.tmbgriefergames.core.Addon;
 public class NewsBlocker {
 
   private boolean isBlocking = false;
-  @Subscribe
-  public void blockNews(ChatReceiveEvent event) {
-    if(!Addon.isGG() || !Addon.getSharedInstance().configuration().getChatConfig().getHideNews().get()) {
+  public void messageReceived(ChatReceiveEvent event) {
+    if(!Addon.getSharedInstance().configuration().getChatConfig().getHideNews().get())
       return;
-    }
 
     String message = event.chatMessage().getPlainText();
 

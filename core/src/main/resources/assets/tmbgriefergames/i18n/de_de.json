@@ -12,6 +12,51 @@
                 "name": "Aktiviert",
                 "description": "Aktiviert oder deaktiviert das gesamte Addon."
             },
+            "natureSubConfig": {
+                "name": "CB Nature Plotgrenzen",
+                "description": "Einstellungen für die Darstellung der Plotgrenzen auf CB Nature und Extreme.",
+                "showBorders": {
+                    "name": "Plotgrenzen darstellen"
+                },
+                "borderRadius": {
+                    "name": "Radius",
+                    "description": "Legt fest, in welchem Abstand um dich herum die Grenzen dargestellt werden."
+                },
+                "borderheight": {
+                    "name": "Höhe",
+                    "description": "Legt die Höhe der dargestellten Plotgrenzen fest."
+                },
+                "borderMaxHeight": {
+                    "name": "Maximale Höhe",
+                    "description": "Stellt die Plotgrenzen in maximaler Höhe dar (Epilepsiegefahr!)"
+                },
+                "hotkey": {
+                    "name": "Hotkey"
+                }
+            },
+            "hopperSubConfig": {
+                "name": "Trichter",
+                "description": "Einstellungen für die automatische Einstellung von Trichtern.",
+                "filterItem":{
+                    "name": "Filteritem festlegen",
+                    "description": "Legt das erste Item in deiner Hotbar als Filteritem fest."
+                },
+                "radius": {
+                    "name": "Einsaugradius",
+                    "description": "Lege den Einsaugradius fest, der eingestellt werden soll. Bei -1 wird der Einsaugradius nicht verändert."
+                },
+                "finalAction": {
+                    "name": "Schlussaktion",
+                    "description": "Legt fest, was nach Einstellung der restlichen Einstellungen passieren soll."
+                },
+                "stackSize": {
+                    "name": "Stackgröße",
+                    "description": "Legt fest, welche Menge an Items der Trichter pro Tick verarbeiten soll."
+                },
+                "autoSneak": {
+                    "name": "Automatisch sneaken bei Rechtsklick"
+                }
+            },
             "chatConfig": {
                 "name": "Chat",
                 "typeCorrection": {
@@ -69,6 +114,9 @@
             "previousPlot": {
                 "name": "Vorheriges Plot",
                 "description": "Springe zum vorherigen GS des Spielers (/p h <spieler> -1)"
+            },
+            "skipHub":{
+                "name": "Lobby überspringen"
             }
         },
         "chat": {
@@ -78,7 +126,8 @@
             "cooldownRand": "Der Cooldown für /rand ist abgelaufen.",
             "cooldownBoden": "Der Cooldown für /boden ist abgelaufen.",
             "cooldownSign": "Der Cooldown für /sign ist abgelaufen.",
-            "cooldownAnticopy": "Der Cooldown für /anticopy ist abgelaufen."
+            "cooldownAnticopy": "Der Cooldown für /anticopy ist abgelaufen.",
+            "cooldownAushöhlen": "Der Cooldown für /aushöhlen ist abgelaufen."
         },
         "itemSaver": {
             "item_saver_message_sword": "Dieses Schwert ist zu wertvoll, um es zu benutzen!",
@@ -88,6 +137,52 @@
         "tooltip": {
             "compressedTooltip": "§6%s §eDKs §6%s §e Stacks §6%s §eItems",
             "adventurerTooltip": "§6 %s%% §f| §eRest: §6 %s §eDKs §6 %s §eStacks §6 %s §eItems"
+        },
+        "payAll": {
+            "amountTooLow": "Der abgerundete Betrag pro Spieler liegt bei 0$!",
+            "response": "%s Spieler * %s$ = %s$."
+        },
+        "playerTracer": {
+            "startedHopping": "CB Hopping gestartet",
+            "lookingForPlayer": "Fahndung nach Spieler %s läuft...",
+            "tooManyArguments": "Zu viele Argumente!",
+            "foundPlayer": "Spieler gefunden!",
+            "tracingEnded": "Fahndung beendet."
+        },
+        "flyTimer": {
+            "flyPotion": "Flugtrank",
+            "flyPotionUsed": "Flugtrank benutzt.",
+            "flyPotionExpired": "Flugtrank abgelaufen."
+        },
+        "itemRemover": {
+            "itemRemover": "Item remover"
+        },
+        "nearby": {
+            "nearby": "In der Nähe"
+        },
+        "gameInfo": {
+            "cb": "CB",
+            "money": "Geld",
+            "playtime": "Spielzeit",
+            "players": "Spieler"
+        },
+        "natureBorders": {
+            "plotBordersVisible": "Plotgrenzen §a§lSICHTBAR",
+            "plotBordersInvisible": "Plotgrenzen §c§lUNSICHTBAR"
+        },
+        "hudWidget": {
+            "flytimer": {
+                "name": "Flugtrank Timer"
+            },
+            "itemclear": {
+                "name": "Item remover"
+            },
+            "gameinfo": {
+                "name": "Spielinfo"
+            },
+            "nearby": {
+                "name": "In der Nähe"
+            }
         }
     }
 }

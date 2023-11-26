@@ -1,6 +1,8 @@
 package tmb.randy.tmbgriefergames.core.config;
 
+import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget.TextFieldSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
@@ -41,7 +43,6 @@ public class ChatSubConfig extends Config {
 
 
 
-
     public ConfigProperty<Boolean> getTypeCorrection() {
         return this.typeCorrection;
     }
@@ -54,8 +55,6 @@ public class ChatSubConfig extends Config {
     public ConfigProperty<Boolean> getAntiFakeMoney() {return this.antiFakeMoney;}
     public ConfigProperty<Boolean> getCooldownNotifier() {return this.cooldownNotifier;}
     public ConfigProperty<Boolean> getCleanChat() {return this.cleanChat;}
-
     public ConfigProperty<Boolean> getHideEmptyLines() {return this.hideEmptyLines;}
-
     public ConfigProperty<Boolean> getMuteStreamer() {return this.muteStreamer;}
 }

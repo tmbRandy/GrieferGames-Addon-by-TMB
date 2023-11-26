@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.core.util.chat;
+package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
 
 import net.labymod.api.client.component.Component;
 import net.labymod.api.event.Subscribe;
@@ -8,11 +8,9 @@ import tmb.randy.tmbgriefergames.core.Addon;
 
 public class PaymentValidator {
 
-    @Subscribe
     public void messageReceived(ChatReceiveEvent event) {
-        if(!Addon.isGG() || !Addon.getSharedInstance().configuration().getChatConfig().getAntiFakeMoney().get()) {
+        if(!Addon.getSharedInstance().configuration().getChatConfig().getAntiFakeMoney().get())
             return;
-        }
 
         String message = event.chatMessage().getPlainText();
 

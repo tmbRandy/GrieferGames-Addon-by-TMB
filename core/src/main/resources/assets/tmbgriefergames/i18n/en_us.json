@@ -12,6 +12,54 @@
                 "name": "enabled",
                 "description": "Activates or disables the functionality of this addon."
             },
+            "natureSubConfig": {
+                "name": "Show plot borders on CB Nature",
+                "description": "Settings for the rendered borders on CB Nature and Extreme.",
+                "showBorders": {
+                    "name": "Show borders"
+                },
+                "borderRadius": {
+                    "name": "radius",
+                    "description": "Sets the distance around you where the borders should shall appear."
+                },
+                "borderheight": {
+                    "name": "height",
+                    "description": "Sets the height for the border lines."
+                },
+                "borderMaxHeight": {
+                    "name": "Max height",
+                    "description": "Maximum height for the borders"
+                },
+                "hotkey": {
+                    "name": "hotkey"
+                }
+            },
+            "hopperSubConfig": {
+                "name": "hoppers",
+                "description": "Automates the settings within the hopper menu.",
+                "filterItem":{
+                    "name": "filter item",
+                    "description": "Sets the first item in your hotbar as filter item."
+                },
+                "radius": {
+                    "name": "radius",
+                    "description": "Sets the radius for the hopper to catch items. -1 means no change."
+                },
+                "finalAction": {
+                    "name": "final action",
+                    "description": "Sets the last action to execute."
+                },
+                "stackSize": {
+                    "name": "stack size",
+                    "description": "Which stack size should the hopper pass each tick."
+                },
+                "autoSneak": {
+                    "name": "Auto sneak when right clicking."
+                }
+            },
+            "skipHub":{
+                "name": "Skip the hub"
+            },
             "chatConfig": {
                 "name": "chat",
                 "typeCorrection": {
@@ -78,7 +126,8 @@
             "cooldownRand": "The cooldown for /rand is over.",
             "cooldownBoden": "The cooldown for /boden is over.",
             "cooldownSign": "The cooldown for /sign is over.",
-            "cooldownAnticopy": "The cooldown for /anticopy is over."
+            "cooldownAnticopy": "The cooldown for /anticopy is over.",
+            "cooldownAushöhlen": "The cooldown for /aushöhlen is over."
         },
         "itemSaver": {
             "item_saver_message_sword": "This sword is too valuable to use it!",
@@ -88,6 +137,52 @@
         "tooltip": {
             "compressedTooltip": "§6%s §edouble chests §6%s §e stacks §6%s §eitems",
             "adventurerTooltip": "§6 %s%% §f| §erest: §6 %s §edouble chests §6 %s §estacks §6 %s §eitems"
+        },
+        "payAll": {
+            "amountTooLow": "The rounded amount per player is $0!",
+            "response": "%s players * %s$ = %s$."
+        },
+        "playerTracer": {
+            "startedHopping": "Started CB hopping",
+            "lookingForPlayer": "Looking for player %s ...",
+            "tooManyArguments": "Too many arguments!",
+            "foundPlayer": "Player found!",
+            "tracingEnded": "Tracing ended."
+        },
+        "flyTimer": {
+            "flyPotion": "Fly potion",
+            "flyPotionUsed": "Fly potion used..",
+            "flyPotionExpired": "Fly potion expired."
+        },
+        "itemRemover": {
+            "itemRemover": "Item remover"
+        },
+        "nearby": {
+            "nearby": "Nearby"
+        },
+        "gameInfo": {
+            "cb": "CB",
+            "money": "Money",
+            "playtime": "Playtime",
+            "players": "Players"
+        },
+        "natureBorders": {
+            "plotBordersVisible": "Plot borders §a§lVISIBLE",
+            "plotBordersInvisible": "Plot borders §c§lINVISIBLE"
+        },
+        "hudWidget": {
+            "flytimer": {
+                "name": "Fly potion timer"
+            },
+            "itemclear": {
+                "name": "Item remover"
+            },
+            "gameinfo": {
+                "name": "Game info"
+            },
+            "nearby": {
+                "name": "Nearby"
+            }
         }
     }
 }

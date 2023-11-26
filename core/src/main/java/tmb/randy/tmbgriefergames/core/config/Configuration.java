@@ -17,6 +17,8 @@ public class Configuration extends AddonConfig {
     public Configuration() {
         this.chatConfig = new ChatSubConfig();
         this.tooltipConfig = new TooltipSubConfig();
+        this.hopperSubConfig = new HopperSubConfig();
+        this.natureSubConfig = new NatureSubConfig();
     }
 
     @SwitchSetting
@@ -30,8 +32,18 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = 21, x = 1)
     private final ChatSubConfig chatConfig;
 
+    @SpriteSlot(size = 21, x = 3, y = 2)
+    private final NatureSubConfig natureSubConfig;
+
     @SpriteSlot(size = 21, x = 3, y = 1)
     private final TooltipSubConfig tooltipConfig;
+
+    @SwitchSetting
+    @SpriteSlot(size = 21, x = 4, y = 2)
+    private final ConfigProperty<Boolean> skipHub = new ConfigProperty<>(true);
+
+    @SpriteSlot(size = 21, x = 2, y = 2)
+    private final HopperSubConfig hopperSubConfig;
 
     @SettingSection("plotSwitch")
 
@@ -39,6 +51,7 @@ public class Configuration extends AddonConfig {
     private final ConfigProperty<Key[]> nextPlot = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.ARROW_RIGHT});
     @MultiKeyBindSetting
     private final ConfigProperty<Key[]> previousPlot = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.ARROW_LEFT});
+
 
   @Override
     public ConfigProperty<Boolean> enabled() {
@@ -52,5 +65,7 @@ public class Configuration extends AddonConfig {
     public TooltipSubConfig getTooltipConfig() {return this.tooltipConfig; }
     public ConfigProperty<Key[]> getNextPlot() {return nextPlot;}
     public ConfigProperty<Key[]> getPreviousPlot() {return previousPlot;}
-
+    public ConfigProperty<Boolean> getSkipHub() {return skipHub;}
+    public HopperSubConfig getHopperSubConfig() {return hopperSubConfig;}
+    public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
 }

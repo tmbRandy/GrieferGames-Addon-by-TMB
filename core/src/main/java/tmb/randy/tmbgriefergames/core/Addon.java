@@ -2,40 +2,45 @@ package tmb.randy.tmbgriefergames.core;
 
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
+import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
+import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.models.addon.annotation.AddonMain;
+import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
+import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
+import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
-import tmb.randy.tmbgriefergames.core.util.ItemSaver;
-import tmb.randy.tmbgriefergames.core.util.PlotSwitch;
-import tmb.randy.tmbgriefergames.core.util.chat.ChatCleaner;
-import tmb.randy.tmbgriefergames.core.util.chat.CooldownNotifier;
-import tmb.randy.tmbgriefergames.core.util.chat.EmptyLinesRemover;
-import tmb.randy.tmbgriefergames.core.util.chat.NewsBlocker;
-import tmb.randy.tmbgriefergames.core.util.chat.PaymentValidator;
-import tmb.randy.tmbgriefergames.core.util.TooltipExtension;
-import tmb.randy.tmbgriefergames.core.util.chat.TypeCorrection;
+import tmb.randy.tmbgriefergames.core.generated.DefaultReferenceStorage;
+import tmb.randy.tmbgriefergames.core.widgets.FlyTimerWidget;
+import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget;
+import tmb.randy.tmbgriefergames.core.widgets.ItemClearWidget;
+import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget;
 import java.util.Objects;
 
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
 
+    private IBridge bridge;
   private static Addon SharedInstance;
+    private GameInfoWidget gameInfoWidget;
   private final String ADDON_PREFIX = "§6[§5§l§oT§b§l§oM§5§l§oB§6] ";
 
   @Override
   protected void enable() {
     this.registerSettingCategory();
+      SharedInstance = this;
+      bridge = getReferenceStorage().iBridge();
+    this.registerListener(bridge);
 
-    this.registerListener(new TypeCorrection());
-    this.registerListener(new TooltipExtension());
-    this.registerListener(new NewsBlocker());
-    this.registerListener(new PaymentValidator());
-    this.registerListener(new ChatCleaner());
-    this.registerListener(new EmptyLinesRemover());
-    this.registerListener(new ItemSaver());
-    this.registerListener(new CooldownNotifier());
-    this.registerListener(new PlotSwitch());
+      this.registerCommand(new DKsCommand());
+      this.registerCommand(new PayAllCommand());
+      this.registerCommand(new PlayerTracerCommand());
 
-    SharedInstance = this;
+      gameInfoWidget = new GameInfoWidget();
+
+      labyAPI().hudWidgetRegistry().register(new FlyTimerWidget());
+      labyAPI().hudWidgetRegistry().register(new ItemClearWidget());
+      labyAPI().hudWidgetRegistry().register(gameInfoWidget);
+      labyAPI().hudWidgetRegistry().register(new NearbyWidget());
 
     this.logger().info("Enabled the Addon");
   }
@@ -49,9 +54,9 @@ public class Addon extends LabyAddon<Configuration> {
         Laby.labyAPI().minecraft().chatExecutor().displayClientMessage(ADDON_PREFIX + msg);
     }
 
-    public static Addon getSharedInstance() {
-    return SharedInstance;
-  }
+    public static Addon getSharedInstance() {return SharedInstance;}
+
+    public DefaultReferenceStorage getReferenceStorage() {return (this.referenceStorageAccessor()); }
 
   public static boolean isGG() {
     if(!Laby.labyAPI().serverController().isConnected()) {
@@ -60,4 +65,35 @@ public class Addon extends LabyAddon<Configuration> {
 
     return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).getName().equals("GrieferGames");
   }
+
+    public IBridge getBridge() {
+        return bridge;
+    }
+
+    public GameInfoWidget getGameInfoWidget() {
+        return gameInfoWidget;
+    }
+
+    public static boolean isChatGuiOpen() {
+        for (IngameOverlayActivity activity : Laby.labyAPI().ingameOverlay().getActivities()) {
+            if(activity.isAcceptingInput()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean areKeysPressed(Key[] keys) {
+        if(isChatGuiOpen() || keys.length == 0)
+            return false;
+
+        for (Key key : keys) {
+            if(!key.isPressed() || key == Key.NONE) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

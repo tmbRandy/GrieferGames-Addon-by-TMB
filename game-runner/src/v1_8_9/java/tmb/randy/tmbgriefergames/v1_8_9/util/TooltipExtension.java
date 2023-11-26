@@ -1,16 +1,15 @@
-package tmb.randy.tmbgriefergames.core.util;
+package tmb.randy.tmbgriefergames.v1_8_9.util;
 
+import java.util.Objects;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.world.item.ItemStack;
-import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
-import java.util.Objects;
 
 public class TooltipExtension {
 
-  @Subscribe
   public void renderTooltip(ItemStackTooltipEvent event) {
+
     if(!Addon.isGG()) {
       return;
     }

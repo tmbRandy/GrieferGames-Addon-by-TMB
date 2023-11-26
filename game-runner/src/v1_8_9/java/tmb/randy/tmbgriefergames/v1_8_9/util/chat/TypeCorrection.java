@@ -1,10 +1,9 @@
-package tmb.randy.tmbgriefergames.core.util.chat;
+package tmb.randy.tmbgriefergames.v1_8_9.util.chat;
 
-import net.labymod.api.event.Subscribe;
-import net.labymod.api.event.client.chat.ChatMessageSendEvent;
-import tmb.randy.tmbgriefergames.core.Addon;
 import java.util.HashMap;
 import java.util.Map;
+import net.labymod.api.event.client.chat.ChatMessageSendEvent;
+import tmb.randy.tmbgriefergames.core.Addon;
 
 public class TypeCorrection {
 
@@ -53,6 +52,9 @@ public class TypeCorrection {
       put("version", "v3rsion");
       put("Version", "V3rsion");
 
+        put("ordner", "0rdner");
+        put("Ordner", "0rdner");
+
       put("/p t ", "/p trust ");
 
       put("/cb1", "/switch cb1");
@@ -83,11 +85,9 @@ public class TypeCorrection {
     }
   };
 
-  @Subscribe
   public void messageSend(ChatMessageSendEvent event) {
-    if(!Addon.isGG() || (!Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get() && !Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get())) {
+    if((!Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get() && !Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get()))
       return;
-    }
 
     String message = event.getMessage();
 

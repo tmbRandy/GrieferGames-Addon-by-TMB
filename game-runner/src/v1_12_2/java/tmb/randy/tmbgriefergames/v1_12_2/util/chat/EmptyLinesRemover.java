@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.core.util.chat;
+package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
 
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
@@ -6,11 +6,9 @@ import tmb.randy.tmbgriefergames.core.Addon;
 
 public class EmptyLinesRemover {
 
-    @Subscribe
-    public void removeEmptyLines(ChatReceiveEvent event) {
-        if(!Addon.isGG() || !Addon.getSharedInstance().configuration().getChatConfig().getHideEmptyLines().get()) {
+    public void messageReceived(ChatReceiveEvent event) {
+        if(!Addon.getSharedInstance().configuration().getChatConfig().getHideEmptyLines().get())
             return;
-        }
 
         String message = event.chatMessage().getPlainText();
 

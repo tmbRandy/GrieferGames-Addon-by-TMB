@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "tmb.randy"
-version = "1.0.1"
+version = "1.1"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -20,21 +20,14 @@ labyMod {
         displayName = "GrieferGames Addon by TMB"
         author = "TMB Clan"
         description = "Eine Sammlung nützlicher Erweiterungen für das GrieferGames Netzwerk."
-        minecraftVersion = "*"
-        version = System.getenv().getOrDefault("VERSION", "1.0.1")
+        minecraftVersion = "1.8.9,1.12.2"
+        version = System.getenv().getOrDefault("VERSION", "1.1")
     }
 
     minecraft {
         registerVersions(
                 "1.8.9",
-                "1.12.2",
-                "1.16.5",
-                "1.17.1",
-                "1.18.2",
-                "1.19.2",
-                "1.19.3",
-                "1.19.4",
-                "1.20.1"
+                "1.12.2"
         ) { version, provider ->
             configureRun(provider, version)
         }
@@ -59,6 +52,7 @@ subprojects {
     repositories {
         maven("https://libraries.minecraft.net/")
         maven("https://repo.spongepowered.org/repository/maven-public/")
+        mavenLocal()
     }
 }
 
