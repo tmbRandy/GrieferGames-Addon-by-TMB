@@ -8,7 +8,7 @@ public class StreamerMute {
     public void messageReceived(ChatReceiveEvent event) {
         String message = event.chatMessage().getPlainText();
 
-        if(message.startsWith("[Streamer]") && Addon.getSharedInstance().configuration().getChatConfig().getMuteStreamer().get()) {
+        if(message.contains("[Streamer]") && Addon.getSharedInstance().configuration().getChatConfig().getMuteStreamer().get()) {
             event.setCancelled(true);
         }
     }

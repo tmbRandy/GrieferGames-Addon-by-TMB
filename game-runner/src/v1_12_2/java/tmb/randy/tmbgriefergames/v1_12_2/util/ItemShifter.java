@@ -136,10 +136,6 @@ public class ItemShifter {
             } else if (Key.ARROW_DOWN.isPressed() && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
                 setTopToBottom(true);
                 startShifting();
-            } else {
-                Key key = Key.ARROW_DOWN;
-                ClickManager manager = ClickManager.getSharedInstance();
-                Addon.getSharedInstance().logger().info("Test");
             }
         }
     }
