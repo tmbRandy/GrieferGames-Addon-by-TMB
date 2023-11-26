@@ -1,43 +1,79 @@
 # GrieferGames Addon by TMB
  
-Dieses Addon wurde speziell für das GrieferGames 1.8 Netzwerk entwickelt und bietet einige nützliche Funktionen, insbesondere um den Chat zu verbessern:
+## Dieses Addon wurde speziell für das GrieferGames 1.8 Netzwerk entwickelt und bietet einige nützliche Funktionen:
 
-Item Schutz
+### Optisch dargestellte Plotgrenzen auf CB Nature und Extreme
+Die Plotgrenzen auf den beiden Natur-CBs können mit Linien grafisch dargestellt werden. Die Darstellung lässt sich bei Bedarf über einen Hotkey ein- und ausschalten.
+
+### Automatische Trichtereinstellung
+Wenn du eine Vielzahl an Trichtern einstellen musst, kannst du die gewünschten Einstellungen festlegen. Sobald du dann ein Trichtermenü öffnest, werden je nach Einstellung Filteritem, Einsaugradius, Stackgröße und Schlussaktion, wie die Verbindung mit einem anderen Trichter automatisch vorgenommen. Du kannst außerdem festlegen, dass du bei Rechtsklick auf einen Trichter automatisch sneakst.
+
+### Lobby automatisch überspringen
+Wenn du willst, kannst du direkt im Portalraum spawnen.
+
+### Automatische Annahme von /tpa und /tpahere
+Wenn du mehrere Accounts besitzt, kannst du dir von einem Account zum anderen eine /tpa oder /tpahere senden und diese wird sofort angenommen. Du musst dafür nur in LabyMod deine Accounts registrieren, was du normalerweise ohnehin schon getan hast.
+
+### Automatische Shiften von Items
+In Minecraft kann man normalerweise mit SHIFT + Doppelklick auf ein Item alles in oder aus einer Kiste in das Inventar bewegen. Auf GrieferGames funktioniert dies in neueren Versionen als 1.8.9 nicht. Mit den Pfeiltasten ⬆️ und ⬇️ bieten wir dir hierfür einen Workaround. Wenn du bei geöffnetem Inventar die Pfeiltasten ⬅️⬆️➡️ gleichzeitig drückst, kannst du außerdem dein gesamtes Inventar droppen.
+
+### Befehl /dks <zahl>
+Wenn du z.b. 100 DKs einer Ware verkaufen willst, kannst du den Befehl /dks 100 nutzen. Du erhältst dann im Chat eine ausgabe, wie viele Items du auf welcher Komprimierungsstufe brauchst, um die 100 DKs zu erreichen. Das funktioniert natürlich mit jeder Zahl.
+
+### Befehl /pay ** <betrag>
+Dieser Befehl ist das Gegenstück zu /pay * <betrag>. Wenn z.B. 100 Spieler auf dem CB sind und du gibst /pay ** 10000 ein, erhält jeder Spieler 100$. Es wird grundsätzlich auf volle Dollarbeträge abgerundet.
+
+### Befehl /fahndung <name>
+Du suchst einen Spieler, von dem du weißt, dass er online ist aber er hat seinen aktuellen CB nicht im /profil angegeben? Mit diesem Befehl wechselst du der Reihe nach alle CBs durch (beginnend mit den stark besuchten CBs). Sobald der Spieler auf einem CB gefunden wurde, wird die Fahndung beendet und du erhältst eine Ausgabe im Chat. Du willst eine Nachricht in deinem Status verbreiten? Kein Problem. Gib nur /fahndung ohne einen Namen ein und du wechselst alle CBs einmal durch.
+
+### Item Schutz
 Das Addon verhindert die Abnutzung wertvoller Farmitems. So ist ein Zuschlagen mit einer Bonze- oder BIRTH Klinge, das Schießen mit dem BIRTH Bogen, sowie das Platzieren eines SoS nicht möglich. Diese Funktionen wurden ausreichend getestet und funktionieren grundsätzlich. Aus Prinzip können wir jedoch keinerlei Haftund für die Funktion übernehmen. Wir werden keine Items erstatten. Diese Funktion verhindert lediglich Mausklicks, die durch den Spieler selbst ausgeführt werden. Softwareseitige Klicks, wie z.B. durch einen Autoklicker würde das Addon nicht verhindern, sodass damit z.B. ein SoS gesetzt werden könnte.
 
-Tooltip Erweiterung
+### Tooltip Erweiterung
 Mit diesem Addon siehst du die genaue Anzahl an DKs, Stacks und Items komprimierter Items, wenn du mit der Maus darüber fährst. Außerdem wird dir bei Adventurer Werkzeigen der Fortschritt in %, sowie die Menge des Materials in DKs, Stacks und Items angezeigt, sodass du einen verbesserten Überblick hast, wie viel du damit noch abbauen musst.
 
-PlotSwitch
+### PlotSwitch
 Nachdem du einen /p h Befehl eingegeben hast, kannst du mit diesem Addon durch eine Tastenkombination (standardmäßig SHIFT + ⬅️ bzw. SHIFT + ➡️) durch die Plots des Spielers wechseln. Wenn du beispielsweise "/p h AbgegrieftHD 5" eingibst, kannst du anschließend mit SHIFT + ⬅️ zu "/p h AbgegrieftHD 4" oder mit SHIFT + ➡️ zu "/p h AbgegrieftHD 6" wechseln.
 
-Chatfunktionen
+### Widget Item clear
+Du kannst ein Widget hinzufügen, das dir immer anzeigt, wann der nächste Item clear kommt.
+
+### Widget Ingame Info
+Wenn dich die große Anzeigetafel rechts stört, kannst du diese nun ausblenden. Entferne diese einfach aus dem GUI Menü und füge die GrieferGames Ingame Info hinzu. Diese zeigt dir alle wichtigen Informationen, wie CB, Kontostand, Spielerzahl und Spielstunden wesentlich kompakter an und lässt alle unnötigen Informationen weg.
+
+### Widget Flugtrank Timer
+Wenn du wisst, kannst du dir nach Einnahme eines Flugtranks einen 15 Minuten Countdown einblenden lassen, sodass du immer siehst, wann dein Flugeffekt ausläuft.
+
+### Widget In der Nähe
+Dieses Widget zeigt dir eine Liste von Spielern in deiner unmittelbaren Umgebung an.
+
+### Chatfunktionen
 
 Validierung von Zahlungen
 Bei eingehenden Zahlungen wird überprüft, ob es eine echte Zahlung, oder Fake Money ist. Hinter der Zahlung siehst du eine entsprechende Nachricht.
 
-Autokorrektur
+### Autokorrektur
 Die Autokorrektur verhindert die gängigsten Rechtschreibfehler. Gibst du z.B. "7msg AbgegrieftHD Hallo" ein, wird das 7msg durch ein /msg ersetzt, sodass die Nachricht ankommt und nicht im Chat erscheint.
 
-Aufteilung von /msg
+### Aufteilung von /msg
 Wenn du eine /msg oder /r versendest, die das 100-Zeichen Limit von GrieferGames überschreitet, wird diese in mehrere Nachrichten aufgeteilt. Du kannst die Chatzeile also bedenkenlos ausnutzen, ohne dir Gedanken darüber zu machen, ob sie abgeschnitten wird.
 
-Entfernung von Leerzeilen
+### Entfernung von Leerzeilen
 Leerzeilen werden aus dem Chat entfernt, um den Chat übersichtlicher zu halten. Damit wird auch ein /clearchat umgangen.
 
-Cooldown Benachrichtigungen
+### Cooldown Benachrichtigungen
 Wenn du Befehle wie /wand, /rand, /boden, /sign oder /anticopy benutzt, gibt es einen Cooldown. Das Addon benachrichtigt dich nach Ablauf des jeweiligen Cooldowns.
 
-Newsblocker
+### Newsblocker
 Bei Bedarf kannst du die NEWS Nachrichten, die auf GrieferGames regelmäßig im Chat erscheinen ausblenden.
 
-Chat cleaner
+### Chat cleaner
 Der Chat cleaner entfernt einige GrieferGames seitige Nachrichten, die keinen wirklichen Mehrwert bieten. z.B. "Du bist im Portalraum. Wähle deinen Citybuild aus." oder "Du hast aktuell keine Freundschaftsanfragen.".
 
-Streamer mute
+### Streamer mute
 Falls du keine Benachrichtigungen sehen willst, wenn Streamer live gehen, kannst du diese Nachrichten ausblenden.
 
-Folgende Tippfehler werden ausgebessert:
+### Folgende Tippfehler werden ausgebessert:
 "7r" => "/r"
 "(r" => "/r"
 "t/r" => "/r"
@@ -110,3 +146,12 @@ Folgende Befehle werden vereinfacht:
 "/nature" => "/switch nature"
 "/evil" => "/switch cbevil"
 "/extreme" => "/switch extreme"
+
+## Installation
+Lade dir die aktuellste Version als .jar Datei herunter und kopiere sie in diesen Ordner:
+
+|Betriebssystem         |Ordner                                                    |
+|-----------------------|----------------------------------------------------------|
+|Windows                |%APPDATA%\\.minecraft\\labymod-neo\\addons                |
+|Linux                  |~/.minecraft/labymod-neo/addons                           |
+|macOS                  |~/Library/Application Support/minecraft/labymod-neo/addons|
