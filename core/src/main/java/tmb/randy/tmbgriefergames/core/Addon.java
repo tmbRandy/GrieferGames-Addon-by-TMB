@@ -63,7 +63,7 @@ public class Addon extends LabyAddon<Configuration> {
       return false;
     }
 
-    return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).getName().equals("GrieferGames");
+    return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).address().getHost().equals("griefergames.net");
   }
 
     public IBridge getBridge() {
