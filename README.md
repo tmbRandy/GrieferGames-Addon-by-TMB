@@ -14,26 +14,26 @@ Wenn du willst, kannst du direkt im Portalraum spawnen.
 ### Automatische Annahme von /tpa und /tpahere
 Wenn du mehrere Accounts besitzt, kannst du dir von einem Account zum anderen eine /tpa oder /tpahere senden und diese wird sofort angenommen. Du musst dafür nur in LabyMod deine Accounts registrieren, was du normalerweise ohnehin schon getan hast.
 
-### Automatische Shiften von Items
-In Minecraft kann man normalerweise mit SHIFT + Doppelklick auf ein Item alles in oder aus einer Kiste in das Inventar bewegen. Auf GrieferGames funktioniert dies in neueren Versionen als 1.8.9 nicht. Mit den Pfeiltasten ⬆️ und ⬇️ bieten wir dir hierfür einen Workaround. Wenn du bei geöffnetem Inventar die Pfeiltasten ⬅️⬆️➡️ gleichzeitig drückst, kannst du außerdem dein gesamtes Inventar droppen.
+### Automatisches Shiften von Items
+In Minecraft kann man normalerweise mit SHIFT + Doppelklick auf ein Item alles in oder aus einer Kiste in das Inventar bewegen. Auf GrieferGames funktioniert dies in neueren Versionen als 1.8.9 nicht. Mit den Pfeiltasten oben️ und unten️ bieten wir dir hierfür einen Workaround. Wenn du bei geöffnetem Inventar die Pfeiltasten links + rechts + oben️ gleichzeitig drückst, kannst du außerdem dein gesamtes Inventar droppen.
 
 ### Befehl /dks <zahl>
-Wenn du z.b. 100 DKs einer Ware verkaufen willst, kannst du den Befehl /dks 100 nutzen. Du erhältst dann im Chat eine ausgabe, wie viele Items du auf welcher Komprimierungsstufe brauchst, um die 100 DKs zu erreichen. Das funktioniert natürlich mit jeder Zahl.
+Wenn du z.b. 100 DKs einer Ware verkaufen willst, kannst du den Befehl /dks 100 nutzen. Du erhältst dann im Chat eine Ausgabe, wie viele Items du auf welcher Komprimierungsstufe brauchst, um die 100 DKs zu erreichen. Das funktioniert natürlich mit jeder Zahl.
 
-### Befehl /pay ** <betrag>
-Dieser Befehl ist das Gegenstück zu /pay * <betrag>. Wenn z.B. 100 Spieler auf dem CB sind und du gibst /pay ** 10000 ein, erhält jeder Spieler 100$. Es wird grundsätzlich auf volle Dollarbeträge abgerundet.
+### Befehl /pay / <betrag>
+Dieser Befehl ist das Gegenstück zu /pay Sternchen <betrag>. Wenn z.B. 100 Spieler auf dem CB sind und du gibst /pay / 10000 ein, erhält jeder Spieler 100$. Es wird grundsätzlich auf volle Dollarbeträge abgerundet.
 
 ### Befehl /fahndung <name>
 Du suchst einen Spieler, von dem du weißt, dass er online ist aber er hat seinen aktuellen CB nicht im /profil angegeben? Mit diesem Befehl wechselst du der Reihe nach alle CBs durch (beginnend mit den stark besuchten CBs). Sobald der Spieler auf einem CB gefunden wurde, wird die Fahndung beendet und du erhältst eine Ausgabe im Chat. Du willst eine Nachricht in deinem Status verbreiten? Kein Problem. Gib nur /fahndung ohne einen Namen ein und du wechselst alle CBs einmal durch.
 
 ### Item Schutz
-Das Addon verhindert die Abnutzung wertvoller Farmitems. So ist ein Zuschlagen mit einer Bonze- oder BIRTH Klinge, das Schießen mit dem BIRTH Bogen, sowie das Platzieren eines SoS nicht möglich. Diese Funktionen wurden ausreichend getestet und funktionieren grundsätzlich. Aus Prinzip können wir jedoch keinerlei Haftund für die Funktion übernehmen. Wir werden keine Items erstatten. Diese Funktion verhindert lediglich Mausklicks, die durch den Spieler selbst ausgeführt werden. Softwareseitige Klicks, wie z.B. durch einen Autoklicker würde das Addon nicht verhindern, sodass damit z.B. ein SoS gesetzt werden könnte.
+Das Addon verhindert die Abnutzung wertvoller Farmitems. So ist ein Zuschlagen mit einer Bonze- oder BIRTH Klinge, das Schießen mit dem BIRTH Bogen, sowie das Platzieren eines SoS nicht möglich. Diese Funktionen wurden ausreichend getestet und funktionieren grundsätzlich. Aus Prinzip können wir jedoch keinerlei Haftung für die Funktion übernehmen. Wir werden keine Items erstatten. Diese Funktion verhindert lediglich Mausklicks, die durch den Spieler selbst ausgeführt werden. Softwareseitige Klicks, wie z.B. durch einen Autoklicker würde das Addon nicht verhindern, sodass damit z.B. ein SoS gesetzt werden könnte.
 
 ### Tooltip Erweiterung
-Mit diesem Addon siehst du die genaue Anzahl an DKs, Stacks und Items komprimierter Items, wenn du mit der Maus darüber fährst. Außerdem wird dir bei Adventurer Werkzeigen der Fortschritt in %, sowie die Menge des Materials in DKs, Stacks und Items angezeigt, sodass du einen verbesserten Überblick hast, wie viel du damit noch abbauen musst.
+Mit diesem Addon siehst du die genaue Anzahl an DKs, Stacks und Items komprimierter Items, wenn du mit der Maus darüber fährst. Außerdem wird dir bei Adventurer Werkzeugen der Fortschritt in %, sowie die Menge des Materials in DKs, Stacks und Items angezeigt, sodass du einen verbesserten Überblick hast, wie viel du damit noch abbauen musst.
 
 ### PlotSwitch
-Nachdem du einen /p h Befehl eingegeben hast, kannst du mit diesem Addon durch eine Tastenkombination (standardmäßig SHIFT + ⬅️ bzw. SHIFT + ➡️) durch die Plots des Spielers wechseln. Wenn du beispielsweise "/p h AbgegrieftHD 5" eingibst, kannst du anschließend mit SHIFT + ⬅️ zu "/p h AbgegrieftHD 4" oder mit SHIFT + ➡️ zu "/p h AbgegrieftHD 6" wechseln.
+Nachdem du einen /p h Befehl eingegeben hast, kannst du mit diesem Addon durch eine Tastenkombination (standardmäßig SHIFT + Pfeiltaste links️ bzw. SHIFT + Pfeiltaste rechts️) durch die Plots des Spielers wechseln. Wenn du beispielsweise "/p h AbgegrieftHD 5" eingibst, kannst du anschließend mit SHIFT + Pfeiltaste links️ zu "/p h AbgegrieftHD 4" oder mit SHIFT + Pfeiltaste rechts️ zu "/p h AbgegrieftHD 6" wechseln.
 
 ### Widget Item clear
 Du kannst ein Widget hinzufügen, das dir immer anzeigt, wann der nächste Item clear kommt.
