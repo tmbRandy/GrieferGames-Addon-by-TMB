@@ -6,6 +6,7 @@ import java.util.Map;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 
@@ -45,6 +46,21 @@ public class ClickManager {
                 dropClick(i);
             }
 
+        }
+    }
+
+    public void dropItemsFromInventory(Item item, boolean skipFirst) {
+        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
+        int size = container.inventorySlots.size();
+        for(int i = 9; i < size; i++) {
+            if(container.getSlot(i).getHasStack()) {
+                if(container.getSlot(i).getStack().getItem().equals(item)) {
+                    if(skipFirst && i == 36) {
+                        continue;
+                    }
+                    dropClick(i);
+                }
+            }
         }
     }
 

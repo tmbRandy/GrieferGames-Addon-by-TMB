@@ -5,6 +5,7 @@ import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.models.addon.annotation.AddonMain;
+import tmb.randy.tmbgriefergames.core.commands.AutocraftCommand;
 import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
@@ -34,6 +35,7 @@ public class Addon extends LabyAddon<Configuration> {
       this.registerCommand(new DKsCommand());
       this.registerCommand(new PayAllCommand());
       this.registerCommand(new PlayerTracerCommand());
+      this.registerCommand(new AutocraftCommand());
 
       gameInfoWidget = new GameInfoWidget();
 
@@ -63,7 +65,7 @@ public class Addon extends LabyAddon<Configuration> {
       return false;
     }
 
-    return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).address().getHost().equalsIgnoreCase("griefergames.net");
+    return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).address().getHost().toLowerCase().contains("griefergames");
   }
 
     public IBridge getBridge() {

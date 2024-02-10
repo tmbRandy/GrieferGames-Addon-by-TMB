@@ -117,6 +117,27 @@
             "previousPlot": {
                 "name": "previous plot",
                 "description": "Go to the previous plot (/p h <player> -1)"
+            },
+            "autoCrafterConfig": {
+                "name": "Autocrafter",
+                "description": "There are 2 different Autocrafters:\n\nV1 uses the Vanilla Crafting menu (Workbench). Place your recipe in the Workbench and save with SHIFT + ENTER. Then press ENTER to craft the recipe.\n\nV2 uses the /recipes menu. Place the item you want to craft in your first hotbar slot. Then type /autocraft in the chat. The /recipes menu will open automatically and craft your items.",
+                "autoCraftSpeed": {
+                    "name": "[V1] Speed"
+                },
+                "autoDrop": {
+                    "name": "[V1] Auto-drop"
+                },
+                "endlessMode": {
+                    "name": "[V1] Endless mode",
+                    "description": "Can be toggled on or off with ENTER. If this option is disabled, ENTER must be manually pressed to craft a batch."
+                },
+                "onlyFullStacks": {
+                    "name": "[V1] Take only full stacks"
+                },
+                "finalAction": {
+                    "name": "[V2] Final action",
+                    "description": "Specifies whether, when using Autocrafter V2 (/autocraft), the crafted items should be dropped or compressed in the inventory."
+                }
             }
         },
         "chat": {
@@ -183,6 +204,14 @@
             "nearby": {
                 "name": "Nearby"
             }
+        },
+        "autoComp": {
+            "list": "list #"
+        },
+        "autoCrafter": {
+            "recipeSaved": "Recipe saved",
+            "active": "Endless mode §a§ACTIVE",
+            "inactive": "Endless mode §c§INACTIVE"
         }
     }
 }

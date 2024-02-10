@@ -55,6 +55,9 @@ public class VersionisedBridge implements IBridge {
     private final ItemShifter itemShifter = new ItemShifter();
     private final NatureBordersRenderer natureBordersRenderer = new NatureBordersRenderer();
     private final AccountUnity accountUnity = new AccountUnity();
+    private final AutoComp autoComp = new AutoComp();
+    private final AutoCrafter autoCrafter = new AutoCrafter();
+    private final AutoCrafterNew autoCrafterNew = new AutoCrafterNew();
 
     private GuiScreen lastGui;
 
@@ -112,7 +115,7 @@ public class VersionisedBridge implements IBridge {
 
     @Subscribe
     public void tick(GameTickEvent event) {
-        if(!Addon.isGG())
+        if(!Laby.labyAPI().minecraft().isIngame() || Minecraft.getMinecraft().player == null || Minecraft.getMinecraft().world == null)
             return;
 
         GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
@@ -122,16 +125,21 @@ public class VersionisedBridge implements IBridge {
                 || Minecraft.getMinecraft().currentScreen instanceof GuiCrafting
                 || Minecraft.getMinecraft().currentScreen instanceof GuiInventory)) {
                 ClickManager.getSharedInstance().clearAllQueues();
+                autoComp.stopComp();
+                ItemShifter.getSharedInsance().stopShifting();
             }
 
+            onGuiOpenEvent(currentScreen);
             lastGui = currentScreen;
         }
 
-        plotSwitch.tick(event);
+        ClickManager.getSharedInstance().tick(event);
+        autoComp.onTickEvent(event);
+        autoCrafter.onTickEvent(event);
         autoHopper.tick(event);
         itemShifter.tick(event);
-        flyTimer.tick(event);
-        ClickManager.getSharedInstance().tick(event);
+        plotSwitch.tick(event);
+        autoCrafterNew.onTickEvent(event);
     }
 
     @Subscribe
@@ -143,6 +151,9 @@ public class VersionisedBridge implements IBridge {
         playerTracer.onKey(event);
         itemShifter.onKey(event);
         natureBordersRenderer.onKey(event);
+        autoComp.onKeyEvent(event);
+        autoCrafter.onKeyEvent(event);
+        autoCrafterNew.onKeyEvent(event);
     }
 
     @Subscribe
@@ -170,6 +181,14 @@ public class VersionisedBridge implements IBridge {
         playerTracer.startTracer(name);
     }
 
+    public void onGuiOpenEvent(GuiScreen screen) {
+        ClickManager.getSharedInstance().clearAllQueues();
+        if(screen == null) {
+            autoComp.stopComp();
+            itemShifter.stopShifting();
+        }
+    }
+
     @Subscribe
     public void networkPayloadEvent(NetworkPayloadEvent event) {
         if(!Addon.isGG())
@@ -181,6 +200,8 @@ public class VersionisedBridge implements IBridge {
     @Override
     public void cbChanged() {
         playerTracer.cbChanged();
+        autoComp.stopComp();
+        autoCrafterNew.stopCrafter();
     }
 
     @Override
@@ -206,5 +227,15 @@ public class VersionisedBridge implements IBridge {
         }
 
         return false;
+    }
+
+    @Override
+    public void startNewAutocrafter() {
+        autoCrafterNew.startCrafter();
+    }
+
+    @Override
+    public boolean isCompActive() {
+        return autoComp.isCompActive();
     }
 }

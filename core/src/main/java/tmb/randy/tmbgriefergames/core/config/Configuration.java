@@ -19,6 +19,7 @@ public class Configuration extends AddonConfig {
         this.tooltipConfig = new TooltipSubConfig();
         this.hopperSubConfig = new HopperSubConfig();
         this.natureSubConfig = new NatureSubConfig();
+        this.autoCrafterConfig = new AutoCrafterSubConfig();
     }
 
     @SwitchSetting
@@ -28,6 +29,9 @@ public class Configuration extends AddonConfig {
     @SwitchSetting
     @SpriteSlot(size = 21, x = 2, y = 1)
     private final ConfigProperty<Boolean> itemProtection = new ConfigProperty<>(true);
+
+    @SpriteSlot(size = 21, x = 5, y = 2)
+    private final AutoCrafterSubConfig autoCrafterConfig;
 
     @SpriteSlot(size = 21, x = 1)
     private final ChatSubConfig chatConfig;
@@ -68,4 +72,5 @@ public class Configuration extends AddonConfig {
     public ConfigProperty<Boolean> getSkipHub() {return skipHub;}
     public HopperSubConfig getHopperSubConfig() {return hopperSubConfig;}
     public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
+    public AutoCrafterSubConfig getAutoCrafterConfig() {return autoCrafterConfig;}
 }

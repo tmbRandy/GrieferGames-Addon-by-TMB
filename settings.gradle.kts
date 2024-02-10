@@ -1,7 +1,7 @@
 rootProject.name = "griefergames-addon-by-tmb"
 
 pluginManagement {
-    val labyGradlePluginVersion = "0.3.29"
+    val labyGradlePluginVersion = "0.3.44"
     plugins {
         id("net.labymod.gradle") version (labyGradlePluginVersion)
     }

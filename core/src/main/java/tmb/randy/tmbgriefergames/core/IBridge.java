@@ -9,4 +9,6 @@ public interface IBridge {
     public boolean isFlyCountdownActive();
     public String getWidgetString();
     public String getItemRemoverValue();
+    public void startNewAutocrafter();
+    boolean isCompActive();
 }

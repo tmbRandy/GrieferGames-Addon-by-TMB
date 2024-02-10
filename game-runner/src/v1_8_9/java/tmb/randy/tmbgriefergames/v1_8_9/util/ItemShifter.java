@@ -20,15 +20,19 @@ import tmb.randy.tmbgriefergames.v1_8_9.util.click.ClickManager;
 
 public class ItemShifter {
 
-    private String itemToMove = "";
-    private int idToMove = 0;
-
+    private Item itemToMove;
     private ContainerChest currentChest;
     private boolean topToBottom = true;
 
     private final LinkedList<Click> toSend = new LinkedList<>();
 
-    private final int[] spawnerMenuItemIDs = new int[] {160, 384, 347, 76, 54};
+    private final Item[] spawnerMenuItems = new Item[] {
+        Item.getItemById(160),
+        Item.getItemById(384),
+        Item.getItemById(347),
+        Item.getItemById(76),
+        Item.getItemById(54)
+    };
 
     private static ItemShifter sharedInstance;
 
@@ -40,8 +44,7 @@ public class ItemShifter {
     }
 
     public void stopShifting() {
-        itemToMove = "";
-        idToMove = 0;
+        itemToMove = null;
         currentChest = null;
         topToBottom = true;
     }
@@ -49,7 +52,10 @@ public class ItemShifter {
     public void startShifting() {
         this.currentChest = (ContainerChest) Minecraft.getMinecraft().thePlayer.openContainer;
 
-        this.itemToMove = Minecraft.getMinecraft().thePlayer.getHeldItem().getDisplayName();
+        if(Minecraft.getMinecraft().thePlayer.getHeldItem() == null)
+            this.itemToMove = null;
+        else
+            this.itemToMove = Minecraft.getMinecraft().thePlayer.getHeldItem().getItem();
 
         int containerSize = currentChest.inventorySlots.size();
 
@@ -90,12 +96,15 @@ public class ItemShifter {
 
             Slot fromSlot = this.currentChest.inventorySlots.get(from);
 
-            int currentItemID = Item.getIdFromItem(fromSlot.getStack().getItem());
+            if(fromSlot.getStack() == null)
+                continue;
+
+            Item currentItem = fromSlot.getStack().getItem();
             String currentItemName = fromSlot.getStack().getDisplayName();
 
             if(fromSlot.getHasStack() && availableSlots > 0) {
-                if(!(isSpawner && ArrayUtils.contains(spawnerMenuItemIDs, currentItemID))) {
-                    if(this.idToMove == 0 || (this.idToMove == currentItemID && this.itemToMove.equals(currentItemName))) {
+                if(!(isSpawner && ArrayUtils.contains(spawnerMenuItems, currentItem))) {
+                    if(itemToMove == null || (itemToMove.equals(currentItem) && this.itemToMove.equals(currentItemName))) {
                         this.shiftClick(from);
                         availableSlots -= 1;
                     }
@@ -103,8 +112,7 @@ public class ItemShifter {
             }
         }
 
-        this.idToMove = 0;
-        this.itemToMove = "";
+        this.itemToMove = null;
         this.sendQueue();
     }
 
@@ -176,14 +184,15 @@ public class ItemShifter {
                 Minecraft.getMinecraft().playerController.windowClick(this.currentChest.windowId, slot, 0, 0, Minecraft.getMinecraft().thePlayer);
                 ItemStack stack = (this.currentChest.inventorySlots.get(slot)).getStack();
 
-                this.idToMove = Item.getIdFromItem(stack.getItem());
-                this.itemToMove = stack.getDisplayName();
-
+                if(stack == null) {
+                    itemToMove = null;
+                } else {
+                    this.itemToMove = stack.getItem();
+                }
                 return;
             }
         }
 
-        //Find empty slot in Destination
 
         for(int slot = fromMin; slot <= fromMax; slot++) {
             if (!(this.currentChest.inventorySlots.get(slot)).getHasStack())
@@ -191,8 +200,10 @@ public class ItemShifter {
                 Minecraft.getMinecraft().playerController.windowClick(this.currentChest.windowId, slot, 0, 0, Minecraft.getMinecraft().thePlayer);
                 ItemStack stack = (this.currentChest.inventorySlots.get(slot)).getStack();
 
-                this.idToMove = Item.getIdFromItem(stack.getItem());
-                this.itemToMove = stack.getDisplayName();
+                if(stack == null)
+                    return;
+
+                this.itemToMove = stack.getItem();
 
                 return;
             }

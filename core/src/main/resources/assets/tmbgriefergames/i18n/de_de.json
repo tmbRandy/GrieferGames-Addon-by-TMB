@@ -117,6 +117,27 @@
             },
             "skipHub":{
                 "name": "Lobby überspringen"
+            },
+            "autoCrafterConfig": {
+                "name": "Autocrafter",
+                "description": "Es gibt 2 verschiedene Autocrafter:\\n\\nV1 nutzt das Vanilla Crafting Menü (Werkbank). Lege dein Rezept in die Werkbank und speichere mit SHIFT + ENTER. Drücke anschließend ENTER, um das Rezept zu craften.\\n\\nV2 nutzt das /rezepte Menü. Lege das Item, welches du craften willst in deinen ersten Hotbar Slot. Gib anschließend /autocraft in den Chat ein. Das /rezepte Menü öffnet sich automatisch und craftet deine Items.",
+                "autoCraftSpeed": {
+                    "name": "[V1] Geschwindigkeit"
+                },
+                "autoDrop": {
+                    "name": "[V1] Automatisch droppen"
+                },
+                "endlessMode": {
+                    "name": "[V1] Endlosmodus",
+                    "description": "Kann mit ENTER Ein- oder Ausgeschaltet werden. Ist diese Option deaktiviert, muss ENTER manuell gedrückt werden, um eine Portion zu craften."
+                },
+                "onlyFullStacks": {
+                    "name": "[V1] Nur ganze Stacks nehmen"
+                },
+                "finalAction": {
+                    "name": "[V2] Schlussaktion",
+                    "description": "Legt fest, ob bei Nutzung des Autocrafters V2 (/autocraft) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen."
+                }
             }
         },
         "chat": {
@@ -183,6 +204,14 @@
             "nearby": {
                 "name": "In der Nähe"
             }
+        },
+        "autoComp": {
+            "list": "Liste #"
+        },
+        "autoCrafter": {
+            "recipeSaved": "Rezept gespeichert",
+            "active": "Endlosmodus §a§lAKTIV",
+            "inactive": "Endlosmodus §c§lDEAKTIVIERT"
         }
     }
 }

@@ -133,7 +133,7 @@ public class ItemShifter {
                     setTopToBottom(false);
                     startShifting();
                 }
-            } else if (Key.ARROW_DOWN.isPressed() && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
+            } else if (Key.ARROW_DOWN.isPressed() && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW) && !Addon.getSharedInstance().getBridge().isCompActive()) {
                 setTopToBottom(true);
                 startShifting();
             }

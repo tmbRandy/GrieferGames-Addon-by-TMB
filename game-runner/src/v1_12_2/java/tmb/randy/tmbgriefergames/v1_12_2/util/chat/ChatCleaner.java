@@ -27,6 +27,11 @@ public class ChatCleaner {
 
     public void messageReceived(ChatReceiveEvent event) {
         final Configuration configuration = Addon.getSharedInstance().configuration();
+        String message = event.chatMessage().getPlainText();
+
+        if(message.equals("[Rezepte] Du hast nicht genug Material, um dieses Rezept herzustellen.")) {
+            event.setCancelled(true);
+        }
 
 
         if(!configuration.getChatConfig().getCleanChat().get())
@@ -34,7 +39,6 @@ public class ChatCleaner {
 
 
         // "No friendhip requests" messages is sent before the GrieferGames Server Name is set. So it has to be handles before checking for GG.
-        String message = event.chatMessage().getPlainText();
         if(message.equals("[Freunde] Du hast aktuell keine Freundschaftsanfragen.")) {
             event.setCancelled(true);
         }
