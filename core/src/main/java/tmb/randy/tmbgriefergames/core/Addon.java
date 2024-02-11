@@ -77,6 +77,9 @@ public class Addon extends LabyAddon<Configuration> {
     }
 
     public static boolean isChatGuiOpen() {
+      if(!Laby.labyAPI().minecraft().isMouseLocked())
+          return true;
+
         for (IngameOverlayActivity activity : Laby.labyAPI().ingameOverlay().getActivities()) {
             if(activity.isAcceptingInput()) {
                 return true;

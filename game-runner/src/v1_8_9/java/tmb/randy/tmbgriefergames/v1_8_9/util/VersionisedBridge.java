@@ -228,5 +228,4 @@ public class VersionisedBridge implements IBridge {
         return autoComp.isCompActive();
     }
 
-
 }

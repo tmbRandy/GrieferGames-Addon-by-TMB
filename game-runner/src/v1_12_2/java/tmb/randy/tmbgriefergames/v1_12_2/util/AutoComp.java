@@ -54,7 +54,7 @@ public class AutoComp {
                     }
                 }
             } else {
-                if ((event.key() == Key.ARROW_UP || event.key() == Key.ARROW_LEFT || event.key() == Key.ARROW_RIGHT) && Key.ARROW_UP.isPressed() && Key.ARROW_LEFT.isPressed() && Key.ARROW_RIGHT.isPressed() && !isGUIOpen()) {
+                if (Addon.areKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCompHotkey().get())) {
                     startComp();
                 }
             }

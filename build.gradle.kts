@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "tmb.randy"
-version = "1.2"
+version = "1.2.1"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 

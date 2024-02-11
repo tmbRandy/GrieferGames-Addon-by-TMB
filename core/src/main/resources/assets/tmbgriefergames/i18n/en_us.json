@@ -119,7 +119,7 @@
                 "description": "Go to the previous plot (/p h <player> -1)"
             },
             "autoCrafterConfig": {
-                "name": "Autocrafter",
+                "name": "Auto-crafter & auto-compressor",
                 "description": "There are 2 different Autocrafters:\n\nV1 uses the Vanilla Crafting menu (Workbench). Place your recipe in the Workbench and save with SHIFT + ENTER. Then press ENTER to craft the recipe.\n\nV2 uses the /recipes menu. Place the item you want to craft in your first hotbar slot. Then type /autocraft in the chat. The /recipes menu will open automatically and craft your items.",
                 "autoCraftSpeed": {
                     "name": "[V1] Speed"
@@ -137,6 +137,9 @@
                 "finalAction": {
                     "name": "[V2] Final action",
                     "description": "Specifies whether, when using Autocrafter V2 (/autocraft), the crafted items should be dropped or compressed in the inventory."
+                },
+                "autoCompHotkey": {
+                    "name": "Hotkey for auto-compressor"
                 }
             }
         },
