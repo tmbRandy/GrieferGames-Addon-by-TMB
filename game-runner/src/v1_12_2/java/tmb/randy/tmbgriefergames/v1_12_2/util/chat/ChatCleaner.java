@@ -22,7 +22,10 @@ public class ChatCleaner {
         "[GrieferGames] Du wurdest zum Grundstück teleportiert.",
         "[GrieferGames] Deine Tageszeit wurde vom Grundstück aktualisiert.",
         "[GrieferGames] Deine Tageszeit wurde wiederhergestellt.",
-        "[GrieferGames] Bitte warte 15 Sekunden zwischen jedem Join-Versuch."
+        "[GrieferGames] Bitte warte 15 Sekunden zwischen jedem Join-Versuch.",
+        "------------ [ Server-Status ] ------------",
+        "Ergriffene Maßnahmen:",
+        "Versuche in den Portalraum zu verbinden."
     );
 
     public void messageReceived(ChatReceiveEvent event) {

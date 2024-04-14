@@ -79,17 +79,23 @@ public class AutoHopper {
                     }
 
                     boolean clicked = false;
-                    if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFilterItem().get() && (
-                            chest.getSlot(28).getStack() != null && Item.getIdFromItem(chest.getSlot(28).getStack().getItem()) !=
-                                Item.getIdFromItem(getItemForSlot72(chest))) &&
-                            !(Item.getIdFromItem(chest.getSlot(28).getStack().getItem()) == 166 &&
-                                !chest.getSlot(72).getHasStack())) {
-                            ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 72, 0, 1));
-                            clicked = true;
+                    if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && chest.getSlot(28).getHasStack()) {
+                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFilterItem().get()) {
+
+                            if(chest.getSlot(72).getHasStack()) {
+                                if(((!chest.getSlot(28).getStack().getItem().equals(chest.getSlot(72).getStack().getItem())) &&
+                                    !(Block.getBlockFromItem(chest.getSlot(28).getStack().getItem()) == Blocks.barrier && !chest.getSlot(72).getHasStack())) ||
+                                    (chest.getSlot(28).getStack().getMetadata() != chest.getSlot(72).getStack().getMetadata())) {
+                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 72, 0, 1));
+                                    clicked = true;
+                                }
+                            } else if(!(Block.getBlockFromItem(chest.getSlot(28).getStack().getItem()) == Blocks.barrier)) {
+                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 72, 0, 1));
+                                clicked = true;
+                            }
                         }
 
-                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
+                            if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
                             if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() == 0) {
                                 if (chest.getSlot(30).getStack() != null && Item.getIdFromItem(chest.getSlot(30).getStack().getItem()) == 397) {
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, 1));

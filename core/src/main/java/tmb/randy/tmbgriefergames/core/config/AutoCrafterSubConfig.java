@@ -28,6 +28,9 @@ public class AutoCrafterSubConfig extends Config {
     @MultiKeyBindSetting
     private final ConfigProperty<Key[]> autoCompHotkey = new ConfigProperty<>(new Key[]{Key.ARROW_LEFT, Key.ARROW_UP, Key.ARROW_RIGHT});
 
+    @MultiKeyBindSetting
+    private final ConfigProperty<Key[]> autoDecompHotkey = new ConfigProperty<>(new Key[]{Key.ARROW_LEFT, Key.ARROW_DOWN, Key.ARROW_RIGHT});
+
     public ConfigProperty<QueueType> getAutoCraftSpeed() { return this.autoCraftSpeed; }
     public ConfigProperty<Boolean> getAutoDrop() {
         return this.autoDrop;
@@ -42,4 +45,6 @@ public class AutoCrafterSubConfig extends Config {
     public ConfigProperty<AutoCrafterNewFinalAction> getFinalAction() { return finalAction; }
 
     public ConfigProperty<Key[]> getAutoCompHotkey() {return autoCompHotkey;}
+
+    public ConfigProperty<Key[]> getAutoDecompHotkey() {return autoDecompHotkey;}
 }

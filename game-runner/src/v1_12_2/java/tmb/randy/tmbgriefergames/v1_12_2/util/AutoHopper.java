@@ -8,11 +8,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import org.lwjgl.input.Keyboard;
@@ -74,17 +76,20 @@ public class AutoHopper {
                         toggeledSneak = false;
                     }
 
+
                     boolean clicked = false;
                     if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFilterItem().get() && (
-                            Item.getIdFromItem(chest.getSlot(28).getStack().getItem()) != Item.getIdFromItem(chest.getSlot(72).getStack().getItem())) && !(Item.getIdFromItem(chest.getSlot(28).getStack().getItem()) == 166 && !chest.getSlot(72).getHasStack())) {
+                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFilterItem().get() &&
+                            (((!chest.getSlot(28).getStack().getItem().equals(chest.getSlot(72).getStack().getItem())) &&
+                            !(Block.getBlockFromItem(chest.getSlot(28).getStack().getItem()) == Blocks.BARRIER && !chest.getSlot(72).getHasStack())) ||
+                                (chest.getSlot(28).getStack().getMetadata() != chest.getSlot(72).getStack().getMetadata()))) {
                             ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 72, 0, ClickType.QUICK_MOVE));
                             clicked = true;
                         }
 
                         if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
                             if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() == 0) {
-                                if (Item.getIdFromItem(chest.getSlot(30).getStack().getItem()) == 397) {
+                                if (chest.getSlot(30).getStack().getItem() instanceof ItemSkull) {
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, ClickType.QUICK_MOVE));
                                     clicked = true;
                                 }

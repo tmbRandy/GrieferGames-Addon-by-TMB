@@ -9,11 +9,10 @@ import tmb.randy.tmbgriefergames.core.Addon;
 public class AccountUnity {
 
     public void messageReceived(ChatReceiveEvent event) {
-
         for (Account account : LabyMod.getInstance().getAccountManager().getAccounts()) {
             String name = account.getUsername();
             if(event.chatMessage().getPlainText().endsWith(name + " möchte sich zu dir teleportieren.") || event.chatMessage().getPlainText().endsWith(name + " möchte, dass du dich zu der Person teleportierst.")) {
-                Laby.labyAPI().minecraft().chatExecutor().chat("/tpaccept");
+                VersionisedBridge.sendCommand("/tpaccept");
             }
         }
     }

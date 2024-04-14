@@ -32,6 +32,12 @@
                 },
                 "hotkey": {
                     "name": "Hotkey"
+                },
+                "rainbow": {
+                    "name": "Farbwechsel"
+                },
+                "borderColor": {
+                    "name": "Farbe"
                 }
             },
             "hopperSubConfig": {
@@ -90,6 +96,9 @@
                 "muteStreamer": {
                     "name": "Streamer Nachrichten entfernen",
                     "description": "Entfernt die Chat Benachrichtigungen, wenn Streamer live gehen."
+                },
+                "msgTabMode": {
+                    "name": "/msg in Tabs"
                 }
             },
             "itemProtection": {
@@ -119,7 +128,7 @@
                 "name": "Lobby überspringen"
             },
             "autoCrafterConfig": {
-                "name": "Autocrafter & Autokomprimierer",
+                "name": "Autocrafter & Auto(de)komprimierer",
                 "description": "Es gibt 2 verschiedene Autocrafter:\\n\\nV1 nutzt das Vanilla Crafting Menü (Werkbank). Lege dein Rezept in die Werkbank und speichere mit SHIFT + ENTER. Drücke anschließend ENTER, um das Rezept zu craften.\\n\\nV2 nutzt das /rezepte Menü. Lege das Item, welches du craften willst in deinen ersten Hotbar Slot. Gib anschließend /autocraft in den Chat ein. Das /rezepte Menü öffnet sich automatisch und craftet deine Items.",
                 "autoCraftSpeed": {
                     "name": "[V1] Geschwindigkeit"
@@ -140,6 +149,9 @@
                 },
                 "autoCompHotkey": {
                     "name": "Hotkey für Autokomprimierer"
+                },
+                "autoDecompHotkey": {
+                    "name": "Hotkey für Autodekomprimierer"
                 }
             }
         },
@@ -210,6 +222,9 @@
         },
         "autoComp": {
             "list": "Liste #"
+        },
+        "autoDecomp": {
+            "started": "Dekomprimiere..."
         },
         "autoCrafter": {
             "recipeSaved": "Rezept gespeichert",

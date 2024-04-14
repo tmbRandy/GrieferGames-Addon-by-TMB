@@ -61,7 +61,7 @@ public class CBTracker {
                                 Addon.getSharedInstance().getBridge().cbChanged();
 
                                 if(currentCB.equals("Lobby") && Addon.getSharedInstance().configuration().getSkipHub().get()) {
-                                    Laby.labyAPI().minecraft().chatExecutor().chat("/portal");
+                                    VersionisedBridge.sendCommand("/portal");
                                 }
                             }
                         }

@@ -32,6 +32,12 @@
                 },
                 "hotkey": {
                     "name": "hotkey"
+                },
+                "rainbow": {
+                    "name": "change colors"
+                },
+                "borderColor": {
+                    "name": "color"
                 }
             },
             "hopperSubConfig": {
@@ -93,6 +99,9 @@
                 "muteStreamer": {
                     "name": "remove streamer messages",
                     "description": "removes the messages that appear, when a streamer goes live."
+                },
+                "msgTabMode": {
+                    "name": "/msg in tabs"
                 }
             },
             "itemProtection": {
@@ -119,7 +128,7 @@
                 "description": "Go to the previous plot (/p h <player> -1)"
             },
             "autoCrafterConfig": {
-                "name": "Auto-crafter & auto-compressor",
+                "name": "Auto-crafter & auto-(de)compressor",
                 "description": "There are 2 different Autocrafters:\n\nV1 uses the Vanilla Crafting menu (Workbench). Place your recipe in the Workbench and save with SHIFT + ENTER. Then press ENTER to craft the recipe.\n\nV2 uses the /recipes menu. Place the item you want to craft in your first hotbar slot. Then type /autocraft in the chat. The /recipes menu will open automatically and craft your items.",
                 "autoCraftSpeed": {
                     "name": "[V1] Speed"
@@ -140,6 +149,9 @@
                 },
                 "autoCompHotkey": {
                     "name": "Hotkey for auto-compressor"
+                },
+                "autoDecompHotkey": {
+                    "name": "Hotkey for auto-decompressor"
                 }
             }
         },
@@ -210,6 +222,9 @@
         },
         "autoComp": {
             "list": "list #"
+        },
+        "autoDecomp": {
+            "started": "decompressing..."
         },
         "autoCrafter": {
             "recipeSaved": "Recipe saved",

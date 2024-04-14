@@ -4,6 +4,7 @@ import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
+import net.labymod.api.util.Color;
 import net.labymod.api.util.I18n;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -160,12 +161,17 @@ public class NatureBordersRenderer {
             GL11.glPushMatrix();
             Tessellator tesselator = Tessellator.getInstance();
             BufferBuilder render = tesselator.getBuffer();
-            Vector3f hsv = this.RGB2HSV(this.lineRed, this.lineGreen, this.lineBlue);
-            Vector3f rgb = this.HSV2RGB((hsv.x + 0.01F) % 1.0F, hsv.y, hsv.z);
-            this.lineRed = rgb.x;
-            this.lineGreen = rgb.y;
-            this.lineBlue = rgb.z;
-            GL11.glColor4f(rgb.x, rgb.y, rgb.z, 0.35F);
+            if(Addon.getSharedInstance().configuration().getNatureSubConfig().getRainbow().get()) {
+                Vector3f hsv = this.RGB2HSV(this.lineRed, this.lineGreen, this.lineBlue);
+                Vector3f rgb = this.HSV2RGB((hsv.x + 0.01F) % 1.0F, hsv.y, hsv.z);
+                this.lineRed = rgb.x;
+                this.lineGreen = rgb.y;
+                this.lineBlue = rgb.z;
+                GL11.glColor4f(rgb.x, rgb.y, rgb.z, 0.35F);
+            } else {
+                Color color = Color.of(Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderColor().get());
+                GL11.glColor4f(((float) color.getRed())/255, ((float) color.getGreen())/255, ((float) color.getBlue())/255, 0.35F);
+            }
             render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
             int rad = 16 * Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderRadius().get();
             int hrf = rad / 2;

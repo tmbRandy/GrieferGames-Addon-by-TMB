@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "tmb.randy"
-version = "1.2.1"
+version = "1.3"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -71,7 +71,7 @@ fun configureRun(provider: net.labymod.gradle.core.minecraft.provider.VersionPro
 
     provider.javaVersion = when (gameVersion) {
         else -> {
-            JavaVersion.VERSION_17
+            JavaVersion.VERSION_21
         }
     }
 

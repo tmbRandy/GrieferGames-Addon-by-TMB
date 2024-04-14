@@ -1,8 +1,7 @@
 package tmb.randy.tmbgriefergames.core.config;
 
-import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
-import net.labymod.api.client.gui.screen.widget.widgets.input.TextFieldWidget.TextFieldSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
@@ -41,6 +40,10 @@ public class ChatSubConfig extends Config {
     @SpriteSlot(size = 21, x = 1, y = 2)
     private final ConfigProperty<Boolean> muteStreamer = new ConfigProperty<>(false);
 
+    @SpriteSlot(size = 21, y = 3)
+    @SwitchSetting
+    private final ConfigProperty<Boolean> msgTabMode = new ConfigProperty<>(true);
+
 
 
     public ConfigProperty<Boolean> getTypeCorrection() {
@@ -57,4 +60,5 @@ public class ChatSubConfig extends Config {
     public ConfigProperty<Boolean> getCleanChat() {return this.cleanChat;}
     public ConfigProperty<Boolean> getHideEmptyLines() {return this.hideEmptyLines;}
     public ConfigProperty<Boolean> getMuteStreamer() {return this.muteStreamer;}
+    public ConfigProperty<Boolean> getMsgTabMode() {return msgTabMode;}
 }

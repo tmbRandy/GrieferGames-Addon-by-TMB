@@ -5,6 +5,9 @@
 ### Autokomprimierer
 Drücke bei geschlossenem Inventar die Pfeiltastet LINKS, RECHTS und OBEN gleichzeitig, um den Autokomprimierer zu starten. Es öffnet sich das Komprimieren-Menü mit dem Item, welches in deinem ersten Hotbar Slot liegt. Es gibt 2 verschiedene Listen, zwischen denen du während des Komprimierens mit den Pfeiltastet HOCH und RUNTER:
 
+### Autodekomprimierer
+Drücke bei geschlossenem Inventar die Pfeiltastet LINKS, RECHTS und UNTEN gleichzeitig, um den Autodekomprimierer zu starten. Es öffnet sich das Craftingmenü. Das Item, welches in deinem ersten Hotbar Slot liegt wird nun automatisch schrittweise dekomprimiert und auf den Boden geworfen.
+
 #### Liste #1 (Standard)
 Komprimiert die Stufen I, II, III, IV, V und fängt dann wieder von vorne an.
 
@@ -12,13 +15,13 @@ Komprimiert die Stufen I, II, III, IV, V und fängt dann wieder von vorne an.
 Komprimiert die kleinen Stufen häufiger: I, I, II, I, I, II, I , I, II, III, I, I, II, I, I, II, I , I, II, III, IV, I, I, II, I, I, II, I , I, II, III, I, I, II, I, I, II, I , I, II, III, IV, V, I, I, II, I, I, II, I , I, II, III, I, I, II, I, I, II, I , I, II, III, IV, I, I, II, I, I, II, I , I, II, III, I, I, II, I, I, II, I , I, II, III, IV, V, VI und fängt dann wieder von vorne an. Geeignet für extrem große Mengen an Item-drops.
 
 ### Autocrafter V1
-Öffne dein Craftingmenü mit /craft und lege das Rezept, welches du craften willst in die Werkbank. Drücke nun SHIFT + Enter um das Rezept zu speichern. Drücke Anschließend ENTER um eine Portion nach der anderen zu craften. Optional kannst du auch den Endlosmudus aktivieren, um alles automatisch zu craften oder du lässt die Items automatisch wegwerfen. Berücksichtigt auch komprimierte Items.
+Öffne dein Craftingmenü mit /craft und lege das Rezept, welches du craften willst in die Werkbank. Drücke nun SHIFT + Enter um das Rezept zu speichern. Drücke anschließend ENTER um eine Portion nach der anderen zu craften. Optional kannst du auch den Endlosmudus aktivieren, um alles automatisch zu craften oder du lässt die Items automatisch wegwerfen. Berücksichtigt auch komprimierte Items.
 
 ### Autocrafter V2
 Arbeitet wesentlich schneller. Lege das Item, welches gecraftet werden soll in den ersten Slot deiner Hotbar. Gib nun den Befehl /autocraft ein. Es öffnet sich das /rezepte Menü auf der Rezeptseite. Es wird nun solange der "Alles-komprimieren-Button" geklickt, bis du 9 Slots des zu craftenden Items im Inventar hast. Anschließend wechselt der Autocrafter automatisch in das Komprimieren-Menü, komprimiert die Stufen I - V einmal durch und craftet anschließend weiter. Alternativ können die gecrafteten Items auch aus dem Inventar geworfen werden. Dieser Autocrafter ist auf daraus ausgelegt, dass du dir die Items durch eine Werferanlage zudroppen lässt. Bitte übertreibe es nicht und baue mit Rücksicht auf die Serverleistung keine zu großen Werferanlagen.
 
 ### Optisch dargestellte Plotgrenzen auf CB Nature und Extreme
-Die Plotgrenzen auf den beiden Natur-CBs können mit Linien grafisch dargestellt werden. Die Darstellung lässt sich bei Bedarf über einen Hotkey ein- und ausschalten.
+Die Plotgrenzen auf den beiden Natur-CBs können mit Linien grafisch dargestellt werden. Die Darstellung lässt sich bei Bedarf über einen Hotkey ein- und ausschalten und optisch anpassen.
 
 ### Automatische Trichtereinstellung
 Wenn du eine Vielzahl an Trichtern einstellen musst, kannst du die gewünschten Einstellungen festlegen. Sobald du dann ein Trichtermenü öffnest, werden je nach Einstellung Filteritem, Einsaugradius, Stackgröße und Schlussaktion, wie die Verbindung mit einem anderen Trichter automatisch vorgenommen. Du kannst außerdem festlegen, dass du bei Rechtsklick auf einen Trichter automatisch sneakst.
@@ -66,6 +69,9 @@ Dieses Widget zeigt dir eine Liste von Spielern in deiner unmittelbaren Umgebung
 
 Validierung von Zahlungen
 Bei eingehenden Zahlungen wird überprüft, ob es eine echte Zahlung, oder Fake Money ist. Hinter der Zahlung siehst du eine entsprechende Nachricht.
+
+### /msg in Tabs
+Bei der Chatkommunikation mit Spielern wird automatisch für jeden Spieler ein eigener Chat Tab angelegt. Dies verbessert nicht nur den Überblick, sondern erleichtert auch das Versenden von Nachrichten, da das Voranstellen von /r oder /msg <Name> nicht mehr nötig ist. Solange ein Tab mit einem Spielernamen geöffnet ist, werden Nachrichten immer an die entsprechende Person gesendet. Dies verhindert auch, dass Nachrichten an die falsche Person gesendet werden, wenn man mit /r antwortet und man vor dem Absenden eine Nachricht einer anderen Person erhält. Befehle beginnend mit "/" können funktionieren auch wenn ein /msg Tab geöffnet ist. Diese werden nicht als msg versendet.
 
 ### Autokorrektur
 Die Autokorrektur verhindert die gängigsten Rechtschreibfehler. Gibst du z.B. "7msg AbgegrieftHD Hallo" ein, wird das 7msg durch ein /msg ersetzt, sodass die Nachricht ankommt und nicht im Chat erscheint.

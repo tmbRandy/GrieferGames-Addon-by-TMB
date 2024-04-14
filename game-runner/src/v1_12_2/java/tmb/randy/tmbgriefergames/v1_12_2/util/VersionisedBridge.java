@@ -17,6 +17,7 @@ import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
 import net.labymod.api.event.client.world.WorldLoadEvent;
 import net.labymod.api.models.Implements;
+import net.labymod.core.client.gui.screen.activity.activities.ingame.chat.ChatOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -27,6 +28,7 @@ import tmb.randy.tmbgriefergames.core.IBridge;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.ChatCleaner;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.CooldownNotifier;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.EmptyLinesRemover;
+import tmb.randy.tmbgriefergames.v1_12_2.util.chat.MsgTabs;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.NewsBlocker;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.PaymentValidator;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.StreamerMute;
@@ -41,6 +43,7 @@ public class VersionisedBridge implements IBridge {
     private final CooldownNotifier cooldownNotifier = new CooldownNotifier();
     private final EmptyLinesRemover emptyLinesRemover = new EmptyLinesRemover();
     private final NewsBlocker newsBlocker = new NewsBlocker();
+    private final MsgTabs msgTabs = new MsgTabs();
     private final PaymentValidator paymentValidator = new PaymentValidator();
     private final StreamerMute streamerMute = new StreamerMute();
     private final TypeCorrection typeCorrection = new TypeCorrection();
@@ -58,8 +61,11 @@ public class VersionisedBridge implements IBridge {
     private final AutoComp autoComp = new AutoComp();
     private final AutoCrafter autoCrafter = new AutoCrafter();
     private final AutoCrafterNew autoCrafterNew = new AutoCrafterNew();
-
+    private final AutoDecomp autoDecomp = new AutoDecomp();
     private GuiScreen lastGui;
+
+    private static final int commandCountdownLimit = 20;
+    private static int commandCountdown = 0;
 
     @Subscribe
     public void worldLoadEvent(WorldLoadEvent event) {
@@ -81,6 +87,7 @@ public class VersionisedBridge implements IBridge {
         playerTracer.messageReceived(event);
         autoHopper.messageReceived(event);
         accountUnity.messageReceived(event);
+        msgTabs.chatMessageReceived(event);
     }
 
     @Subscribe
@@ -88,6 +95,7 @@ public class VersionisedBridge implements IBridge {
         if(!Addon.isGG())
             return;
 
+        msgTabs.messageSend(event);
         cooldownNotifier.messageReceived(event);
         typeCorrection.messageSend(event);
         plotSwitch.messageSend(event);
@@ -140,6 +148,9 @@ public class VersionisedBridge implements IBridge {
         itemShifter.tick(event);
         plotSwitch.tick(event);
         autoCrafterNew.onTickEvent(event);
+        autoDecomp.onTickEvent(event);
+
+        commandCountdown();
     }
 
     @Subscribe
@@ -154,6 +165,7 @@ public class VersionisedBridge implements IBridge {
         autoComp.onKeyEvent(event);
         autoCrafter.onKeyEvent(event);
         autoCrafterNew.onKeyEvent(event);
+        autoDecomp.onKeyEvent(event);
     }
 
     @Subscribe
@@ -237,5 +249,28 @@ public class VersionisedBridge implements IBridge {
     @Override
     public boolean isCompActive() {
         return autoComp.isCompActive();
+    }
+
+    private static void commandCountdown() {
+        if (commandCountdown > 0) {
+            commandCountdown--;
+        }
+    }
+
+    public static boolean canSendCommand() { return commandCountdown <= 0; }
+    public static boolean sendCommand(String command) {
+        if(canSendCommand()) {
+            Minecraft.getMinecraft().player.sendChatMessage(command);
+            commandCountdown = commandCountdownLimit;
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isGUIOpen() {
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+
+        // Check if a GUI is open and if it is a chest GUI
+        return currentScreen instanceof GuiChest || currentScreen instanceof GuiInventory || currentScreen instanceof GuiCrafting;
     }
 }

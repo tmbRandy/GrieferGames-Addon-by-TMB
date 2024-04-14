@@ -50,11 +50,10 @@ public class TypeCorrection {
       put("(p h ", "/p h ");
       put("t/p h ", "/p h ");
 
-      put("version", "v3rsion");
-      put("Version", "V3rsion");
 
-        put("ordner", "0rdner");
-        put("Ordner", "0rdner");
+        put("7tpahere", "/tpahere");
+        put("(tpahere", "/tpahere");
+        put("t/tpahere", "/tpahere");
 
       put("/p t ", "/p trust ");
 

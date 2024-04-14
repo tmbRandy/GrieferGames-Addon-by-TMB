@@ -64,6 +64,21 @@ public class ClickManager {
         }
     }
 
+    public void dropItemsFromInventory(Item item, int metadata, boolean skipFirst) {
+        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
+        int size = container.inventorySlots.size();
+        for(int i = 9; i < size; i++) {
+            if(container.getSlot(i).getHasStack()) {
+                if(container.getSlot(i).getStack().getItem().equals(item) && container.getSlot(i).getStack().getMetadata() == metadata) {
+                    if(skipFirst && i == 36) {
+                        continue;
+                    }
+                    dropClick(i);
+                }
+            }
+        }
+    }
+
     public void queueClicks(QueueType queueType, LinkedList<Click> queue)
     {
         queues.get(queueType).queueClicks(queue);

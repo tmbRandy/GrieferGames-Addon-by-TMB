@@ -1,10 +1,10 @@
 package tmb.randy.tmbgriefergames.core.config;
 
 import net.labymod.api.client.gui.screen.key.Key;
-import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget.KeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.MultiKeybindWidget.MultiKeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.color.ColorPickerWidget.ColorPickerSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.annotation.ParentSwitch;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
@@ -24,6 +24,10 @@ public class NatureSubConfig extends Config {
     @SwitchSetting
     private final ConfigProperty<Boolean> borderMaxHeight = new ConfigProperty<>(false);
 
+    @SwitchSetting
+    private final ConfigProperty<Boolean> rainbow = new ConfigProperty<>(true);
+    @ColorPickerSetting
+    private final ConfigProperty<Integer> borderColor = new ConfigProperty<>(1);
 
 
     public ConfigProperty<Boolean> getShowBorders() { return this.showBorders; }
@@ -37,5 +41,6 @@ public class NatureSubConfig extends Config {
     public ConfigProperty<Boolean> getBorderMaxHeight() {
         return this.borderMaxHeight;
     }
-
+    public ConfigProperty<Boolean> getRainbow() {return rainbow;}
+    public ConfigProperty<Integer> getBorderColor() {return borderColor;}
 }

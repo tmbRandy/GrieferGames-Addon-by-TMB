@@ -56,12 +56,13 @@ public class CBTracker {
                         if(team.getTeamName().equals("server_value")) {
                             String CBString = ((TextComponent)team.getPrefix()).getText();
                             if(!CBString.equals(currentCB) && CBs.contains(CBString)) {
+
                                 ItemClearTimerListener.resetItemRemover();
                                 currentCB = CBString;
                                 Addon.getSharedInstance().getBridge().cbChanged();
 
                                 if(currentCB.equals("Lobby") && Addon.getSharedInstance().configuration().getSkipHub().get()) {
-                                    Laby.labyAPI().minecraft().chatExecutor().chat("/portal");
+                                    VersionisedBridge.sendCommand("/portal");
                                 }
                             }
                         }

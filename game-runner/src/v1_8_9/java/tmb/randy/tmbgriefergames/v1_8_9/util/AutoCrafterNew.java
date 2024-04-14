@@ -30,6 +30,7 @@ public class AutoCrafterNew {
     private int cooldown;
     private final LinkedList<Click> toSend = new LinkedList<>();
     private Item itemToCraft;
+    private int subIDtoCraft = 0;
     private STATE currentState = STATE.OPEN_RECEIPTS;
     private boolean active;
 
@@ -52,7 +53,7 @@ public class AutoCrafterNew {
                             currentState = STATE.OPEN_CRAFT_PAGE;
                         }
                     } else {
-                        Minecraft.getMinecraft().thePlayer.sendChatMessage("/rezepte");
+                        VersionisedBridge.sendCommand("/rezepte");
                     }
                 }
                 case OPEN_CRAFT_PAGE -> {
@@ -82,6 +83,7 @@ public class AutoCrafterNew {
                 case CRAFT -> {
                     if(itemToCraft == null) {
                         itemToCraft = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(25).getStack().getItem();
+                        subIDtoCraft = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(25).getStack().getMetadata();
                     }
 
                     if(getSlotCountOfItemInInventory() >= 27) {
@@ -119,7 +121,7 @@ public class AutoCrafterNew {
                                 Minecraft.getMinecraft().thePlayer.closeScreen();
                                 currentState = STATE.OPEN_RECEIPTS;
                             } else {
-                                ClickManager.getSharedInstance().dropItemsFromInventory(itemToCraft, true);
+                                ClickManager.getSharedInstance().dropItemsFromInventory(itemToCraft, subIDtoCraft, true);
                             }
                         }
                     }
@@ -259,6 +261,7 @@ public class AutoCrafterNew {
             active = true;
             if(Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(0) != null) {
                 itemToCraft = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(0).getItem();
+                subIDtoCraft = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(0).getMetadata();
             }
             currentState = STATE.OPEN_RECEIPTS;
         }
@@ -267,6 +270,7 @@ public class AutoCrafterNew {
     public void stopCrafter() {
         active = false;
         itemToCraft = null;
+        subIDtoCraft = 0;
         currentState = STATE.OPEN_RECEIPTS;
     }
 
@@ -282,7 +286,7 @@ public class AutoCrafterNew {
             if(itemStack == null)
                 continue;
 
-            if(itemStack.getItem().equals(itemToCraft)) {
+            if(itemStack.getItem().equals(itemToCraft) && itemStack.getMetadata() == subIDtoCraft) {
                 count++;
             }
         }
@@ -294,7 +298,7 @@ public class AutoCrafterNew {
         for (int i = 54; i < slotCount; i++) {
             ItemStack stack = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(i).getStack();
             if(stack != null) {
-                if(stack.getItem().equals(itemToCraft)) {
+                if(stack.getItem().equals(itemToCraft) && stack.getMetadata() == subIDtoCraft) {
                     return i;
                 }
             }
