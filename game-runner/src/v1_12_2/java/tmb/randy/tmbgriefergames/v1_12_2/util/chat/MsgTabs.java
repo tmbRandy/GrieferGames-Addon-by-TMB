@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
 
+import net.labymod.api.Laby;
 import net.labymod.api.client.chat.filter.ChatFilter;
 import net.labymod.api.configuration.labymod.chat.ChatTab;
 import net.labymod.api.configuration.labymod.chat.ChatWindow;
@@ -26,6 +27,7 @@ public class MsgTabs {
             getTabForName(event.chatMessage().getPlainText());
 
             if(!VersionisedBridge.isChatGuiOpen() && event.chatMessage().getPlainText().contains("[mir -> ")) {
+                reloadChat();
                 Minecraft.getMinecraft().displayGuiScreen(new GuiChat());
             }
         }
@@ -132,12 +134,16 @@ public class MsgTabs {
     }
 
     private String getChatPartnerName(String message) {
-        String[] split = message.split(" ");
-        if(split.length >= 5) {
-            if(split[0].equals("[mir") && split[1].equals("->")) {
-                return split[4].replace("]", "");
-            } else if(split[3].equals("->") && split[4].equals("mir]")) {
-                return split[2];
+        if(message.contains("[mir ->") || message.contains("-> mir]")) {
+            String[] split = message.split(" ");
+            if(split.length >= 5) {
+                boolean returnNext = false;
+                for (String string : split) {
+                    if(returnNext)
+                        return string.replace("[", "").replace("]", "");
+                    else if(string.equals("┃"))
+                        returnNext = true;
+                }
             }
         }
 
@@ -145,12 +151,16 @@ public class MsgTabs {
     }
 
     private String getChatPartnerRank(String message) {
-        String[] split = message.split(" ");
-        if(split.length >= 5) {
-            if(split[0].equals("[mir") && split[1].equals("->")) {
-                return split[2];
-            } else if(split[3].equals("->") && split[4].equals("mir]")) {
-                return split[0].replace("[", "");
+        if(message.contains("[mir ->") || message.contains("-> mir]")) {
+            String[] split = message.split(" ");
+            String previous = "";
+
+            for (String string : split) {
+                if(string.equals("┃")) {
+                    return previous.replace("[", "").replace("]", "");
+                } else {
+                    previous = string;
+                }
             }
         }
 
@@ -159,5 +169,9 @@ public class MsgTabs {
 
     public static void resetCurrentChatPartner() {
         currentChatPartner = null;
+    }
+
+    private void reloadChat() {
+        Laby.references().chatAccessor().reload();
     }
 }

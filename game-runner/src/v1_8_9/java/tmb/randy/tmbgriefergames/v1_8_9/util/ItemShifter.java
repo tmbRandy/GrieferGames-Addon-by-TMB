@@ -13,6 +13,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.v1_8_9.util.click.Click;
 import tmb.randy.tmbgriefergames.v1_8_9.util.click.ClickManager;
@@ -147,7 +148,7 @@ public class ItemShifter {
 
     public void onKey(KeyEvent event) {
         if ((event.key() == Key.ARROW_UP || event.key() == Key.ARROW_LEFT || event.key() == Key.ARROW_RIGHT) &&
-            Key.ARROW_UP.isPressed() && Key.ARROW_LEFT.isPressed() && Key.ARROW_RIGHT.isPressed() &&
+            Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId()) &&
             Minecraft.getMinecraft().thePlayer.openContainer != null && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
             ClickManager.getSharedInstance().dropInventory();
         }

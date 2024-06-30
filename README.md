@@ -44,6 +44,9 @@ Dieser Befehl ist das Gegenstück zu /pay * <betrag>. Wenn z.B. 100 Spieler auf 
 ### Befehl /fahndung <name>
 Du suchst einen Spieler, von dem du weißt, dass er online ist aber er hat seinen aktuellen CB nicht im /profil angegeben? Mit diesem Befehl wechselst du der Reihe nach alle CBs durch (beginnend mit den stark besuchten CBs). Sobald der Spieler auf einem CB gefunden wurde, wird die Fahndung beendet und du erhältst eine Ausgabe im Chat. Du willst eine Nachricht in deinem Status verbreiten? Kein Problem. Gib nur /fahndung ohne einen Namen ein und du wechselst alle CBs einmal durch.
 
+### Befehl /auswurf
+Mit /auswurf kannst du ein endloses Lager automatisch leeren. Die Kiste wird immer wieder geöffnet und alle Items aus dem Kisteninventar gedroppt. Dies kann nützlich sein, wenn du ein nicht komprimierbares Item aus einem endlosen Lager in ein neues endloses Lager umschichten willst. Deaktiviere hierzu die Einsaugfunktion des alten Lagers, aktiviere sie beim neuen Lager, gib den Befehl /auswurf ein und öffne das zu leerende, endlose Lager.
+
 ### Item Schutz
 Das Addon verhindert die Abnutzung wertvoller Farmitems. So ist ein Zuschlagen mit einer Bonze- oder BIRTH Klinge, das Schießen mit dem BIRTH Bogen, sowie das Platzieren eines SoS nicht möglich. Diese Funktionen wurden ausreichend getestet und funktionieren grundsätzlich. Aus Prinzip können wir jedoch keinerlei Haftung für die Funktion übernehmen. Wir werden keine Items erstatten. Diese Funktion verhindert lediglich Mausklicks, die durch den Spieler selbst ausgeführt werden. Softwareseitige Klicks, wie z.B. durch einen Autoklicker würde das Addon nicht verhindern, sodass damit z.B. ein SoS gesetzt werden könnte.
 

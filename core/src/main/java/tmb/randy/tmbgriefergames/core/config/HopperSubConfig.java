@@ -4,14 +4,15 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.Slide
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownSetting;
 import net.labymod.api.configuration.loader.Config;
-import net.labymod.api.configuration.loader.annotation.ParentSwitch;
+import net.labymod.api.configuration.loader.annotation.ShowSettingInParent;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import tmb.randy.tmbgriefergames.core.enums.HopperFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.HopperItemStackSizeEnum;
 
 public class HopperSubConfig extends Config {
 
-    @ParentSwitch
+    @ShowSettingInParent
+    @SwitchSetting
     private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(false);
     @SwitchSetting
     private final ConfigProperty<Boolean> filterItem = new ConfigProperty<>(false);

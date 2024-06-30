@@ -2,6 +2,7 @@ package tmb.randy.tmbgriefergames.v1_8_9.util;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
+import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.Priority;
 import net.labymod.api.event.Subscribe;
@@ -22,6 +23,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.IBridge;
 import tmb.randy.tmbgriefergames.v1_8_9.util.chat.ChatCleaner;
@@ -61,6 +63,7 @@ public class VersionisedBridge implements IBridge {
     private final AutoCrafter autoCrafter = new AutoCrafter();
     private final AutoDecomp autoDecomp = new AutoDecomp();
     private final AutoComp autoComp = new AutoComp();
+    private final Auswurf auswurf = new Auswurf();
 
     private GuiScreen lastGui;
 
@@ -106,7 +109,7 @@ public class VersionisedBridge implements IBridge {
         if(!Addon.isGG())
             return;
 
-        itemSaver.mouseInput(event);
+        itemSaver.mouseButtonEvent(event);
         autoHopper.mouseInput(event);
         flyTimer.onMouseButtonEvent(event);
     }
@@ -149,6 +152,7 @@ public class VersionisedBridge implements IBridge {
         plotSwitch.tick(event);
         autoCrafterNew.onTickEvent(event);
         autoDecomp.onTickEvent(event);
+        auswurf.onTickEvent(event);
 
         commandCountdown();
     }
@@ -166,6 +170,7 @@ public class VersionisedBridge implements IBridge {
         autoCrafter.onKeyEvent(event);
         autoCrafterNew.onKeyEvent(event);
         autoDecomp.onKeyEvent(event);
+        auswurf.onKeyEvent(event);
     }
 
     @Subscribe
@@ -241,6 +246,9 @@ public class VersionisedBridge implements IBridge {
         return autoComp.isCompActive();
     }
 
+    @Override
+    public void changeSlot(int slot) {Minecraft.getMinecraft().thePlayer.inventory.currentItem = slot;}
+
     private static void commandCountdown() {
         if (commandCountdown > 0) {
             commandCountdown--;
@@ -257,13 +265,6 @@ public class VersionisedBridge implements IBridge {
         return false;
     }
 
-    public static boolean isGUIOpen() {
-        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-
-        // Check if a GUI is open and if it is a chest GUI
-        return currentScreen instanceof GuiChest || currentScreen instanceof GuiInventory || currentScreen instanceof GuiCrafting;
-    }
-
     public static boolean isChatGuiOpen() {
         for (IngameOverlayActivity activity : Laby.labyAPI().ingameOverlay().getActivities()) {
             if(activity.isAcceptingInput()) {
@@ -273,4 +274,31 @@ public class VersionisedBridge implements IBridge {
 
         return false;
     }
+
+    public static boolean isGUIOpen() {
+        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
+
+        return currentScreen instanceof GuiChest || currentScreen instanceof GuiInventory || currentScreen instanceof GuiCrafting;
+    }
+
+    public static boolean allKeysPressed(Key[] keys) {
+        if(keys.length == 0)
+            return false;
+
+        if(isGUIOpen())
+            return false;
+
+        for (Key key : keys) {
+            if(!Keyboard.isKeyDown(key.getId()))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void startAuswurf() {
+        auswurf.startAuswurf();
+    }
+
+
 }

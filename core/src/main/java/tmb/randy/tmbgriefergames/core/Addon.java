@@ -7,6 +7,7 @@ import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.models.addon.annotation.AddonMain;
 import tmb.randy.tmbgriefergames.core.commands.AutocraftCommand;
 import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
+import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
@@ -36,6 +37,7 @@ public class Addon extends LabyAddon<Configuration> {
       this.registerCommand(new PayAllCommand());
       this.registerCommand(new PlayerTracerCommand());
       this.registerCommand(new AutocraftCommand());
+      this.registerCommand(new EjectCommand());
 
       gameInfoWidget = new GameInfoWidget();
 
@@ -87,18 +89,5 @@ public class Addon extends LabyAddon<Configuration> {
         }
 
         return false;
-    }
-
-    public static boolean areKeysPressed(Key[] keys) {
-        if(isChatGuiOpen() || keys.length == 0)
-            return false;
-
-        for (Key key : keys) {
-            if(!key.isPressed() || key == Key.NONE) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

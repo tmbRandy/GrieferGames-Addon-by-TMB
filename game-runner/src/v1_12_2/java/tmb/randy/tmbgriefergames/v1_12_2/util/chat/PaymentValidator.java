@@ -8,28 +8,25 @@ import tmb.randy.tmbgriefergames.core.Addon;
 
 public class PaymentValidator {
 
+    private final static String FAKEMONEY_PREFIX = "§4§l[§c§l✖ " + I18n.translate("autocraft.chat.fakeMoney") + "§4§l]";
+    final String VALID_PREFIX = "§2§l[§a§l✔ " + I18n.translate("tmbgriefergames.chat.realMoney") + "§2§l]";
+
     public void messageReceived(ChatReceiveEvent event) {
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getAntiFakeMoney().get())
+        if(!Addon.isGG() || !Addon.getSharedInstance().configuration().getChatConfig().getAntiFakeMoney().get()) {
             return;
+        }
 
         String message = event.chatMessage().getPlainText();
 
-        boolean isValid = false;
-
         if(message.contains("hat dir") && message.contains("gegeben")) {
             if(message.matches(".* hat dir \\$\\d{1,3}(?:,\\d{3})*(\\.\\d{2})? gegeben\\.")) {
-                if(!message.contains("[") && !message.contains("]")) {
-                    isValid = true;
+                if(!message.contains("[Greeting]")) {
+                    event.setMessage(event.message().append(Component.text(VALID_PREFIX)));
+                    return;
                 }
             }
 
-            if(isValid) {
-                final String VALID_PREFIX = "§2§l[§a§l✔ " + I18n.translate("tmbgriefergames.chat.realMoney") + "§2§l]";
-                event.setMessage(event.message().append(Component.text(VALID_PREFIX)));
-            } else {
-                final String FAKEMONEY_PREFIX = "§4§l[§c§l✖ " + I18n.translate("tmbgriefergames.chat.fakeMoney") + "§4§l]";
-                event.setMessage(event.message().append(Component.text(FAKEMONEY_PREFIX)));
-            }
+            event.setMessage(event.message().append(Component.text(FAKEMONEY_PREFIX)));
         }
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class NearbyWidget extends TextHudWidget<TextHudWidgetConfig> {
 
-    private final List<String> blacklist = Arrays.asList(
+    private static final List<String> blacklist = Arrays.asList(
         "Adventurer",
         "Admin-Shop",
         "Statistik",
@@ -28,7 +28,9 @@ public class NearbyWidget extends TextHudWidget<TextHudWidgetConfig> {
         "Skyblock Museum",
         "Impressum",
         "Datenschutz",
-        "Jobs"
+        "Jobs",
+        "Block des Tages",
+        "GS-Bewertungen"
     );
 
     private String name;

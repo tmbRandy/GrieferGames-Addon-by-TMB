@@ -37,7 +37,7 @@ public class NatureBordersRenderer {
     private float lineBlue = 0.0F;
 
     public void onKey(KeyEvent event) {
-        if(Addon.areKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get())) {
+        if(VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get())) {
             Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().set(!Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get());
 
             String activeString = Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get() ? I18n.getTranslation("tmbgriefergames.natureBorders.plotBordersVisible") : I18n.getTranslation("tmbgriefergames.natureBorders.plotBordersInvisible");

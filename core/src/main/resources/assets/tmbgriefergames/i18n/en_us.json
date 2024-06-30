@@ -230,6 +230,10 @@
             "recipeSaved": "Recipe saved",
             "active": "Endless mode §a§ACTIVE",
             "inactive": "Endless mode §c§INACTIVE"
+        },
+        "eject": {
+            "enabled": "Eject §a§lACTIVE. §fOpen an endless chest!",
+            "disabled": "Eject §c§lINACTIVE"
         }
     }
 }

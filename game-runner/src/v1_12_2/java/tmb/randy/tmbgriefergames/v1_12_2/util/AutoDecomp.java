@@ -27,7 +27,7 @@ public class AutoDecomp {
     public void onKeyEvent(KeyEvent event) {
         if(Key.ESCAPE.isPressed() && autoDecompActive) {
             stopDecomp();
-        } else if (Addon.areKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
+        } else if (VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
             startDecomp();
             Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoDecomp.started"));
         }

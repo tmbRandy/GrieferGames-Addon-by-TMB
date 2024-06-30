@@ -16,7 +16,7 @@ public class PayAllCommand extends Command {
     @Override
     public boolean execute(String prefix, String[] arguments) {
         if(!Addon.isGG())
-            return true;
+            return false;
 
         if(arguments.length == 2) {
             if((arguments[0].equals("**") || arguments[0].equals("/")) && Float.parseFloat(arguments[1]) >= 1F) {

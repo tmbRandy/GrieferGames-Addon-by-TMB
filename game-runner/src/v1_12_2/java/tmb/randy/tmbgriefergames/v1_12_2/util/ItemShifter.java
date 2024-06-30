@@ -1,8 +1,8 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util;
 
 import net.labymod.api.client.gui.screen.key.Key;
-import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -14,6 +14,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.Click;
@@ -142,7 +143,7 @@ public class ItemShifter {
 
     public void onKey(KeyEvent event) {
         if ((event.key() == Key.ARROW_UP || event.key() == Key.ARROW_LEFT || event.key() == Key.ARROW_RIGHT) &&
-            Key.ARROW_UP.isPressed() && Key.ARROW_LEFT.isPressed() && Key.ARROW_RIGHT.isPressed() &&
+            Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId()) &&
             Minecraft.getMinecraft().player.openContainer != null && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
             ClickManager.getSharedInstance().dropInventory();
         }

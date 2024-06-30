@@ -230,6 +230,10 @@
             "recipeSaved": "Rezept gespeichert",
             "active": "Endlosmodus §a§lAKTIV",
             "inactive": "Endlosmodus §c§lDEAKTIVIERT"
+        },
+        "eject": {
+            "enabled": "Auswurf §a§lAKTIVIERT. §fÖffne ein unendliches Lager!",
+            "disabled": "Auswurf §c§lDEAKTIVIERT"
         }
     }
 }
