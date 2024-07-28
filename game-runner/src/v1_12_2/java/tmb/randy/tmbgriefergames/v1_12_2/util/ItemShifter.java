@@ -2,7 +2,6 @@ package tmb.randy.tmbgriefergames.v1_12_2.util;
 
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
-import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -113,7 +112,7 @@ public class ItemShifter {
     }
 
     public void tick(GameTickEvent event) {
-        if((Key.ARROW_LEFT.isPressed() && Key.ARROW_UP.isPressed() && Key.ARROW_RIGHT.isPressed()) || !(Minecraft.getMinecraft().player.openContainer instanceof ContainerChest))
+        if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Minecraft.getMinecraft().player.openContainer instanceof ContainerChest))
             return;
 
         if (Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().player.openContainer != null && Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
@@ -124,7 +123,7 @@ public class ItemShifter {
                 stopShifting();
             }
 
-            if ((Key.ARROW_UP.isPressed()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
+            if (Keyboard.isKeyDown(Key.ARROW_UP.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
                 if (inv.getName().equalsIgnoreCase("§6Trichter-Einstellungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
                     shiftClick(49);
                     for (int i = 0; i < 15; i++) {
@@ -134,7 +133,7 @@ public class ItemShifter {
                     setTopToBottom(false);
                     startShifting();
                 }
-            } else if (Key.ARROW_DOWN.isPressed() && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW) && !Addon.getSharedInstance().getBridge().isCompActive()) {
+            } else if (Keyboard.isKeyDown(Key.ARROW_DOWN.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW) && !Addon.getSharedInstance().getBridge().isCompActive()) {
                 setTopToBottom(true);
                 startShifting();
             }

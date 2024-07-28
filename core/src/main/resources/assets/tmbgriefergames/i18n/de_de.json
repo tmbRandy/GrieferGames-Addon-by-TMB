@@ -43,7 +43,7 @@
             "hopperSubConfig": {
                 "name": "Trichter",
                 "description": "Einstellungen für die automatische Einstellung von Trichtern.",
-                "filterItem":{
+                "filterItem": {
                     "name": "Filteritem festlegen",
                     "description": "Legt das erste Item in deiner Hotbar als Filteritem fest."
                 },
@@ -61,6 +61,37 @@
                 },
                 "autoSneak": {
                     "name": "Automatisch sneaken bei Rechtsklick"
+                }
+            },
+            "swordsSubConfig": {
+                "name": "Automatische Klinge",
+                "description": "Lege deine Bonze oder BIRTH Klinge in den ersten, deine Pfeile in den zweiten und einen Bogen in den dritten Hotbar Slot. Nachdem du einen Schuss mit dem Bogen abgegeben hast, wird sofort die Klinge in die Hand genommen und nach einem eingestellten Cooldown wieder der Bogen ausgewählt.",
+                "HABKenabled": {
+                    "name": "Aktiviert"
+                },
+                "HABKcooldown": {
+                    "name": "Wechsel-Cooldown",
+                    "description": "Der Cooldown bis wieder auf den Bogen gewechselt wird in Millisekunden"
+                },
+                "VABKloadTime": {
+                    "name": "Spannzeit",
+                    "description": "Höhere Werte lassen den Pfeil weiter fliegen. Niedrige Werte erhöhen die Schussrate deutlich."
+                },
+                "VABKswitchCooldown": {
+                    "name": "Wechsel-Cooldown",
+                    "description": "Die Zeit, bis der nächste Schuss geladen wird"
+                },
+                "VABKhotkey": {
+                    "name": "Hotkey",
+                    "description": "Mit dieser Tastenkombination kannst du die vollautomatische Bonzeklinge ein- und ausschalten."
+                },
+                "header": {
+                    "habk": {
+                        "name": "Halbautomatische Klinge (HABK)"
+                    },
+                    "vabk": {
+                        "name": "Vollautomatische Klinge (VABK)"
+                    }
                 }
             },
             "chatConfig": {
@@ -124,116 +155,151 @@
                 "name": "Vorheriges Plot",
                 "description": "Springe zum vorherigen GS des Spielers (/p h <spieler> -1)"
             },
-            "skipHub":{
+            "skipHub": {
                 "name": "Lobby überspringen"
             },
             "autoCrafterConfig": {
                 "name": "Autocrafter & Auto(de)komprimierer",
                 "description": "Es gibt 2 verschiedene Autocrafter:\\n\\nV1 nutzt das Vanilla Crafting Menü (Werkbank). Lege dein Rezept in die Werkbank und speichere mit SHIFT + ENTER. Drücke anschließend ENTER, um das Rezept zu craften.\\n\\nV2 nutzt das /rezepte Menü. Lege das Item, welches du craften willst in deinen ersten Hotbar Slot. Gib anschließend /autocraft in den Chat ein. Das /rezepte Menü öffnet sich automatisch und craftet deine Items.",
                 "autoCraftSpeed": {
-                    "name": "[V1] Geschwindigkeit"
+                    "name": "Geschwindigkeit"
                 },
                 "autoDrop": {
-                    "name": "[V1] Automatisch droppen"
+                    "name": "Automatisch droppen"
                 },
                 "endlessMode": {
-                    "name": "[V1] Endlosmodus",
+                    "name": "Endlosmodus",
                     "description": "Kann mit ENTER Ein- oder Ausgeschaltet werden. Ist diese Option deaktiviert, muss ENTER manuell gedrückt werden, um eine Portion zu craften."
                 },
                 "onlyFullStacks": {
-                    "name": "[V1] Nur ganze Stacks nehmen"
+                    "name": "Nur ganze Stacks nehmen"
                 },
-                "finalAction": {
-                    "name": "[V2] Schlussaktion",
+                "finalActionV2": {
+                    "name": "Schlussaktion",
                     "description": "Legt fest, ob bei Nutzung des Autocrafters V2 (/autocraft) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen."
+                },
+                "finalActionV3": {
+                    "name": "Schlussaktion",
+                    "description": "Legt fest, ob bei Nutzung des Autocrafters V3 (/craftV3) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen."
                 },
                 "autoCompHotkey": {
                     "name": "Hotkey für Autokomprimierer"
                 },
                 "autoDecompHotkey": {
                     "name": "Hotkey für Autodekomprimierer"
+                },
+                "delay": {
+                    "name": "Verzögerung",
+                    "description": "Wenn es zu Problemen kommt, erhöhe die Verzögerung um den Crafter zu verlangsamen."
+                },
+                "header": {
+                    "v1": {
+                        "name": "V1 (/craft)"
+                    },
+                    "v2": {
+                        "name": "V2 (/autocraft)"
+                    },
+                    "v3": {
+                        "name": "V3 (/craftV3)"
+                    },
+                    "autocomp": {
+                        "name": "Autokomprimierer"
+                    }
                 }
             }
         },
-        "chat": {
-            "realMoney": "VERIFIZIERT",
-            "fakeMoney": "FAKE MONEY",
-            "cooldownWand": "Der Cooldown für /wand ist abgelaufen.",
-            "cooldownRand": "Der Cooldown für /rand ist abgelaufen.",
-            "cooldownBoden": "Der Cooldown für /boden ist abgelaufen.",
-            "cooldownSign": "Der Cooldown für /sign ist abgelaufen.",
-            "cooldownAnticopy": "Der Cooldown für /anticopy ist abgelaufen.",
-            "cooldownAushöhlen": "Der Cooldown für /aushöhlen ist abgelaufen."
-        },
-        "itemSaver": {
-            "item_saver_message_sword": "Dieses Schwert ist zu wertvoll, um es zu benutzen!",
-            "item_saver_message_sos": "Diesen Kürbis zu setzen wäre ein gruselig teurer Spaß!",
-            "item_saver_message_birth_bow": "Manche Bögen sind zum Schießen da. Dieser hier eher nicht!"
-        },
-        "tooltip": {
-            "compressedTooltip": "§6%s §eDKs §6%s §e Stacks §6%s §eItems",
-            "adventurerTooltip": "§6 %s%% §f| §eRest: §6 %s §eDKs §6 %s §eStacks §6 %s §eItems"
-        },
-        "payAll": {
-            "amountTooLow": "Der abgerundete Betrag pro Spieler liegt bei 0$!",
-            "response": "%s Spieler * %s$ = %s$."
-        },
-        "playerTracer": {
-            "startedHopping": "CB Hopping gestartet",
-            "lookingForPlayer": "Fahndung nach Spieler %s läuft...",
-            "tooManyArguments": "Zu viele Argumente!",
-            "foundPlayer": "Spieler gefunden!",
-            "tracingEnded": "Fahndung beendet."
-        },
-        "flyTimer": {
-            "flyPotion": "Flugtrank",
-            "flyPotionUsed": "Flugtrank benutzt.",
-            "flyPotionExpired": "Flugtrank abgelaufen."
-        },
-        "itemRemover": {
-            "itemRemover": "Item remover"
-        },
-        "nearby": {
-            "nearby": "In der Nähe"
-        },
-        "gameInfo": {
-            "cb": "CB",
-            "money": "Geld",
-            "playtime": "Spielzeit",
-            "players": "Spieler"
-        },
-        "natureBorders": {
-            "plotBordersVisible": "Plotgrenzen §a§lSICHTBAR",
-            "plotBordersInvisible": "Plotgrenzen §c§lUNSICHTBAR"
-        },
-        "hudWidget": {
-            "flytimer": {
-                "name": "Flugtrank Timer"
+            "chat": {
+                "realMoney": "VERIFIZIERT",
+                "fakeMoney": "FAKE MONEY",
+                "cooldownWand": "Der Cooldown für /wand ist abgelaufen.",
+                "cooldownRand": "Der Cooldown für /rand ist abgelaufen.",
+                "cooldownBoden": "Der Cooldown für /boden ist abgelaufen.",
+                "cooldownSign": "Der Cooldown für /sign ist abgelaufen.",
+                "cooldownAnticopy": "Der Cooldown für /anticopy ist abgelaufen.",
+                "cooldownAushöhlen": "Der Cooldown für /aushöhlen ist abgelaufen."
             },
-            "itemclear": {
-                "name": "Item remover"
+            "itemSaver": {
+                "item_saver_message_sword": "Dieses Schwert ist zu wertvoll, um es zu benutzen!",
+                "item_saver_message_sos": "Diesen Kürbis zu setzen wäre ein gruselig teurer Spaß!",
+                "item_saver_message_birth_bow": "Manche Bögen sind zum Schießen da. Dieser hier eher nicht!"
             },
-            "gameinfo": {
-                "name": "Spielinfo"
+            "tooltip": {
+                "compressedTooltip": "§6%s §eDKs §6%s §e Stacks §6%s §eItems",
+                "adventurerTooltip": "§6 %s%% §f| §eRest: §6 %s §eDKs §6 %s §eStacks §6 %s §eItems"
+            },
+            "payAll": {
+                "amountTooLow": "Der abgerundete Betrag pro Spieler liegt bei 0$!",
+                "response": "%s Spieler * %s$ = %s$."
+            },
+            "playerTracer": {
+                "startedHopping": "CB Hopping gestartet",
+                "lookingForPlayer": "Fahndung nach Spieler %s läuft...",
+                "tooManyArguments": "Zu viele Argumente!",
+                "foundPlayer": "Spieler gefunden!",
+                "tracingEnded": "Fahndung beendet."
+            },
+            "flyTimer": {
+                "flyPotion": "Flugtrank",
+                "flyPotionUsed": "Flugtrank benutzt.",
+                "flyPotionExpired": "Flugtrank abgelaufen."
+            },
+            "itemRemover": {
+                "itemRemover": "Item remover"
             },
             "nearby": {
-                "name": "In der Nähe"
+                "nearby": "In der Nähe"
+            },
+            "gameInfo": {
+                "cb": "CB",
+                "money": "Geld",
+                "playtime": "Spielzeit",
+                "players": "Spieler"
+            },
+            "natureBorders": {
+                "plotBordersVisible": "Plotgrenzen §a§lSICHTBAR",
+                "plotBordersInvisible": "Plotgrenzen §c§lUNSICHTBAR"
+            },
+            "hudWidget": {
+                "flytimer": {
+                    "name": "Flugtrank Timer"
+                },
+                "itemclear": {
+                    "name": "Item remover"
+                },
+                "gameinfo": {
+                    "name": "Spielinfo"
+                },
+                "nearby": {
+                    "name": "In der Nähe"
+                }
+            },
+            "autoComp": {
+                "list": "Liste #"
+            },
+            "autoDecomp": {
+                "started": "Dekomprimiere..."
+            },
+            "autoCrafter": {
+                "recipeSaved": "Rezept gespeichert",
+                "active": "Endlosmodus §a§lAKTIV",
+                "inactive": "Endlosmodus §c§lDEAKTIVIERT",
+                "recipeSavedV3": "Rezept gespeichert. Öffne jetzt nacheinander alle Kisten für das Quellamterial!",
+                "noItemFound": "Lege erst das zu craftende Item in deinen ersten Slot!",
+                "startedCrafting": "Alle benötigten Materialien wurden erfasst. Crafte...",
+                "setChestForMaterial": "Quellkiste für %s festgelegt.",
+                "mixedChest": "Die Kiste enthält verschiedene Items und kann daher nicht als Quellkiste verwendet werden.",
+                "V3started": "Autocrafter V3 gestartet...",
+                "V3stopped": "Autocrafter V3 beendet.",
+                "noSourceFound": "Keine Quellkiste gefunden."
+            },
+            "eject": {
+                "enabled": "Auswurf §a§lAKTIVIERT. §fÖffne ein unendliches Lager!",
+                "disabled": "Auswurf §c§lDEAKTIVIERT"
+            },
+            "autoSword": {
+                "enabled": "VABK §aAKTIVIERT. §fÖffne den Chat, um automatisch zu schießen.",
+                "disabled": "VABK §4DEAKTIVIERT"
             }
-        },
-        "autoComp": {
-            "list": "Liste #"
-        },
-        "autoDecomp": {
-            "started": "Dekomprimiere..."
-        },
-        "autoCrafter": {
-            "recipeSaved": "Rezept gespeichert",
-            "active": "Endlosmodus §a§lAKTIV",
-            "inactive": "Endlosmodus §c§lDEAKTIVIERT"
-        },
-        "eject": {
-            "enabled": "Auswurf §a§lAKTIVIERT. §fÖffne ein unendliches Lager!",
-            "disabled": "Auswurf §c§lDEAKTIVIERT"
         }
-    }
+
 }

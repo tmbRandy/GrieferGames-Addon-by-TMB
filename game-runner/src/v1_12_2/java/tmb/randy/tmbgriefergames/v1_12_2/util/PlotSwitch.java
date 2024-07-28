@@ -1,18 +1,12 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util;
 
-import net.labymod.accountmanager.AccountManager;
 import net.labymod.api.Laby;
-import net.labymod.api.LabyAPI;
-import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
-import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.labymod.core.main.LabyMod;
-import net.labymod.core.main.account.AccountManagerController;
 import tmb.randy.tmbgriefergames.core.Addon;
 
 public class PlotSwitch {

@@ -20,6 +20,7 @@ public class Configuration extends AddonConfig {
         this.hopperSubConfig = new HopperSubConfig();
         this.natureSubConfig = new NatureSubConfig();
         this.autoCrafterConfig = new AutoCrafterSubConfig();
+        this.swordsSubConfig = new SwordsSubConfig();
     }
 
     @SwitchSetting
@@ -42,12 +43,15 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = 21, x = 3, y = 1)
     private final TooltipSubConfig tooltipConfig;
 
+    @SpriteSlot(size = 21, x = 2, y = 2)
+    private final HopperSubConfig hopperSubConfig;
+
+    @SpriteSlot(size = 21, x = 1, y = 3)
+    private final SwordsSubConfig swordsSubConfig;
+
     @SwitchSetting
     @SpriteSlot(size = 21, x = 4, y = 2)
     private final ConfigProperty<Boolean> skipHub = new ConfigProperty<>(true);
-
-    @SpriteSlot(size = 21, x = 2, y = 2)
-    private final HopperSubConfig hopperSubConfig;
 
     @SettingSection("plotSwitch")
 
@@ -73,4 +77,5 @@ public class Configuration extends AddonConfig {
     public HopperSubConfig getHopperSubConfig() {return hopperSubConfig;}
     public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
     public AutoCrafterSubConfig getAutoCrafterConfig() {return autoCrafterConfig;}
+    public SwordsSubConfig getSwordsSubConfig() {return swordsSubConfig;}
 }

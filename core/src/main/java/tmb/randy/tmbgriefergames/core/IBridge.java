@@ -13,4 +13,5 @@ public interface IBridge {
     boolean isCompActive();
     void changeSlot(int slot);
     void startAuswurf();
+    void startAutocrafterV3();
 }

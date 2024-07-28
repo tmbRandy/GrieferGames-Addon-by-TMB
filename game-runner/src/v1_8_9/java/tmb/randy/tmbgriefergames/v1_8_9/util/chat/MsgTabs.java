@@ -8,7 +8,6 @@ import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig;
 import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig.Type;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
-import net.labymod.core.main.LabyMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import tmb.randy.tmbgriefergames.core.Addon;
@@ -124,7 +123,7 @@ public class MsgTabs {
 
     private ChatWindow getChatWindow() {
         if(Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get()) {
-            for (ChatWindow window : LabyMod.references().advancedChatController().getWindows()) {
+            for (ChatWindow window : Laby.references().advancedChatController().getWindows()) {
                 if (window.isMainWindow()) {
                     return window;
                 }

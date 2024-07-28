@@ -2,7 +2,6 @@ package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
 
 import java.util.Arrays;
 import java.util.List;
-import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.config.Configuration;

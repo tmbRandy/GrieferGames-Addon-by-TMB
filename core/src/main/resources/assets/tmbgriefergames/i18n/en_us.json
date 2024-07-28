@@ -63,6 +63,37 @@
                     "name": "Auto sneak when right clicking."
                 }
             },
+            "swordsSubConfig": {
+                "name": "automatic sword",
+                "description": "Put your Bonze or BIRTH sword into your first slot, your arrows into your second slot and a bow into the third slot of your hotbar. After you fired an arrow, the sword will be selected and after a set cooldown the bow will be selected again.",
+                "HABKenabled": {
+                    "name": "active"
+                },
+                "HABKcooldown": {
+                    "name": "switch cooldown",
+                    "description": "The time in ms until the bow will be selected."
+                },
+                "VABKloadTime": {
+                    "name": "loading time",
+                    "description": "the higher the value, the higher the arrow will fly. Lower values increase the shot rate by far,"
+                },
+                "VABKswitchCooldown": {
+                    "name": "switch cooldown",
+                    "description": "The time until the next arrow will be loaded."
+                },
+                "VABKhotkey": {
+                    "name": "hotkey",
+                    "description": "With this hotkey you can toggle the full automatic sword."
+                },
+                "header": {
+                    "habk": {
+                        "name": "half automatic Bonze sword (HABK)"
+                    },
+                    "vabk": {
+                        "name": "full automatic Bonze sword (VABK)"
+                    }
+                }
+            },
             "skipHub":{
                 "name": "Skip the hub"
             },
@@ -131,27 +162,49 @@
                 "name": "Auto-crafter & auto-(de)compressor",
                 "description": "There are 2 different Autocrafters:\n\nV1 uses the Vanilla Crafting menu (Workbench). Place your recipe in the Workbench and save with SHIFT + ENTER. Then press ENTER to craft the recipe.\n\nV2 uses the /recipes menu. Place the item you want to craft in your first hotbar slot. Then type /autocraft in the chat. The /recipes menu will open automatically and craft your items.",
                 "autoCraftSpeed": {
-                    "name": "[V1] Speed"
+                    "name": "Speed"
                 },
                 "autoDrop": {
-                    "name": "[V1] Auto-drop"
+                    "name": "Auto-drop"
                 },
                 "endlessMode": {
-                    "name": "[V1] Endless mode",
+                    "name": "Endless mode",
                     "description": "Can be toggled on or off with ENTER. If this option is disabled, ENTER must be manually pressed to craft a batch."
                 },
                 "onlyFullStacks": {
-                    "name": "[V1] Take only full stacks"
+                    "name": "Take only full stacks"
                 },
-                "finalAction": {
-                    "name": "[V2] Final action",
+                "finalActionV2": {
+                    "name": "Final action",
                     "description": "Specifies whether, when using Autocrafter V2 (/autocraft), the crafted items should be dropped or compressed in the inventory."
+                },
+                "finalActionV3": {
+                    "name": "Final action",
+                    "description": "Specifies whether, when using Autocrafter V3 (/craftV3), the crafted items should be dropped or compressed in the inventory."
                 },
                 "autoCompHotkey": {
                     "name": "Hotkey for auto-compressor"
                 },
                 "autoDecompHotkey": {
                     "name": "Hotkey for auto-decompressor"
+                },
+                "delay": {
+                    "name": "delay",
+                    "description": "If it is buggy increase the delay to make it slower."
+                },
+                "header": {
+                    "v1": {
+                        "name": "V1 (/craft)"
+                    },
+                    "v2": {
+                        "name": "V2 (/autocraft)"
+                    },
+                    "v3": {
+                        "name": "V3 (/craftV3)"
+                    },
+                    "autocomp": {
+                        "name": "auto compressor"
+                    }
                 }
             }
         },
@@ -229,11 +282,23 @@
         "autoCrafter": {
             "recipeSaved": "Recipe saved",
             "active": "Endless mode §a§ACTIVE",
-            "inactive": "Endless mode §c§INACTIVE"
+            "inactive": "Endless mode §c§INACTIVE",
+            "recipeSavedV3": "Recipe saved! Now open all chests for the source material.",
+            "noItemFound": "Put the item you want to craft into the first slot.",
+            "startedCrafting": "Found all needed materials. Crafting...",
+            "setChestForMaterial": "Source chest for %s has been set.",
+            "mixedChest": "This chest contains several items and can't be used as source chest.",
+            "V3started": "Auto crafter V3 started...",
+            "V3stopped": "Autocrafter V3 stopped.",
+            "noSourceFound": "No source chest found."
         },
         "eject": {
-            "enabled": "Eject §a§lACTIVE. §fOpen an endless chest!",
-            "disabled": "Eject §c§lINACTIVE"
+            "enabled": "Eject §a§lENABLED. §fOpen an endless chest!",
+            "disabled": "Eject §c§lDISABLED"
+        },
+        "autoSword": {
+            "enabled": "VABK §a§lENABLED",
+            "disabled": "VABK §4§lDISABLED"
         }
     }
 }

@@ -1,7 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_8_9.util;
 
 import net.labymod.api.Laby;
-import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;

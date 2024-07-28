@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.util;
+package tmb.randy.tmbgriefergames.v1_8_9.util.AutoCrafter;
 
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
@@ -8,7 +8,6 @@ import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -16,12 +15,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_12_2.util.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_8_9.util.VersionisedBridge;
+import tmb.randy.tmbgriefergames.v1_8_9.util.click.Click;
+import tmb.randy.tmbgriefergames.v1_8_9.util.click.ClickManager;
 import java.util.LinkedList;
-import static tmb.randy.tmbgriefergames.core.enums.AutoCrafterNewFinalAction.*;
 
-public class AutoCrafterNew {
+public class AutoCrafterV2 {
 
     private enum STATE {
         OPEN_RECEIPTS, OPEN_CRAFT_PAGE, CRAFT,
@@ -37,13 +36,13 @@ public class AutoCrafterNew {
     private boolean active;
 
     public void onTickEvent(GameTickEvent event) {
-        if(Minecraft.getMinecraft().world == null && active) {
+        if(Minecraft.getMinecraft().theWorld == null && active) {
             stopCrafter();
             return;
         }
 
         if(event.phase() == Phase.PRE && active) {
-            Container cont = Minecraft.getMinecraft().player.openContainer;
+            Container cont = Minecraft.getMinecraft().thePlayer.openContainer;
 
             switch (currentState) {
                 case OPEN_RECEIPTS -> {
@@ -63,7 +62,7 @@ public class AutoCrafterNew {
                         IInventory inv = chest.getLowerChestInventory();
                         if(inv.getName().equalsIgnoreCase("§6Minecraft-Rezepte")) {
                             if(itemToCraft != null) {
-                                if(itemToCraft.equals(Items.GOLD_INGOT)) {
+                                if(itemToCraft.equals(Items.gold_ingot)) {
                                     int slot = getSlotForGoldIngot();
                                     if(slot > 0) {
                                         click(slot);
@@ -84,17 +83,17 @@ public class AutoCrafterNew {
                 }
                 case CRAFT -> {
                     if(itemToCraft == null) {
-                        itemToCraft = Minecraft.getMinecraft().player.openContainer.getSlot(25).getStack().getItem();
-                        subIDtoCraft = Minecraft.getMinecraft().player.openContainer.getSlot(25).getStack().getMetadata();
+                        itemToCraft = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(25).getStack().getItem();
+                        subIDtoCraft = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(25).getStack().getMetadata();
                     }
 
                     if(getSlotCountOfItemInInventory() >= 27) {
-                        switch (Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalAction().get()) {
+                        switch (Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV2().get()) {
                             case COMP -> {
                                 currentState = STATE.GO_BACK;
                             }
                             case DROP -> {
-                                Minecraft.getMinecraft().player.closeScreen();
+                                Minecraft.getMinecraft().thePlayer.closeScreen();
                                 currentState = STATE.OPEN_INVENTORY;
                             }
                         }
@@ -113,14 +112,14 @@ public class AutoCrafterNew {
                     if(Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
                         currentState = STATE.DROP_ITEMS;
                     } else {
-                        Minecraft.getMinecraft().displayGuiScreen(new GuiInventory(Minecraft.getMinecraft().player));
+                        Minecraft.getMinecraft().displayGuiScreen(new GuiInventory(Minecraft.getMinecraft().thePlayer));
                     }
                 }
                 case DROP_ITEMS -> {
                     if(Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
                         if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                             if(getSlotCountOfItemInInventory() <= 1) {
-                                Minecraft.getMinecraft().player.closeScreen();
+                                Minecraft.getMinecraft().thePlayer.closeScreen();
                                 currentState = STATE.OPEN_RECEIPTS;
                             } else {
                                 ClickManager.getSharedInstance().dropItemsFromInventory(itemToCraft, subIDtoCraft, true);
@@ -155,8 +154,11 @@ public class AutoCrafterNew {
                 case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6 -> {
                     if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                         if(cont instanceof ContainerChest chest) {
-                            IInventory inv = chest.getLowerChestInventory();
-                            String headName = Minecraft.getMinecraft().player.openContainer.getSlot(49).getStack().getDisplayName();
+
+                            if(Minecraft.getMinecraft().thePlayer.openContainer.getSlot(49).getStack() == null)
+                                break;
+
+                            String headName = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(49).getStack().getDisplayName();
                             if(headName.contains("§6Komprimierungsstufe")) {
                                 int step = Integer.parseInt(headName.replace("§6Komprimierungsstufe ", ""));
 
@@ -258,9 +260,9 @@ public class AutoCrafterNew {
     public void startCrafter() {
         if(!active) {
             active = true;
-            if(!Minecraft.getMinecraft().player.inventory.getStackInSlot(0).isEmpty()) {
-                itemToCraft = Minecraft.getMinecraft().player.inventory.getStackInSlot(0).getItem();
-                subIDtoCraft = Minecraft.getMinecraft().player.inventory.getStackInSlot(0).getMetadata();
+            if(Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(0) != null) {
+                itemToCraft = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(0).getItem();
+                subIDtoCraft = Minecraft.getMinecraft().thePlayer.inventory.getStackInSlot(0).getMetadata();
             }
             currentState = STATE.OPEN_RECEIPTS;
         }
@@ -274,14 +276,17 @@ public class AutoCrafterNew {
     }
 
     private void click(int slot) {
-        this.toSend.addLast(new Click(Minecraft.getMinecraft().player.openContainer.windowId, slot, 0, ClickType.QUICK_MOVE));
+        this.toSend.addLast(new Click(Minecraft.getMinecraft().thePlayer.openContainer.windowId, slot, 0, 1));
         ClickManager.getSharedInstance().queueClicks(QueueType.MEDIUM, this.toSend);
         this.toSend.clear();
     }
 
     private int getSlotCountOfItemInInventory() {
         int count = 0;
-        for (ItemStack itemStack : Minecraft.getMinecraft().player.inventory.mainInventory) {
+        for (ItemStack itemStack : Minecraft.getMinecraft().thePlayer.inventory.mainInventory) {
+            if(itemStack == null)
+                continue;
+
             if(itemStack.getItem().equals(itemToCraft) && itemStack.getMetadata() == subIDtoCraft) {
                 count++;
             }
@@ -290,10 +295,10 @@ public class AutoCrafterNew {
     }
 
     private int getSlotForItemToCraft() {
-        int slotCount = Minecraft.getMinecraft().player.openContainer.inventorySlots.size();
+        int slotCount = Minecraft.getMinecraft().thePlayer.openContainer.inventorySlots.size();
         for (int i = 54; i < slotCount; i++) {
-            ItemStack stack = Minecraft.getMinecraft().player.openContainer.getSlot(i).getStack();
-            if(!stack.isEmpty()) {
+            ItemStack stack = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(i).getStack();
+            if(stack != null) {
                 if(stack.getItem().equals(itemToCraft) && stack.getMetadata() == subIDtoCraft) {
                     return i;
                 }
@@ -304,10 +309,10 @@ public class AutoCrafterNew {
 
     private int getSlotForGoldIngot() {
         for (int i = 10; i < 44; i++) {
-            ItemStack stack = Minecraft.getMinecraft().player.openContainer.getSlot(i).getStack();
-            if(!stack.isEmpty()) {
-                if(stack.getItem().equals(Items.GOLD_INGOT)) {
-                    if(stack.getCount() == 1) {
+            ItemStack stack = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(i).getStack();
+            if(stack != null) {
+                if(stack.getItem().equals(Items.gold_ingot)) {
+                    if(stack.stackSize == 1) {
                         return i;
                     }
                 }

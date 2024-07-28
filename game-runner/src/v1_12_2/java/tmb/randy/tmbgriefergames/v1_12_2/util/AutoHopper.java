@@ -13,7 +13,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;

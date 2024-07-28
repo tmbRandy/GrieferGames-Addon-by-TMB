@@ -1,8 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util;
 
-import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
-import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.util.Color;
 import net.labymod.api.util.I18n;

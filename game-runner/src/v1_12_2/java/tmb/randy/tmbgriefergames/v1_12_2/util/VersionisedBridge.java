@@ -26,6 +26,9 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.IBridge;
+import tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV1;
+import tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV2;
+import tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.ChatCleaner;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.CooldownNotifier;
 import tmb.randy.tmbgriefergames.v1_12_2.util.chat.EmptyLinesRemover;
@@ -60,13 +63,16 @@ public class VersionisedBridge implements IBridge {
     private final NatureBordersRenderer natureBordersRenderer = new NatureBordersRenderer();
     private final AccountUnity accountUnity = new AccountUnity();
     private final AutoComp autoComp = new AutoComp();
-    private final AutoCrafter autoCrafter = new AutoCrafter();
-    private final AutoCrafterNew autoCrafterNew = new AutoCrafterNew();
+    private final AutoCrafterV1 autoCrafterV1 = new AutoCrafterV1();
+    private final AutoCrafterV2 autoCrafterV2 = new AutoCrafterV2();
+    private final AutoCrafterV3 autoCrafterV3 = new AutoCrafterV3();
     private final AutoDecomp autoDecomp = new AutoDecomp();
     private final Auswurf auswurf = new Auswurf();
+    private final HABK habk = new HABK();
+    private final VABK vabk = new VABK();
     private GuiScreen lastGui;
 
-    private static final int commandCountdownLimit = 20;
+    private static final int commandCountdownLimit = 80;
     private static int commandCountdown = 0;
 
     @Subscribe
@@ -90,6 +96,7 @@ public class VersionisedBridge implements IBridge {
         autoHopper.messageReceived(event);
         accountUnity.messageReceived(event);
         msgTabs.chatMessageReceived(event);
+        autoCrafterV3.chatMessageReceived(event);
     }
 
     @Subscribe
@@ -111,6 +118,7 @@ public class VersionisedBridge implements IBridge {
         itemSaver.mouseButtonEvent(event);
         autoHopper.mouseInput(event);
         flyTimer.onMouseButtonEvent(event);
+        habk.onMouseButtonEvent(event);
     }
 
     @Subscribe
@@ -145,13 +153,15 @@ public class VersionisedBridge implements IBridge {
 
         ClickManager.getSharedInstance().tick(event);
         autoComp.onTickEvent(event);
-        autoCrafter.onTickEvent(event);
+        autoCrafterV1.onTickEvent(event);
         autoHopper.tick(event);
         itemShifter.tick(event);
         plotSwitch.tick(event);
-        autoCrafterNew.onTickEvent(event);
+        autoCrafterV2.onTickEvent(event);
         autoDecomp.onTickEvent(event);
         auswurf.onTickEvent(event);
+        autoCrafterV3.onTick(event);
+        vabk.onTickEvent(event);
 
         commandCountdown();
     }
@@ -166,10 +176,12 @@ public class VersionisedBridge implements IBridge {
         itemShifter.onKey(event);
         natureBordersRenderer.onKey(event);
         autoComp.onKeyEvent(event);
-        autoCrafter.onKeyEvent(event);
-        autoCrafterNew.onKeyEvent(event);
+        autoCrafterV1.onKeyEvent(event);
+        autoCrafterV2.onKeyEvent(event);
         autoDecomp.onKeyEvent(event);
         auswurf.onKeyEvent(event);
+        autoCrafterV3.onKey(event);
+        vabk.onKeyEvent(event);
     }
 
     @Subscribe
@@ -217,7 +229,7 @@ public class VersionisedBridge implements IBridge {
     public void cbChanged() {
         playerTracer.cbChanged();
         autoComp.stopComp();
-        autoCrafterNew.stopCrafter();
+        autoCrafterV2.stopCrafter();
     }
 
     @Override
@@ -237,7 +249,7 @@ public class VersionisedBridge implements IBridge {
 
     @Override
     public void startNewAutocrafter() {
-        autoCrafterNew.startCrafter();
+        autoCrafterV2.startCrafter();
     }
 
     @Override
@@ -247,6 +259,11 @@ public class VersionisedBridge implements IBridge {
 
     @Override
     public void changeSlot(int slot) {Minecraft.getMinecraft().player.inventory.currentItem = slot;}
+
+    @Override
+    public void startAutocrafterV3() {
+        autoCrafterV3.toggle();
+    }
 
     private static void commandCountdown() {
         if (commandCountdown > 0) {

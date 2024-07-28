@@ -3,12 +3,9 @@ package tmb.randy.tmbgriefergames.v1_12_2.util;
 import net.labymod.api.Laby;
 import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.component.data.DataComponentKey;
-import net.labymod.api.event.Priority;
-import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.util.I18n;
-import net.minecraft.client.Minecraft;
 import tmb.randy.tmbgriefergames.core.Addon;
 
 public class ItemSaver {
@@ -20,27 +17,28 @@ public class ItemSaver {
 
 
     public void mouseButtonEvent(MouseButtonEvent event) {
+        if(Addon.getSharedInstance().configuration().getItemProtection().get()) {
+            if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
+                if(Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack() != null) {
+                    ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack();
+                    if(stack.hasDataComponentContainer()) {
+                        if(stack.getDataComponentContainer().has(DataComponentKey.simple("ench"))) {
+                            String enchantments = stack.getDataComponentContainer().get(DataComponentKey.simple("ench")).toString();
 
-        if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
-            if(Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack() != null) {
-                ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack();
-                if(stack.hasDataComponentContainer()) {
-                    if(stack.getDataComponentContainer().has(DataComponentKey.simple("ench"))) {
-                        String enchantments = stack.getDataComponentContainer().get(DataComponentKey.simple("ench")).toString();
-
-                        if(event.action() == Action.CLICK) {
-                            if((enchantments.equals(NBTTagStringBonze) || enchantments.equals(NBTTagStringBirthSword)) && event.button().isLeft()) {
-                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_sword"));
-                                Addon.getSharedInstance().getBridge().changeSlot(findHotbarSlotforItem());
-                                event.setCancelled(true);
-                            } else if(enchantments.equals(NBTTagStringSoS) && event.button().isRight()) {
-                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_sos"));
-                                Addon.getSharedInstance().getBridge().changeSlot(findHotbarSlotforBlock());
-                                event.setCancelled(true);
-                            } else if(enchantments.equals(NBTTagStringBirthBow) && event.button().isRight()) {
-                                Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_birth_bow"));
-                                Addon.getSharedInstance().getBridge().changeSlot(findHotbarSlotforItem());
-                                event.setCancelled(true);
+                            if(event.action() == Action.CLICK) {
+                                if((enchantments.equals(NBTTagStringBonze) || enchantments.equals(NBTTagStringBirthSword)) && event.button().isLeft()) {
+                                    Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_sword"));
+                                    Addon.getSharedInstance().getBridge().changeSlot(findHotbarSlotforItem());
+                                    event.setCancelled(true);
+                                } else if(enchantments.equals(NBTTagStringSoS) && event.button().isRight()) {
+                                    Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_sos"));
+                                    Addon.getSharedInstance().getBridge().changeSlot(findHotbarSlotforBlock());
+                                    event.setCancelled(true);
+                                } else if(enchantments.equals(NBTTagStringBirthBow) && event.button().isRight()) {
+                                    Addon.getSharedInstance().displayNotification("§4§l" + I18n.translate("tmbgriefergames.itemSaver.item_saver_message_birth_bow"));
+                                    Addon.getSharedInstance().getBridge().changeSlot(findHotbarSlotforItem());
+                                    event.setCancelled(true);
+                                }
                             }
                         }
                     }

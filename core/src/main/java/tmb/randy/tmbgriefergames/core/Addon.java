@@ -3,9 +3,9 @@ package tmb.randy.tmbgriefergames.core;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
-import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.models.addon.annotation.AddonMain;
-import tmb.randy.tmbgriefergames.core.commands.AutocraftCommand;
+import tmb.randy.tmbgriefergames.core.commands.AutocraftV2Command;
+import tmb.randy.tmbgriefergames.core.commands.AutocraftV3Command;
 import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
 import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
@@ -36,7 +36,8 @@ public class Addon extends LabyAddon<Configuration> {
       this.registerCommand(new DKsCommand());
       this.registerCommand(new PayAllCommand());
       this.registerCommand(new PlayerTracerCommand());
-      this.registerCommand(new AutocraftCommand());
+      this.registerCommand(new AutocraftV2Command());
+      this.registerCommand(new AutocraftV3Command());
       this.registerCommand(new EjectCommand());
 
       gameInfoWidget = new GameInfoWidget();

@@ -2,7 +2,6 @@ package tmb.randy.tmbgriefergames.v1_12_2.util;
 
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent.Side;
-import tmb.randy.tmbgriefergames.core.Addon;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 

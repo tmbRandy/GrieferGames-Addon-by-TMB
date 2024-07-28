@@ -30,7 +30,8 @@ public class NearbyWidget extends TextHudWidget<TextHudWidgetConfig> {
         "Datenschutz",
         "Jobs",
         "Block des Tages",
-        "GS-Bewertungen"
+        "GS-Bewertungen",
+        "Auktionshaus"
     );
 
     private String name;

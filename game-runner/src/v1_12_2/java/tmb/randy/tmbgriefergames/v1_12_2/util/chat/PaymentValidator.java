@@ -1,7 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
 
 import net.labymod.api.client.component.Component;
-import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;

@@ -1,10 +1,9 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util;
 
 import net.labymod.accountmanager.storage.account.Account;
-import net.labymod.api.Laby;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
+// Unfortunately there is no LabyAPI for this so we must use the Core package :/
 import net.labymod.core.main.LabyMod;
-import tmb.randy.tmbgriefergames.core.Addon;
 
 public class AccountUnity {
 
