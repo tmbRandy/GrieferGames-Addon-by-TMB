@@ -283,7 +283,7 @@
                 "recipeSaved": "Rezept gespeichert",
                 "active": "Endlosmodus §a§lAKTIV",
                 "inactive": "Endlosmodus §c§lDEAKTIVIERT",
-                "recipeSavedV3": "Rezept gespeichert. Öffne jetzt nacheinander alle Kisten für das Quellamterial!",
+                "recipeSavedV3": "Rezept gespeichert. Öffne jetzt nacheinander alle Kisten für das Quellmaterial!",
                 "noItemFound": "Lege erst das zu craftende Item in deinen ersten Slot!",
                 "startedCrafting": "Alle benötigten Materialien wurden erfasst. Crafte...",
                 "setChestForMaterial": "Quellkiste für %s festgelegt.",
