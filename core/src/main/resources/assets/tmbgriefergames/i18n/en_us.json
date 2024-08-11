@@ -290,7 +290,8 @@
             "mixedChest": "This chest contains several items and can't be used as source chest.",
             "V3started": "Auto crafter V3 started...",
             "V3stopped": "Autocrafter V3 stopped.",
-            "noSourceFound": "No source chest found."
+            "noSourceFound": "No source chest found.",
+            "chooseVariant": "There are several possible recipes for this item. Please select one and press ENTER"
         },
         "eject": {
             "enabled": "Eject §a§lENABLED. §fOpen an endless chest!",

@@ -9,6 +9,7 @@ import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerPlayer;
@@ -20,6 +21,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
+import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.AutoCrafterNewFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
@@ -46,6 +48,8 @@ public class AutoCrafterV3 {
     private Map<String, BlockPos> sourceChests = new HashMap<>();
     private int maxRecipeCount = 0;
     private COMP_STATE compState = IDLE;
+    private boolean displayedSelectMessage;
+    private int variantPage = -1;
 
     public void onKey(KeyEvent event) {
         if(active && event.state() == State.PRESS && event.key() == Key.ESCAPE) {
@@ -79,8 +83,33 @@ public class AutoCrafterV3 {
                             if(chestInventory.getName().equals("§6Custom-Kategorien")) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 12, 0, 1));
                             } else if(chestInventory.getName().equals("§6Minecraft-Rezepte")) {
-                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 81, 0, 1));
+                                if(Minecraft.getMinecraft().thePlayer.inventory.mainInventory[0] != null &&
+                                    Minecraft.getMinecraft().thePlayer.inventory.mainInventory[0].getItem().equals(Items.gold_ingot)) {
+                                    int slot = getSlotForGoldIngot();
+                                    if(slot > 0) {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, 1));
+                                    } else {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 53, 0, 1));
+                                    }
+                                } else {
+                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 81, 0, 1));
+                                }
                             } else if(chestInventory.getName().equals("§6Vanilla Bauanleitung") && areItemStacksEqual(chestInventory.getStackInSlot(25), Minecraft.getMinecraft().thePlayer.inventory.mainInventory[0])) {
+                                ItemStack pageIndicator = chestInventory.getStackInSlot(49);
+                                if(pageIndicator != null && pageIndicator.getItem() == Items.skull) {
+                                    if(!displayedSelectMessage) {
+                                        Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.chooseVariant"));
+                                        displayedSelectMessage = true;
+                                    }
+
+                                    if(!Keyboard.isKeyDown(Key.ENTER.getId()))
+                                        return;
+                                    else {
+                                        String variantPageNumberString = pageIndicator.getDisplayName().replace("§6Variante ", "");
+                                        variantPage = Integer.parseInt(variantPageNumberString);
+                                    }
+                                }
+
                                 craftItem = chestInventory.getStackInSlot(25);
 
                                 for (int recipeSlot : RECIPE_SLOTS) {
@@ -136,15 +165,12 @@ public class AutoCrafterV3 {
 
     public void start() {
         active = true;
+        resetVars();
         Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3started"));
     }
     public void stop() {
         active = false;
-        craftItem = null;
-        recipe = new HashMap<>();
-        sourceChests = new HashMap<>();
-        maxRecipeCount = 0;
-        compState = IDLE;
+        resetVars();
         Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3stopped"));
     }
     public void toggle() {
@@ -152,6 +178,17 @@ public class AutoCrafterV3 {
             stop();
         else
             start();
+    }
+
+    private void resetVars() {
+        displayedSelectMessage = false;
+        variantPage = -1;
+        craftItem = null;
+        recipe = new HashMap<>();
+        sourceChests = new HashMap<>();
+        maxRecipeCount = 0;
+        compState = IDLE;
+        StuckProtection.reset();
     }
 
     private void craft() {
@@ -207,22 +244,51 @@ public class AutoCrafterV3 {
                             closeChest();
                         } else {
                             if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                                int slot = getFirstSlotForCraftItem();
-                                int translatedSlot = translateInventorySlotToContainerCHestSlot(slot);
-                                if(slot > -1) {
-                                    int clickSlot = translatedSlot + chest.getLowerChestInventory().getSizeInventory();
-                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, clickSlot, 0, 1));
+
+                                if(craftItem.getItem().equals(Items.gold_ingot)) {
+                                    int slot = getSlotForGoldIngot();
+                                    if(slot > 0) {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, 1));
+                                    } else {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 53, 0, 1));
+                                    }
+                                } else {
+                                    int slot = getFirstSlotForCraftItem();
+                                    int translatedSlot = translateInventorySlotToContainerCHestSlot(slot);
+                                    if(slot > -1) {
+                                        int clickSlot = translatedSlot + chest.getLowerChestInventory().getSizeInventory();
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, clickSlot, 0, 1));
+                                    }
                                 }
                             }
                         }
                         break;
                     }
                     case "§6Vanilla Bauanleitung": {
+                        if(!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM))
+                            return;
+
                         if(nextItem != null)
                             closeChest();
                         else {
-                            ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 52, 0, 1));
-                            compState = IDLE;
+                            if(variantPage != -1) {
+                                if(chestInventory.getStackInSlot(49) != null) {
+                                    ItemStack pageIndicatorSkull = chestInventory.getStackInSlot(49);
+                                    String pageIndicatorName = pageIndicatorSkull.getDisplayName().replace("§6Variante ", "");
+                                    int currentPage = Integer.parseInt(pageIndicatorName);
+                                    if(currentPage == variantPage) {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 52, 0, 1));
+                                        compState = IDLE;
+                                    } else if (currentPage < variantPage) {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 50, 0, 1));
+                                    } else {
+                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 48, 0, 1));
+                                    }
+                                }
+                            } else {
+                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 52, 0,1));
+                                compState = IDLE;
+                            }
                         }
                         break;
                     }
@@ -295,6 +361,20 @@ public class AutoCrafterV3 {
                 comp();
             }
         }
+    }
+
+    private int getSlotForGoldIngot() {
+        for (int i = 10; i < 44; i++) {
+            ItemStack stack = Minecraft.getMinecraft().thePlayer.openContainer.getSlot(i).getStack();
+            if(stack != null) {
+                if(stack.getItem().equals(Items.gold_ingot)) {
+                    if(stack.stackSize == 1) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
     }
 
     private int maxRecipeCraftCount() {

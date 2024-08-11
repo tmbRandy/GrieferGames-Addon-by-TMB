@@ -290,7 +290,8 @@
                 "mixedChest": "Die Kiste enthält verschiedene Items und kann daher nicht als Quellkiste verwendet werden.",
                 "V3started": "Autocrafter V3 gestartet...",
                 "V3stopped": "Autocrafter V3 beendet.",
-                "noSourceFound": "Keine Quellkiste gefunden."
+                "noSourceFound": "Keine Quellkiste gefunden.",
+                "chooseVariant": "Es gibt mehrere mögliche Rezepte für dieses Item. Bitte wähle eines aus und halte ENTER gedrückt, bis das Rezept gespeichert wurde."
             },
             "eject": {
                 "enabled": "Auswurf §a§lAKTIVIERT. §fÖffne ein unendliches Lager!",
