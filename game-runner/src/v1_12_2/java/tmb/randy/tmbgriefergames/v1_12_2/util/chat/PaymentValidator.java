@@ -19,7 +19,7 @@ public class PaymentValidator {
 
         if(message.contains("hat dir") && message.contains("gegeben")) {
             if(message.matches(".* hat dir \\$\\d{1,3}(?:,\\d{3})*(\\.\\d{2})? gegeben\\.")) {
-                if(!message.contains("[Greeting]")) {
+                if(!message.contains("[Greeting]") && !message.contains("»")) {
                     event.setMessage(event.message().append(Component.text(VALID_PREFIX)));
                     return;
                 }
