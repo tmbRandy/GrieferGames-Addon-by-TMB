@@ -6,6 +6,8 @@ import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import net.labymod.api.util.I18n;
@@ -22,9 +24,10 @@ public class GameInfoWidget extends TextHudWidget<TextHudWidgetConfig> {
     private static String playersValue = "";
     private static String playtimeValue = "";
 
-    public GameInfoWidget() {
+    public GameInfoWidget(HudWidgetCategory category) {
         super("gameinfo");
-        this.bindCategory(HudWidgetCategory.INGAME);
+        setIcon(Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/gameinfo.png")));
+        this.bindCategory(category);
     }
 
     public void load(TextHudWidgetConfig config) {

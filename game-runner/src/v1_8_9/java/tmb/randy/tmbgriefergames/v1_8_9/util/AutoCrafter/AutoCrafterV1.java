@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_8_9.util.Simulator;
 import tmb.randy.tmbgriefergames.v1_8_9.util.click.Click;
 import tmb.randy.tmbgriefergames.v1_8_9.util.click.ClickManager;
 import java.util.HashMap;
@@ -23,12 +22,12 @@ import java.util.LinkedList;
 public class AutoCrafterV1
 {
     private ContainerWorkbench inv;
-    private int[] stored;
-    private int[] meta;
-    private String[] names;
+    private final int[] stored;
+    private final int[] meta;
+    private final String[] names;
     private String output;
     private Item outputItem;
-    private LinkedList<Click> toSend;
+    private final LinkedList<Click> toSend;
 
     private Simulator simulator;
     private boolean endlessModeToggle = false;
@@ -73,7 +72,7 @@ public class AutoCrafterV1
         {
             return;
         }
-        ItemStack result = (this.inv.inventorySlots.get(0)).getStack();
+        ItemStack result = (this.inv.inventorySlots.getFirst()).getStack();
         for (int i = 0; i < 9; i++)
         {
             if (this.inv.inventorySlots.get(i+1) != null)
@@ -197,7 +196,7 @@ public class AutoCrafterV1
 
     private void depositHeld() {
         for (int i = 10; i < 46; i++) {
-            if (!((Slot)this.inv.inventorySlots.get(i)).getHasStack())
+            if (!(this.inv.inventorySlots.get(i)).getHasStack())
             {
                 Minecraft.getMinecraft().playerController.windowClick(this.inv.windowId, i, 0, 0, Minecraft.getMinecraft().thePlayer);
                 return;
@@ -206,7 +205,7 @@ public class AutoCrafterV1
 
 
         for (int i = 1; i < 10; i++) {
-            if (!((Slot)this.inv.inventorySlots.get(i)).getHasStack())
+            if (!(this.inv.inventorySlots.get(i)).getHasStack())
             {
                 Minecraft.getMinecraft().playerController.windowClick(this.inv.windowId,
                     i, 0, 0, Minecraft.getMinecraft().thePlayer);
@@ -229,15 +228,11 @@ public class AutoCrafterV1
 
     private boolean checkMaterials()
     {
-        HashMap<String, Integer> needed = new HashMap<String, Integer>();
+        HashMap<String, Integer> needed = new HashMap<>();
         for (int i = 0; i < 9; i++) {
-            if (this.stored[i] != 0) {
-                Integer count = needed.get(stored[i] + ":" + meta[i]);
-                if (count == null)
-                    needed.put(stored[i] + ":" + meta[i], 1);
-                else
-                    needed.put(stored[i] + ":" + meta[i], count + 1);
-            }
+            if (this.stored[i] != 0)
+                needed.merge(stored[i] + ":" + meta[i], 1, Integer::sum);
+
         }
         for (int i = 1; i <= 45; i++) {
             this.inv = (ContainerWorkbench)Minecraft.getMinecraft().thePlayer.openContainer;
@@ -257,11 +252,11 @@ public class AutoCrafterV1
                 else
                     needed.put(item, count - stack.stackSize);
             }
-            if (needed.size() == 0)
+            if (needed.isEmpty())
                 break;
         }
 
-        if (needed.size() > 0) {
+        if (!needed.isEmpty()) {
             String item = needed.keySet().iterator().next();
             ItemStack displayStack = new ItemStack(Item.getItemById(Integer.parseInt(item.split(":")[0])));
             displayStack.setItemDamage(Integer.parseInt(item.split(":")[1]));

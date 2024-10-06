@@ -1,25 +1,23 @@
 rootProject.name = "griefergames-addon-by-tmb"
 
 pluginManagement {
-    val labyGradlePluginVersion = "0.3.48"
-    plugins {
-        id("net.labymod.gradle") version (labyGradlePluginVersion)
-    }
-
+    val labyGradlePluginVersion = "0.5.4"
     buildscript {
         repositories {
             maven("https://dist.labymod.net/api/v1/maven/release/")
-            maven("https://repo.spongepowered.org/repository/maven-public")
+            maven("https://maven.neoforged.net/releases/")
+            maven("https://maven.fabricmc.net/")
+            gradlePluginPortal()
             mavenCentral()
         }
 
         dependencies {
-            classpath("net.labymod.gradle", "addon", labyGradlePluginVersion)
+            classpath("net.labymod.gradle", "common", labyGradlePluginVersion)
         }
     }
 }
 
-plugins.apply("net.labymod.gradle")
+plugins.apply("net.labymod.labygradle.settings")
 
 include(":api")
 include(":core")

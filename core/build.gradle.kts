@@ -1,34 +1,13 @@
-version = "0.1.0"
-
-plugins {
-    id("java-library")
-}
-
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-repositories {
-    mavenCentral()
-}
+import net.labymod.labygradle.common.extension.LabyModAnnotationProcessorExtension.ReferenceType
 
 dependencies {
+    labyProcessor()
     api(project(":api"))
 
-    // If you want to use external libraries, you can do that here.
-    // The dependencies that are specified here are loaded into your project but will also
-    // automatically be downloaded by labymod, but only if the repository is public.
-    // If it is private, you have to add and compile the dependency manually.
-    // You have to specify the repository, there are getters for maven central and sonatype, every
-    // other repository has to be specified with their url. Example:
-    // maven(mavenCentral(), "org.apache.httpcomponents:httpclient:4.5.13")
+    // An example of how to add an external dependency that is used by the addon.
+    // addonMavenDependency("org.jeasy:easy-random:5.0.0")
 }
 
-labyModProcessor {
-    referenceType = net.labymod.gradle.core.processor.ReferenceType.DEFAULT
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+labyModAnnotationProcessor {
+    referenceType = ReferenceType.DEFAULT
 }

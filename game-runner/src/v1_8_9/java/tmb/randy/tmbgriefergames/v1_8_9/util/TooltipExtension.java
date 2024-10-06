@@ -22,7 +22,7 @@ public class TooltipExtension {
 
             if(Addon.getSharedInstance().configuration().getTooltipConfig().getShowCompTooltip().get() && (stack.getDataComponentContainer().has(
                 DataComponentKey.simple("currentAmount")) || stack.getDataComponentContainer().has(DataComponentKey.simple("stackSize")))) {
-                // Show com item size
+
                 int currentAmount;
 
                 if(stack.getDataComponentContainer().has(DataComponentKey.simple("currentAmount"))) {
@@ -42,7 +42,7 @@ public class TooltipExtension {
 
                 event.getTooltipLines().add(Component.translatable("tmbgriefergames.tooltip.compressedTooltip", Component.text(DKs), Component.text(stacks), Component.text(items)));
             } else if(Addon.getSharedInstance().configuration().getTooltipConfig().getShowAdventurerTooltip().get() && stack.getDataComponentContainer().has(DataComponentKey.simple("adventure"))) {
-                // Show extended adventurer tool data
+
                 int amount = ((NBTTagCompound)stack.getDataComponentContainer().get(DataComponentKey.simple("adventure"))).getInteger("adventure.amount");
                 int total = ((NBTTagCompound)stack.getDataComponentContainer().get(DataComponentKey.simple("adventure"))).getInteger("adventure.req_amount");
 

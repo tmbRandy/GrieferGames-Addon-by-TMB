@@ -1,8 +1,9 @@
-package tmb.randy.tmbgriefergames.v1_12_2.util;
+package tmb.randy.tmbgriefergames.core.util;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.component.data.DataComponentKey;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.util.I18n;
@@ -15,8 +16,11 @@ public class ItemSaver {
     private static final String NBTTagStringSoS = "[{lvl:-6s,id:18s},{lvl:-6s,id:21s},{lvl:-6s,id:7s}]";
     public static final String NBTTagStringBirthBow = "[{lvl:22s,id:48s},{lvl:4s,id:49s},{lvl:1s,id:51s},{lvl:4s,id:19s},{lvl:22s,id:21s}]";
 
-
+    @Subscribe
     public void mouseButtonEvent(MouseButtonEvent event) {
+        if(!Addon.isGG())
+            return;
+
         if(Addon.getSharedInstance().configuration().getItemProtection().get()) {
             if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
                 if(Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack() != null) {
@@ -104,3 +108,4 @@ public class ItemSaver {
     }
 
 }
+

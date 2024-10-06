@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_8_9.util;
 
-import net.labymod.api.Laby;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
@@ -13,9 +12,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -177,18 +174,6 @@ public class AutoHopper {
             return (block instanceof BlockHopper);
         }
         return false;
-    }
-
-    private Item getItemForSlot72(ContainerChest chest) {
-        if(chest.getSlot(72) == null) {
-            return Item.getItemFromBlock(Block.getBlockById(166));
-        } else if(chest.getSlot(72).getStack() == null) {
-            return Item.getItemFromBlock(Block.getBlockById(166));
-        } else if(chest.getSlot(72).getStack().getItem() == null) {
-            return Item.getItemFromBlock(Block.getBlockById(166));
-        }
-
-        return chest.getSlot(72).getStack().getItem();
     }
 }
 

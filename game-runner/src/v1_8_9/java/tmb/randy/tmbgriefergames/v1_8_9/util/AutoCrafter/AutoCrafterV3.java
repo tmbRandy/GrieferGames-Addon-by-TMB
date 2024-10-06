@@ -164,14 +164,18 @@ public class AutoCrafterV3 {
     }
 
     public void start() {
-        active = true;
-        resetVars();
-        Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3started"));
+        if(!active) {
+            active = true;
+            resetVars();
+            Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3started"));
+        }
     }
     public void stop() {
-        active = false;
-        resetVars();
-        Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3stopped"));
+        if(active) {
+            active = false;
+            resetVars();
+            Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3stopped"));
+        }
     }
     public void toggle() {
         if(active)
@@ -619,9 +623,7 @@ public class AutoCrafterV3 {
                                     else if(step > 6)
                                         decreaseStep();
                                 }
-                                case FINISHED -> {
-                                    closeChest();
-                                }
+                                case FINISHED -> closeChest();
                             }
                         }
                     }

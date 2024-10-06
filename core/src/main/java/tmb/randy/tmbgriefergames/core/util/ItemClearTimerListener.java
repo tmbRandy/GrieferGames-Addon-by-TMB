@@ -1,14 +1,17 @@
-package tmb.randy.tmbgriefergames.v1_8_9.util;
+package tmb.randy.tmbgriefergames.core.util;
 
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent.Side;
+import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 public class ItemClearTimerListener {
     private static int itemRemover = -1;
     private static long endTime = -1L;
 
+    @Subscribe
     public void networkPayloadEvent(NetworkPayloadEvent event) {
         if(event.side() == Side.RECEIVE) {
             byte[] packetBuffer = event.getPayload().clone();
@@ -24,8 +27,10 @@ public class ItemClearTimerListener {
         }
     }
 
-    public static int getItemRemover() {return itemRemover;}
-    public static void resetItemRemover() {itemRemover = -1;}
+    @Subscribe
+    public void CbChanged(CbChangedEvent event) {
+        itemRemover = -1;
+    }
 
     private int extractUntilValue(String input) {
         String pattern = "until\":(\\d+)";

@@ -35,8 +35,14 @@ Die Plotgrenzen auf den beiden Natur-CBs können mit Linien grafisch dargestellt
 ### Automatische Trichtereinstellung
 Wenn du eine Vielzahl an Trichtern einstellen musst, kannst du die gewünschten Einstellungen festlegen. Sobald du dann ein Trichtermenü öffnest, werden je nach Einstellung Filteritem, Einsaugradius, Stackgröße und Schlussaktion, wie die Verbindung mit einem anderen Trichter automatisch vorgenommen. Du kannst außerdem festlegen, dass du bei Rechtsklick auf einen Trichter automatisch sneakst.
 
+### Optische Hilfe für Trichterverbindungen
+Du kannst die Verbindungen von Trichtern mit Linien darstellen lassen. Direktverbindungen erscheinen blau, Multiverbindungen rot. Bei Multiverbindungen siehst du außerdem, welches Item wohin geleitet wird. Du siehst die Verbindungslinien, nachdem du eine Verbindung gesetzt hast, oder wenn du das entsprechende Trichtermenü öffnest. Beachte, dass die Linien nicht persistent gespeichert werden. Die Verbindungsgrenze von 30 Blöcken kannst du während des Verbindungsmodus außerdem durch eine rote Sphere darstellen lassen. So weißt du immer, wie weit du verbinden kannst.
+
 ### Lobby automatisch überspringen
 Wenn du willst, kannst du direkt im Portalraum spawnen.
+
+### Auto Loot
+Deine /freekiste und /grieferboost kann das Addon automatisch für dich abholen. Es merkt sich, wenn diese abgeholt wurden und führt die Befehle automatisch aus, sobald die Cooldowns abgelaufen sind. Außerdem erinnert es dich, sobald du wieder /kopf nutzen kannst.
 
 ### Automatische Annahme von /tpa und /tpahere
 Wenn du mehrere Accounts besitzt, kannst du dir von einem Account zum anderen eine /tpa oder /tpahere senden und diese wird sofort angenommen. Du musst dafür nur in LabyMod deine Accounts registrieren, was du normalerweise ohnehin schon getan hast.
@@ -75,7 +81,10 @@ Wenn dich die große Anzeigetafel rechts stört, kannst du diese nun ausblenden.
 Wenn du wisst, kannst du dir nach Einnahme eines Flugtranks einen 15 Minuten Countdown einblenden lassen, sodass du immer siehst, wann dein Flugeffekt ausläuft.
 
 ### Widget In der Nähe
-Dieses Widget zeigt dir eine Liste von Spielern in deiner unmittelbaren Umgebung an.
+Dieses Widget zeigt dir eine Liste von Spielern in deiner unmittelbaren Umgebung an. Auch Mobs werden angezeigt und zählt diese sogar zusammen - selbst wenn sie gestackt sind.
+
+### Widget Verbindungsmodus
+Beim Verbinden von Trichtern kann der Chat durch die Benachrichtigungen zum Verbindungsmodus des Trichters schnell unübersichtlich werden. Ziehe einfach das Widget "Verbindungsmodus" in deine GUI. Dadurch werden die Trichternachrichten unterdrückt und du siehst stattdessen per Symbol, ob du im Verbindungsmodus oder im Multi-Verbindungsmodus bist.
 
 ### Chatfunktionen
 

@@ -1,7 +1,8 @@
-package tmb.randy.tmbgriefergames.v1_12_2.util;
+package tmb.randy.tmbgriefergames.core.util;
 
 import net.labymod.api.Laby;
 import net.labymod.api.event.Phase;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -22,19 +23,21 @@ public class PlotSwitch {
 
     private String lastPlot = null;
 
-
+    @Subscribe
     public void messageSend(ChatMessageSendEvent event) {
-        if(!Addon.isGG()) {
+        if(!Addon.isGG())
             return;
-        }
 
         if(event.getMessage().toLowerCase().startsWith("/p h")) {
             lastPlot = event.getMessage();
         }
     }
 
-
+    @Subscribe
     public void tick(GameTickEvent event) {
+        if(!Addon.isGG())
+            return;
+
         if(event.phase() == Phase.PRE) {
             if(COMMAND_COOLDOWN_COUNTER > 0) {
                 COMMAND_COOLDOWN_COUNTER--;
@@ -51,8 +54,11 @@ public class PlotSwitch {
         }
     }
 
-
+    @Subscribe
     public void messageReceived(ChatReceiveEvent event) {
+        if(!Addon.isGG())
+            return;
+
         String message = event.chatMessage().getPlainText();
 
         if(message.equals("[GrieferGames] Du wurdest zum Grundstück teleportiert.") && waitingForPlotSwitch) {
@@ -60,17 +66,17 @@ public class PlotSwitch {
         }
     }
 
+    @Subscribe
     public void keyDown(KeyEvent event) {
-        if(lastPlot == null || nextCommand != null || !Addon.isGG()) {
+        if(lastPlot == null || nextCommand != null || !Addon.isGG())
             return;
-        }
 
         String command = null;
 
         if(event.state() == State.PRESS) {
-            if(VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getPreviousPlot().get())) {
+            if(Addon.getSharedInstance().getBridge().allKeysPressed(Addon.getSharedInstance().configuration().getPreviousPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.PREVIOUS);
-            } else if(VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getNextPlot().get())) {
+            } else if(Addon.getSharedInstance().getBridge().allKeysPressed(Addon.getSharedInstance().configuration().getNextPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.NEXT);
             }
 

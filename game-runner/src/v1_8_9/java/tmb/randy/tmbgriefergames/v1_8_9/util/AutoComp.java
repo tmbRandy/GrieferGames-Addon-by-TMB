@@ -6,10 +6,6 @@ import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -53,7 +49,7 @@ public class AutoComp {
                     }
                 }
             } else {
-                if (VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCompHotkey().get())) {
+                if (VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCompHotkey().get())) {
                     startComp();
                 }
             }
@@ -233,14 +229,6 @@ public class AutoComp {
         this.toSend.addLast(new Click(Minecraft.getMinecraft().thePlayer.openContainer.windowId, slot, 0, 1));
         ClickManager.getSharedInstance().queueClicks(QueueType.MEDIUM, this.toSend);
         this.toSend.clear();
-    }
-
-    private boolean isGUIOpen() {
-        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-
-        // Check if a GUI is open and if it is a chest GUI
-        return currentScreen instanceof GuiChest || currentScreen instanceof GuiInventory
-            || currentScreen instanceof GuiCrafting;
     }
 
     public boolean isCompActive() {

@@ -14,6 +14,8 @@ import net.labymod.api.configuration.settings.annotation.SettingSection;
 @SpriteTexture("settings")
 public class Configuration extends AddonConfig {
 
+    public static final int SPRITE_SIZE = 21;
+
     public Configuration() {
         this.chatConfig = new ChatSubConfig();
         this.tooltipConfig = new TooltipSubConfig();
@@ -24,34 +26,38 @@ public class Configuration extends AddonConfig {
     }
 
     @SwitchSetting
-    @SpriteSlot(size = 21)
+    @SpriteSlot(size = SPRITE_SIZE)
     private final ConfigProperty<Boolean> enabled = new ConfigProperty<>(true);
 
     @SwitchSetting
-    @SpriteSlot(size = 21, x = 2, y = 1)
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 1)
     private final ConfigProperty<Boolean> itemProtection = new ConfigProperty<>(true);
 
-    @SpriteSlot(size = 21, x = 5, y = 2)
+    @SpriteSlot(size = SPRITE_SIZE, x = 5, y = 2)
     private final AutoCrafterSubConfig autoCrafterConfig;
 
-    @SpriteSlot(size = 21, x = 1)
+    @SpriteSlot(size = SPRITE_SIZE, x = 1)
     private final ChatSubConfig chatConfig;
 
-    @SpriteSlot(size = 21, x = 3, y = 2)
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
     private final NatureSubConfig natureSubConfig;
 
-    @SpriteSlot(size = 21, x = 3, y = 1)
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 1)
     private final TooltipSubConfig tooltipConfig;
 
-    @SpriteSlot(size = 21, x = 2, y = 2)
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
     private final HopperSubConfig hopperSubConfig;
 
-    @SpriteSlot(size = 21, x = 1, y = 3)
+    @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 3)
     private final SwordsSubConfig swordsSubConfig;
 
     @SwitchSetting
-    @SpriteSlot(size = 21, x = 4, y = 2)
+    @SpriteSlot(size = SPRITE_SIZE, x = 4, y = 2)
     private final ConfigProperty<Boolean> skipHub = new ConfigProperty<>(true);
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 3)
+    @SwitchSetting
+    private final ConfigProperty<Boolean> autoLoot = new ConfigProperty<>(true);
 
     @SettingSection("plotSwitch")
 
@@ -78,4 +84,5 @@ public class Configuration extends AddonConfig {
     public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
     public AutoCrafterSubConfig getAutoCrafterConfig() {return autoCrafterConfig;}
     public SwordsSubConfig getSwordsSubConfig() {return swordsSubConfig;}
+    public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
 }

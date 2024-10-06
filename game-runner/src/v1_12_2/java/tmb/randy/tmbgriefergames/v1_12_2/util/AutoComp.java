@@ -54,7 +54,7 @@ public class AutoComp {
                     }
                 }
             } else {
-                if (VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCompHotkey().get())) {
+                if (VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCompHotkey().get())) {
                     startComp();
                 }
             }

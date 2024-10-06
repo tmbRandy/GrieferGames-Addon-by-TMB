@@ -61,6 +61,24 @@
                 },
                 "autoSneak": {
                     "name": "Auto sneak when right clicking."
+                },
+                "showRadius": {
+                    "name": "Show connection range"
+                },
+                "showLines": {
+                    "name": "Show connection lines"
+                },
+                "header": {
+                    "auto": {
+                        "name": "Automatic settings"
+                    },
+                    "visual": {
+                        "name": "Visual settings"
+                    }
+                },
+                "resetLines": {
+                    "name": "Linien",
+                    "text": "zurücksetzen"
                 }
             },
             "swordsSubConfig": {
@@ -206,6 +224,10 @@
                         "name": "auto compressor"
                     }
                 }
+            },
+            "autoLoot": {
+                "name": "Auto Loot",
+                "description": "Automatically gets your /freekiste and /grieferboost."
             }
         },
         "chat": {
@@ -270,7 +292,10 @@
                 "name": "Game info"
             },
             "nearby": {
-                "name": "Nearby"
+                "name": "Nearby",
+                "showMobs": {
+                    "name": "Show mobs"
+                }
             }
         },
         "autoComp": {
@@ -300,6 +325,56 @@
         "autoSword": {
             "enabled": "VABK §a§lENABLED",
             "disabled": "VABK §4§lDISABLED"
+        },
+        "mobs": {
+            "chicken": "Chicken",
+            "cow": "Cow",
+            "pig": "Pig",
+            "sheep": "Sheep",
+            "rabbit": "Rabbit",
+            "bat": "Bat",
+            "squid": "Squid",
+            "mooshroom": "Mooshroom Cow",
+            "villager": "Villager",
+            "horse": "Horse",
+            "donkey": "Donkey",
+            "mule": "Mule",
+            "ocelot": "Ocelot",
+            "wolf": "Wolf",
+            "spider": "Spider",
+            "cave_spider": "Cave Spider",
+            "enderman": "Enderman",
+            "pigman": "Pigman",
+            "zombie": "Zombie",
+            "skeleton": "Skeleton",
+            "creeper": "Creeper",
+            "spider_jockey": "Spider Jockey",
+            "slime": "Slime",
+            "ghast": "Ghast",
+            "zombie_villager": "Zombie Villager",
+            "blaze": "Blaze",
+            "witch": "Witch",
+            "endermite": "Endermite",
+            "silverfish": "Silverfish",
+            "guardian": "Guardian",
+            "elder_guardian": "Elder Guardian",
+            "wither_skeleton": "Wither Skeleton",
+            "wither": "Wither",
+            "ender_dragon": "Ender Dragon",
+            "magma_cube": "Magma Cube",
+            "iron_golem": "Iron Golem",
+            "snow_golem": "Snow Golem"
+        },
+        "autoLoot": {
+            "skullAvailable": "/kopf is available!"
+        }
+    },
+    "labymod": {
+        "hudWidgetCategory": {
+            "tmbgriefergames": {
+                "name": "GrieferGames Addon",
+                "description": "by §d§l§oT§b§l§oM§d§l§oB"
+            }
         }
     }
 }

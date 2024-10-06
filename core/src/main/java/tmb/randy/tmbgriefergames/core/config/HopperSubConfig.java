@@ -1,15 +1,21 @@
 package tmb.randy.tmbgriefergames.core.config;
 
+import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.annotation.ShowSettingInParent;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
+import net.labymod.api.configuration.settings.annotation.SettingSection;
+import net.labymod.api.util.MethodOrder;
+import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.HopperFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.HopperItemStackSizeEnum;
 
 public class HopperSubConfig extends Config {
+
+    @SettingSection("auto")
 
     @ShowSettingInParent
     @SwitchSetting
@@ -25,6 +31,16 @@ public class HopperSubConfig extends Config {
     @SwitchSetting
     private final ConfigProperty<Boolean> autoSneak = new ConfigProperty<>(false);
 
+    @SettingSection("visual")
+
+    @SwitchSetting
+    private final ConfigProperty<Boolean> showLines = new ConfigProperty<>(true);
+    @SwitchSetting
+    private final ConfigProperty<Boolean> showRadius = new ConfigProperty<>(true);
+    @MethodOrder(after = "showRadius")
+    @ButtonSetting
+    public void resetLines() {Addon.getSharedInstance().getBridge().resetLines();}
+
     public ConfigProperty<Boolean> getEnabled() {
         return this.enabled;
     }
@@ -39,4 +55,6 @@ public class HopperSubConfig extends Config {
     public ConfigProperty<Boolean> getAutoSneak() {
         return this.autoSneak;
     }
+    public ConfigProperty<Boolean> getShowLines() {return showLines;}
+    public ConfigProperty<Boolean> getShowRadius() {return showRadius;}
 }

@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import tmb.randy.tmbgriefergames.core.Addon;
 
-import static tmb.randy.tmbgriefergames.v1_12_2.util.ItemSaver.NBTTagStringBirthBow;
-import static tmb.randy.tmbgriefergames.v1_12_2.util.ItemSaver.findHotbarSlotforItem;
+import static tmb.randy.tmbgriefergames.core.util.ItemSaver.NBTTagStringBirthBow;
+import static tmb.randy.tmbgriefergames.core.util.ItemSaver.findHotbarSlotforItem;
 
 public class HABK {
 

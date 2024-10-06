@@ -43,7 +43,7 @@ public class AutoCrafterV3 {
 
     private static final int[] RECIPE_SLOTS = {10, 11, 12, 19, 20, 21, 28, 29, 30};
 
-    private boolean active;
+    private boolean active = false;
     private ItemStack craftItem;
     private Map<String, Integer> recipe = new HashMap<>();
     private Map<String, BlockPos> sourceChests = new HashMap<>();
@@ -164,14 +164,18 @@ public class AutoCrafterV3 {
     }
 
     public void start() {
-        active = true;
-        resetVars();
-        Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3started"));
+        if(!active) {
+            active = true;
+            resetVars();
+            Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3started"));
+        }
     }
     public void stop() {
-        active = false;
-        resetVars();
-        Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3stopped"));
+        if(active) {
+            active = false;
+            resetVars();
+            Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3stopped"));
+        }
     }
     public void toggle() {
         if(active)
@@ -614,9 +618,7 @@ public class AutoCrafterV3 {
                                     else if(step > 6)
                                         decreaseStep();
                                 }
-                                case FINISHED -> {
-                                    closeChest();
-                                }
+                                case FINISHED -> closeChest();
                             }
                         }
                     }

@@ -19,11 +19,9 @@ import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.CBtracker;
 
 public class NatureBordersRenderer {
-
-    private final int offsetX = 1;
-    private final int offsetZ = 0;
 
     public static double getDistanceSq(double x1, double z1, double x2, double z2)
     {
@@ -37,7 +35,7 @@ public class NatureBordersRenderer {
     private float lineBlue = 0.0F;
 
     public void onKey(KeyEvent event) {
-        if(VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get())) {
+        if(VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get()) && !VersionisedBridge.getSharedInstance().isChatGuiOpen() && CBtracker.isNatureWorldCB()) {
             Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().set(!Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get());
 
             String activeString = Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get() ? I18n.getTranslation("tmbgriefergames.natureBorders.plotBordersVisible") : I18n.getTranslation("tmbgriefergames.natureBorders.plotBordersInvisible");
@@ -134,7 +132,7 @@ public class NatureBordersRenderer {
     }
 
     public void onRender(RenderWorldEvent event) {
-        if (Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get() && (CBTracker.currentCB.equals("Nature") || CBTracker.currentCB.equals("Extreme")))
+        if (Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get() && CBtracker.isNatureWorldCB())
         {
             EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
             WorldClient world = Minecraft.getMinecraft().theWorld;
@@ -194,7 +192,7 @@ public class NatureBordersRenderer {
 
                         int additionalOffsetZ = (pos.getZ() < 0 ? -1 : 0);
 
-                        if ((pos.getZ() + offsetZ + additionalOffsetZ) % 42 == 0)
+                        if ((pos.getZ() + additionalOffsetZ) % 42 == 0)
                         {
                             if (!Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderMaxHeight().get())
                             {
@@ -210,7 +208,7 @@ public class NatureBordersRenderer {
 
                         int additionalOffsetX = (pos.getX() < 0 ? -1 : 0);
 
-                        if ((pos.getX() + offsetX + additionalOffsetX) % 42 == 0)
+                        if ((pos.getX() + 1 + additionalOffsetX) % 42 == 0)
                         {
                             if (!Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderMaxHeight().get())
                             {

@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_12_2.util.Simulator;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
 import java.util.HashMap;
@@ -24,12 +23,12 @@ import java.util.LinkedList;
 public class AutoCrafterV1
 {
     private ContainerWorkbench inv;
-    private int[] stored;
-    private int[] meta;
-    private String[] names;
+    private final int[] stored;
+    private final int[] meta;
+    private final String[] names;
     private String output;
     private int outputID;
-    private LinkedList<Click> toSend;
+    private final LinkedList<Click> toSend;
 
     private Simulator simulator;
     private boolean endlessModeToggle = false;
@@ -61,20 +60,19 @@ public class AutoCrafterV1
     }
 
     public void onTickEvent(GameTickEvent event) {
-        if(endlessModeToggle && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed())) {
+        if(endlessModeToggle && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed()))
             craft();
-        }
     }
 
     public void storeCrafting()
     {
         this.inv = (ContainerWorkbench)Minecraft.getMinecraft().player.openContainer;
 
-        if (!(this.inv.inventorySlots.get(0)).getHasStack())
+        if (!(this.inv.inventorySlots.getFirst()).getHasStack())
         {
             return;
         }
-        ItemStack result = (this.inv.inventorySlots.get(0)).getStack();
+        ItemStack result = (this.inv.inventorySlots.getFirst()).getStack();
         for (int i = 0; i < 9; i++)
         {
             if (this.inv.inventorySlots.get(i+1) != null)
@@ -145,7 +143,7 @@ public class AutoCrafterV1
                 ItemStack curr = this.simulator.stackAt(j);
                 String name = curr.getDisplayName();
                 boolean isFullStack = curr.getCount() == curr.getMaxStackSize() || !Addon.getSharedInstance().configuration().getAutoCrafterConfig().getOnlyFullStacks().get();
-                if (curr != null && Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && name.equals(names[i]) && isFullStack) {
+                if (Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && name.equals(names[i]) && isFullStack) {
                     this.click(j);
                     this.click(i+1);
                     found = true;

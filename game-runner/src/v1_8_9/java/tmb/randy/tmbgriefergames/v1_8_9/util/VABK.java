@@ -33,7 +33,7 @@ public class VABK {
     }
 
     public void onKeyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKhotkey().get()) && !VersionisedBridge.isChatGuiOpen()) {
+        if(event.state() == State.PRESS && VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKhotkey().get()) && !VersionisedBridge.getSharedInstance().isChatGuiOpen()) {
             toggleActive();
         }
     }

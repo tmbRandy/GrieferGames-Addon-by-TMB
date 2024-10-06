@@ -5,6 +5,8 @@ import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
 
@@ -13,10 +15,11 @@ public class FlyTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
     private String name;
     private TextLine line;
 
-    public FlyTimerWidget() {
+    public FlyTimerWidget(HudWidgetCategory category) {
         super("flytimer");
         this.name = Laby.labyAPI().getName();
-        this.bindCategory(HudWidgetCategory.INGAME);
+        setIcon(Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/fly.png")));
+        this.bindCategory(category);
     }
 
     @Override

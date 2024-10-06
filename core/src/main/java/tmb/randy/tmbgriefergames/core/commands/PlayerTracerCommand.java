@@ -17,15 +17,13 @@ public class PlayerTracerCommand extends Command {
         switch (arguments.length) {
             case 0 -> {
                 Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.startedHopping"));
-                Addon.getSharedInstance().getBridge().startPlayerTracer(null);
+                Addon.getSharedInstance().getPlayerTracer().startTracer(null);
             }
             case 1 -> {
                 Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.lookingForPlayer", arguments[0]));
-                Addon.getSharedInstance().getBridge().startPlayerTracer(arguments[0]);
+                Addon.getSharedInstance().getPlayerTracer().startTracer(arguments[0]);
             }
-            default -> {
-                Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.tooManyArguments"));
-            }
+            default -> Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.tooManyArguments"));
         }
 
         return true;

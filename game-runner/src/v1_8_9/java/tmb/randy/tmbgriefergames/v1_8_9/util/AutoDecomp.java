@@ -26,7 +26,7 @@ public class AutoDecomp {
     public void onKeyEvent(KeyEvent event) {
         if(Key.ESCAPE.isPressed() && autoDecompActive) {
             stopDecomp();
-        } else if (VersionisedBridge.allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
+        } else if (VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
             startDecomp();
             Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoDecomp.started"));
         }
@@ -230,23 +230,15 @@ public class AutoDecomp {
     }
 
     private String getRomanianNumberForInt(int number) {
-        switch (number) {
-            case 1:
-                return "I";
-            case 2:
-                return "II";
-            case 3:
-                return "III";
-            case 4:
-                return "IV";
-            case 5:
-                return "V";
-            case 6:
-                return "VI";
-            case 7:
-                return "VII";
-            default:
-                return "";
-        }
+        return switch (number) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            default -> "";
+        };
     }
 }

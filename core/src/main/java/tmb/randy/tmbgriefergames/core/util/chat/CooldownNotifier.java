@@ -1,9 +1,10 @@
-package tmb.randy.tmbgriefergames.v1_8_9.util.chat;
+package tmb.randy.tmbgriefergames.core.util.chat;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
@@ -19,7 +20,11 @@ public class CooldownNotifier {
         new Cooldown("/anticopy", 5000, "tmbgriefergames.chat.cooldownAnticopy")
     );
 
+    @Subscribe
     public void messageReceived(ChatMessageSendEvent event) {
+        if(!Addon.isGG())
+            return;
+
         if(!Addon.getSharedInstance().configuration().getChatConfig().getCooldownNotifier().get())
             return;
 

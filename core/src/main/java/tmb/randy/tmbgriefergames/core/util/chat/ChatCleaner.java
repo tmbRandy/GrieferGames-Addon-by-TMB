@@ -1,10 +1,10 @@
-package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
+package tmb.randy.tmbgriefergames.core.util.chat;
 
 import java.util.Arrays;
 import java.util.List;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.config.Configuration;
 
 public class ChatCleaner {
 
@@ -27,23 +27,24 @@ public class ChatCleaner {
         "Versuche in den Portalraum zu verbinden."
     );
 
+    @Subscribe
     public void messageReceived(ChatReceiveEvent event) {
-        final Configuration configuration = Addon.getSharedInstance().configuration();
         String message = event.chatMessage().getPlainText();
+
+        // "No friendhip requests" messages is sent before the GrieferGames Server Name is set. So it has to be handles before checking for GG.
+        if(message.equals("[Freunde] Du hast aktuell keine Freundschaftsanfragen.") && Addon.getSharedInstance().configuration().getChatConfig().getCleanChat().get()) {
+            event.setCancelled(true);
+        }
+
+        if(!Addon.isGG())
+            return;
 
         if(message.equals("[Rezepte] Du hast nicht genug Material, um dieses Rezept herzustellen.")) {
             event.setCancelled(true);
         }
 
-
-        if(!configuration.getChatConfig().getCleanChat().get())
+        if(!Addon.getSharedInstance().configuration().getChatConfig().getCleanChat().get())
             return;
-
-
-        // "No friendhip requests" messages is sent before the GrieferGames Server Name is set. So it has to be handles before checking for GG.
-        if(message.equals("[Freunde] Du hast aktuell keine Freundschaftsanfragen.")) {
-            event.setCancelled(true);
-        }
 
 
         for (String str : cleanupMessages) {

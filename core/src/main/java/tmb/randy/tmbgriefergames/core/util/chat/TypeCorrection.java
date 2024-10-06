@@ -1,7 +1,8 @@
-package tmb.randy.tmbgriefergames.v1_12_2.util.chat;
+package tmb.randy.tmbgriefergames.core.util.chat;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 
@@ -49,6 +50,9 @@ public class TypeCorrection {
       put("(p h ", "/p h ");
       put("t/p h ", "/p h ");
 
+        put("7tpaccept", "/tpaccept");
+        put("(tpaccept", "/tpaccept");
+        put("t/tpaccept", "/tpaccept");
 
         put("7tpahere", "/tpahere");
         put("(tpahere", "/tpahere");
@@ -84,8 +88,9 @@ public class TypeCorrection {
     }
   };
 
+    @Subscribe
   public void messageSend(ChatMessageSendEvent event) {
-    if((!Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get() && !Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get()))
+    if(!Addon.isGG() || (!Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get() && !Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get()))
       return;
 
     String message = event.getMessage();

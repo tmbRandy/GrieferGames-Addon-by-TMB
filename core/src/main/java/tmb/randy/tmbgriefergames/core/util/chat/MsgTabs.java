@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_8_9.util.chat;
+package tmb.randy.tmbgriefergames.core.util.chat;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.chat.filter.ChatFilter;
@@ -6,34 +6,34 @@ import net.labymod.api.configuration.labymod.chat.ChatTab;
 import net.labymod.api.configuration.labymod.chat.ChatWindow;
 import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig;
 import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig.Type;
+import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.v1_8_9.util.VersionisedBridge;
 
 public class MsgTabs {
 
     private static String currentChatPartner = null;
 
+    @Subscribe
     public void chatMessageReceived(ChatReceiveEvent event) {
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get())
+        if(!Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get() || !Addon.isGG())
             return;
 
         currentChatPartner = getChatPartnerName(event.chatMessage().getPlainText());
         if(currentChatPartner != null) {
             getTabForName(event.chatMessage().getPlainText());
 
-            if(!VersionisedBridge.isChatGuiOpen() && event.chatMessage().getPlainText().contains("[mir -> ")) {
+            if(!Addon.getSharedInstance().getBridge().isChatGuiOpen() && event.chatMessage().getPlainText().contains("[mir -> ")) {
                 reloadChat();
-                Minecraft.getMinecraft().displayGuiScreen(new GuiChat());
+                Addon.getSharedInstance().getBridge().openChat();
             }
         }
     }
 
+    @Subscribe
     public void messageSend(ChatMessageSendEvent event) {
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get() || event.getMessage().startsWith("/msg") || event.getMessage().startsWith("7msg") || event.getMessage().startsWith("(msg"))
+        if(!Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get() || event.getMessage().startsWith("/msg") || event.getMessage().startsWith("7msg") || event.getMessage().startsWith("(msg") || !Addon.isGG())
             return;
 
         ChatWindow mainWindow = getChatWindow();
