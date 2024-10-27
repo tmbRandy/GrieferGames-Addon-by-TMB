@@ -1,7 +1,10 @@
 package tmb.randy.tmbgriefergames.v1_8_9.util;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
-import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.nbt.NBTTagType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -19,13 +22,7 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.CBtracker;
 import tmb.randy.tmbgriefergames.core.enums.CBs;
 import tmb.randy.tmbgriefergames.core.enums.HopperState;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class HopperConnections {
 
@@ -177,35 +174,32 @@ public class HopperConnections {
         }
     }
 
-    public void cbChanged(CbChangedEvent event) {
+    public void cbChanged() {
         currentConnectingHopper = null;
     }
 
-    public void renderWorld(RenderWorldEvent event) {
-        Iterator<Entry<String, HopperConnection>> iterator = conntections.entrySet().iterator();
+    public void renderWorld() {
 
-        while (iterator.hasNext()) {
-            Map.Entry<String, HopperConnection> entry = iterator.next();
+        for (Entry<String, HopperConnection> entry : conntections.entrySet()) {
             HopperConnection conntection = entry.getValue();
 
-            double distance = conntection.pos1.distanceSq(Minecraft.getMinecraft().thePlayer.posX, Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
+            double distance = conntection.pos1.distanceSq(Minecraft.getMinecraft().thePlayer.posX,
+                Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
             double actualDistance = Math.sqrt(distance);
 
-            if(actualDistance > 30)
+            if (actualDistance > 30)
                 continue;
 
             if (conntection.cb == CBtracker.getCurrentCB()) {
-                if (Minecraft.getMinecraft().theWorld.getBlockState(conntection.pos1()).getBlock() == Blocks.hopper) {
+                if (Minecraft.getMinecraft().theWorld.getBlockState(conntection.pos1()).getBlock()
+                    == Blocks.hopper) {
                     drawLineBetween(conntection);
-                } else {
-                    iterator.remove();
                 }
             }
         }
 
-
         if(currentConnectingHopper != null) {
-            drawSphere(currentConnectingHopper, 30.0d, event.getPartialTicks());
+            drawSphere(currentConnectingHopper);
         }
     }
 
@@ -292,7 +286,7 @@ public class HopperConnections {
         GlStateManager.popMatrix();
     }
 
-    private void drawSphere(BlockPos center, double radius, float partialTicks) {
+    private void drawSphere(BlockPos center) {
         if(!Addon.getSharedInstance().configuration().getHopperSubConfig().getShowRadius().get())
             return;
 
@@ -319,13 +313,13 @@ public class HopperConnections {
 
         for (double theta = 0; theta < Math.PI * 2; theta += step) {
             for (double phi = 0; phi < Math.PI; phi += step) {
-                double x1 = radius * Math.sin(phi) * Math.cos(theta);
-                double z1 = radius * Math.sin(phi) * Math.sin(theta);
-                double y1 = radius * Math.cos(phi);
+                double x1 = 30.0 * Math.sin(phi) * Math.cos(theta);
+                double z1 = 30.0 * Math.sin(phi) * Math.sin(theta);
+                double y1 = 30.0 * Math.cos(phi);
 
-                double x2 = radius * Math.sin(phi + step) * Math.cos(theta);
-                double z2 = radius * Math.sin(phi + step) * Math.sin(theta);
-                double y2 = radius * Math.cos(phi + step);
+                double x2 = 30.0 * Math.sin(phi + step) * Math.cos(theta);
+                double z2 = 30.0 * Math.sin(phi + step) * Math.sin(theta);
+                double y2 = 30.0 * Math.cos(phi + step);
 
                 GL11.glVertex3d(x1, y1, z1);
                 GL11.glVertex3d(x2, y2, z2);
@@ -334,13 +328,13 @@ public class HopperConnections {
 
         for (double theta = 0; theta < Math.PI * 2; theta += step) {
             for (double phi = 0; phi < Math.PI; phi += step) {
-                double y1 = radius * Math.sin(phi) * Math.cos(theta);
-                double z1 = radius * Math.sin(phi) * Math.sin(theta);
-                double x1 = radius * Math.cos(phi);
+                double y1 = 30.0 * Math.sin(phi) * Math.cos(theta);
+                double z1 = 30.0 * Math.sin(phi) * Math.sin(theta);
+                double x1 = 30.0 * Math.cos(phi);
 
-                double y2 = radius * Math.sin(phi + step) * Math.cos(theta);
-                double z2 = radius * Math.sin(phi + step) * Math.sin(theta);
-                double x2 = radius * Math.cos(phi + step);
+                double y2 = 30.0 * Math.sin(phi + step) * Math.cos(theta);
+                double z2 = 30.0 * Math.sin(phi + step) * Math.sin(theta);
+                double x2 = 30.0 * Math.cos(phi + step);
 
                 GL11.glVertex3d(x1, y1, z1);
                 GL11.glVertex3d(x2, y2, z2);

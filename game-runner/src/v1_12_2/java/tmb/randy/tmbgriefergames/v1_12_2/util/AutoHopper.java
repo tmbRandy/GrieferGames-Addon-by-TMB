@@ -3,7 +3,6 @@ package tmb.randy.tmbgriefergames.v1_12_2.util;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.client.Minecraft;
@@ -32,34 +31,36 @@ public class AutoHopper {
         if(event.button().isRight() && event.action() == Action.CLICK && isLookingAtHopper() && Addon.getSharedInstance().configuration().getHopperSubConfig().getAutoSneak().get()) {
             RayTraceResult trace = Minecraft.getMinecraft().player.rayTrace(5, 1.0F);
 
-            Keyboard.enableRepeatEvents(true);
-            KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-            KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
-            KeyBinding.setKeyBindState(sneakKey.getKeyCode(), true);
-            if(!Minecraft.getMinecraft().player.onGround) {
-                KeyBinding.setKeyBindState(jumpKey.getKeyCode(), true);
-            }
-            Minecraft.getMinecraft().playerController.clickBlock(trace.getBlockPos(), trace.sideHit);
-            toggeledSneak = true;
+            if(trace != null) {
+                Keyboard.enableRepeatEvents(true);
+                KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
+                KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
+                KeyBinding.setKeyBindState(sneakKey.getKeyCode(), true);
+                if(!Minecraft.getMinecraft().player.onGround) {
+                    KeyBinding.setKeyBindState(jumpKey.getKeyCode(), true);
+                }
+                Minecraft.getMinecraft().playerController.clickBlock(trace.getBlockPos(), trace.sideHit);
+                toggeledSneak = true;
 
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        if(toggeledSneak) {
-                            KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-                            KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
-                            KeyBinding.setKeyBindState(sneakKey.getKeyCode(), false);
-                            KeyBinding.setKeyBindState(jumpKey.getKeyCode(), false);
-                            Keyboard.enableRepeatEvents(false);
-                            toggeledSneak = false;
+                new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            if(toggeledSneak) {
+                                KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
+                                KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
+                                KeyBinding.setKeyBindState(sneakKey.getKeyCode(), false);
+                                KeyBinding.setKeyBindState(jumpKey.getKeyCode(), false);
+                                Keyboard.enableRepeatEvents(false);
+                                toggeledSneak = false;
+                            }
                         }
-                    }
-                }, 10
-            );
+                    }, 10
+                );
+            }
         }
     }
-    public void tick(GameTickEvent event) {
+    public void tick() {
         if(Addon.getSharedInstance().configuration().getHopperSubConfig().getEnabled().get()) {
             Container cont = Minecraft.getMinecraft().player.openContainer;
             if (cont instanceof ContainerChest chest) {
@@ -106,7 +107,7 @@ public class AutoHopper {
                         if(!clicked && Addon.getSharedInstance().configuration().getHopperSubConfig().getStackSize().get() != HopperItemStackSizeEnum.NONE && chest.inventorySlots.get(10).getHasStack()) {
                             int currentStackSize = chest.getSlot(10).getStack().getCount();
                             switch (Addon.getSharedInstance().configuration().getHopperSubConfig().getStackSize().get()) {
-                                case SINGLE_ITEM:
+                                case SINGLEITEM:
                                     if(currentStackSize != 1) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, ClickType.QUICK_MOVE));
                                         clicked = true;
@@ -118,7 +119,7 @@ public class AutoHopper {
                                         clicked = true;
                                     }
                                     break;
-                                case FULL_STACK:
+                                case FULLSTACK:
                                     if(currentStackSize != 64) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, ClickType.QUICK_MOVE));
                                         clicked = true;
@@ -132,13 +133,13 @@ public class AutoHopper {
                                 Minecraft.getMinecraft().player.closeScreen();
                             } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CONNECT) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 16, 0, ClickType.PICKUP));
-                            } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTI_CONNECTION) {
+                            } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 15, 0, ClickType.PICKUP));
                             }
                         }
                     }
 
-                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTI_CONNECTION) {
+                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                     ClickManager.getSharedInstance().addClick(
                         QueueType.MEDIUM, new Click(chest.windowId, 53, 0, ClickType.PICKUP));
                 }

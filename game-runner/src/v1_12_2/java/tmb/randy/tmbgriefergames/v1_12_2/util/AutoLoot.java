@@ -19,7 +19,8 @@ public class AutoLoot {
         String message = event.chatMessage().getPlainText();
 
         if(Addon.getSharedInstance().configuration().getAutoLoot().get()) {
-            if(CBtracker.getCurrentCB() != CBs.NONE && message.equals("[Switcher] Daten heruntergeladen!") && !Addon.getSharedInstance().getPlayerTracer().isTracerActive()) {
+            if(CBtracker.getCurrentCB() != CBs.NONE && message.equals("[Switcher] Daten heruntergeladen!") && Addon.getSharedInstance()
+                .getPlayerTracer().isTracerDisabled()) {
 
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodSkull = getTimePeriodForFreeSkull(rank);
@@ -37,13 +38,13 @@ public class AutoLoot {
 
                             if(CBtracker.isPlotworldCB() && Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().world != null) {
 
-                                Object freeBooster = FileManager.getValue("freeBooster");
+                                Object freeBooster = FileManager.getPlayerValue("freeBooster");
                                 String freeBoosterString = freeBooster instanceof String ? (String) freeBooster : "";
 
-                                Object freeChest = FileManager.getValue("freeChest");
+                                Object freeChest = FileManager.getPlayerValue("freeChest");
                                 String freeChestString = freeChest instanceof String ? (String) freeChest : "";
 
-                                Object freeSkull = FileManager.getValue("freeSkull");
+                                Object freeSkull = FileManager.getPlayerValue("freeSkull");
                                 String freeSkullString = freeSkull instanceof String ? (String) freeSkull : "";
 
                                 if(periodChest > -1) {
@@ -85,26 +86,26 @@ public class AutoLoot {
             if(message.startsWith("[CaseOpening] Du kannst erst am ") && message.endsWith(" wieder Free-Kisten abholen.")) {
                 event.setCancelled(true);
                 String isolatedDate = message.replace("[CaseOpening] Du kannst erst am ", "").replace(" wieder Free-Kisten abholen.", "");
-                FileManager.setValue("freeChest", stringToDate(isolatedDate).toString());
+                FileManager.setPlayerValue("freeChest", stringToDate(isolatedDate).toString());
             } else if(message.startsWith("Du kannst erst am ") && message.endsWith(" wieder einen Free-Booster abholen.")) {
                 event.setCancelled(true);
                 String isolatedDate = message.replace("Du kannst erst am ", "").replace(" wieder einen Free-Booster abholen.", "");
-                FileManager.setValue("freeBooster", stringToDate(isolatedDate).toString());
+                FileManager.setPlayerValue("freeBooster", stringToDate(isolatedDate).toString());
             } else if(message.equals("[CaseOpening] Du hast 2 Kisten erhalten.")) {
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodChest = getTimePeriodForFreeChest(rank);
                 if(periodChest > -1)
-                    FileManager.setValue("freeChest", LocalDateTime.now().plusDays(periodChest).toString());
+                    FileManager.setPlayerValue("freeChest", LocalDateTime.now().plusDays(periodChest).toString());
             } else if(message.startsWith("Du hast 1 ") && message.endsWith("-Booster erhalten. Danke für deine Unterstützung von GrieferGames!")) {
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodChest = getTimePeriodForFreeChest(rank);
                 if(periodChest > -1)
-                    FileManager.setValue("freeBooster", LocalDateTime.now().plusDays(periodChest).toString());
+                    FileManager.setPlayerValue("freeBooster", LocalDateTime.now().plusDays(periodChest).toString());
             } else if(message.startsWith("[Kopf] Du hast einen ") && message.endsWith("-Kopf erhalten!")) {
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodSkull = getTimePeriodForFreeSkull(rank);
                 if(periodSkull > -1)
-                    FileManager.setValue("freeSkull", LocalDateTime.now().plusDays(periodSkull).toString());
+                    FileManager.setPlayerValue("freeSkull", LocalDateTime.now().plusDays(periodSkull).toString());
             }
         }
     }

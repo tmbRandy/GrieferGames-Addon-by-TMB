@@ -10,10 +10,15 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MsgTabs {
 
     private static String currentChatPartner = null;
+    private static boolean clearedMsgTabs = false;
 
     @Subscribe
     public void chatMessageReceived(ChatReceiveEvent event) {
@@ -24,7 +29,7 @@ public class MsgTabs {
         if(currentChatPartner != null) {
             getTabForName(event.chatMessage().getPlainText());
 
-            if(!Addon.getSharedInstance().getBridge().isChatGuiOpen() && event.chatMessage().getPlainText().contains("[mir -> ")) {
+            if(Addon.getSharedInstance().getBridge().isChatGuiClosed() && event.chatMessage().getPlainText().contains("[mir -> ")) {
                 reloadChat();
                 Addon.getSharedInstance().getBridge().openChat();
             }
@@ -64,6 +69,15 @@ public class MsgTabs {
                     }
                 }
             }
+        }
+    }
+
+    @Subscribe
+    public void cbChanged(CbChangedEvent event) {
+        //Clear all /msg tabs on first start as they are empty
+        if(Addon.isGG() && !clearedMsgTabs && event.CB() == CBs.PORTAL && Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get()) {
+            clearedMsgTabs = true;
+            clearAllMsgTabs();
         }
     }
 
@@ -120,6 +134,24 @@ public class MsgTabs {
 
         return output;
     }
+
+    private void clearAllMsgTabs() {
+        ChatWindow mainWindow = getChatWindow();
+        if(mainWindow != null) {
+            List<ChatTab> tabsToRemove = new ArrayList<>();
+            for (ChatTab tab : mainWindow.getTabs()) {
+                if(tab.getName().startsWith("➥ ")) {
+                    tabsToRemove.add(tab);
+                }
+            }
+
+            for (ChatTab tab : tabsToRemove) {
+                mainWindow.deleteTab(tab);
+            }
+        }
+    }
+
+
 
     private ChatWindow getChatWindow() {
         if(Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get()) {

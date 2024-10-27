@@ -2,6 +2,8 @@ package tmb.randy.tmbgriefergames.core.util.chat;
 
 import java.util.Arrays;
 import java.util.List;
+import net.labymod.api.Laby;
+import net.labymod.api.client.component.event.ClickEvent;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
@@ -43,16 +45,40 @@ public class ChatCleaner {
             event.setCancelled(true);
         }
 
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getCleanChat().get())
-            return;
+        if(plotEnterCoordinates(message) instanceof String coordinates)
+            event.chatMessage().component().clickEvent(ClickEvent.runCommand("/p h " + coordinates));
 
-
-        for (String str : cleanupMessages) {
-            if(str.equals(message)) {
+        if(Addon.getSharedInstance().configuration().getChatConfig().getMuteCaseOpening().get() && !event.isCancelled()) {
+            if(message.startsWith("[CaseOpening] Folgender Preis wurde gezogen: ") || (message.startsWith("[CaseOpening] Der Spieler ") && message.endsWith(" hat einen Hauptpreis gewonnen!"))) {
                 event.setCancelled(true);
-                break;
             }
         }
 
+        if(Addon.getSharedInstance().configuration().getChatConfig().getMuteLuckyBlocks().get() && !event.isCancelled()) {
+            if(!message.contains(Laby.labyAPI().getName()) && (message.startsWith("[LuckyBlock] ") || (message.startsWith("[TEAM] Admin ┃ ") && message.endsWith(" » Hey Leute, was geht?")))) {
+                event.setCancelled(true);
+            }
+        }
+
+        if(Addon.getSharedInstance().configuration().getChatConfig().getCleanChat().get() && !event.isCancelled()) {
+            for (String str : cleanupMessages) {
+                if(str.equals(message)) {
+                    event.setCancelled(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    public static String plotEnterCoordinates(String text) {
+        String regex = "^\\[GrieferGames] \\[(-?\\d+);(-?\\d+)] \\w+ betrat dein Grundstück\\.$";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
+        java.util.regex.Matcher matcher = pattern.matcher(text);
+
+        if (matcher.find()) {
+            return matcher.group(1) + ";" + matcher.group(2);
+        }
+
+        return null;
     }
 }

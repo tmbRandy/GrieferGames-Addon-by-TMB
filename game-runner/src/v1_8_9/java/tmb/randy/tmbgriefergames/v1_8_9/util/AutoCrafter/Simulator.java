@@ -10,8 +10,7 @@ public class Simulator
     private final ItemStack[] slots;
     private ItemStack held;
 
-    public Simulator(List<Slot> inventorySlots, int size)
-    {
+    public Simulator(List<Slot> inventorySlots, int size) {
         this.size = size;
         this.slots = new ItemStack[size];
         for (int i = 0; i < size; i++)
@@ -25,24 +24,7 @@ public class Simulator
         return this.slots[slot];
     }
 
-
-    public void rightClick(int slot) {
-        if (this.held != null)
-            return;
-
-        if (this.slots == null)
-            return;
-
-        ItemStack stack = this.slots[slot];
-        int staying = stack.stackSize / 2;
-        this.held = new ItemStack(stack.getItem(), stack.stackSize - staying);
-        stack.stackSize = staying;
-        if (stack.stackSize < 1)
-            this.slots[slot] = null;
-    }
-
-    public void leftClick(int slot)
-    {
+    public void leftClick(int slot) {
         if (this.held != null) {
             if (this.slots[slot] != null)
                 return;
@@ -67,8 +49,7 @@ public class Simulator
         this.slots[slot] = null;
     }
 
-    private int findFirstFreeSlot()
-    {
+    private int findFirstFreeSlot() {
         for (int i = this.size - 36; i < this.size; i++)
         {
             if (this.slots[i] == null)

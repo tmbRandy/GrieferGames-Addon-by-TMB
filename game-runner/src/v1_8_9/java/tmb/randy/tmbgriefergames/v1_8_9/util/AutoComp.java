@@ -3,7 +3,6 @@ package tmb.randy.tmbgriefergames.v1_8_9.util;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
@@ -74,7 +73,7 @@ public class AutoComp {
         compActive = false;
     }
 
-    public void onTickEvent(GameTickEvent event) {
+    public void onTickEvent() {
 
         if(compState == CompressorState.NONE) {
             return;

@@ -53,11 +53,23 @@
                 },
                 "finalAction": {
                     "name": "final action",
-                    "description": "Sets the last action to execute."
+                    "description": "Sets the last action to execute.",
+                    "entries": {
+                        "none": "DON'T CHANGE",
+                        "close": "CLOSE MENU",
+                        "connect": "CONNECT",
+                        "multiconnection": "MULTI CONNECTION"
+                    }
                 },
                 "stackSize": {
                     "name": "stack size",
-                    "description": "Which stack size should the hopper pass each tick."
+                    "description": "Which stack size should the hopper pass each tick.",
+                    "entries": {
+                        "none": "DON'T CHANGE",
+                        "singleitem": "1",
+                        "twelve": "12",
+                        "fullstack": "64"
+                    }
                 },
                 "autoSneak": {
                     "name": "Auto sneak when right clicking."
@@ -151,6 +163,12 @@
                 },
                 "msgTabMode": {
                     "name": "/msg in tabs"
+                },
+                "muteCaseOpening": {
+                    "name": "Hide Case Opening messages"
+                },
+                "muteLuckyBlocks": {
+                    "name": "Hide Lucky Block messages"
                 }
             },
             "itemProtection": {
@@ -180,7 +198,12 @@
                 "name": "Auto-crafter & auto-(de)compressor",
                 "description": "There are 2 different Autocrafters:\n\nV1 uses the Vanilla Crafting menu (Workbench). Place your recipe in the Workbench and save with SHIFT + ENTER. Then press ENTER to craft the recipe.\n\nV2 uses the /recipes menu. Place the item you want to craft in your first hotbar slot. Then type /autocraft in the chat. The /recipes menu will open automatically and craft your items.",
                 "autoCraftSpeed": {
-                    "name": "Speed"
+                    "name": "Speed",
+                    "entries": {
+                        "slow": "SLOW",
+                        "medium": "MEDIUM",
+                        "fast": "FAST"
+                    }
                 },
                 "autoDrop": {
                     "name": "Auto-drop"
@@ -194,11 +217,19 @@
                 },
                 "finalActionV2": {
                     "name": "Final action",
-                    "description": "Specifies whether, when using Autocrafter V2 (/autocraft), the crafted items should be dropped or compressed in the inventory."
+                    "description": "Specifies whether, when using Autocrafter V2 (/autocraft), the crafted items should be dropped or compressed in the inventory.",
+                    "entries": {
+                        "comp": "COMPRESS",
+                        "drop": "DROP"
+                    }
                 },
                 "finalActionV3": {
                     "name": "Final action",
-                    "description": "Specifies whether, when using Autocrafter V3 (/craftV3), the crafted items should be dropped or compressed in the inventory."
+                    "description": "Specifies whether, when using Autocrafter V3 (/craftV3), the crafted items should be dropped or compressed in the inventory.",
+                    "entries": {
+                        "comp": "COMPRESS",
+                        "drop": "DROP"
+                    }
                 },
                 "autoCompHotkey": {
                     "name": "Hotkey for auto-compressor"
@@ -228,6 +259,9 @@
             "autoLoot": {
                 "name": "Auto Loot",
                 "description": "Automatically gets your /freekiste and /grieferboost."
+            },
+            "plotWheelHotkey": {
+                "name": "Open PlotWheel"
             }
         },
         "chat": {
@@ -367,6 +401,17 @@
         },
         "autoLoot": {
             "skullAvailable": "/kopf is available!"
+        },
+        "plotWheel": {
+            "addPlot": "Add plot",
+            "name": "Name",
+            "optional": "optional",
+            "cb": "CB",
+            "all": "[ALL]",
+            "command": "Command",
+            "thisAccountOnly": "This account only",
+            "add": "Add",
+            "delete": "delete"
         }
     },
     "labymod": {

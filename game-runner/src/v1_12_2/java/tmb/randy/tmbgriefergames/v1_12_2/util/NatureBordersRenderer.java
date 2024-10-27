@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util;
 
-import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.util.Color;
 import net.labymod.api.util.I18n;
@@ -34,7 +33,7 @@ public class NatureBordersRenderer {
     private float lineGreen = 0.0F;
     private float lineBlue = 0.0F;
 
-    public void onKey(KeyEvent event) {
+    public void onKey() {
         if(VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get()) && !Addon.isChatGuiOpen() && CBtracker.isNatureWorldCB()) {
             Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().set(!Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get());
 

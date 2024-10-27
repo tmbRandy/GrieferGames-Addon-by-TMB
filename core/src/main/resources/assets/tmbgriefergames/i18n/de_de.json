@@ -53,11 +53,23 @@
                 },
                 "finalAction": {
                     "name": "Schlussaktion",
-                    "description": "Legt fest, was nach Einstellung der restlichen Einstellungen passieren soll."
+                    "description": "Legt fest, was nach Einstellung der restlichen Einstellungen passieren soll.",
+                    "entries": {
+                        "none": "NICHT ÄNDERN",
+                        "close": "MENÜ SCHLIEßEN",
+                        "connect": "VERDINDEN",
+                        "multiconnection": "MULTI-VERBINDUNG"
+                    }
                 },
                 "stackSize": {
                     "name": "Stackgröße",
-                    "description": "Legt fest, welche Menge an Items der Trichter pro Tick verarbeiten soll."
+                    "description": "Legt fest, welche Menge an Items der Trichter pro Tick verarbeiten soll.",
+                    "entries": {
+                        "none": "NICHT ÄNDERN",
+                        "singleitem": "1",
+                        "twelve": "12",
+                        "fullstack": "64"
+                    }
                 },
                 "autoSneak": {
                     "name": "Automatisch sneaken bei Rechtsklick"
@@ -148,6 +160,12 @@
                 },
                 "msgTabMode": {
                     "name": "/msg in Tabs"
+                },
+                "muteCaseOpening": {
+                    "name": "Hauptgewinne im Case Opening verbergen"
+                },
+                "muteLuckyBlocks": {
+                    "name": "Lucky Block Nachrichten verbergen"
                 }
             },
             "itemProtection": {
@@ -180,7 +198,12 @@
                 "name": "Autocrafter & Auto(de)komprimierer",
                 "description": "Es gibt 2 verschiedene Autocrafter:\\n\\nV1 nutzt das Vanilla Crafting Menü (Werkbank). Lege dein Rezept in die Werkbank und speichere mit SHIFT + ENTER. Drücke anschließend ENTER, um das Rezept zu craften.\\n\\nV2 nutzt das /rezepte Menü. Lege das Item, welches du craften willst in deinen ersten Hotbar Slot. Gib anschließend /autocraft in den Chat ein. Das /rezepte Menü öffnet sich automatisch und craftet deine Items.",
                 "autoCraftSpeed": {
-                    "name": "Geschwindigkeit"
+                    "name": "Geschwindigkeit",
+                    "entries": {
+                        "slow": "LANGSAM",
+                        "medium": "MITTEL",
+                        "fast": "SCHNELL"
+                    }
                 },
                 "autoDrop": {
                     "name": "Automatisch droppen"
@@ -194,11 +217,19 @@
                 },
                 "finalActionV2": {
                     "name": "Schlussaktion",
-                    "description": "Legt fest, ob bei Nutzung des Autocrafters V2 (/autocraft) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen."
+                    "description": "Legt fest, ob bei Nutzung des Autocrafters V2 (/autocraft) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen.",
+                    "entries": {
+                        "comp": "KOMPRIMIEREN",
+                        "drop": "DROPPEN"
+                    }
                 },
                 "finalActionV3": {
                     "name": "Schlussaktion",
-                    "description": "Legt fest, ob bei Nutzung des Autocrafters V3 (/craftV3) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen."
+                    "description": "Legt fest, ob bei Nutzung des Autocrafters V3 (/craftV3) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen.",
+                    "entries": {
+                        "comp": "KOMPRIMIEREN",
+                        "drop": "DROPPEN"
+                    }
                 },
                 "autoCompHotkey": {
                     "name": "Hotkey für Autokomprimierer"
@@ -228,6 +259,9 @@
             "autoLoot": {
                 "name": "Auto Loot",
                 "description": "Holt automatisch deine /freekiste und deinen /grieferboost ab."
+            },
+            "plotWheelHotkey": {
+                "name": "PlotWheel öffnen"
             }
         },
         "chat": {
@@ -371,6 +405,17 @@
         },
         "autoLoot": {
             "skullAvailable": "Du hast wieder /kopf frei!"
+        },
+        "plotWheel": {
+            "addPlot": "Plot hinzufügen",
+            "name": "Name",
+            "optional": "optional",
+            "cb": "CB",
+            "all": "[ALLE]",
+            "command": "Befehl",
+            "thisAccountOnly": "Nur dieser Account",
+            "add": "Hinzufügen",
+            "delete": "löschen"
         }
     },
     "labymod": {

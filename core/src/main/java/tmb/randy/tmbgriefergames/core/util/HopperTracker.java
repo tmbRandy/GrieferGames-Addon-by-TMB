@@ -24,7 +24,7 @@ public class HopperTracker {
         String message = event.chatMessage().getPlainText();
 
         setCurrentHopperState(switch (message) {
-            case "[Trichter] Das Multi-Verbinden wurde aktiviert. Klicke mit dem gewünschten Item auf den gewünschten Endpunkt." -> HopperState.MULTI_CONNECT;
+            case "[Trichter] Das Multi-Verbinden wurde aktiviert. Klicke mit dem gewünschten Item auf den gewünschten Endpunkt." -> HopperState.MULTICONNECT;
             case "[Trichter] Das Verbinden wurde aktiviert. Klicke auf den gewünschten Endpunkt." -> HopperState.CONNECT;
             case "[Trichter] Der Trichter wurde erfolgreich verbunden.",
                  "[Trichter] Der Verbindungsmodus wurde beendet.",

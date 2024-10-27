@@ -10,7 +10,6 @@ import tmb.randy.tmbgriefergames.core.Addon;
 
 public class TooltipExtension {
 
-
     public void renderTooltip(ItemStackTooltipEvent event) {
         if(!Addon.isGG()) {
             return;

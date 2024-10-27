@@ -8,6 +8,7 @@ import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
+import java.util.Objects;
 
 public class ItemSaver {
 
@@ -23,8 +24,8 @@ public class ItemSaver {
 
         if(Addon.getSharedInstance().configuration().getItemProtection().get()) {
             if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
-                if(Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack() != null) {
-                    ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack();
+                if(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack() != null) {
+                    ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack();
                     if(stack.hasDataComponentContainer()) {
                         if(stack.getDataComponentContainer().has(DataComponentKey.simple("ench"))) {
                             String enchantments = stack.getDataComponentContainer().get(DataComponentKey.simple("ench")).toString();
@@ -53,7 +54,7 @@ public class ItemSaver {
 
     public static int findHotbarSlotforBlock() {
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().inventory().itemStackAt(i);
+            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
 
             if (stack.isAir()) {
                 return i;
@@ -61,7 +62,7 @@ public class ItemSaver {
         }
 
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().inventory().itemStackAt(i);
+            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
 
             if(stack.isItem()) {
                 return i;
@@ -69,19 +70,19 @@ public class ItemSaver {
         }
 
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().inventory().itemStackAt(i);
+            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
 
             if(stack.isBlock() && !stack.hasDataComponentContainer()) {
                 return i;
             }
         }
 
-        return Laby.labyAPI().minecraft().getClientPlayer().inventory().getSelectedIndex() == 8 ? 0 : Laby.labyAPI().minecraft().getClientPlayer().inventory().getSelectedIndex() + 1;
+        return Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() == 8 ? 0 : Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() + 1;
     }
 
     public static int findHotbarSlotforItem() {
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().inventory().itemStackAt(i);
+            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
 
             if (stack.isAir()) {
                 return i;
@@ -89,7 +90,7 @@ public class ItemSaver {
         }
 
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().inventory().itemStackAt(i);
+            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
 
             if(stack.isBlock()) {
                 return i;
@@ -97,14 +98,14 @@ public class ItemSaver {
         }
 
         for (int i = 0; i < 9; i++) {
-            ItemStack stack = Laby.labyAPI().minecraft().getClientPlayer().inventory().itemStackAt(i);
+            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
 
             if(stack.isItem() && !stack.hasDataComponentContainer()) {
                 return i;
             }
         }
 
-        return Laby.labyAPI().minecraft().getClientPlayer().inventory().getSelectedIndex() == 8 ? 0 : Laby.labyAPI().minecraft().getClientPlayer().inventory().getSelectedIndex() + 1;
+        return Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() == 8 ? 0 : Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() + 1;
     }
 
 }

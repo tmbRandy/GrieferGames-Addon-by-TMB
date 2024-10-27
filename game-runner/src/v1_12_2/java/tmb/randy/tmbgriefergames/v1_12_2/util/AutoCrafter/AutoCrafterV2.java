@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter;
 
+import java.util.LinkedList;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -16,10 +17,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_12_2.util.VersionisedBridge;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
-import java.util.LinkedList;
 
 public class AutoCrafterV2 {
 
@@ -55,7 +54,7 @@ public class AutoCrafterV2 {
                             currentState = STATE.OPEN_CRAFT_PAGE;
                         }
                     } else {
-                        VersionisedBridge.sendCommand("/rezepte");
+                        Addon.sendCommand("/rezepte");
                     }
                 }
                 case OPEN_CRAFT_PAGE -> {
@@ -90,9 +89,7 @@ public class AutoCrafterV2 {
 
                     if(getSlotCountOfItemInInventory() >= 27) {
                         switch (Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV2().get()) {
-                            case COMP -> {
-                                currentState = STATE.GO_BACK;
-                            }
+                            case COMP -> currentState = STATE.GO_BACK;
                             case DROP -> {
                                 Minecraft.getMinecraft().player.closeScreen();
                                 currentState = STATE.OPEN_INVENTORY;
@@ -154,8 +151,7 @@ public class AutoCrafterV2 {
                 }
                 case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6 -> {
                     if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        if(cont instanceof ContainerChest chest) {
-                            IInventory inv = chest.getLowerChestInventory();
+                        if(cont instanceof ContainerChest) {
                             String headName = Minecraft.getMinecraft().player.openContainer.getSlot(49).getStack().getDisplayName();
                             if(headName.contains("§6Komprimierungsstufe")) {
                                 int step = Integer.parseInt(headName.replace("§6Komprimierungsstufe ", ""));
@@ -176,7 +172,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 2)
                                             increaseStep();
-                                        else if(step > 2)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP3 -> {
@@ -186,7 +182,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 3)
                                             increaseStep();
-                                        else if(step > 3)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP4 -> {
@@ -196,7 +192,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 4)
                                             increaseStep();
-                                        else if(step > 4)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP5 -> {
@@ -206,7 +202,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 5)
                                             increaseStep();
-                                        else if(step > 5)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP6 -> {
@@ -216,7 +212,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 6)
                                             increaseStep();
-                                        else if(step > 6)
+                                        else
                                             decreaseStep();
                                     }
                                 }

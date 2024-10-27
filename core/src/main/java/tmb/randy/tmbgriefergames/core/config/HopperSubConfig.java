@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.core.config;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownEntryTranslationPrefix;
 import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.annotation.ShowSettingInParent;
@@ -24,8 +25,10 @@ public class HopperSubConfig extends Config {
     private final ConfigProperty<Boolean> filterItem = new ConfigProperty<>(false);
     @SliderSetting(min = -1, max = 15, steps = 1)
     private final ConfigProperty<Integer> radius = new ConfigProperty<>(-1);
+    @DropdownEntryTranslationPrefix("tmbgriefergames.settings.hopperSubConfig.stackSize.entries")
     @DropdownSetting
     private final ConfigProperty<HopperItemStackSizeEnum> stackSize = new ConfigProperty<>(HopperItemStackSizeEnum.NONE);
+    @DropdownEntryTranslationPrefix("tmbgriefergames.settings.hopperSubConfig.finalAction.entries")
     @DropdownSetting
     private final ConfigProperty<HopperFinalAction> finalAction = new ConfigProperty<>(HopperFinalAction.NONE);
     @SwitchSetting

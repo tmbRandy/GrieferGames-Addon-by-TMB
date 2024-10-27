@@ -34,7 +34,7 @@ public class HopperModeWidget extends SimpleHudWidget<HudWidgetConfig> {
                     Laby.references().renderPipeline().resourceRenderer().render(stack);
                     size.setHeight((float)32);
                     size.setWidth((float)32);
-                } else if (HopperTracker.getCurrentHopperState() == HopperState.MULTI_CONNECT) {
+                } else if (HopperTracker.getCurrentHopperState() == HopperState.MULTICONNECT) {
                     HOPPER_MULTI_CONNECT_ICON.render(stack, 0, 0, 32);
                     Laby.references().renderPipeline().resourceRenderer().render(stack);
                     size.setHeight((float)32);

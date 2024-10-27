@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
 
@@ -101,7 +102,7 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
 
             if(entity instanceof Player player) {
                 if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
-                    if(player.getName().equals(Laby.labyAPI().minecraft().getClientPlayer().getName())) {
+                    if(player.getName().equals(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getName())) {
                         continue;
                     }
                 }
@@ -200,7 +201,7 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
                     case "pferd", "horse" -> HORSE;
                     case "esel", "donkey" -> DONKEY;
                     case "mule" -> MULE;
-                    case "ocelot" -> OCELOT;
+                    case "ozelot", "ocelot" -> OCELOT;
                     case "wolf" -> WOLF;
                     case "spinne", "spider" -> SPIDER;
                     case "höhlenspinne", "cave spider" -> CAVE_SPIDER;
@@ -224,7 +225,7 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
                     case "magmawürfel", "magma cube" -> MAGMA_CUBE;
                     case "eisengolem", "iron golem" -> IRON_GOLEM;
                     case "zombie pigman", "pigman", "pig zombie", "schweinezombie" -> PIGMAN;
-                    case "snowman", "snow golem" -> SNOW_GOLEM;
+                    case "schneegolem", "snowman", "snow golem" -> SNOW_GOLEM;
                     default -> null;
                 };
             }
@@ -245,15 +246,14 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
 
             mobType = MobType.fromString(mobName);
 
-            if (mobType != null) {
+            if (mobType != null)
                 mobCountMap.put(mobType, mobCountMap.getOrDefault(mobType, 0) + quantity);
-            } else {
-                Addon.getSharedInstance().logger().warn("Unknown mob type: " + mobName);
+            /*
+                    Uncomment for debugging purposes only as holograms will trigger this and spam the logs
+            else {
+                //Addon.getSharedInstance().logger().warn("Unknown mob type: " + mobName);
             }
-        }
-
-        public int getMobCount(MobType mobType) {
-            return mobCountMap.getOrDefault(mobType, 0);
+             */
         }
 
         public String getFormattedMobCounts() {

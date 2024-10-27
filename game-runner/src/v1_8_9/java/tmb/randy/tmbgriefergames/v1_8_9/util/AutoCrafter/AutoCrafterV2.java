@@ -15,7 +15,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_8_9.util.VersionisedBridge;
 import tmb.randy.tmbgriefergames.v1_8_9.util.click.Click;
 import tmb.randy.tmbgriefergames.v1_8_9.util.click.ClickManager;
 import java.util.LinkedList;
@@ -54,7 +53,7 @@ public class AutoCrafterV2 {
                             currentState = STATE.OPEN_CRAFT_PAGE;
                         }
                     } else {
-                        VersionisedBridge.sendCommand("/rezepte");
+                        Addon.sendCommand("/rezepte");
                     }
                 }
                 case OPEN_CRAFT_PAGE -> {
@@ -89,9 +88,7 @@ public class AutoCrafterV2 {
 
                     if(getSlotCountOfItemInInventory() >= 27) {
                         switch (Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV2().get()) {
-                            case COMP -> {
-                                currentState = STATE.GO_BACK;
-                            }
+                            case COMP -> currentState = STATE.GO_BACK;
                             case DROP -> {
                                 Minecraft.getMinecraft().thePlayer.closeScreen();
                                 currentState = STATE.OPEN_INVENTORY;
@@ -153,7 +150,7 @@ public class AutoCrafterV2 {
                 }
                 case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6 -> {
                     if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        if(cont instanceof ContainerChest chest) {
+                        if(cont instanceof ContainerChest) {
 
                             if(Minecraft.getMinecraft().thePlayer.openContainer.getSlot(49).getStack() == null)
                                 break;
@@ -178,7 +175,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 2)
                                             increaseStep();
-                                        else if(step > 2)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP3 -> {
@@ -188,7 +185,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 3)
                                             increaseStep();
-                                        else if(step > 3)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP4 -> {
@@ -198,7 +195,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 4)
                                             increaseStep();
-                                        else if(step > 4)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP5 -> {
@@ -208,7 +205,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 5)
                                             increaseStep();
-                                        else if(step > 5)
+                                        else
                                             decreaseStep();
                                     }
                                     case COMP6 -> {
@@ -218,7 +215,7 @@ public class AutoCrafterV2 {
                                         }
                                         else if (step < 6)
                                             increaseStep();
-                                        else if(step > 6)
+                                        else
                                             decreaseStep();
                                     }
                                 }

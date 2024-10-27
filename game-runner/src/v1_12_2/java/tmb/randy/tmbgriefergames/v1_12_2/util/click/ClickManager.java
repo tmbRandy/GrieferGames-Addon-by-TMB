@@ -1,12 +1,9 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util.click;
 
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumHand;
-import net.minecraft.world.World;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,9 +20,9 @@ public class ClickManager {
         queues.put(QueueType.FAST, new ClickQueue(QueueType.FAST));
     }
 
-    public void tick(GameTickEvent event) {
+    public void tick() {
         for (Map.Entry<QueueType, ClickQueue> entry : queues.entrySet()) {
-            entry.getValue().tick(event);
+            entry.getValue().tick();
         }
     }
 
@@ -36,10 +33,6 @@ public class ClickManager {
         return SharedInstance;
     }
 
-    public void rightClick(World world, EnumHand hand) {
-        Minecraft.getMinecraft().player.getHeldItemMainhand().useItemRightClick(world, Minecraft.getMinecraft().player, hand);
-    }
-
     public void dropInventory() {
         Container container = Minecraft.getMinecraft().player.openContainer;
         int size = container.inventorySlots.size();
@@ -48,21 +41,6 @@ public class ClickManager {
                 dropClick(i);
             }
 
-        }
-    }
-
-    public void dropItemsFromInventory(Item item, boolean skipFirst) {
-        Container container = Minecraft.getMinecraft().player.openContainer;
-        int size = container.inventorySlots.size();
-        for(int i = 9; i < size; i++) {
-            if(container.getSlot(i).getHasStack()) {
-                if(container.getSlot(i).getStack().getItem().equals(item)) {
-                    if(skipFirst && i == 36) {
-                        continue;
-                    }
-                    dropClick(i);
-                }
-            }
         }
     }
 
@@ -84,10 +62,6 @@ public class ClickManager {
     public void queueClicks(QueueType queueType, LinkedList<Click> queue)
     {
         queues.get(queueType).queueClicks(queue);
-    }
-
-    public void clearQueue(QueueType queue) {
-        queues.get(queue).clearQueue();
     }
 
     public void clearAllQueues() {

@@ -37,7 +37,8 @@ public class VABK {
     }
 
     public void onKeyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKhotkey().get()) && !VersionisedBridge.getSharedInstance().isChatGuiOpen()) {
+        if(event.state() == State.PRESS && VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKhotkey().get()) && VersionisedBridge.getSharedInstance()
+            .isChatGuiClosed()) {
             toggleActive();
         }
     }
@@ -45,12 +46,6 @@ public class VABK {
     public void toggleActive() {
         active = !active;
         Addon.getSharedInstance().displayNotification(I18n.getTranslation(active ? "tmbgriefergames.autoSword.enabled" : "tmbgriefergames.autoSword.disabled"));
-    }
-
-    public void stop() {
-        if(active) {
-            toggleActive();
-        }
     }
 
     private void startUsingBow() {

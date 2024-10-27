@@ -26,22 +26,6 @@ public class Simulator
         return this.slots[slot];
     }
 
-    public void rightClick(int slot)
-    {
-        if (this.held != null)
-            return;
-
-        if (this.slots == null)
-            return;
-
-        ItemStack stack = this.slots[slot];
-        int staying = stack.getCount() / 2;
-        this.held = new ItemStack(stack.getItem(), stack.getCount() - staying);
-        stack.setCount(staying);
-        if (stack.getCount() < 1)
-            this.slots[slot] = null;
-    }
-
     public void leftClick(int slot)
     {
         if (this.held != null)

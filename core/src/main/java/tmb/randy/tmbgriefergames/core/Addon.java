@@ -1,10 +1,18 @@
 package tmb.randy.tmbgriefergames.core;
 
+import java.util.Objects;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.input.KeyEvent.State;
+import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.models.addon.annotation.AddonMain;
+import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelActivity;
+import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelPlot;
 import tmb.randy.tmbgriefergames.core.commands.AutocraftV2Command;
 import tmb.randy.tmbgriefergames.core.commands.AutocraftV3Command;
 import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
@@ -12,6 +20,8 @@ import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
+import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.generated.DefaultReferenceStorage;
 import tmb.randy.tmbgriefergames.core.util.AccountUnity;
 import tmb.randy.tmbgriefergames.core.util.HopperTracker;
@@ -32,7 +42,6 @@ import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget;
 import tmb.randy.tmbgriefergames.core.widgets.HopperModeWidget;
 import tmb.randy.tmbgriefergames.core.widgets.ItemClearWidget;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget;
-import java.util.Objects;
 
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
@@ -40,7 +49,7 @@ public class Addon extends LabyAddon<Configuration> {
     private IBridge bridge;
   private static Addon SharedInstance;
   private GameInfoWidget gameInfoWidget;
-  private final CBtracker CBtracker = new CBtracker();
+  private final CBtracker cbtracker = new CBtracker();
   private final PlayerTracer playerTracer = new PlayerTracer();
   private final HopperTracker hopperTracker = new HopperTracker();
   private final PlotSwitch plotSwitch = new PlotSwitch();
@@ -57,15 +66,17 @@ public class Addon extends LabyAddon<Configuration> {
   private final AccountUnity accountUnity = new AccountUnity();
   private final ItemClearTimerListener itemClearTimerListener = new ItemClearTimerListener();
 
-  private final String ADDON_PREFIX = "§6[§5§l§oT§b§l§oM§5§l§oB§6] ";
+    private static final int commandCountdownLimit = 80;
+    private static int commandCountdown = 0;
+    public static PlotWheelPlot queuedPlot = null;
 
-  @Override
+    @Override
   protected void enable() {
     this.registerSettingCategory();
       SharedInstance = this;
       bridge = getReferenceStorage().iBridge();
     this.registerListener(bridge);
-    this.registerListener(CBtracker);
+    this.registerListener(cbtracker);
     this.registerListener(playerTracer);
     this.registerListener(chatCleaner);
     this.registerListener(cooldownNotifier);
@@ -80,6 +91,7 @@ public class Addon extends LabyAddon<Configuration> {
     this.registerListener(itemSaver);
     this.registerListener(accountUnity);
     this.registerListener(itemClearTimerListener);
+    this.registerListener(this);
 
       this.registerCommand(new DKsCommand());
       this.registerCommand(new PayAllCommand());
@@ -99,6 +111,9 @@ public class Addon extends LabyAddon<Configuration> {
       labyAPI().hudWidgetRegistry().register(new NearbyWidget(category));
       labyAPI().hudWidgetRegistry().register(new HopperModeWidget(category));
 
+        //PlotWheelActivity activity = new PlotWheelActivity();
+        //labyAPI().navigationService().register(new PlotWheelNavigationElement(activity));
+
     this.logger().info("Enabled the Addon");
   }
 
@@ -108,6 +123,7 @@ public class Addon extends LabyAddon<Configuration> {
   }
 
     public void displayNotification(String msg) {
+        String ADDON_PREFIX = "§6[§5§l§oT§b§l§oM§5§l§oB§6] ";
         Laby.labyAPI().minecraft().chatExecutor().displayClientMessage(ADDON_PREFIX + msg);
     }
 
@@ -146,5 +162,57 @@ public class Addon extends LabyAddon<Configuration> {
 
     public PlayerTracer getPlayerTracer() {return playerTracer;}
 
+    @Subscribe
+    public void keyInput(KeyEvent event) {
+        if(event.state() == State.PRESS && event.key() == configuration().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB()) {
+            Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new PlotWheelActivity());
+        }
+    }
 
+    @Subscribe
+    public void tick(GameTickEvent event) {
+        commandCountdown();
+    }
+
+    @Subscribe
+    public void cbChanged(CbChangedEvent event) {
+        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get())
+            Addon.sendCommand("/portal");
+    }
+
+    @Subscribe
+    public void messageReceived(ChatReceiveEvent event) {
+        if(event.chatMessage().getPlainText().equals("[Switcher] Daten heruntergeladen!")) {
+            if(queuedPlot != null) {
+                if(CBtracker.isPlotworldCB(CBtracker.getCurrentCB())) {
+                    new java.util.Timer().schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                if(isGG() && (queuedPlot.cb() == CBs.NONE || CBtracker.getCurrentCB() == queuedPlot.cb())) {
+                                    Laby.references().chatExecutor().chat(queuedPlot.command());
+                                    queuedPlot = null;
+                                }
+                            }
+                        }, 500
+                    );
+                }
+            }
+        }
+    }
+
+
+    public static boolean canSendCommand() { return commandCountdown <= 0; }
+    public static void sendCommand(String command) {
+        if(canSendCommand()) {
+            Laby.references().chatExecutor().chat(command);
+            commandCountdown = commandCountdownLimit;
+        }
+    }
+
+    private static void commandCountdown() {
+        if (commandCountdown > 0) {
+            commandCountdown--;
+        }
+    }
 }

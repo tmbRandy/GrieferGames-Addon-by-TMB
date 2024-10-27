@@ -3,7 +3,6 @@ package tmb.randy.tmbgriefergames.v1_8_9.util;
 import java.util.LinkedList;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -90,7 +89,7 @@ public class ItemShifter {
         depositHeld(fromMin, fromMax, destMin, destMax);
 
         int availableSlots = getEmptySlotsInRange(destMin, destMax);
-        boolean isSpawner = this.checkIfContainerIsSpawner();
+        boolean isSpawner = checkIfContainerIsSpawner();
 
 
         for(int from = fromMin; from <= fromMax; from++) {
@@ -117,11 +116,11 @@ public class ItemShifter {
         this.sendQueue();
     }
 
-    public void tick(GameTickEvent event) {
+    public void tick() {
         if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Minecraft.getMinecraft().thePlayer.openContainer instanceof ContainerChest))
             return;
 
-        if (Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.openContainer != null && Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
             ContainerChest chest = ((ContainerChest) Minecraft.getMinecraft().thePlayer.openContainer);
             IInventory inv = chest.getLowerChestInventory();
 
@@ -217,11 +216,7 @@ public class ItemShifter {
     }
 
     private void sendQueue() {
-        if(checkIfContainerIsSpawner()) {
-            ClickManager.getSharedInstance().queueClicks(QueueType.SLOW, toSend);
-        } else {
-            ClickManager.getSharedInstance().queueClicks(QueueType.SLOW, toSend);
-        }
+        ClickManager.getSharedInstance().queueClicks(QueueType.SLOW, toSend);
         this.toSend.clear();
     }
 

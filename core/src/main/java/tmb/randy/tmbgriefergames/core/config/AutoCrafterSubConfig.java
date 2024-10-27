@@ -4,6 +4,7 @@ import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.client.gui.screen.widget.widgets.input.MultiKeybindWidget.MultiKeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownEntryTranslationPrefix;
 import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownSetting;
 import net.labymod.api.configuration.loader.Config;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
@@ -15,6 +16,7 @@ public class AutoCrafterSubConfig extends Config {
 
     @SettingSection("v1")
 
+    @DropdownEntryTranslationPrefix("tmbgriefergames.settings.autoCrafterConfig.autoCraftSpeed.entries")
     @DropdownSetting
     private final ConfigProperty<QueueType> autoCraftSpeed = new ConfigProperty<>(QueueType.FAST);
 
@@ -29,16 +31,18 @@ public class AutoCrafterSubConfig extends Config {
 
     @SettingSection("v2")
 
+    @DropdownEntryTranslationPrefix("tmbgriefergames.settings.autoCrafterConfig.finalActionV2.entries")
     @DropdownSetting
     private final ConfigProperty<AutoCrafterNewFinalAction> finalActionV2 = new ConfigProperty<>(AutoCrafterNewFinalAction.COMP);
 
     @SettingSection("v3")
 
+    @DropdownEntryTranslationPrefix("tmbgriefergames.settings.autoCrafterConfig.finalActionV3.entries")
     @DropdownSetting
     private final ConfigProperty<AutoCrafterNewFinalAction> finalActionV3 = new ConfigProperty<>(AutoCrafterNewFinalAction.COMP);
 
     @SliderSetting(min = 0, max = 80)
-    private final ConfigProperty<Integer> delay = new ConfigProperty<Integer>(0);
+    private final ConfigProperty<Integer> delay = new ConfigProperty<>(0);
 
     @SettingSection("autocomp")
 

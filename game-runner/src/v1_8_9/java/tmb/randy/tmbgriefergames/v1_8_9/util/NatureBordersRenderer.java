@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_8_9.util;
 
-import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.util.Color;
 import net.labymod.api.util.I18n;
@@ -34,8 +33,9 @@ public class NatureBordersRenderer {
     private float lineGreen = 0.0F;
     private float lineBlue = 0.0F;
 
-    public void onKey(KeyEvent event) {
-        if(VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get()) && !VersionisedBridge.getSharedInstance().isChatGuiOpen() && CBtracker.isNatureWorldCB()) {
+    public void onKey() {
+        if(VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get()) && VersionisedBridge.getSharedInstance()
+            .isChatGuiClosed() && CBtracker.isNatureWorldCB()) {
             Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().set(!Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get());
 
             String activeString = Addon.getSharedInstance().configuration().getNatureSubConfig().getShowBorders().get() ? I18n.getTranslation("tmbgriefergames.natureBorders.plotBordersVisible") : I18n.getTranslation("tmbgriefergames.natureBorders.plotBordersInvisible");

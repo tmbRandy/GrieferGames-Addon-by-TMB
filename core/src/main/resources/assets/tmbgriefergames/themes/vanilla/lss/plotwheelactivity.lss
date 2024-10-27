@@ -1,0 +1,108 @@
+.cb-wheel {
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: 50%;
+  alignment-x: center;
+  alignment-y: center;
+  inner-radius: 20%;
+    outer-radius: 50%;
+  segment-distance-degrees: 0;
+  renderer: "Wheel";
+}
+
+.plot-wheel {
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: 39%;
+  alignment-x: center;
+  alignment-y: center;
+  inner-radius: 10%;
+  outer-radius: 25%;
+  segment-distance-degrees: 0;
+  renderer: "Wheel";
+}
+
+.center-container {
+  left: 50%;
+  top: 50%;
+  width: 100;
+  height: fit-content;
+  alignment-x: center;
+  alignment-y: center;
+  border-color: white;
+  //border-width: 2;
+
+    .go-button {
+    text: "Los!";
+    }
+}
+
+.cb-segment {
+    .cb-segment-display {
+        alignment-x: center;
+          alignment-y: center;
+          text-color: white;
+    }
+}
+
+.plot-segment {
+    .plot-segment-display {
+        alignment-x: center;
+          alignment-y: center;
+
+    }
+}
+
+.cb-display {
+    text-color: red;
+    font-size: 1.3;
+    alignment-x: center;
+      alignment-y: center;
+}
+
+.plot-display {
+   text-color: yellow;
+   font-size: 1.3;
+   alignment-x: center;
+     alignment-y: center;
+}
+
+.add-container {
+    height: fit-content;
+    width: 150;
+    right: 2;
+    bottom: 2;
+    padding: 2;
+    background-color: rgba(10, 10, 10, 150);
+    border-radius: 4;
+
+    HorizontalList {
+    height: fit-content;
+    alignment-x: center;
+    width: 100%;
+    margin: 2;
+    padding: 2;
+    border-radius: 4;
+    background-color: rgba(110, 110, 110, 100);
+
+    .label {
+        width: 30%;
+
+    }
+
+    }
+
+    .title-list {
+        background-color: rgba(110, 110, 110, 0);
+        }
+
+    .name-textfield, .command-textfield {
+    width: 69%;
+    }
+
+    Button {
+    width: 100%;
+    }
+}

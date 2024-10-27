@@ -5,7 +5,6 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,7 @@ public class FlyTimer {
 
     Date totalDurationTime;
 
-    public void tick(GameTickEvent event) {
+    public void tick() {
         if (totalDurationTime != null) {
             if (getRemainingTotalTimeSeconds() < 0L) {
                 totalDurationTime = null;

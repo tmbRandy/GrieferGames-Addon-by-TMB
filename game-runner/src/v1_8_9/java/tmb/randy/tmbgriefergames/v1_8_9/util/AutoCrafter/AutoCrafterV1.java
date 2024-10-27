@@ -3,12 +3,10 @@ package tmb.randy.tmbgriefergames.v1_8_9.util.AutoCrafter;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
@@ -43,9 +41,8 @@ public class AutoCrafterV1
 
 
     public void onKeyEvent(KeyEvent event) {
-
         if(Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().thePlayer.openContainer != null && Minecraft.getMinecraft().currentScreen instanceof GuiCrafting) {
-            if(event.key() == Key.ENTER) {
+            if(event.key() == Key.ENTER && event.state() == State.PRESS) {
                 if(Key.L_SHIFT.isPressed()) {
                     storeCrafting();
                     Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.recipeSaved"));
@@ -58,23 +55,20 @@ public class AutoCrafterV1
         }
     }
 
-    public void onTickEvent(GameTickEvent event) {
+    public void onTickEvent() {
         if(endlessModeToggle && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed())) {
             craft();
         }
     }
 
-    public void storeCrafting()
-    {
+    public void storeCrafting() {
         this.inv = (ContainerWorkbench)Minecraft.getMinecraft().thePlayer.openContainer;
 
-        if (!(this.inv.inventorySlots.get(0)).getHasStack())
-        {
+        if (!(this.inv.inventorySlots.getFirst()).getHasStack()) {
             return;
         }
         ItemStack result = (this.inv.inventorySlots.getFirst()).getStack();
-        for (int i = 0; i < 9; i++)
-        {
+        for (int i = 0; i < 9; i++) {
             if (this.inv.inventorySlots.get(i+1) != null)
             {
                 ItemStack stack = (this.inv.inventorySlots.get(i+1)).getStack();
@@ -93,8 +87,7 @@ public class AutoCrafterV1
         this.outputItem = result.getItem();
     }
 
-    public void craft()
-    {
+    public void craft() {
         if(!(Minecraft.getMinecraft().thePlayer.openContainer instanceof  ContainerWorkbench)) {
             return;
         }
@@ -148,43 +141,18 @@ public class AutoCrafterV1
                 String name = curr.getDisplayName();
 
                 boolean isFullStack = curr.stackSize == curr.getMaxStackSize() || !Addon.getSharedInstance().configuration().getAutoCrafterConfig().getOnlyFullStacks().get();
-                if (curr != null && Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && name.equals(names[i]) && isFullStack) {
+                if (Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && name.equals(names[i]) && isFullStack) {
                     this.click(j);
                     this.click(i+1);
                     found = true;
                     break;
                 }
             }
-            if (!found)
-            {
-                int amount = 0;
-                int slot = -1;
-                for (int j = 1; j <=9; j++)
-                {
-                    ItemStack curr = this.simulator.stackAt(j);
-
-                    if (curr != null && Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && curr.stackSize > amount)
-                    {
-                        String name = curr.getDisplayName();
-                        if(name.equals(names.equals(names[i]))) {
-                            amount = curr.stackSize;
-                            slot = j;
-                            found = true;
-                        }
-                    }
-                }
-                if (found)
-                {
-                    this.rightClick(slot);
-                    this.click(i+1);
-                }
-                if (!found)
-                {
-                    ItemStack displayStack = new ItemStack(Item.getItemById(stored[i]));
-                    displayStack.setItemDamage(meta[i]);
-                    this.sendQueue();
-                    return;
-                }
+            if (!found) {
+                ItemStack displayStack = new ItemStack(Item.getItemById(stored[i]));
+                displayStack.setItemDamage(meta[i]);
+                this.sendQueue();
+                return;
             }
         }
 
@@ -301,11 +269,6 @@ public class AutoCrafterV1
     private void click(int slot) {
         this.toSend.addLast(new Click(this.inv.windowId, slot, 0, 0));
         this.simulator.leftClick(slot);
-    }
-
-    private void rightClick(int slot) {
-        this.toSend.addLast(new Click(this.inv.windowId, slot, 1, 0));
-        this.simulator.rightClick(slot);
     }
 
     private void sendQueue() {

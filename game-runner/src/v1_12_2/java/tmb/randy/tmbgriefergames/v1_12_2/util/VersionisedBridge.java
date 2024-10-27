@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util;
 
+import javax.inject.Singleton;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -24,14 +25,12 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.IBridge;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
 import tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV1;
 import tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV2;
 import tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
-import javax.inject.Singleton;
 
 @Singleton
 @Implements(IBridge.class)
@@ -48,7 +47,7 @@ public class VersionisedBridge implements IBridge {
     private final AutoCrafterV2 autoCrafterV2 = new AutoCrafterV2();
     private final AutoCrafterV3 autoCrafterV3 = new AutoCrafterV3();
     private final AutoDecomp autoDecomp = new AutoDecomp();
-    private final Auswurf auswurf = new Auswurf();
+    private final Eject auswurf = new Eject();
     private final HABK habk = new HABK();
     private final VABK vabk = new VABK();
     private final HopperConnections hopperConnections = new HopperConnections();
@@ -56,23 +55,19 @@ public class VersionisedBridge implements IBridge {
 
     private GuiScreen lastGui;
 
-    private static final int commandCountdownLimit = 80;
-    private static int commandCountdown = 0;
-
     public VersionisedBridge() {
         sharedInstance = this;
     }
 
     @Subscribe
     public void cbChanged(CbChangedEvent event) {
+        if(!Addon.isGG())
+            return;
+
         autoComp.stopComp();
         autoCrafterV2.stopCrafter();
         autoCrafterV3.stop();
-        hopperConnections.cbChanged(event);
-
-        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get()) {
-            VersionisedBridge.sendCommand("/portal");
-        }
+        hopperConnections.cbChanged();
     }
 
     @Subscribe
@@ -108,7 +103,7 @@ public class VersionisedBridge implements IBridge {
 
     @Subscribe
     public void tick(GameTickEvent event) {
-        if(!Laby.labyAPI().minecraft().isIngame() || Minecraft.getMinecraft().player == null || Minecraft.getMinecraft().world == null)
+        if(!Laby.labyAPI().minecraft().isIngame() || Minecraft.getMinecraft().player == null || Minecraft.getMinecraft().world == null || !Addon.isGG())
             return;
 
         GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
@@ -126,22 +121,24 @@ public class VersionisedBridge implements IBridge {
             lastGui = currentScreen;
         }
 
-        ClickManager.getSharedInstance().tick(event);
-        autoComp.onTickEvent(event);
-        autoCrafterV1.onTickEvent(event);
-        autoHopper.tick(event);
-        itemShifter.tick(event);
+        ClickManager.getSharedInstance().tick();
+        autoComp.onTickEvent();
+        autoCrafterV1.onTickEvent();
+        autoHopper.tick();
+        itemShifter.tick();
         autoCrafterV2.onTickEvent(event);
         autoDecomp.onTickEvent(event);
-        auswurf.onTickEvent(event);
-        autoCrafterV3.onTick(event);
+        auswurf.onTickEvent();
+        autoCrafterV3.onTick();
         vabk.onTickEvent(event);
-
-        commandCountdown();
+        flyTimer.tick();
     }
 
     @Subscribe
     public void hopperStateChanged(HopperStateChangedEvent event) {
+        if(!Addon.isGG())
+            return;
+
         hopperConnections.hopperStateChanged(event);
     }
 
@@ -151,11 +148,11 @@ public class VersionisedBridge implements IBridge {
             return;
 
         itemShifter.onKey(event);
-        natureBordersRenderer.onKey(event);
+        natureBordersRenderer.onKey();
         autoComp.onKeyEvent(event);
         autoCrafterV1.onKeyEvent(event);
         autoCrafterV2.onKeyEvent(event);
-        autoDecomp.onKeyEvent(event);
+        autoDecomp.onKeyEvent();
         auswurf.onKeyEvent(event);
         autoCrafterV3.onKey(event);
         vabk.onKeyEvent(event);
@@ -167,7 +164,7 @@ public class VersionisedBridge implements IBridge {
             return;
 
         natureBordersRenderer.onRender(event);
-        hopperConnections.renderWorld(event);
+        hopperConnections.renderWorld();
     }
 
     @Subscribe
@@ -217,31 +214,15 @@ public class VersionisedBridge implements IBridge {
         autoCrafterV3.toggle();
     }
 
-    private static void commandCountdown() {
-        if (commandCountdown > 0) {
-            commandCountdown--;
-        }
-    }
-
-    public static boolean canSendCommand() { return commandCountdown <= 0; }
-    public static boolean sendCommand(String command) {
-        if(canSendCommand()) {
-            Laby.references().chatExecutor().chat(command);
-            commandCountdown = commandCountdownLimit;
-            return true;
-        }
-        return false;
-    }
-
     @Override
-    public boolean isChatGuiOpen() {
+    public boolean isChatGuiClosed() {
         for (IngameOverlayActivity activity : Laby.labyAPI().ingameOverlay().getActivities()) {
             if(activity.isAcceptingInput()) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     public static boolean isGUIOpen() {

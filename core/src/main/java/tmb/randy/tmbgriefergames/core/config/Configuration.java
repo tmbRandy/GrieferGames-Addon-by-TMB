@@ -2,6 +2,7 @@ package tmb.randy.tmbgriefergames.core.config;
 
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.gui.screen.key.Key;
+import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget.KeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.MultiKeybindWidget.MultiKeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
@@ -39,17 +40,17 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = SPRITE_SIZE, x = 1)
     private final ChatSubConfig chatConfig;
 
-    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
-    private final NatureSubConfig natureSubConfig;
-
     @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 1)
     private final TooltipSubConfig tooltipConfig;
 
-    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
-    private final HopperSubConfig hopperSubConfig;
-
     @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 3)
     private final SwordsSubConfig swordsSubConfig;
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
+    private final NatureSubConfig natureSubConfig;
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
+    private final HopperSubConfig hopperSubConfig;
 
     @SwitchSetting
     @SpriteSlot(size = SPRITE_SIZE, x = 4, y = 2)
@@ -60,6 +61,10 @@ public class Configuration extends AddonConfig {
     private final ConfigProperty<Boolean> autoLoot = new ConfigProperty<>(true);
 
     @SettingSection("plotSwitch")
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 3)
+    @KeyBindSetting
+    private final ConfigProperty<Key> plotWheelHotkey = new ConfigProperty<>(Key.GRAVE);
 
     @MultiKeyBindSetting
     private final ConfigProperty<Key[]> nextPlot = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.ARROW_RIGHT});
@@ -77,12 +82,13 @@ public class Configuration extends AddonConfig {
     }
     public ChatSubConfig getChatConfig() {return this.chatConfig; }
     public TooltipSubConfig getTooltipConfig() {return this.tooltipConfig; }
-    public ConfigProperty<Key[]> getNextPlot() {return nextPlot;}
-    public ConfigProperty<Key[]> getPreviousPlot() {return previousPlot;}
     public ConfigProperty<Boolean> getSkipHub() {return skipHub;}
     public HopperSubConfig getHopperSubConfig() {return hopperSubConfig;}
     public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
     public AutoCrafterSubConfig getAutoCrafterConfig() {return autoCrafterConfig;}
     public SwordsSubConfig getSwordsSubConfig() {return swordsSubConfig;}
     public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
+    public ConfigProperty<Key> getPlotWheelHotkey() {return plotWheelHotkey;}
+    public ConfigProperty<Key[]> getNextPlot() {return nextPlot;}
+    public ConfigProperty<Key[]> getPreviousPlot() {return previousPlot;}
 }

@@ -39,6 +39,14 @@ public class ChatSubConfig extends Config {
     @SpriteSlot(size = 21, x = 1, y = 2)
     private final ConfigProperty<Boolean> muteStreamer = new ConfigProperty<>(false);
 
+    @SwitchSetting
+    @SpriteSlot(size = 21, x = 4, y = 3)
+    private final ConfigProperty<Boolean> muteCaseOpening = new ConfigProperty<>(false);
+
+    @SwitchSetting
+    @SpriteSlot(size = 21, x = 5, y = 3)
+    private final ConfigProperty<Boolean> muteLuckyBlocks = new ConfigProperty<>(false);
+
     @SpriteSlot(size = 21, y = 3)
     @SwitchSetting
     private final ConfigProperty<Boolean> msgTabMode = new ConfigProperty<>(true);
@@ -59,5 +67,7 @@ public class ChatSubConfig extends Config {
     public ConfigProperty<Boolean> getCleanChat() {return this.cleanChat;}
     public ConfigProperty<Boolean> getHideEmptyLines() {return this.hideEmptyLines;}
     public ConfigProperty<Boolean> getMuteStreamer() {return this.muteStreamer;}
+    public ConfigProperty<Boolean> getMuteCaseOpening() {return muteCaseOpening;}
+    public ConfigProperty<Boolean> getMuteLuckyBlocks() {return muteLuckyBlocks;}
     public ConfigProperty<Boolean> getMsgTabMode() {return msgTabMode;}
 }

@@ -3,13 +3,8 @@ package tmb.randy.tmbgriefergames.v1_12_2.util;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
@@ -79,7 +74,7 @@ public class AutoComp {
         compActive = false;
     }
 
-    public void onTickEvent(GameTickEvent event) {
+    public void onTickEvent() {
 
         if(compState == CompressorState.NONE) {
             return;
@@ -233,14 +228,6 @@ public class AutoComp {
         this.toSend.addLast(new Click(Minecraft.getMinecraft().player.openContainer.windowId, slot, 0, ClickType.QUICK_MOVE));
         ClickManager.getSharedInstance().queueClicks(QueueType.MEDIUM, this.toSend);
         this.toSend.clear();
-    }
-
-    private boolean isGUIOpen() {
-        GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
-
-        // Check if a GUI is open and if it is a chest GUI
-        return currentScreen instanceof GuiChest || currentScreen instanceof GuiInventory
-            || currentScreen instanceof GuiCrafting;
     }
 
     public boolean isCompActive() {

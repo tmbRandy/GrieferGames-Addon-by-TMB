@@ -1,33 +1,29 @@
-package tmb.randy.tmbgriefergames.v1_12_2.util;
+package tmb.randy.tmbgriefergames.v1_8_9.util;
 
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_8_9.util.click.ClickManager;
 
-public class Auswurf {
+public class Eject {
     private boolean active;
     private BlockPos chestPos;
 
-    public void onTickEvent(GameTickEvent event) {
-        if(active && Minecraft.getMinecraft().player != null && Minecraft.getMinecraft().world != null) {
-            if(Minecraft.getMinecraft().player.openContainer instanceof ContainerChest chest) {
+    public void onTickEvent() {
+        if(active && Minecraft.getMinecraft().thePlayer != null && Minecraft.getMinecraft().theWorld != null) {
+            if(Minecraft.getMinecraft().thePlayer.openContainer instanceof ContainerChest chest) {
                 IInventory inv = chest.getLowerChestInventory();
                 if(inv.getName().startsWith("§0Lager: ")) {
                     if(chestPos == null) {
@@ -43,10 +39,10 @@ public class Auswurf {
 
                             if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                                 Minecraft.getMinecraft().displayGuiScreen(null);
-                                Minecraft.getMinecraft().player.closeScreen();
-                                RayTraceResult rayTraceResult = Minecraft.getMinecraft().objectMouseOver;
-                                if(rayTraceResult.typeOfHit == Type.BLOCK && rayTraceResult.getBlockPos().equals(chestPos)) {
-                                    Minecraft.getMinecraft().playerController.processRightClickBlock(Minecraft.getMinecraft().player, Minecraft.getMinecraft().world, chestPos, rayTraceResult.sideHit, rayTraceResult.hitVec, EnumHand.MAIN_HAND);
+                                Minecraft.getMinecraft().thePlayer.closeScreen();
+                                MovingObjectPosition rayTraceResult = Minecraft.getMinecraft().objectMouseOver;
+                                if(rayTraceResult.typeOfHit == MovingObjectType.BLOCK && rayTraceResult.getBlockPos().equals(chestPos)) {
+                                    Minecraft.getMinecraft().playerController.onPlayerRightClick(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().thePlayer.getHeldItem(), chestPos, rayTraceResult.sideHit, rayTraceResult.hitVec);
                                 }
 
                             }
@@ -75,27 +71,17 @@ public class Auswurf {
 
     private static BlockPos getChestPos() {
         Minecraft mc = Minecraft.getMinecraft();
-        RayTraceResult rayTraceResult = mc.objectMouseOver;
+        MovingObjectPosition rayTraceResult = mc.objectMouseOver;
 
-        if (rayTraceResult != null && rayTraceResult.typeOfHit == RayTraceResult.Type.BLOCK) {
+        if (rayTraceResult != null && rayTraceResult.typeOfHit == MovingObjectType.BLOCK) {
             BlockPos blockPosition = rayTraceResult.getBlockPos();
-            IBlockState blockState = mc.world.getBlockState(blockPosition);
+            IBlockState blockState = mc.theWorld.getBlockState(blockPosition);
 
             if (blockState.getBlock() instanceof BlockChest) {
                 return blockPosition;
             }
         }
 
-        return null;
-    }
-
-    private static Entity getEntityInBlockPos(BlockPos pos) {
-        Minecraft mc = Minecraft.getMinecraft();
-        for (Entity entity : mc.world.loadedEntityList) {
-            if (entity instanceof EntityLivingBase && entity.getDistanceSq(pos) < 2) {
-                return entity;
-            }
-        }
         return null;
     }
 }

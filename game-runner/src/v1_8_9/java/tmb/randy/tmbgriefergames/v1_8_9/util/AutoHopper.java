@@ -3,7 +3,6 @@ package tmb.randy.tmbgriefergames.v1_8_9.util;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.client.Minecraft;
@@ -59,7 +58,7 @@ public class AutoHopper {
             );
         }
     }
-    public void tick(GameTickEvent event) {
+    public void tick() {
         if(Addon.getSharedInstance().configuration().getHopperSubConfig().getEnabled().get()) {
             Container cont = Minecraft.getMinecraft().thePlayer.openContainer;
             if (cont instanceof ContainerChest chest) {
@@ -112,7 +111,7 @@ public class AutoHopper {
                         if(!clicked && Addon.getSharedInstance().configuration().getHopperSubConfig().getStackSize().get() != HopperItemStackSizeEnum.NONE && chest.inventorySlots.get(10).getHasStack()) {
                             int currentStackSize = chest.getSlot(10).getStack().stackSize;
                             switch (Addon.getSharedInstance().configuration().getHopperSubConfig().getStackSize().get()) {
-                                case SINGLE_ITEM:
+                                case SINGLEITEM:
                                     if(currentStackSize != 1) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, 1));
                                         clicked = true;
@@ -124,7 +123,7 @@ public class AutoHopper {
                                         clicked = true;
                                     }
                                     break;
-                                case FULL_STACK:
+                                case FULLSTACK:
                                     if(currentStackSize != 64) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, 1));
                                         clicked = true;
@@ -138,13 +137,13 @@ public class AutoHopper {
                                 Minecraft.getMinecraft().thePlayer.closeScreen();
                             } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CONNECT) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 16, 0, 0));
-                            } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTI_CONNECTION) {
+                            } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 15, 0, 0));
                             }
                         }
                     }
 
-                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTI_CONNECTION) {
+                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                     ClickManager.getSharedInstance().addClick(
                         QueueType.MEDIUM, new Click(chest.windowId, 53, 0, 0));
                 }

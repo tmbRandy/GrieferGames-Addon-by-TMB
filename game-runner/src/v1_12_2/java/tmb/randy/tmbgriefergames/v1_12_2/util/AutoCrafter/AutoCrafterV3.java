@@ -1,10 +1,22 @@
 package tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter;
 
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP1;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP2;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP3;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP4;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP5;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP6;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.FINISHED;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.IDLE;
+import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.OPEN_COMP;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -26,13 +38,8 @@ import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.AutoCrafterNewFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_12_2.util.VersionisedBridge;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
-import java.util.HashMap;
-import java.util.Map;
-
-import static tmb.randy.tmbgriefergames.v1_12_2.util.AutoCrafter.AutoCrafterV3.COMP_STATE.*;
 
 public class AutoCrafterV3 {
     private int tickCounter = 0;
@@ -63,7 +70,7 @@ public class AutoCrafterV3 {
             event.setCancelled(true);
     }
 
-    public void onTick(GameTickEvent event) {
+    public void onTick() {
         if(active) {
 
             if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getDelay().get() > 0) {
@@ -126,7 +133,7 @@ public class AutoCrafterV3 {
                             }
                         }
                     } else {
-                        VersionisedBridge.sendCommand("/rezepte");
+                        Addon.sendCommand("/rezepte");
                     }
                 } else {
                     Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.noItemFound"));
@@ -208,7 +215,7 @@ public class AutoCrafterV3 {
 
             if(!isContainerOpen()) {
                 if(nextItem == null) {
-                    VersionisedBridge.sendCommand("/rezepte");
+                    Addon.sendCommand("/rezepte");
                 } else {
                     BlockPos lookingAtBlock = getBlockLookingAt();
                     BlockPos neededBlock = sourceChests.get(nextItem);
@@ -218,7 +225,9 @@ public class AutoCrafterV3 {
                             if(lookingAtBlock.equals(neededBlock)) {
                                 if(!Minecraft.getMinecraft().player.isSneaking()) {
                                     RayTraceResult trace = Minecraft.getMinecraft().player.rayTrace(5, 1.0F);
-                                    Minecraft.getMinecraft().playerController.processRightClickBlock(Minecraft.getMinecraft().player, Minecraft.getMinecraft().world, lookingAtBlock, trace.sideHit, trace.hitVec, EnumHand.MAIN_HAND);
+                                    if(trace != null) {
+                                        Minecraft.getMinecraft().playerController.processRightClickBlock(Minecraft.getMinecraft().player, Minecraft.getMinecraft().world, lookingAtBlock, trace.sideHit, trace.hitVec, EnumHand.MAIN_HAND);
+                                    }
                                 }
                             } else {
                                 lookAtBlockPos(neededBlock);
@@ -415,7 +424,7 @@ public class AutoCrafterV3 {
     }
 
     private static String getItemKey(ItemStack stack) {
-        return Item.REGISTRY.getNameForObject(stack.getItem()).toString() + ":" + stack.getMetadata();
+        return Objects.requireNonNull(Item.REGISTRY.getNameForObject(stack.getItem())) + ":" + stack.getMetadata();
     }
 
     public static boolean isStainedGlassPane(ItemStack stack) {
@@ -549,7 +558,7 @@ public class AutoCrafterV3 {
                         closeChest();
                     }
                 } else {
-                    VersionisedBridge.sendCommand("/rezepte");
+                    Addon.sendCommand("/rezepte");
                 }
             }
             case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6, FINISHED -> {
@@ -575,7 +584,7 @@ public class AutoCrafterV3 {
                                     }
                                     else if (step < 2)
                                         increaseStep();
-                                    else if(step > 2)
+                                    else
                                         decreaseStep();
                                 }
                                 case COMP3 -> {
@@ -585,7 +594,7 @@ public class AutoCrafterV3 {
                                     }
                                     else if (step < 3)
                                         increaseStep();
-                                    else if(step > 3)
+                                    else
                                         decreaseStep();
                                 }
                                 case COMP4 -> {
@@ -595,7 +604,7 @@ public class AutoCrafterV3 {
                                     }
                                     else if (step < 4)
                                         increaseStep();
-                                    else if(step > 4)
+                                    else
                                         decreaseStep();
                                 }
                                 case COMP5 -> {
@@ -605,7 +614,7 @@ public class AutoCrafterV3 {
                                     }
                                     else if (step < 5)
                                         increaseStep();
-                                    else if(step > 5)
+                                    else
                                         decreaseStep();
                                 }
                                 case COMP6 -> {
@@ -615,7 +624,7 @@ public class AutoCrafterV3 {
                                     }
                                     else if (step < 6)
                                         increaseStep();
-                                    else if(step > 6)
+                                    else
                                         decreaseStep();
                                 }
                                 case FINISHED -> closeChest();

@@ -2,7 +2,6 @@ package tmb.randy.tmbgriefergames.v1_8_9.util;
 
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
-import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.I18n;
 import net.minecraft.client.Minecraft;
@@ -23,7 +22,7 @@ public class AutoDecomp {
     private int compSubID;
     private int counter;
 
-    public void onKeyEvent(KeyEvent event) {
+    public void onKeyEvent() {
         if(Key.ESCAPE.isPressed() && autoDecompActive) {
             stopDecomp();
         } else if (VersionisedBridge.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
@@ -120,8 +119,8 @@ public class AutoDecomp {
                 }
             }
         } else {
-            if (VersionisedBridge.canSendCommand()) {
-                VersionisedBridge.sendCommand("/craft");
+            if (Addon.canSendCommand()) {
+                Addon.sendCommand("/craft");
             }
         }
     }

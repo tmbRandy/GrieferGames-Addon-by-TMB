@@ -116,7 +116,7 @@ public class PlayerTracer {
         return false;
     }
 
-    public boolean isTracerActive() {
-        return tracerActive;
+    public boolean isTracerDisabled() {
+        return !tracerActive;
     }
 }

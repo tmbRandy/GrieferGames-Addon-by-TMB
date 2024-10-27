@@ -13,7 +13,7 @@ public interface IBridge {
     void startAuswurf();
     void startAutocrafterV3();
     void openChat();
-    boolean isChatGuiOpen();
+    boolean isChatGuiClosed();
     void resetLines();
     boolean allKeysPressed(Key[] keys);
 }
