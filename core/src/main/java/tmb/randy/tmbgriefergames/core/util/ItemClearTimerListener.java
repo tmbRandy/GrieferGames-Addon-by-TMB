@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.core.util;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent.Side;
+import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +14,7 @@ public class ItemClearTimerListener {
 
     @Subscribe
     public void networkPayloadEvent(NetworkPayloadEvent event) {
-        if(event.side() == Side.RECEIVE) {
+        if(event.side() == Side.RECEIVE && Addon.isGG()) {
             byte[] packetBuffer = event.getPayload().clone();
             String payloadString = new String(packetBuffer, StandardCharsets.UTF_8);
 
@@ -29,6 +30,9 @@ public class ItemClearTimerListener {
 
     @Subscribe
     public void CbChanged(CbChangedEvent event) {
+        if(!Addon.isGG())
+            return;
+
         itemRemover = -1;
     }
 
