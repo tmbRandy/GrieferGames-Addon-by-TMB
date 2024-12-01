@@ -139,7 +139,7 @@ public class Addon extends LabyAddon<Configuration> {
   public static boolean isGG() {
     if(!Laby.labyAPI().serverController().isConnected() || Laby.references().serverController().getCurrentServerData() == null) {
       return false;
-    }
+     }
 
     return Objects.requireNonNull(Laby.references().serverController().getCurrentServerData()).address().getHost().toLowerCase().contains("griefergames");
   }
