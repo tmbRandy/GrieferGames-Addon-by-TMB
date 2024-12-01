@@ -44,6 +44,9 @@ Wenn du willst, kannst du direkt im Portalraum spawnen.
 ### Auto Loot
 Deine /freekiste und /grieferboost kann das Addon automatisch für dich abholen. Es merkt sich, wenn diese abgeholt wurden und führt die Befehle automatisch aus, sobald die Cooldowns abgelaufen sind. Außerdem erinnert es dich, sobald du wieder /kopf nutzen kannst.
 
+### PlotWheel
+Das PlotWheel ist die einfachste und schnellste Möglichkeit, den CB, das GS oder beides auf einmal zu wechseln. Drücke die Taste "<" um das PlotWheel zu öffnen. Speichere hier deine Plots, Homes oder Warps ab. Du kannst sie an einen CB binden oder für alle CBs eintragen. Klicke auf einen CB auf dem äußeren Rad oder auf ein Plot auf dem inneren Rad. Falls du noch nicht auf dem entsprechenden CB bist, wechselst du automatisch. Du kannst einzelne Plots auch auf einen deiner Accounts beschränken, sodass diese Plots dann nur für den jeweiligen Account verfügbar sind. Um ein Plot zu löschen, klicke es mit der rechten Maustaste an.
+
 ### Automatische Annahme von /tpa und /tpahere
 Wenn du mehrere Accounts besitzt, kannst du dir von einem Account zum anderen eine /tpa oder /tpahere senden und diese wird sofort angenommen. Du musst dafür nur in LabyMod deine Accounts registrieren, was du normalerweise ohnehin schon getan hast.
 
