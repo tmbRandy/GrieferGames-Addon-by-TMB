@@ -37,7 +37,6 @@ import tmb.randy.tmbgriefergames.v1_12_2.util.click.ClickManager;
 public class VersionisedBridge implements IBridge {
     private static VersionisedBridge sharedInstance;
 
-    private final TooltipExtension tooltipExtension = new TooltipExtension();
     private final AutoHopper autoHopper = new AutoHopper();
     private final FlyTimer flyTimer = new FlyTimer();
     private final ItemShifter itemShifter = new ItemShifter();
@@ -172,7 +171,6 @@ public class VersionisedBridge implements IBridge {
         if(!Addon.isGG())
             return;
 
-        tooltipExtension.renderTooltip(event);
         flyTimer.onTooltipEvent(event);
     }
 

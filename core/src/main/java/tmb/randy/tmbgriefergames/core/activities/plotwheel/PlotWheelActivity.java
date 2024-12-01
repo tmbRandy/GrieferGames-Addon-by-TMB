@@ -20,6 +20,7 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.Color;
 import net.labymod.api.util.I18n;
+import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.CBtracker;
 import tmb.randy.tmbgriefergames.core.FileManager;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.CBwheel.CBsegment;
@@ -171,7 +172,7 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
 
     @Subscribe
     public void tick(GameTickEvent event) {
-        if(isOpen()) {
+        if(isOpen() && Addon.isGG()) {
             for (AbstractWidget<?> child : cbWheel.getChildren()) {
                 if(child instanceof CBsegment segment) {
                     if(segment.isSegmentSelected()) {

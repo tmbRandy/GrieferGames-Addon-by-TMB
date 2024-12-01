@@ -280,8 +280,9 @@
             "item_saver_message_birth_bow": "Manche Bögen sind zum Schießen da. Dieser hier eher nicht!"
         },
         "tooltip": {
-            "compressedTooltip": "§6%s §eDKs §6%s §e Stacks §6%s §eItems",
-            "adventurerTooltip": "§6 %s%% §f| §eRest: §6 %s §eDKs §6 %s §eStacks §6 %s §eItems"
+            "compressedTooltip": "§6%s §eDKs §6%s §eStacks §6%s §eItems",
+            "adventurerTooltipOneLine": "§6%s%% §f| §eRest: §6 %s §eDKs §6%s §eStacks §6 %s §eItems",
+            "adventurerTooltipMultiLine": "\n§6%s%%\n§6%s §eDKs\n§6%s §eStacks\n§6%s §eItems"
         },
         "payAll": {
             "amountTooLow": "Der abgerundete Betrag pro Spieler liegt bei 0$!",
@@ -334,6 +335,12 @@
             "hopper_mode": {
                 "name": "Trichter-Verbindung",
                 "description": "Zeigt per Icon an, ob du dich im Trichter-Verbindungsmodus befindest. Überflüssige Chatausgaben werden dadurch unterdrückt."
+            },
+            "adventure": {
+                "name": "Abenteuer",
+                "oneLine": {
+                    "name": "Eine Zeile"
+                }
             }
         },
         "autoComp": {
@@ -365,6 +372,7 @@
             "disabled": "VABK §4DEAKTIVIERT"
         },
         "mobs": {
+            "spawn": "Erschaffe",
             "chicken": "Huhn",
             "cow": "Kuh",
             "pig": "Schwein",

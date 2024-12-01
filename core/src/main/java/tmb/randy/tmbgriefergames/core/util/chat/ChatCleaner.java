@@ -41,6 +41,7 @@ public class ChatCleaner {
         if(!Addon.isGG())
             return;
 
+
         if(message.equals("[Rezepte] Du hast nicht genug Material, um dieses Rezept herzustellen.")) {
             event.setCancelled(true);
         }
@@ -49,7 +50,7 @@ public class ChatCleaner {
             event.chatMessage().component().clickEvent(ClickEvent.runCommand("/p h " + coordinates));
 
         if(Addon.getSharedInstance().configuration().getChatConfig().getMuteCaseOpening().get() && !event.isCancelled()) {
-            if(message.startsWith("[CaseOpening] Folgender Preis wurde gezogen: ") || (message.startsWith("[CaseOpening] Der Spieler ") && message.endsWith(" hat einen Hauptpreis gewonnen!"))) {
+            if(message.startsWith("[CaseOpening] Folgender Preis wurde gezogen: ") || (message.startsWith("[CaseOpening] Der Spieler ") && message.endsWith(" hat einen Hauptpreis gewonnen!")) || message.equals("[CaseOpening] Ein Spieler hat einen Hauptpreis gewonnen!")) {
                 event.setCancelled(true);
             }
         }
@@ -66,6 +67,10 @@ public class ChatCleaner {
                     event.setCancelled(true);
                     break;
                 }
+            }
+
+            if((message.startsWith("[GrieferGames] Du wurdest automatisch auf ") && message.endsWith(" verbunden.")) || (message.startsWith("[GrieferGames] Serverwechsel auf ") && message.endsWith(" wurde gestartet.."))) {
+                event.setCancelled(true);
             }
         }
     }

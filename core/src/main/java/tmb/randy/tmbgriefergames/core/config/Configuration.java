@@ -24,6 +24,7 @@ public class Configuration extends AddonConfig {
         this.natureSubConfig = new NatureSubConfig();
         this.autoCrafterConfig = new AutoCrafterSubConfig();
         this.swordsSubConfig = new SwordsSubConfig();
+        this.accountUnitySubConfig = new AccountUnitySubConfig();
     }
 
     @SwitchSetting
@@ -60,6 +61,8 @@ public class Configuration extends AddonConfig {
     @SwitchSetting
     private final ConfigProperty<Boolean> autoLoot = new ConfigProperty<>(true);
 
+    private final AccountUnitySubConfig accountUnitySubConfig;
+
     @SettingSection("plotSwitch")
 
     @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 3)
@@ -88,6 +91,7 @@ public class Configuration extends AddonConfig {
     public AutoCrafterSubConfig getAutoCrafterConfig() {return autoCrafterConfig;}
     public SwordsSubConfig getSwordsSubConfig() {return swordsSubConfig;}
     public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
+    public AccountUnitySubConfig getAccountUnitySubConfig() {return accountUnitySubConfig;}
     public ConfigProperty<Key> getPlotWheelHotkey() {return plotWheelHotkey;}
     public ConfigProperty<Key[]> getNextPlot() {return nextPlot;}
     public ConfigProperty<Key[]> getPreviousPlot() {return previousPlot;}

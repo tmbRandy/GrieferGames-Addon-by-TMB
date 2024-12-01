@@ -48,7 +48,7 @@ Deine /freekiste und /grieferboost kann das Addon automatisch für dich abholen.
 Wenn du mehrere Accounts besitzt, kannst du dir von einem Account zum anderen eine /tpa oder /tpahere senden und diese wird sofort angenommen. Du musst dafür nur in LabyMod deine Accounts registrieren, was du normalerweise ohnehin schon getan hast.
 
 ### Automatisches Shiften von Items
-In Minecraft kann man normalerweise mit SHIFT + Doppelklick auf ein Item alles in oder aus einer Kiste in das Inventar bewegen. Auf GrieferGames funktioniert dies in neueren Versionen als 1.8.9 nicht. Mit den Pfeiltasten oben️ und unten️ bieten wir dir hierfür einen Workaround. Wenn du bei geöffnetem Inventar die Pfeiltasten links + rechts + oben️ gleichzeitig drückst, kannst du außerdem dein gesamtes Inventar droppen.
+In Minecraft kann man normalerweise mit SHIFT + Doppelklick auf ein Item alles in oder aus einer Kiste in das Inventar bewegen. Auf GrieferGames funktioniert dies in neueren Versionen als 1.8.9 nicht. Mit den Pfeiltasten oben️ und unten️ bieten wir dir hierfür einen Workaround. Wenn du bei geöffnetem Inventar die Pfeiltasten links + rechts + oben️ gleichzeitig drückst, kannst du außerdem dein gesamtes Inventar droppen. Spawner und das Komprimierungs-Menü von endlosen Lagern lassen sich ebenfalls mit Pfeil unten automatisch leeren.
 
 ### Befehl /dks <zahl>
 Wenn du z.b. 100 DKs einer Ware verkaufen willst, kannst du den Befehl /dks 100 nutzen. Du erhältst dann im Chat eine Ausgabe, wie viele Items du auf welcher Komprimierungsstufe brauchst, um die 100 DKs zu erreichen. Das funktioniert natürlich mit jeder Zahl.

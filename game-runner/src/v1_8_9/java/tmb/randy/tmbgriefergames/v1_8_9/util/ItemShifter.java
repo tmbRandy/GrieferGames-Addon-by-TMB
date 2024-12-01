@@ -11,6 +11,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
@@ -52,68 +54,95 @@ public class ItemShifter {
     public void startShifting() {
         this.currentChest = (ContainerChest) Minecraft.getMinecraft().thePlayer.openContainer;
 
-        if(Minecraft.getMinecraft().thePlayer.getHeldItem() == null)
-            this.itemToMove = null;
-        else
-            this.itemToMove = Minecraft.getMinecraft().thePlayer.getHeldItem().getItem();
+        if(currentChest.getLowerChestInventory().getName().equals("§6Wähle deine Komprimierung") && topToBottom) {
+            outerLoop : for (int i = 16; i >= 10 ; i--) {
+                ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
+                if(stack != null && stack.hasTagCompound()) {
+                    NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
+                    NBTTagList lore = display.getTagList("Lore", 8);
 
-        int containerSize = currentChest.inventorySlots.size();
+                    if(lore.tagCount() > 0) {
+                        for (int j = 0; j < lore.tagCount(); j++) {
+                            String string = lore.getStringTagAt(j);
 
-        int fromMin = 0;
-        int fromMax;
-        int destMin = 0;
-        int destMax;
-
-        if(topToBottom) {
-            if(containerSize == 63) {
-                fromMax = 26;
-                destMin = 27;
-                destMax = 62;
-            } else if(containerSize == 90) {
-                fromMax = 53;
-                destMin = 54;
-                destMax = 89;
-            } else {return;}
-        } else {
-            if(containerSize == 63) {
-                destMax = 26;
-                fromMin = 27;
-                fromMax = 62;
-            } else if(containerSize == 90) {
-                destMax = 53;
-                fromMin = 54;
-                fromMax = 89;
-            } else {return;}
-        }
-
-        depositHeld(fromMin, fromMax, destMin, destMax);
-
-        int availableSlots = getEmptySlotsInRange(destMin, destMax);
-        boolean isSpawner = checkIfContainerIsSpawner();
-
-
-        for(int from = fromMin; from <= fromMax; from++) {
-
-            Slot fromSlot = this.currentChest.inventorySlots.get(from);
-
-            if(fromSlot.getStack() == null)
-                continue;
-
-            Item currentItem = fromSlot.getStack().getItem();
-            String currentItemName = fromSlot.getStack().getDisplayName();
-
-            if(fromSlot.getHasStack() && availableSlots > 0) {
-                if(!(isSpawner && ArrayUtils.contains(spawnerMenuItems, currentItem))) {
-                    if(itemToMove == null || (itemToMove.equals(currentItem) && this.itemToMove.equals(currentItemName))) {
-                        this.shiftClick(from);
-                        availableSlots -= 1;
+                            if(string.startsWith("§e") && string.endsWith(" Verfügbar")) {
+                                int count = Integer.parseInt(string.replace("§e", "").replace(" Verfügbar", ""). replace(".", ""));
+                                if(count > 0) {
+                                    for (int k = 0; k < count; k++) {
+                                        this.shiftClick(i);
+                                    }
+                                    sendQueue();
+                                    break outerLoop;
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }
+        } else {
+            if(Minecraft.getMinecraft().thePlayer.getHeldItem() == null)
+                this.itemToMove = null;
+            else
+                this.itemToMove = Minecraft.getMinecraft().thePlayer.getHeldItem().getItem();
 
-        this.itemToMove = null;
-        this.sendQueue();
+            int containerSize = currentChest.inventorySlots.size();
+
+            int fromMin = 0;
+            int fromMax;
+            int destMin = 0;
+            int destMax;
+
+            if(topToBottom) {
+                if(containerSize == 63) {
+                    fromMax = 26;
+                    destMin = 27;
+                    destMax = 62;
+                } else if(containerSize == 90) {
+                    fromMax = 53;
+                    destMin = 54;
+                    destMax = 89;
+                } else {return;}
+            } else {
+                if(containerSize == 63) {
+                    destMax = 26;
+                    fromMin = 27;
+                    fromMax = 62;
+                } else if(containerSize == 90) {
+                    destMax = 53;
+                    fromMin = 54;
+                    fromMax = 89;
+                } else {return;}
+            }
+
+            depositHeld(fromMin, fromMax, destMin, destMax);
+
+            int availableSlots = getEmptySlotsInRange(destMin, destMax);
+            boolean isSpawner = checkIfContainerIsSpawner();
+
+
+            for(int from = fromMin; from <= fromMax; from++) {
+
+                Slot fromSlot = this.currentChest.inventorySlots.get(from);
+
+                if(fromSlot.getStack() == null)
+                    continue;
+
+                Item currentItem = fromSlot.getStack().getItem();
+                String currentItemName = fromSlot.getStack().getDisplayName();
+
+                if(fromSlot.getHasStack() && availableSlots > 0) {
+                    if(!(isSpawner && ArrayUtils.contains(spawnerMenuItems, currentItem))) {
+                        if(itemToMove == null || (itemToMove.equals(currentItem) && this.itemToMove.equals(currentItemName))) {
+                            this.shiftClick(from);
+                            availableSlots -= 1;
+                        }
+                    }
+                }
+            }
+
+            this.itemToMove = null;
+            this.sendQueue();
+        }
     }
 
     public void tick() {

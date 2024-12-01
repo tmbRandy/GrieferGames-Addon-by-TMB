@@ -13,7 +13,7 @@ public class HopperTracker {
 
     @Subscribe
     public void cbSwitch(CbChangedEvent event) {
-        setCurrentHopperState(HopperState.NONE);
+        if(Addon.isGG()) setCurrentHopperState(HopperState.NONE);
     }
 
     @Subscribe

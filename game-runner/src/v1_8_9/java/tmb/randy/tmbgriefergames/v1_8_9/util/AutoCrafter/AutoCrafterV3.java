@@ -489,7 +489,7 @@ public class AutoCrafterV3 {
     private int getFirstSlotForCraftItem() {
         for (int i = 0; i < Minecraft.getMinecraft().thePlayer.inventory.mainInventory.length; i++) {
             ItemStack itemStack = Minecraft.getMinecraft().thePlayer.inventory.mainInventory[i];
-            if(getItemKey(itemStack).equals(getItemKey(craftItem))) {
+            if(getItemKey(itemStack) != null && getItemKey(itemStack).equals(getItemKey(craftItem))) {
                 return i;
             }
         }

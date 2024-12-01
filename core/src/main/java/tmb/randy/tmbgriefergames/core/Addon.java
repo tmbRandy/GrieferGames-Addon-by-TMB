@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.core;
 
-import java.util.Objects;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
@@ -29,6 +28,7 @@ import tmb.randy.tmbgriefergames.core.util.ItemClearTimerListener;
 import tmb.randy.tmbgriefergames.core.util.ItemSaver;
 import tmb.randy.tmbgriefergames.core.util.PlayerTracer;
 import tmb.randy.tmbgriefergames.core.util.PlotSwitch;
+import tmb.randy.tmbgriefergames.core.util.TooltipExtension;
 import tmb.randy.tmbgriefergames.core.util.chat.ChatCleaner;
 import tmb.randy.tmbgriefergames.core.util.chat.CooldownNotifier;
 import tmb.randy.tmbgriefergames.core.util.chat.EmptyLinesRemover;
@@ -37,6 +37,7 @@ import tmb.randy.tmbgriefergames.core.util.chat.NewsBlocker;
 import tmb.randy.tmbgriefergames.core.util.chat.PaymentValidator;
 import tmb.randy.tmbgriefergames.core.util.chat.StreamerMute;
 import tmb.randy.tmbgriefergames.core.util.chat.TypeCorrection;
+import tmb.randy.tmbgriefergames.core.widgets.AdventureWidget;
 import tmb.randy.tmbgriefergames.core.widgets.FlyTimerWidget;
 import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget;
 import tmb.randy.tmbgriefergames.core.widgets.HopperModeWidget;
@@ -65,6 +66,7 @@ public class Addon extends LabyAddon<Configuration> {
   private final ItemSaver itemSaver = new ItemSaver();
   private final AccountUnity accountUnity = new AccountUnity();
   private final ItemClearTimerListener itemClearTimerListener = new ItemClearTimerListener();
+  private final TooltipExtension tooltipExtension = new TooltipExtension();
 
     private static final int commandCountdownLimit = 80;
     private static int commandCountdown = 0;
@@ -91,6 +93,7 @@ public class Addon extends LabyAddon<Configuration> {
     this.registerListener(itemSaver);
     this.registerListener(accountUnity);
     this.registerListener(itemClearTimerListener);
+    this.registerListener(tooltipExtension);
     this.registerListener(this);
 
       this.registerCommand(new DKsCommand());
@@ -110,6 +113,7 @@ public class Addon extends LabyAddon<Configuration> {
       labyAPI().hudWidgetRegistry().register(gameInfoWidget);
       labyAPI().hudWidgetRegistry().register(new NearbyWidget(category));
       labyAPI().hudWidgetRegistry().register(new HopperModeWidget(category));
+      labyAPI().hudWidgetRegistry().register(new AdventureWidget(category));
 
         //PlotWheelActivity activity = new PlotWheelActivity();
         //labyAPI().navigationService().register(new PlotWheelNavigationElement(activity));
@@ -132,11 +136,11 @@ public class Addon extends LabyAddon<Configuration> {
     public DefaultReferenceStorage getReferenceStorage() {return (this.referenceStorageAccessor()); }
 
   public static boolean isGG() {
-    if(!Laby.labyAPI().serverController().isConnected()) {
+    if(!Laby.labyAPI().serverController().isConnected() || Laby.references().serverController().getCurrentServerData() == null) {
       return false;
     }
 
-    return Objects.requireNonNull(Laby.labyAPI().serverController().getCurrentServerData()).address().getHost().toLowerCase().contains("griefergames");
+    return Laby.references().serverController().getCurrentServerData().address().getHost().toLowerCase().contains("griefergames");
   }
 
     public IBridge getBridge() {
@@ -164,25 +168,27 @@ public class Addon extends LabyAddon<Configuration> {
 
     @Subscribe
     public void keyInput(KeyEvent event) {
-        if(event.state() == State.PRESS && event.key() == configuration().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB()) {
+        if(event.state() == State.PRESS && event.key() == configuration().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB() && isGG()) {
+            // Unfortunately the player has to close the PlotWheel manually as Laby doesn't provide Activity::close  :/
             Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new PlotWheelActivity());
         }
     }
 
     @Subscribe
     public void tick(GameTickEvent event) {
-        commandCountdown();
+        if(isGG())
+            commandCountdown();
     }
 
     @Subscribe
     public void cbChanged(CbChangedEvent event) {
-        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get())
+        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get() && isGG())
             Addon.sendCommand("/portal");
     }
 
     @Subscribe
     public void messageReceived(ChatReceiveEvent event) {
-        if(event.chatMessage().getPlainText().equals("[Switcher] Daten heruntergeladen!")) {
+        if(isGG() && event.chatMessage().getPlainText().equals("[Switcher] Daten heruntergeladen!")) {
             if(queuedPlot != null) {
                 if(CBtracker.isPlotworldCB(CBtracker.getCurrentCB())) {
                     new java.util.Timer().schedule(

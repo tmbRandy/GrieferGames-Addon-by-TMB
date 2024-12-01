@@ -45,7 +45,7 @@ public class HopperModeWidget extends SimpleHudWidget<HudWidgetConfig> {
 
     @Subscribe
     public void messageReceived(ChatReceiveEvent event) {
-        if(this.isEnabled()) {
+        if(this.isEnabled() && Addon.isGG()) {
             String message = event.chatMessage().getPlainText();
             if (message.equals("[Trichter] Das Multi-Verbinden wurde aktiviert. Klicke mit dem gewünschten Item auf den gewünschten Endpunkt.") ||
                 message.equals("[Trichter] Das Verbinden wurde aktiviert. Klicke auf den gewünschten Endpunkt.") ||

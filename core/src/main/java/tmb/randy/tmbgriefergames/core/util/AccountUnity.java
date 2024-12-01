@@ -13,11 +13,28 @@ public class AccountUnity {
         if(!Addon.isGG())
             return;
 
-        for (Account account : Laby.references().accountService().getAccounts()) {
-            String name = account.getUsername();
-            if(event.chatMessage().getPlainText().endsWith(name + " möchte sich zu dir teleportieren.") || event.chatMessage().getPlainText().endsWith(name + " möchte, dass du dich zu der Person teleportierst.")) {
-                Laby.references().chatExecutor().chat("/tpaccept");
+        String message = event.chatMessage().getPlainText();
+
+        if(message.endsWith(" möchte sich zu dir teleportieren.") || message.endsWith(" möchte, dass du dich zu der Person teleportierst.")) {
+            for (Account account : Laby.references().accountService().getAccounts()) {
+                String name = account.getUsername();
+
+                if (message.endsWith(name + " möchte sich zu dir teleportieren.") || message.endsWith(name + " möchte, dass du dich zu der Person teleportierst.")) {
+                    Laby.references().chatExecutor().chat("/tpaccept");
+                }
             }
-        }
+        } else if(Addon.getSharedInstance().configuration().getAccountUnitySubConfig().getVoteBooster().get() && message.startsWith("[StartKick] Ersteller: ") || message.startsWith("[StartJail] Ersteller: ")) {
+                String[] split = message.split(" ");
+                String name = split[split.length - 1];
+
+                for (Account account : Laby.references().accountService().getAccounts()) {
+                    String accName = account.getUsername();
+                    if(name.equals(accName)) {
+                        Laby.labyAPI().minecraft().chatExecutor().chat("/ja");
+                    }
+                }
+            }
+
+
     }
 }

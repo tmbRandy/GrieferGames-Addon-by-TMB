@@ -280,8 +280,9 @@
             "item_saver_message_birth_bow": "This bow is too valuable to shoot with it!"
         },
         "tooltip": {
-            "compressedTooltip": "§6%s §edouble chests §6%s §e stacks §6%s §eitems",
-            "adventurerTooltip": "§6 %s%% §f| §erest: §6 %s §edouble chests §6 %s §estacks §6 %s §eitems"
+            "compressedTooltip": "§6%s §eDKs §6%s §e stacks §6%s §eitems",
+            "adventurerTooltipOneLine": "§6%s%% §f| §erest: §6 %s §eDKs §6%s §estacks §6 %s §eitems",
+            "adventurerTooltipMultiLine": "\n§6%s%%\n§6%s §eDKs\n§6%s §eStacks\n§6%s §eItems"
         },
         "payAll": {
             "amountTooLow": "The rounded amount per player is $0!",
@@ -330,6 +331,12 @@
                 "showMobs": {
                     "name": "Show mobs"
                 }
+            },
+            "adventure": {
+                "name": "Adventure",
+                "oneLine": {
+                    "name": "One Line"
+                }
             }
         },
         "autoComp": {
@@ -361,6 +368,7 @@
             "disabled": "VABK §4§lDISABLED"
         },
         "mobs": {
+            "spawn": "Spawn",
             "chicken": "Chicken",
             "cow": "Cow",
             "pig": "Pig",
