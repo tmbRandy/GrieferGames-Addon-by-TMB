@@ -56,7 +56,7 @@ public class ItemShifter {
         if(currentChest.getLowerChestInventory().getName().equals("§6Wähle deine Komprimierung") && topToBottom) {
             outerLoop : for (int i = 16; i >= 10 ; i--) {
                 ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
-                if(stack.hasTagCompound()) {
+                if(stack.hasTagCompound() && stack.getTagCompound() != null) {
                     NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
                     NBTTagList lore = display.getTagList("Lore", 8);
 

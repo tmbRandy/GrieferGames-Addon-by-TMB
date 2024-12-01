@@ -15,6 +15,7 @@ import net.labymod.api.nbt.tags.NBTTagCompound;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.widgets.AdventureWidget.AdventureWidgetConfig;
+import java.util.Objects;
 
 public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
 
@@ -58,8 +59,8 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
     }
 
     public static String getAdventurerForItemStack(ItemStack stack, boolean oneLine) {
-        if(stack == null)
-            stack = Laby.labyAPI().minecraft().getClientPlayer().getMainHandItemStack();
+        if(stack == null && Laby.labyAPI().minecraft().getClientPlayer() != null)
+            stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack();
 
         if(stack != null) {
             if(stack.hasDataComponentContainer()) {

@@ -2,14 +2,23 @@
     "tmbgriefergames": {
         "settings": {
             "name": "GrieferGames Addon",
-            "header": {
-                "plotSwitch": {
-                    "name": "quick plot switch",
-                    "description": "Set a pair of keys to switch through the plots of a player."
+            "plotSwitchSubConfig": {
+                "name": "Quick plot switch",
+                "description": "Set a pair of keys to switch through the plots of a player.",
+                "plotWheelHotkey": {
+                    "name": "Open PlotWheel"
+                },
+                "nextPlot": {
+                    "name": "Next plot",
+                    "description": "Go to the next plot (/p h <player> +1)"
+                },
+                "previousPlot": {
+                    "name": "Previous plot",
+                    "description": "Go to the previous plot (/p h <player> -1)"
                 }
             },
             "enabled": {
-                "name": "enabled",
+                "name": "Enabled",
                 "description": "Activates or disables the functionality of this addon."
             },
             "natureSubConfig": {
@@ -19,11 +28,11 @@
                     "name": "Show borders"
                 },
                 "borderRadius": {
-                    "name": "radius",
+                    "name": "Radius",
                     "description": "Sets the distance around you where the borders should shall appear."
                 },
                 "borderheight": {
-                    "name": "height",
+                    "name": "Height",
                     "description": "Sets the height for the border lines."
                 },
                 "borderMaxHeight": {
@@ -31,28 +40,28 @@
                     "description": "Maximum height for the borders"
                 },
                 "hotkey": {
-                    "name": "hotkey"
+                    "name": "Nature borders Hotkey"
                 },
                 "rainbow": {
-                    "name": "change colors"
+                    "name": "Change colors"
                 },
                 "borderColor": {
-                    "name": "color"
+                    "name": "Color"
                 }
             },
             "hopperSubConfig": {
-                "name": "hoppers",
+                "name": "Hoppers",
                 "description": "Automates the settings within the hopper menu.",
                 "filterItem":{
-                    "name": "filter item",
+                    "name": "Filter item",
                     "description": "Sets the first item in your hotbar as filter item."
                 },
                 "radius": {
-                    "name": "radius",
+                    "name": "Radius",
                     "description": "Sets the radius for the hopper to catch items. -1 means no change."
                 },
                 "finalAction": {
-                    "name": "final action",
+                    "name": "Final action",
                     "description": "Sets the last action to execute.",
                     "entries": {
                         "none": "DON'T CHANGE",
@@ -62,7 +71,7 @@
                     }
                 },
                 "stackSize": {
-                    "name": "stack size",
+                    "name": "Stack size",
                     "description": "Which stack size should the hopper pass each tick.",
                     "entries": {
                         "none": "DON'T CHANGE",
@@ -89,38 +98,38 @@
                     }
                 },
                 "resetLines": {
-                    "name": "Linien",
-                    "text": "zurücksetzen"
+                    "name": "Lines",
+                    "text": "reset"
                 }
             },
             "swordsSubConfig": {
-                "name": "automatic sword",
+                "name": "Automatic sword",
                 "description": "Put your Bonze or BIRTH sword into your first slot, your arrows into your second slot and a bow into the third slot of your hotbar. After you fired an arrow, the sword will be selected and after a set cooldown the bow will be selected again.",
                 "HABKenabled": {
-                    "name": "active"
+                    "name": "Enabled"
                 },
                 "HABKcooldown": {
-                    "name": "switch cooldown",
+                    "name": "Switch cooldown",
                     "description": "The time in ms until the bow will be selected."
                 },
                 "VABKloadTime": {
-                    "name": "loading time",
+                    "name": "Loading time",
                     "description": "the higher the value, the higher the arrow will fly. Lower values increase the shot rate by far,"
                 },
                 "VABKswitchCooldown": {
-                    "name": "switch cooldown",
+                    "name": "Switch cooldown",
                     "description": "The time until the next arrow will be loaded."
                 },
                 "VABKhotkey": {
-                    "name": "hotkey",
+                    "name": "VABK Hotkey",
                     "description": "With this hotkey you can toggle the full automatic sword."
                 },
                 "header": {
                     "habk": {
-                        "name": "half automatic Bonze sword (HABK)"
+                        "name": "Half automatic Bonze sword (HABK)"
                     },
                     "vabk": {
-                        "name": "full automatic Bonze sword (VABK)"
+                        "name": "Full automatic Bonze sword (VABK)"
                     }
                 }
             },
@@ -128,9 +137,9 @@
                 "name": "Skip the hub"
             },
             "chatConfig": {
-                "name": "chat",
+                "name": "Chat",
                 "typeCorrection": {
-                    "name": "type correction",
+                    "name": "Type correction",
                     "description": "This will prevent you from common typing errors like 7ec, (msg or t/r"
                 },
                 "messageSplit": {
@@ -138,27 +147,27 @@
                     "description": "Splits a /msg or /r message into multiple messages if it is longer than the 100 character limit of GrieferGames."
                 },
                 "hideNews": {
-                    "name": "hide news",
+                    "name": "Hide news",
                     "description": "Removes the GrieferGames news ticker from the chat."
                 },
                 "antiFakeMoney": {
-                    "name": "anti fake money",
+                    "name": "Anti fake money",
                     "description": "Verifies incoming payments and detects fake money."
                 },
                 "cooldownNotifier": {
-                    "name": "cooldown notification",
+                    "name": "Cooldown notification",
                     "description": "Shows a notification as soon as a cooldown like /wand /rand /boden /sign /anticopy is over."
                 },
                 "cleanChat": {
-                    "name": "clean chat",
+                    "name": "Clean chat",
                     "description": "GrieferGames sends some unimportant messages in the chat. This function removes such messages and makes the chat much cleaner."
                 },
                 "hideEmptyLines": {
-                    "name": "hide empty lines",
+                    "name": "Hide empty lines",
                     "description": "Removes empty lines from the chat."
                 },
                 "muteStreamer": {
-                    "name": "remove streamer messages",
+                    "name": "Remove streamer messages",
                     "description": "removes the messages that appear, when a streamer goes live."
                 },
                 "msgTabMode": {
@@ -172,27 +181,19 @@
                 }
             },
             "itemProtection": {
-                "name": "item protection",
+                "name": "Item protection",
                 "description": "Prevents you from using expensive farming items like Bonze Klinge, Birth Klinge, Birth Bogen, placing of SoS. CAUTION! This function will only work for clicks performed by the user. Software based clicks (performed by an auto clicker) will still damage or set your item."
             },
             "tooltipConfig": {
-                "name": "tooltip info",
+                "name": "Tooltip info",
                 "showCompTooltip": {
-                    "name": "tooltip info for compressed items",
+                    "name": "Tooltip info for compressed items",
                     "description": "Hover over compressed items or blocks to see how many double chests, stacks and single items the item contains."
                 },
                 "showAdventurerTooltip": {
-                    "name": "tooltip info for adventurer tools",
+                    "name": "Tooltip info for adventurer tools",
                     "description": "Hover over an adventurer tool to see your farming progress in percent and the remaining number in double chests, stacks and single items."
                 }
-            },
-            "nextPlot": {
-                "name": "next plot",
-                "description": "Go to the next plot (/p h <player> +1)"
-            },
-            "previousPlot": {
-                "name": "previous plot",
-                "description": "Go to the previous plot (/p h <player> -1)"
             },
             "autoCrafterConfig": {
                 "name": "Auto-crafter & auto-(de)compressor",
@@ -238,7 +239,7 @@
                     "name": "Hotkey for auto-decompressor"
                 },
                 "delay": {
-                    "name": "delay",
+                    "name": "Delay",
                     "description": "If it is buggy increase the delay to make it slower."
                 },
                 "header": {
@@ -260,8 +261,17 @@
                 "name": "Auto Loot",
                 "description": "Automatically gets your /freekiste and /grieferboost."
             },
-            "plotWheelHotkey": {
-                "name": "Open PlotWheel"
+            "accountUnitySubConfig": {
+                "name": "Account unity",
+                "description": "Contains options that improve the teamwork of your accounts.",
+                "tpAccept": {
+                    "name": "Auto /tpaccept (for your own accounts only)",
+                    "description": "Auto accept /tpa and /tpahere, if they are sent by one of your own accounts."
+                },
+                "voteBooster": {
+                    "name": "Vote booster",
+                    "description": "It one of your accounts starts a /startjail or /startkick, all of your accounts will vote /ja."
+                }
             }
         },
         "chat": {

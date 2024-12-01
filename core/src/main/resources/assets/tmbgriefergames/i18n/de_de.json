@@ -2,10 +2,18 @@
     "tmbgriefergames": {
         "settings": {
             "name": "GrieferGames Addon",
-            "header": {
-                "plotSwitch": {
-                    "name": "Schneller Plotwechsel",
-                    "description": "Lege Tastenkombinationen fest, mit denen du schnell zwischen den Plots eines Spielers wechseln kannst."
+            "plotSwitchSubConfig": {
+                "name": "Schneller Plotwechsel",
+                "plotWheelHotkey": {
+                    "name": "PlotWheel öffnen"
+                },
+                "nextPlot": {
+                    "name": "Nächstes Plot",
+                    "description": "Springe zum nächsten GS des Spielers (/p h <spieler> +1)"
+                },
+                "previousPlot": {
+                    "name": "Vorheriges Plot",
+                    "description": "Springe zum vorherigen GS des Spielers (/p h <spieler> -1)"
                 }
             },
             "enabled": {
@@ -183,14 +191,6 @@
                     "description": "Bewege die Maus über ein Adventurer-Werkzeug, um deinen Fortschritt in Prozent zu sehen. Du siehst außerdem, wie viele DKs, Stacks und Items du noch abbauen musst."
                 }
             },
-            "nextPlot": {
-                "name": "Nächstes Plot",
-                "description": "Springe zum nächsten GS des Spielers (/p h <spieler> +1)"
-            },
-            "previousPlot": {
-                "name": "Vorheriges Plot",
-                "description": "Springe zum vorherigen GS des Spielers (/p h <spieler> -1)"
-            },
             "skipHub": {
                 "name": "Lobby überspringen"
             },
@@ -260,8 +260,17 @@
                 "name": "Auto Loot",
                 "description": "Holt automatisch deine /freekiste und deinen /grieferboost ab."
             },
-            "plotWheelHotkey": {
-                "name": "PlotWheel öffnen"
+            "accountUnitySubConfig": {
+                "name": "Account Unity",
+                "description": "Enthält Optionen, die das Zusammenspiel deiner Accounts verbessern.",
+                "tpAccept": {
+                    "name": "Auto /tpaccept (nur für deine Accounts)",
+                    "description": "/tpa und /tpahere automatisch annehmen, wenn diese von einem deiner eigenen Accounts gesendet werden."
+                },
+                "voteBooster": {
+                    "name": "Vote Booster",
+                    "description": "Wenn einer deiner eigenen Accounts einen /startkick oder /startjail startet, voten deine übrigen Accounts automatisch /ja."
+                }
             }
         },
         "chat": {

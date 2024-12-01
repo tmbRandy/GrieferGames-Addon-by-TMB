@@ -74,9 +74,9 @@ public class PlotSwitch {
         String command = null;
 
         if(event.state() == State.PRESS) {
-            if(Addon.getSharedInstance().getBridge().allKeysPressed(Addon.getSharedInstance().configuration().getPreviousPlot().get())) {
+            if(Addon.getSharedInstance().getBridge().allKeysPressed(Addon.getSharedInstance().configuration().getPlotSwitchSubConfig().getPreviousPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.PREVIOUS);
-            } else if(Addon.getSharedInstance().getBridge().allKeysPressed(Addon.getSharedInstance().configuration().getNextPlot().get())) {
+            } else if(Addon.getSharedInstance().getBridge().allKeysPressed(Addon.getSharedInstance().configuration().getPlotSwitchSubConfig().getNextPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.NEXT);
             }
 

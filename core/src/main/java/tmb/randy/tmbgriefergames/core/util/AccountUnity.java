@@ -15,7 +15,7 @@ public class AccountUnity {
 
         String message = event.chatMessage().getPlainText();
 
-        if(message.endsWith(" möchte sich zu dir teleportieren.") || message.endsWith(" möchte, dass du dich zu der Person teleportierst.")) {
+        if(Addon.getSharedInstance().configuration().getAccountUnitySubConfig().getTpAccept().get() && (message.endsWith(" möchte sich zu dir teleportieren.") || message.endsWith(" möchte, dass du dich zu der Person teleportierst."))) {
             for (Account account : Laby.references().accountService().getAccounts()) {
                 String name = account.getUsername();
 
@@ -34,7 +34,5 @@ public class AccountUnity {
                     }
                 }
             }
-
-
     }
 }

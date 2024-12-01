@@ -43,6 +43,7 @@ import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget;
 import tmb.randy.tmbgriefergames.core.widgets.HopperModeWidget;
 import tmb.randy.tmbgriefergames.core.widgets.ItemClearWidget;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget;
+import java.util.Objects;
 
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
@@ -140,7 +141,7 @@ public class Addon extends LabyAddon<Configuration> {
       return false;
     }
 
-    return Laby.references().serverController().getCurrentServerData().address().getHost().toLowerCase().contains("griefergames");
+    return Objects.requireNonNull(Laby.references().serverController().getCurrentServerData()).address().getHost().toLowerCase().contains("griefergames");
   }
 
     public IBridge getBridge() {
@@ -168,7 +169,7 @@ public class Addon extends LabyAddon<Configuration> {
 
     @Subscribe
     public void keyInput(KeyEvent event) {
-        if(event.state() == State.PRESS && event.key() == configuration().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB() && isGG()) {
+        if(event.state() == State.PRESS && event.key() == configuration().getPlotSwitchSubConfig().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB() && isGG()) {
             // Unfortunately the player has to close the PlotWheel manually as Laby doesn't provide Activity::close  :/
             Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new PlotWheelActivity());
         }

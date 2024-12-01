@@ -1,15 +1,11 @@
 package tmb.randy.tmbgriefergames.core.config;
 
 import net.labymod.api.addon.AddonConfig;
-import net.labymod.api.client.gui.screen.key.Key;
-import net.labymod.api.client.gui.screen.widget.widgets.input.KeybindWidget.KeyBindSetting;
-import net.labymod.api.client.gui.screen.widget.widgets.input.MultiKeybindWidget.MultiKeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
 import net.labymod.api.configuration.loader.annotation.SpriteTexture;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
-import net.labymod.api.configuration.settings.annotation.SettingSection;
 
 @ConfigName("settings")
 @SpriteTexture("settings")
@@ -25,6 +21,7 @@ public class Configuration extends AddonConfig {
         this.autoCrafterConfig = new AutoCrafterSubConfig();
         this.swordsSubConfig = new SwordsSubConfig();
         this.accountUnitySubConfig = new AccountUnitySubConfig();
+        this.plotSwitchSubConfig = new PlotSwitchSubConfig();
     }
 
     @SwitchSetting
@@ -34,6 +31,20 @@ public class Configuration extends AddonConfig {
     @SwitchSetting
     @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 1)
     private final ConfigProperty<Boolean> itemProtection = new ConfigProperty<>(true);
+
+    @SwitchSetting
+    @SpriteSlot(size = SPRITE_SIZE, x = 4, y = 2)
+    private final ConfigProperty<Boolean> skipHub = new ConfigProperty<>(true);
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 3)
+    @SwitchSetting
+    private final ConfigProperty<Boolean> autoLoot = new ConfigProperty<>(true);
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
+    private final NatureSubConfig natureSubConfig;
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
+    private final HopperSubConfig hopperSubConfig;
 
     @SpriteSlot(size = SPRITE_SIZE, x = 5, y = 2)
     private final AutoCrafterSubConfig autoCrafterConfig;
@@ -47,32 +58,11 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 3)
     private final SwordsSubConfig swordsSubConfig;
 
-    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
-    private final NatureSubConfig natureSubConfig;
-
-    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
-    private final HopperSubConfig hopperSubConfig;
-
-    @SwitchSetting
-    @SpriteSlot(size = SPRITE_SIZE, x = 4, y = 2)
-    private final ConfigProperty<Boolean> skipHub = new ConfigProperty<>(true);
-
-    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 3)
-    @SwitchSetting
-    private final ConfigProperty<Boolean> autoLoot = new ConfigProperty<>(true);
-
+    @SpriteSlot(size = SPRITE_SIZE, y = 4)
     private final AccountUnitySubConfig accountUnitySubConfig;
 
-    @SettingSection("plotSwitch")
-
-    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 3)
-    @KeyBindSetting
-    private final ConfigProperty<Key> plotWheelHotkey = new ConfigProperty<>(Key.GRAVE);
-
-    @MultiKeyBindSetting
-    private final ConfigProperty<Key[]> nextPlot = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.ARROW_RIGHT});
-    @MultiKeyBindSetting
-    private final ConfigProperty<Key[]> previousPlot = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.ARROW_LEFT});
+    @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 4)
+    private final PlotSwitchSubConfig plotSwitchSubConfig;
 
 
   @Override
@@ -92,7 +82,5 @@ public class Configuration extends AddonConfig {
     public SwordsSubConfig getSwordsSubConfig() {return swordsSubConfig;}
     public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
     public AccountUnitySubConfig getAccountUnitySubConfig() {return accountUnitySubConfig;}
-    public ConfigProperty<Key> getPlotWheelHotkey() {return plotWheelHotkey;}
-    public ConfigProperty<Key[]> getNextPlot() {return nextPlot;}
-    public ConfigProperty<Key[]> getPreviousPlot() {return previousPlot;}
+    public PlotSwitchSubConfig getPlotSwitchSubConfig() {return plotSwitchSubConfig;}
 }
