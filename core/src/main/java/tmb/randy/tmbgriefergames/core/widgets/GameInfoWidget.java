@@ -76,9 +76,7 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
     public void load(GameInfoWidgetConfig config) {
         super.load(config);
 
-        config.showBank.addChangeListener(() -> {
-            bankLine.setState(config.getShowBank().get() ? State.VISIBLE : State.HIDDEN);
-        });
+        config.showBank.addChangeListener(() -> bankLine.setState(config.getShowBank().get() ? State.VISIBLE : State.HIDDEN));
 
         moneyLine = createLine(Component.icon(moneyIcon), 0, TextLine::new);
         bankLine = createLine(Component.icon(bankIcon), 0, TextLine::new);

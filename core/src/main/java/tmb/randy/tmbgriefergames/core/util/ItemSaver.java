@@ -23,14 +23,12 @@ public class ItemSaver {
                 case BIRTH_SWORD -> "[0:{lvl:21s,id:16s},1:{lvl:2s,id:20s},2:{lvl:5s,id:61s},3:{lvl:21s,id:21s}]";
                 case SOS -> "[0:{lvl:-6s,id:18s},1:{lvl:-6s,id:21s},2:{lvl:-6s,id:7s}]";
                 case BIRTH_BOW -> "[0:{lvl:22s,id:48s},1:{lvl:4s,id:49s},2:{lvl:1s,id:51s},3:{lvl:4s,id:19s},4:{lvl:22s,id:21s}]";
-                default -> "";
             };
             case "1.12.2" -> switch (item) {
                 case BONZE_SWORD -> "[{lvl:21s,id:16s},{lvl:3s,id:34s},{lvl:2s,id:20s},{lvl:5s,id:61s},{lvl:21s,id:21s}]";
                 case BIRTH_SWORD -> "[{lvl:21s,id:16s},{lvl:2s,id:20s},{lvl:5s,id:61s},{lvl:21s,id:21s}]";
                 case SOS -> "[{lvl:-6s,id:18s},{lvl:-6s,id:21s},{lvl:-6s,id:7s}]";
                 case BIRTH_BOW -> "[{lvl:22s,id:48s},{lvl:4s,id:49s},{lvl:1s,id:51s},{lvl:4s,id:19s},{lvl:22s,id:21s}]";
-                default -> "";
             };
             default -> "";
         };
