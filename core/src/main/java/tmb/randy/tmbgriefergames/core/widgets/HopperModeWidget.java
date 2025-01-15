@@ -59,7 +59,7 @@ public class HopperModeWidget extends SimpleHudWidget<HudWidgetConfig> {
 
     @Override
     public boolean isVisibleInGame() {
-        return HopperTracker.getCurrentHopperState() != HopperState.NONE;
+        return HopperTracker.getCurrentHopperState() != HopperState.NONE && Addon.isGG();
     }
 
 }

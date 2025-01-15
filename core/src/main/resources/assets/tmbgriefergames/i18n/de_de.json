@@ -315,12 +315,6 @@
         "nearby": {
             "nearby": "In der Nähe"
         },
-        "gameInfo": {
-            "cb": "CB",
-            "money": "Geld",
-            "playtime": "Spielzeit",
-            "players": "Spieler"
-        },
         "natureBorders": {
             "plotBordersVisible": "Plotgrenzen §a§lSICHTBAR",
             "plotBordersInvisible": "Plotgrenzen §c§lUNSICHTBAR"
@@ -333,7 +327,10 @@
                 "name": "Item remover"
             },
             "gameinfo": {
-                "name": "Spielinfo"
+                "name": "GG Scoreboard",
+                "showBank": {
+                    "name": "Kontostand anzeigen"
+                }
             },
             "nearby": {
                 "name": "In der Nähe",

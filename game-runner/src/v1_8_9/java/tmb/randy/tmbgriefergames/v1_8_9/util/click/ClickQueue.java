@@ -23,23 +23,25 @@ public class ClickQueue {
     public void tick() {
         while (!this.clickQueue.isEmpty() && this.clickCooldownCounter <= 0) {
 
-            if (!(Minecraft.getMinecraft().currentScreen instanceof GuiChest
-                || Minecraft.getMinecraft().currentScreen instanceof GuiCrafting
-                || Minecraft.getMinecraft().currentScreen instanceof GuiInventory)) {
+            if (!isValidScreen()) {
                 break;
             }
 
             Click currClick = this.clickQueue.pop();
 
-            Minecraft.getMinecraft().playerController.windowClick(currClick.windowID(),
-                currClick.slot(), currClick.data(), currClick.action(),
-                Minecraft.getMinecraft().thePlayer);
+            Minecraft.getMinecraft().playerController.windowClick(currClick.windowID(), currClick.slot(), currClick.data(), currClick.action(), Minecraft.getMinecraft().thePlayer);
 
             this.clickCooldownCounter = clickSpeed;
         }
         if (this.clickCooldownCounter > 0) {
             this.clickCooldownCounter--;
         }
+    }
+
+    private boolean isValidScreen() {
+        return Minecraft.getMinecraft().currentScreen instanceof GuiChest
+            || Minecraft.getMinecraft().currentScreen instanceof GuiCrafting
+            || Minecraft.getMinecraft().currentScreen instanceof GuiInventory;
     }
 
     public void add(Click click) {
@@ -59,4 +61,3 @@ public class ClickQueue {
         return clickQueue.isEmpty();
     }
 }
-

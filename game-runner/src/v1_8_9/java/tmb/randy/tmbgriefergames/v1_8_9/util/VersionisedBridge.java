@@ -52,9 +52,7 @@ public class VersionisedBridge implements IBridge {
 
     private GuiScreen lastGui;
 
-    public VersionisedBridge() {
-        sharedInstance = this;
-    }
+    public VersionisedBridge() {sharedInstance = this;}
 
     @Subscribe
     public void cbChanged(CbChangedEvent event) {

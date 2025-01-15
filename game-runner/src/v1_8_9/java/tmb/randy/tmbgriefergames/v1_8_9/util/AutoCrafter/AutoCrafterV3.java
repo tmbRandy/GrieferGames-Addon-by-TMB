@@ -12,6 +12,7 @@ import static tmb.randy.tmbgriefergames.v1_8_9.util.AutoCrafter.AutoCrafterV3.CO
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -45,6 +46,32 @@ public class AutoCrafterV3 {
     enum COMP_STATE {
         IDLE, OPEN_COMP, COMP1, COMP2, COMP3, COMP4, COMP5, COMP6, FINISHED
     }
+
+    private static final Map<String, Set<String>> META_FREE_MATERIALS = new HashMap<>() {{
+        put("minecraft:piston", Set.of("minecraft:planks"));
+        put("minecraft:boat", Set.of("minecraft:planks"));
+        put("minecraft:bed", Set.of("minecraft:wool"));
+        put("minecraft:bookshelf", Set.of("minecraft:planks"));
+        put("minecraft:tripwire_hook", Set.of("minecraft:planks"));
+        put("minecraft:wooden_axe", Set.of("minecraft:planks"));
+        put("minecraft:wooden_pickaxe", Set.of("minecraft:planks"));
+        put("minecraft:wooden_sword", Set.of("minecraft:planks"));
+        put("minecraft:wooden_shovel", Set.of("minecraft:planks"));
+        put("minecraft:wooden_hoe", Set.of("minecraft:planks"));
+        put("minecraft:wooden_pressure_plate", Set.of("minecraft:planks"));
+        put("minecraft:trapdoor", Set.of("minecraft:planks"));
+        put("minecraft:wooden_button", Set.of("minecraft:planks"));
+        put("minecraft:noteblock", Set.of("minecraft:planks"));
+        put("minecraft:jukebox", Set.of("minecraft:planks"));
+        put("minecraft:sign", Set.of("minecraft:planks"));
+        put("minecraft:bowl", Set.of("minecraft:planks"));
+        put("minecraft:stick", Set.of("minecraft:planks"));
+        put("minecraft:daylight_detector", Set.of("minecraft:wooden_slab"));
+        put("minecraft:chest", Set.of("minecraft:planks"));
+        put("minecraft:crafting_table", Set.of("minecraft:planks"));
+    }};
+
+
 
     private static final int[] RECIPE_SLOTS = {10, 11, 12, 19, 20, 21, 28, 29, 30};
 
@@ -176,6 +203,7 @@ public class AutoCrafterV3 {
             Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3started"));
         }
     }
+
     public void stop() {
         if(active) {
             active = false;
@@ -183,6 +211,7 @@ public class AutoCrafterV3 {
             Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.autoCrafter.V3stopped"));
         }
     }
+
     public void toggle() {
         if(active)
             stop();
@@ -417,16 +446,36 @@ public class AutoCrafterV3 {
         return firstStack;
     }
 
-    private static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
-        return stack1.getItem() == stack2.getItem() && stack1.getMetadata() == stack2.getMetadata();
+    private boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
+        if (stack1.getItem() != stack2.getItem())
+            return false;
+
+        String key1 = getItemKey(stack1);
+        String key2 = getItemKey(stack2);
+
+        return key1 != null && key1.equals(key2);
     }
 
-    private static String getItemKey(ItemStack stack) {
+
+
+    private String getItemKey(ItemStack stack) {
         if (stack == null || stack.stackSize == 0)
             return null;
 
-        return Item.itemRegistry.getNameForObject(stack.getItem()).toString() + ":" + stack.getMetadata();
+        String itemName = Item.itemRegistry.getNameForObject(stack.getItem()).toString();
+
+        if (craftItem != null) {
+            String craftItemKey = Item.itemRegistry.getNameForObject(craftItem.getItem()).toString();
+            if (META_FREE_MATERIALS.containsKey(craftItemKey) &&
+                META_FREE_MATERIALS.get(craftItemKey).contains(itemName)) {
+                return itemName;
+            }
+        }
+
+        return itemName + ":" + stack.getMetadata();
     }
+
+
 
     public static boolean isStainedGlassPane(ItemStack stack) {
         if (stack == null || stack.stackSize == 0)

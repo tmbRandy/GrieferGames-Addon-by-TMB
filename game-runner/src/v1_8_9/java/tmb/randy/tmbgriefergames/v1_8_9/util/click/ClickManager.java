@@ -10,7 +10,7 @@ import tmb.randy.tmbgriefergames.core.enums.QueueType;
 
 public class ClickManager {
 
-    private static ClickManager SharedInstance;
+    private static ClickManager sharedInstance;
     private final Map<QueueType, ClickQueue> queues = new HashMap<>();
 
     private ClickManager() {
@@ -26,34 +26,33 @@ public class ClickManager {
     }
 
     public static ClickManager getSharedInstance() {
-        if(SharedInstance == null) {
-            SharedInstance = new ClickManager();
+        if(sharedInstance == null) {
+            sharedInstance = new ClickManager();
         }
-        return SharedInstance;
+        return sharedInstance;
     }
 
     public void dropInventory() {
         Container container = Minecraft.getMinecraft().thePlayer.openContainer;
-        int size = container.inventorySlots.size();
-        for(int i = 9; i < size; i++) {
-            if(container.getSlot(i).getHasStack()) {
-                dropClick(i);
-            }
-
-        }
+        processInventory(container, this::dropClick);
     }
 
     public void dropItemsFromInventory(Item item, int metadata, boolean skipFirst) {
         Container container = Minecraft.getMinecraft().thePlayer.openContainer;
-        int size = container.inventorySlots.size();
-        for(int i = 9; i < size; i++) {
-            if(container.getSlot(i).getHasStack()) {
-                if(container.getSlot(i).getStack().getItem().equals(item) && container.getSlot(i).getStack().getMetadata() == metadata) {
-                    if(skipFirst && i == 36) {
-                        continue;
-                    }
+        processInventory(container, i -> {
+            if (container.getSlot(i).getStack().getItem().equals(item) && container.getSlot(i).getStack().getMetadata() == metadata) {
+                if (!(skipFirst && i == 36)) {
                     dropClick(i);
                 }
+            }
+        });
+    }
+
+    private void processInventory(Container container, java.util.function.IntConsumer action) {
+        int size = container.inventorySlots.size();
+        for (int i = 9; i < size; i++) {
+            if (container.getSlot(i).getHasStack()) {
+                action.accept(i);
             }
         }
     }
@@ -79,7 +78,11 @@ public class ClickManager {
 
     public void dropClick(int slot)
     {
+        addDropClick(slot);
+        addDropClick(-999);
+    }
+
+    private void addDropClick(int slot) {
         queues.get(QueueType.MEDIUM).add(new Click(Minecraft.getMinecraft().thePlayer.openContainer.windowId, slot, 0, 0));
-        queues.get(QueueType.MEDIUM).add(new Click(Minecraft.getMinecraft().thePlayer.openContainer.windowId, -999, 0, 0));
     }
 }

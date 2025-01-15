@@ -90,6 +90,10 @@ public class MsgTabs {
 
             String incomingFilter = "[" + rank + " ┃ " + name + " -> mir]";
             String outgoingFilter = "[mir -> " + rank + " ┃ " + name + "]";
+            String incomingPaymentFilter = rank + " ┃ " + name + " hat dir $";
+            String outgoingPaymentFilter = "Du hast " + rank + " ┃ " + name + " $";
+            String incomingTPAFilter = rank + " ┃ " + name + " möchte sich zu dir teleportieren.";
+            String outgoingTPAFilter = "Anfrage gesendet an " + rank + " ┃ " + name;
 
             RootChatTabConfig tabConfig = new RootChatTabConfig(Type.CUSTOM, "➥ " + name);
             ChatTab tab = mainWindow.initializeTab(tabConfig);
@@ -106,8 +110,37 @@ public class MsgTabs {
             filterIncomingMsg.shouldPlaySound().set(true);
             filterIncomingMsg.caseSensitive().set(true);
 
+            ChatFilter incomingPayment = new ChatFilter();
+            incomingPayment.name().set("incoming payment");
+            incomingPayment.getIncludedTags().add(incomingPaymentFilter);
+            incomingPayment.shouldPlaySound().set(true);
+            incomingPayment.caseSensitive().set(true);
+
+            ChatFilter outgoingPayment = new ChatFilter();
+            outgoingPayment.name().set("outgoing payment");
+            outgoingPayment.getIncludedTags().add(outgoingPaymentFilter);
+            outgoingPayment.shouldPlaySound().set(false);
+            outgoingPayment.caseSensitive().set(true);
+
+            ChatFilter incomingTPA = new ChatFilter();
+            incomingTPA.name().set("incoming TPA");
+            incomingTPA.getIncludedTags().add(incomingTPAFilter);
+            incomingTPA.shouldPlaySound().set(true);
+            incomingTPA.caseSensitive().set(true);
+
+            ChatFilter outgoingTPA = new ChatFilter();
+            outgoingTPA.name().set("outgoing TPA");
+            outgoingTPA.getIncludedTags().add(outgoingTPAFilter);
+            outgoingTPA.shouldPlaySound().set(false);
+            outgoingTPA.caseSensitive().set(true);
+
             tab.config().filters().get().add(filterOutgoingMsg);
             tab.config().filters().get().add(filterIncomingMsg);
+            tab.config().filters().get().add(incomingPayment);
+            tab.config().filters().get().add(outgoingPayment);
+            tab.config().filters().get().add(incomingTPA);
+            tab.config().filters().get().add(outgoingTPA);
+
 
             return tab;
         }

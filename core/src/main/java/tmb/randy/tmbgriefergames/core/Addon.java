@@ -114,7 +114,7 @@ public class Addon extends LabyAddon<Configuration> {
       labyAPI().hudWidgetRegistry().register(gameInfoWidget);
       labyAPI().hudWidgetRegistry().register(new NearbyWidget(category));
       labyAPI().hudWidgetRegistry().register(new HopperModeWidget(category));
-      labyAPI().hudWidgetRegistry().register(new AdventureWidget(category));
+        labyAPI().hudWidgetRegistry().register(new AdventureWidget(category));
 
         //PlotWheelActivity activity = new PlotWheelActivity();
         //labyAPI().navigationService().register(new PlotWheelNavigationElement(activity));

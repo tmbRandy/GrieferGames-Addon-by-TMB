@@ -4,6 +4,7 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
+import net.labymod.api.client.gui.screen.ScreenInstance;
 import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.key.MouseButton;
 import net.labymod.api.client.gui.screen.widget.context.ContextMenu;
@@ -80,6 +81,7 @@ public class PlotWheel extends WheelWidget {
                     if(CBtracker.isPlotworldCB()) {
                         if(selectedCB == CBtracker.getCurrentCB()) {
                             Laby.references().chatExecutor().chat(plot.command());
+                            Laby.labyAPI().minecraft().minecraftWindow().displayScreen((ScreenInstance) null);
                         } else {
                             Addon.queuedPlot = plot;
                             Laby.references().chatExecutor().chat("/switch " + selectedCB);

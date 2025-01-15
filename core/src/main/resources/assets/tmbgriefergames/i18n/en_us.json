@@ -316,12 +316,6 @@
         "nearby": {
             "nearby": "Nearby"
         },
-        "gameInfo": {
-            "cb": "CB",
-            "money": "Money",
-            "playtime": "Playtime",
-            "players": "Players"
-        },
         "natureBorders": {
             "plotBordersVisible": "Plot borders §a§lVISIBLE",
             "plotBordersInvisible": "Plot borders §c§lINVISIBLE"
@@ -334,7 +328,10 @@
                 "name": "Item remover"
             },
             "gameinfo": {
-                "name": "Game info"
+                "name": "GG scoreboard",
+                "showBank": {
+                    "name": "Show bank balance"
+                }
             },
             "nearby": {
                 "name": "Nearby",
