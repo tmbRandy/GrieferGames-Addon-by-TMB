@@ -1,11 +1,15 @@
 package tmb.randy.tmbgriefergames.core.config;
 
 import net.labymod.api.addon.AddonConfig;
+import net.labymod.api.client.gui.screen.activity.Activity;
+import net.labymod.api.client.gui.screen.widget.widgets.activity.settings.ActivitySettingWidget.ActivitySetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
 import net.labymod.api.configuration.loader.annotation.SpriteTexture;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
+import net.labymod.api.util.MethodOrder;
+import tmb.randy.tmbgriefergames.core.activities.commandlist.CommandListActivity;
 
 @ConfigName("settings")
 @SpriteTexture("settings")
@@ -63,6 +67,12 @@ public class Configuration extends AddonConfig {
 
     @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 4)
     private final PlotSwitchSubConfig plotSwitchSubConfig;
+
+    @MethodOrder(after = "plotSwitchSubConfig")
+    @ActivitySetting
+    public Activity openDocs() {
+        return new CommandListActivity();
+    }
 
 
   @Override

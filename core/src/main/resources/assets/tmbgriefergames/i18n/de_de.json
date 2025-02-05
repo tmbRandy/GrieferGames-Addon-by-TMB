@@ -271,6 +271,10 @@
                     "name": "Vote Booster",
                     "description": "Wenn einer deiner eigenen Accounts einen /startkick oder /startjail startet, voten deine übrigen Accounts automatisch /ja."
                 }
+            },
+            "openDocs": {
+                "name": "Alle Befehle",
+                "text": "anzeigen"
             }
         },
         "chat": {
@@ -430,6 +434,14 @@
             "thisAccountOnly": "Nur dieser Account",
             "add": "Hinzufügen",
             "delete": "löschen"
+        },
+        "commands": {
+            "dks": "Ein simpler Command, um auszurechnen, wie du komprimieren musst, um eine bestimmte Anzahl an DKs zu bekommen.\n\nGib den Command '/dks <Anzahl>' ein. Du erhältst direkt im Chat die benötigten Komprimierungsstufen. Beispiel: '/dks 50' ergibt die Ausgabe '50 DKs = 2 * V • 8 * IV • 3 * III • 3 * I'",
+            "fahndung": "Sucht alle CBs nach einem gesuchten Spieler ab.\n\nGib den Command und dahinter den Namen des gesuchten Spielers ein (z.B. '/fahndung RypexYT'). Es werden automatisch der Reihe nach alle CBs kurz aufgesucht. Sollte der gesuchte Spieler auf einem CB gefunden werden, wird die Fahndung beendet. Der Befehl kann auch ohne die Eingabe eines Spielernamens genutzt werden. Dadurch werden alle CBs kurz besucht. Ideal, um eine Werbebotschaft per Status zu verbreiten.\n\nDie Fahndung kann durch Bewegung (W, A, S, D) beendet werden.",
+            "craftv3": "Der fortschrittlichste Autocrafter (V3) nimmt automatisch Items aus verschiedenen Kisten und vercraftet diese anschließend.\n\nLeere dein Inventar, lege das zu craftende Item in deinen 1. Slot und startte den Autocrafter V3 per Command. Es öffnet sich kurz das /rezepte Menü, um alle benötigten Materialien zu erfassen. Öffne nun nacheinander alle Kisten, in denen sich Quellitems befinden. Sobale alle nötigen Items erfasst wurden, legt der Autocrafter los. Er nimmt sich nacheinander die Items im benötigten Mischverhältnis aus den Kisten. Anschließend öffnet er das /rezepte Menü und craftet das Rezept. Die fertigen Items können wahlweise komprimiert oder gedroppt werden. Sollte es zu Fehlern kommen, stelle den Cooldown in den Einstellungen langsamer.\n\nDer Autocrafter V3 kann durch ESC beendet werden.",
+            "auswurf": "Startet den Auswurf Modus.\n\nDer Auswurf Modus kann automatisch endlose Lager leeren. Aktiviere den Modus und öffne ein endloses Lager. Die enthaltenen Items werden herausgeworfen, bis du den Modus beendest. Geeignet, um nicht komprimierbare Items aus einem endlosen Lager in ein anderes umzuschichten. Aktiviere hierzu bei deinem neuen, endlosen Lager den Einsaugmodus und starte den Auswurf beim alten, endlosen Lager.\n\nDer Auswurf Modus kann durch ESC beendet werden.",
+            "autocraft": "Der fortgeschrittene Autocrafter (V2) craftet Items, die dir zugedroppt werden.\n\nLege das Zielitem das du craften willst in deinen 1. Slot. Stelle dich nun in eine Werferanlage, die dir die Quellitems zuwirft und starte per Command den Autocrafter V2. Das /rezepte Menü wird genutzt, um permanent zu craften. Sobald dein Inventar voll läuft, werden die Items wahlweise komprimiert oder weggeworfen.\n\nDer Autocrafter V2 kann durch ESC beendet werden.",
+            "pay": "Das Gegenstück zu /pay * ist /pay **. Anstatt den angegebenen Betrag mit der Spielerzahl zu multiplizieren, wird er durch die Spielerzahl geteilt.\n\nBeispiel: Wenn 100 Spieler auf dem CB sind, erhalten alle Spieler durch den Command '/pay ** 10000' genau 100$."
         }
     },
     "labymod": {

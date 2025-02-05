@@ -51,7 +51,7 @@ public class AutoCrafterV3 {
     private static final Map<String, Set<String>> META_FREE_MATERIALS = new HashMap<>() {{
         put("minecraft:piston", Set.of("minecraft:planks"));
         put("minecraft:boat", Set.of("minecraft:planks"));
-        put("minecraft:bed", Set.of("minecraft:wool"));
+        put("minecraft:bed", Set.of("minecraft:wool", "minecraft:planks"));
         put("minecraft:bookshelf", Set.of("minecraft:planks"));
         put("minecraft:tripwire_hook", Set.of("minecraft:planks"));
         put("minecraft:wooden_axe", Set.of("minecraft:planks"));
@@ -342,7 +342,7 @@ public class AutoCrafterV3 {
                                 for (int i = 0; i < size; i++) {
                                     ItemStack currentStack = chestInventory.getStackInSlot(i);
 
-                                    if (getItemKey(currentStack).equals(itemKeyForChest) && currentStack.getCount() == currentStack.getMaxStackSize()) {
+                                    if (getItemKey(currentStack) != null && getItemKey(currentStack).equals(itemKeyForChest) && currentStack.getCount() == currentStack.getMaxStackSize()) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, i, 0, ClickType.QUICK_MOVE));
                                         stacksTaken++;
                                     }
@@ -502,7 +502,8 @@ public class AutoCrafterV3 {
         int count = 0;
 
         for (ItemStack itemStack : Minecraft.getMinecraft().player.inventory.mainInventory) {
-            if(getItemKey(itemStack).equals(itemKey)) {
+            String key = getItemKey(itemStack);
+            if(key != null && key.equals(itemKey)) {
                 count++;
             }
         }
@@ -578,7 +579,7 @@ public class AutoCrafterV3 {
         for (ItemStack itemStack : Minecraft.getMinecraft().player.inventory.mainInventory) {
             String itemKey = getItemKey(itemStack);
             String recipeKey = getItemKey(craftItem);
-            if(itemKey.equals(recipeKey)) {
+            if(itemKey != null && itemKey.equals(recipeKey)) {
                 count++;
             }
 

@@ -50,7 +50,7 @@ public class AutoCrafterV3 {
     private static final Map<String, Set<String>> META_FREE_MATERIALS = new HashMap<>() {{
         put("minecraft:piston", Set.of("minecraft:planks"));
         put("minecraft:boat", Set.of("minecraft:planks"));
-        put("minecraft:bed", Set.of("minecraft:wool"));
+        put("minecraft:bed", Set.of("minecraft:wool", "minecraft:planks"));
         put("minecraft:bookshelf", Set.of("minecraft:planks"));
         put("minecraft:tripwire_hook", Set.of("minecraft:planks"));
         put("minecraft:wooden_axe", Set.of("minecraft:planks"));

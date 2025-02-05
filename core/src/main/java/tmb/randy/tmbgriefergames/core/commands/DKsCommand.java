@@ -1,9 +1,8 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
-import net.labymod.api.client.chat.command.Command;
 import tmb.randy.tmbgriefergames.core.Addon;
 
-public class DKsCommand extends Command {
+public class DKsCommand extends TmbCommand {
 
     private final String LEVELSTYLE = "§6";
     private final String SEPARATORSTYLE = "§7";

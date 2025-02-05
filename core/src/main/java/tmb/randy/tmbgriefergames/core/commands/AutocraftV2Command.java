@@ -1,9 +1,8 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
-import net.labymod.api.client.chat.command.Command;
 import tmb.randy.tmbgriefergames.core.Addon;
 
-public class AutocraftV2Command extends Command {
+public class AutocraftV2Command extends TmbCommand {
 
     public AutocraftV2Command() {
         super("autocraft");

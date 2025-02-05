@@ -1,14 +1,13 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
 import net.labymod.api.Laby;
-import net.labymod.api.client.chat.command.Command;
 import net.labymod.api.client.component.TextComponent;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
 
-public class PayAllCommand extends Command {
+public class PayAllCommand extends TmbCommand {
     public PayAllCommand() {
         super("pay");
     }

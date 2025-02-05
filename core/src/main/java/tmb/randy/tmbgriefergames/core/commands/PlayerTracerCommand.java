@@ -1,10 +1,9 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
-import net.labymod.api.client.chat.command.Command;
 import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
 
-public class PlayerTracerCommand extends Command {
+public class PlayerTracerCommand extends TmbCommand {
     public PlayerTracerCommand() {
         super("fahndung");
     }

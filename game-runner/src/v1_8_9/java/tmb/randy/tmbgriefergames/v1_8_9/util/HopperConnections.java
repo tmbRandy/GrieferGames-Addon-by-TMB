@@ -52,7 +52,7 @@ public class HopperConnections {
             if(invName.equals("§6Trichter-Mehrfach-Verbindungen")) {
                 for (int i = 0; i < 44; i++) {
                     ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(i);
-                    if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
+                    if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
                         String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
                         if(firstLine.contains("Verbunden mit:")) {
                             String coordinateString = firstLine.replace("§7Verbunden mit: §e", "").replace("\"", "").replace(".0", "");
@@ -74,7 +74,7 @@ public class HopperConnections {
                 }
             } else if(invName.equals("§6Trichter-Einstellungen")) {
                 ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(16);
-                if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
+                if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
                     String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
                     if(firstLine.contains("Weiterleiten an ")) {
                         String coordinateString = firstLine.replace("Weiterleiten an ", "").replace("\"", "").replace(".0", "").replace("§7", "").replace("§e", "").trim();
@@ -183,17 +183,19 @@ public class HopperConnections {
         for (Entry<String, HopperConnection> entry : conntections.entrySet()) {
             HopperConnection conntection = entry.getValue();
 
-            double distance = conntection.pos1.distanceSq(Minecraft.getMinecraft().thePlayer.posX,
-                Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
-            double actualDistance = Math.sqrt(distance);
+            if(conntection.pos1 != null) {
+                double distance = conntection.pos1.distanceSq(Minecraft.getMinecraft().thePlayer.posX,
+                    Minecraft.getMinecraft().thePlayer.posY, Minecraft.getMinecraft().thePlayer.posZ);
+                double actualDistance = Math.sqrt(distance);
 
-            if (actualDistance > 30)
-                continue;
+                if (actualDistance > 30)
+                    continue;
 
-            if (conntection.cb == CBtracker.getCurrentCB()) {
-                if (Minecraft.getMinecraft().theWorld.getBlockState(conntection.pos1()).getBlock()
-                    == Blocks.hopper) {
-                    drawLineBetween(conntection);
+                if (conntection.cb == CBtracker.getCurrentCB()) {
+                    if (Minecraft.getMinecraft().theWorld.getBlockState(conntection.pos1()).getBlock()
+                        == Blocks.hopper) {
+                        drawLineBetween(conntection);
+                    }
                 }
             }
         }

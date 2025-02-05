@@ -2,6 +2,7 @@ package tmb.randy.tmbgriefergames.core;
 
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
+import net.labymod.api.client.chat.command.Command;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
 import net.labymod.api.event.Subscribe;
@@ -18,6 +19,7 @@ import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
 import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
+import tmb.randy.tmbgriefergames.core.commands.TmbCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
 import tmb.randy.tmbgriefergames.core.enums.CBs;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
@@ -43,7 +45,9 @@ import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget;
 import tmb.randy.tmbgriefergames.core.widgets.HopperModeWidget;
 import tmb.randy.tmbgriefergames.core.widgets.ItemClearWidget;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
@@ -68,6 +72,8 @@ public class Addon extends LabyAddon<Configuration> {
   private final AccountUnity accountUnity = new AccountUnity();
   private final ItemClearTimerListener itemClearTimerListener = new ItemClearTimerListener();
   private final TooltipExtension tooltipExtension = new TooltipExtension();
+
+    private Set<TmbCommand> commands = new HashSet<>();
 
     private static final int commandCountdownLimit = 80;
     private static int commandCountdown = 0;
@@ -97,12 +103,12 @@ public class Addon extends LabyAddon<Configuration> {
     this.registerListener(tooltipExtension);
     this.registerListener(this);
 
-      this.registerCommand(new DKsCommand());
-      this.registerCommand(new PayAllCommand());
-      this.registerCommand(new PlayerTracerCommand());
-      this.registerCommand(new AutocraftV2Command());
-      this.registerCommand(new AutocraftV3Command());
-      this.registerCommand(new EjectCommand());
+      registerCommand(new DKsCommand());
+        registerCommand(new PayAllCommand());
+        registerCommand(new PlayerTracerCommand());
+        registerCommand(new AutocraftV2Command());
+        registerCommand(new AutocraftV3Command());
+        registerCommand(new EjectCommand());
 
       HudWidgetCategory category = new HudWidgetCategory("tmbgriefergames");
       labyAPI().hudWidgetRegistry().categoryRegistry().register(category);
@@ -221,5 +227,14 @@ public class Addon extends LabyAddon<Configuration> {
         if (commandCountdown > 0) {
             commandCountdown--;
         }
+    }
+
+    public Set<TmbCommand> getCommands() {
+        return commands;
+    }
+
+    public void registerCommand(TmbCommand command) {
+        commands.add(command);
+        registerCommand((Command) command);
     }
 }

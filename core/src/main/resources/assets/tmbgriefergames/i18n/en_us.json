@@ -272,6 +272,10 @@
                     "name": "Vote booster",
                     "description": "It one of your accounts starts a /startjail or /startkick, all of your accounts will vote /ja."
                 }
+            },
+            "openDocs": {
+                "name": "All commands",
+                "text": "show"
             }
         },
         "chat": {
@@ -427,7 +431,16 @@
             "thisAccountOnly": "This account only",
             "add": "Add",
             "delete": "delete"
+        },
+        "commands": {
+            "dks": "A simple command to calculate how you need to compress to get a specific number of DKs.\n\nEnter the command '/dks <amount>'. You will receive the required compression levels directly in chat. Example: '/dks 50' results in the output '50 DKs = 2 * V • 8 * IV • 3 * III • 3 * I'",
+            "fahndung": "Searches all CBs for a specific player.\n\nEnter the command followed by the name of the player you are looking for (e.g., '/fahndung RypexYT'). All CBs will be visited briefly in sequence. If the target player is found on a CB, the search will end. The command can also be used without entering a player name. In this case, all CBs will be visited briefly—ideal for spreading an advertisement via status.\n\nThe search can be stopped by moving (W, A, S, D).",
+            "craftv3": "The most advanced autocrafter (V3) automatically takes items from different chests and crafts them.\n\nEmpty your inventory, place the item you want to craft in your first slot, and start the Autocrafter V3 with the command. The /rezepte menu will briefly open to register all required materials. Now open all chests that contain source items one by one. Once all required items are registered, the autocrafter will start. It will take the items in the necessary mix ratio from the chests, then open the /rezepte menu and craft the recipe. The crafted items can either be compressed or dropped. If errors occur, adjust the cooldown in the settings to a slower value.\n\nThe Autocrafter V3 can be stopped by pressing ESC.",
+            "auswurf": "Starts the ejection mode.\n\nThe ejection mode can automatically empty infinite storages. Activate the mode and open an infinite storage. The contained items will be thrown out until you stop the mode. Suitable for transferring non-compressible items from one infinite storage to another. To do this, activate the suction mode on your new infinite storage and start ejection on the old infinite storage.\n\nThe ejection mode can be stopped by pressing ESC.",
+            "autocraft": "The advanced autocrafter (V2) crafts items that are dropped to you.\n\nPlace the target item you want to craft in your first slot. Then, stand in a dropper system that throws source items at you and start the Autocrafter V2 with the command. The /rezepte menu is used to craft continuously. Once your inventory fills up, the items can either be compressed or discarded.\n\nThe Autocrafter V2 can be stopped by pressing ESC.",
+            "pay": "The counterpart to /pay * is /pay **. Instead of multiplying the specified amount by the number of players, it is divided by the number of players.\n\nExample: If there are 100 players on the CB, all players will receive exactly $100 by using the command '/pay ** 10000'."
         }
+
     },
     "labymod": {
         "hudWidgetCategory": {

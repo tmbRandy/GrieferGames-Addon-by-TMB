@@ -1,9 +1,8 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
-import net.labymod.api.client.chat.command.Command;
 import tmb.randy.tmbgriefergames.core.Addon;
 
-public class EjectCommand extends Command {
+public class EjectCommand extends TmbCommand {
 
     public EjectCommand() {
         super("auswurf");

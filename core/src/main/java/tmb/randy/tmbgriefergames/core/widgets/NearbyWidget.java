@@ -1,6 +1,8 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
 import net.labymod.api.Laby;
+import net.labymod.api.client.component.Component;
+import net.labymod.api.client.component.TextComponent;
 import net.labymod.api.client.entity.Entity;
 import net.labymod.api.client.entity.Mob;
 import net.labymod.api.client.entity.player.Player;
@@ -45,12 +47,12 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
         "Auktionshaus"
     );
 
-    private String name;
+    private TextComponent name;
     private TextLine line;
 
     public NearbyWidget(HudWidgetCategory category) {
         super("nearby", NearbyWidgetConfig.class);
-        this.name = Laby.labyAPI().getName();
+        this.name = Component.text(Laby.labyAPI().getName());
         setIcon(Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/nearby.png")));
         this.bindCategory(category);
     }
@@ -72,27 +74,37 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
         return Addon.isGG();
     }
 
-    private String getPlayersListAsString() {
-        StringBuilder list = new StringBuilder();
+    private TextComponent getPlayersListAsString() {
+        TextComponent output = Component.empty();
         for (Player player : getPlayersList()) {
             int dist = (int)Math.sqrt(player.getDistanceSquared(Laby.labyAPI().minecraft().getClientPlayer()));
-            list.append("\n").append(player.getName()).append(" (").append(dist).append("m)");
+            String distString = " (" + dist + "m)";
+            output.append(Component.newline()).append(Component.text(player.getName())).append(Component.text(distString));
         }
 
         if(config.getShowMobs().get()) {
             MobCounter counter = new MobCounter();
             for (Entity entity : Laby.labyAPI().minecraft().clientWorld().getEntities()) {
                 if(entity instanceof Mob mob) {
+                    int dist = (int)Math.sqrt(mob.getDistanceSquared(Laby.labyAPI().minecraft().getClientPlayer()));
+
+                    if(dist > 1000)
+                        continue;
+
                     String mobString = mob.toString();
                     String mobName = extractMobInfo(mobString);
                     counter.addMob(mobName);
                 }
             }
 
-            list.append("\n").append(counter.getFormattedMobCounts());
+            if(!counter.mobCountMap.isEmpty()) {
+                output.append(Component.newline());
+            }
+
+            output.append(Component.text(counter.getFormattedMobCounts()));
         }
 
-        return list.toString();
+        return output;
     }
 
     public static List<Player> getPlayersList() {
