@@ -1,8 +1,10 @@
 package tmb.randy.tmbgriefergames.core;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
-import net.labymod.api.client.chat.command.Command;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
 import net.labymod.api.event.Subscribe;
@@ -45,9 +47,6 @@ import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget;
 import tmb.randy.tmbgriefergames.core.widgets.HopperModeWidget;
 import tmb.randy.tmbgriefergames.core.widgets.ItemClearWidget;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
@@ -235,6 +234,6 @@ public class Addon extends LabyAddon<Configuration> {
 
     public void registerCommand(TmbCommand command) {
         commands.add(command);
-        registerCommand((Command) command);
+        super.registerCommand(command);
     }
 }
