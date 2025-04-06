@@ -1,8 +1,10 @@
 package tmb.randy.tmbgriefergames.core.config;
 
+import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.gui.screen.activity.Activity;
 import net.labymod.api.client.gui.screen.widget.widgets.activity.settings.ActivitySettingWidget.ActivitySetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
@@ -44,11 +46,15 @@ public class Configuration extends AddonConfig {
     @SwitchSetting
     private final ConfigProperty<Boolean> autoLoot = new ConfigProperty<>(true);
 
-    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
-    private final NatureSubConfig natureSubConfig;
+    @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 4)
+    @SwitchSetting
+    private final ConfigProperty<Boolean> blockMarker = new ConfigProperty<>(true);
 
     @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
     private final HopperSubConfig hopperSubConfig;
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 2)
+    private final NatureSubConfig natureSubConfig;
 
     @SpriteSlot(size = SPRITE_SIZE, x = 5, y = 2)
     private final AutoCrafterSubConfig autoCrafterConfig;
@@ -68,10 +74,18 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 4)
     private final PlotSwitchSubConfig plotSwitchSubConfig;
 
+    @SpriteSlot(size = SPRITE_SIZE, x = 4, y = 4)
     @MethodOrder(after = "plotSwitchSubConfig")
     @ActivitySetting
     public Activity openDocs() {
         return new CommandListActivity();
+    }
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 3, y = 4)
+    @MethodOrder(after = "openDocs")
+    @ButtonSetting
+    public void tmbDC() {
+        Laby.references().chatExecutor().openUrl("https://discord.gg/eg999EBJra");
     }
 
 
@@ -86,6 +100,7 @@ public class Configuration extends AddonConfig {
     public ChatSubConfig getChatConfig() {return this.chatConfig; }
     public TooltipSubConfig getTooltipConfig() {return this.tooltipConfig; }
     public ConfigProperty<Boolean> getSkipHub() {return skipHub;}
+    public ConfigProperty<Boolean> getBlockMarker() {return blockMarker;}
     public HopperSubConfig getHopperSubConfig() {return hopperSubConfig;}
     public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
     public AutoCrafterSubConfig getAutoCrafterConfig() {return autoCrafterConfig;}

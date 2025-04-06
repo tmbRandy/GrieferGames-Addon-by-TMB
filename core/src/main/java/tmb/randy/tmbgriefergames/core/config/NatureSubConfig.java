@@ -6,15 +6,9 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.Slide
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.color.ColorPickerWidget.ColorPickerSetting;
 import net.labymod.api.configuration.loader.Config;
-import net.labymod.api.configuration.loader.annotation.ShowSettingInParent;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 
 public class NatureSubConfig extends Config {
-
-    @ShowSettingInParent
-    @SwitchSetting
-    private final ConfigProperty<Boolean> showBorders = new ConfigProperty<>(false);
-
     @SliderSetting(min = 1, max = 10, steps = 1)
     private final ConfigProperty<Integer> borderRadius = new ConfigProperty<>(5);
 
@@ -30,8 +24,6 @@ public class NatureSubConfig extends Config {
     @ColorPickerSetting
     private final ConfigProperty<Integer> borderColor = new ConfigProperty<>(1);
 
-
-    public ConfigProperty<Boolean> getShowBorders() { return this.showBorders; }
     public ConfigProperty<Integer> getBorderRadius() {
         return this.borderRadius;
     }

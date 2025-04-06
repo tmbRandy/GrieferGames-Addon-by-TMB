@@ -13,8 +13,8 @@ import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.WheelWidget;
 import net.labymod.api.util.Color;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.CBtracker;
-import tmb.randy.tmbgriefergames.core.FileManager;
+import tmb.randy.tmbgriefergames.core.helper.CBtracker;
+import tmb.randy.tmbgriefergames.core.helper.FileManager;
 import tmb.randy.tmbgriefergames.core.enums.CBs;
 import java.util.ArrayList;
 

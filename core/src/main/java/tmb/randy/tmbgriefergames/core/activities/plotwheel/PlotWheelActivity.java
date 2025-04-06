@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core.activities.plotwheel;
 
+import java.util.UUID;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.screen.Parent;
@@ -19,14 +20,13 @@ import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalList
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.util.Color;
-import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.CBtracker;
-import tmb.randy.tmbgriefergames.core.FileManager;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.CBwheel.CBsegment;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheel.PlotSegment;
 import tmb.randy.tmbgriefergames.core.enums.CBs;
-import java.util.UUID;
+import tmb.randy.tmbgriefergames.core.helper.CBtracker;
+import tmb.randy.tmbgriefergames.core.helper.FileManager;
+import tmb.randy.tmbgriefergames.core.helper.I19n;
 
 @AutoActivity
 @Link("plotwheelactivity.lss")
@@ -90,7 +90,7 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
         cbDropdownWidget = new DropdownWidget<>().addId("cb-dropdown");
         HorizontalListEntry cbListTag = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.cb").addId("label"));
 
-        cbDropdownWidget.add(I18n.translate("tmbgriefergames.plotWheel.all"));
+        cbDropdownWidget.add(I19n.translate("plotWheel.all"));
         for (CBs cb : CBs.values()) {
             if(CBtracker.isPlotworldCB(cb) && cb != CBs.EVENT) {
                 cbDropdownWidget.add(cb.getName());
@@ -119,7 +119,7 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
         //////////////
 
         HorizontalListWidget accountList = new HorizontalListWidget();
-        HorizontalListEntry accountListTag = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.thisAccountOnly"));
+        HorizontalListEntry accountListTag = new HorizontalListEntry(ComponentWidget.i18n(Addon.getNamespace() + ".plotWheel.thisAccountOnly"));
         accountOnlyWidget = new CheckBoxWidget();
         HorizontalListEntry accountListCheckbox = new HorizontalListEntry(accountOnlyWidget);
         accountList.addChild(accountListTag);
@@ -129,11 +129,11 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
         //////////////
 
         HorizontalListWidget addPlotButtonList = new HorizontalListWidget();
-        ButtonWidget addButton = ButtonWidget.i18n("tmbgriefergames.plotWheel.add");
+        ButtonWidget addButton = ButtonWidget.i18n(Addon.getNamespace() + ".plotWheel.add");
         addButton.setPressable(() -> {
             if(!addCommandTextField.getText().trim().isEmpty()) {
                 String plotName = addNameTextField.getText().trim().isEmpty() ? null : addNameTextField.getText().trim();
-                CBs selectedCB = (cbDropdownWidget.getSelected() == null ? I18n.translate("tmbgriefergames.plotWheel.all") : cbDropdownWidget.getSelected()).equals(I18n.translate("tmbgriefergames.plotWheel.all")) ? CBs.NONE : CBs.valueOf(cbDropdownWidget.getSelected());
+                CBs selectedCB = (cbDropdownWidget.getSelected() == null ? I19n.translate("plotWheel.all") : cbDropdownWidget.getSelected()).equals(I19n.translate("plotWheel.all")) ? CBs.NONE : CBs.valueOf(cbDropdownWidget.getSelected());
                 UUID uuid = accountOnlyWidget.state() == CheckBoxWidget.State.CHECKED ? Laby.labyAPI().getUniqueId() : null;
                 String command = addCommandTextField.getText().trim();
 

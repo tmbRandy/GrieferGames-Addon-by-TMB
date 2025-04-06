@@ -5,8 +5,6 @@ import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalList
 
 public class CommandEntry extends VerticalListWidget<ComponentWidget> {
 
-  private CommandEntry() {}
-
   public CommandEntry(String title, String description) {
     this.addChild(ComponentWidget.text(title).addId("title"));
     this.addChild(ComponentWidget.text(description).addId("description"));

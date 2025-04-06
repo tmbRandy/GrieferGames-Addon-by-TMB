@@ -4,10 +4,10 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.component.TextComponent;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
-import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.helper.I19n;
 
-public class PayAllCommand extends TmbCommand {
+public class PayAllCommand extends DescribedCommand {
     public PayAllCommand() {
         super("pay");
     }
@@ -27,12 +27,12 @@ public class PayAllCommand extends TmbCommand {
                     int realTotalAmount = players * perPlayer;
 
                     if(perPlayer < 1) {
-                        Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.payAll.amountTooLow"));
+                        Addon.getSharedInstance().displayNotification(I19n.translate("payAll.amountTooLow"));
                         return false;
                     }
 
                     Laby.labyAPI().minecraft().chatExecutor().chat("/pay * " + perPlayer);
-                    Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.payAll.response", players, perPlayer, realTotalAmount));
+                    Addon.getSharedInstance().displayNotification(I19n.translate("payAll.response", players, perPlayer, realTotalAmount));
                 }
                 return true;
             }

@@ -1,9 +1,12 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
-import net.labymod.api.util.I18n;
+import net.labymod.api.Laby;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.enums.FunctionState;
+import tmb.randy.tmbgriefergames.core.enums.Functions;
+import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
 
-public class PlayerTracerCommand extends TmbCommand {
+public class PlayerTracerCommand extends DescribedCommand {
     public PlayerTracerCommand() {
         super("fahndung");
     }
@@ -13,17 +16,7 @@ public class PlayerTracerCommand extends TmbCommand {
         if(!Addon.isGG())
             return false;
 
-        switch (arguments.length) {
-            case 0 -> {
-                Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.startedHopping"));
-                Addon.getSharedInstance().getPlayerTracer().startTracer(null);
-            }
-            case 1 -> {
-                Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.lookingForPlayer", arguments[0]));
-                Addon.getSharedInstance().getPlayerTracer().startTracer(arguments[0]);
-            }
-            default -> Addon.getSharedInstance().displayNotification(I18n.getTranslation("tmbgriefergames.playerTracer.tooManyArguments"));
-        }
+        Laby.fireEvent(new ToggleFunctionEvent(Functions.PLAYERTRACER, FunctionState.TOGGLE, arguments));
 
         return true;
     }

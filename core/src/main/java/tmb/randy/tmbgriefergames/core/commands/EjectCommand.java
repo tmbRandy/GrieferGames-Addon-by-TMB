@@ -1,8 +1,12 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
+import net.labymod.api.Laby;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.enums.FunctionState;
+import tmb.randy.tmbgriefergames.core.enums.Functions;
+import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
 
-public class EjectCommand extends TmbCommand {
+public class EjectCommand extends DescribedCommand {
 
     public EjectCommand() {
         super("auswurf");
@@ -13,7 +17,7 @@ public class EjectCommand extends TmbCommand {
         if(!Addon.isGG())
             return false;
 
-        Addon.getSharedInstance().getBridge().startAuswurf();
+        Laby.fireEvent(new ToggleFunctionEvent(Functions.EJECT, FunctionState.TOGGLE, arguments));
 
         return true;
     }

@@ -24,9 +24,6 @@
             "natureSubConfig": {
                 "name": "Show plot borders on CB Nature",
                 "description": "Settings for the rendered borders on CB Nature and Extreme.",
-                "showBorders": {
-                    "name": "Show borders"
-                },
                 "borderRadius": {
                     "name": "Radius",
                     "description": "Sets the distance around you where the borders should shall appear."
@@ -184,6 +181,10 @@
                 "name": "Item protection",
                 "description": "Prevents you from using expensive farming items like Bonze Klinge, Birth Klinge, Birth Bogen, placing of SoS. CAUTION! This function will only work for clicks performed by the user. Software based clicks (performed by an auto clicker) will still damage or set your item."
             },
+            "blockMarker": {
+                "name": "Block marker",
+                "description": "Highlights all affected blocks while using special tools (e.g. Orb-Spitzhacke, Orb-Schaufel, Baumeisterpicke, Abrissschaufel...)."
+            },
             "tooltipConfig": {
                 "name": "Tooltip info",
                 "showCompTooltip": {
@@ -276,6 +277,46 @@
             "openDocs": {
                 "name": "All commands",
                 "text": "show"
+            },
+            "tmbDC": {
+                "name": "TMB Discord",
+                "text": "join"
+            }
+        },
+        "functions": {
+            "enable": "%s §a§lENABLED",
+            "disable": "%s §c§DISABLED",
+            "playertracer": {
+                "name": "Player tracer"
+            },
+            "craftv2": {
+                "name": "AutoCrafter V2"
+            },
+            "craftv3": {
+                "name": "AutoCrafter V3"
+            },
+            "comp": {
+                "name": "AutoCompressor"
+            },
+            "decomp": {
+                "name": "AutoDecompressor"
+            },
+            "eject": {
+                "name": "Eject"
+            },
+            "vabk": {
+                "name": "VABK"
+            },
+            "naturebordersrenderer": {
+                "name": "Visual borders"
+            },
+            "potionTimer": {
+                "flyPotion": "Fly potion",
+                "breakPotion": "Break potion",
+                "flyPotionUsed": "Fly potion used.",
+                "breakPotionUsed": "Break potion used.",
+                "flyPotionExpired": "Fly potion expired.",
+                "breakPotionExpired": "Break potion expired."
             }
         },
         "chat": {
@@ -309,11 +350,6 @@
             "foundPlayer": "Player found!",
             "tracingEnded": "Tracing ended."
         },
-        "flyTimer": {
-            "flyPotion": "Fly potion",
-            "flyPotionUsed": "Fly potion used..",
-            "flyPotionExpired": "Fly potion expired."
-        },
         "itemRemover": {
             "itemRemover": "Item remover"
         },
@@ -325,8 +361,8 @@
             "plotBordersInvisible": "Plot borders §c§lINVISIBLE"
         },
         "hudWidget": {
-            "flytimer": {
-                "name": "Fly potion timer"
+            "potiontimer": {
+                "name": "Potion timer"
             },
             "itemclear": {
                 "name": "Item remover"
@@ -348,18 +384,16 @@
                 "oneLine": {
                     "name": "One Line"
                 }
+            },
+            "activefunctions": {
+                "name": "Active functions"
             }
         },
         "autoComp": {
-            "list": "list #"
-        },
-        "autoDecomp": {
-            "started": "decompressing..."
+            "list": "list #%s"
         },
         "autoCrafter": {
             "recipeSaved": "Recipe saved",
-            "active": "Endless mode §a§ACTIVE",
-            "inactive": "Endless mode §c§INACTIVE",
             "recipeSavedV3": "Recipe saved! Now open all chests for the source material.",
             "noItemFound": "Put the item you want to craft into the first slot.",
             "startedCrafting": "Found all needed materials. Crafting...",
@@ -369,14 +403,6 @@
             "V3stopped": "Autocrafter V3 stopped.",
             "noSourceFound": "No source chest found.",
             "chooseVariant": "There are several possible recipes for this item. Please select one and press ENTER"
-        },
-        "eject": {
-            "enabled": "Eject §a§lENABLED. §fOpen an endless chest!",
-            "disabled": "Eject §c§lDISABLED"
-        },
-        "autoSword": {
-            "enabled": "VABK §a§lENABLED",
-            "disabled": "VABK §4§lDISABLED"
         },
         "mobs": {
             "spawn": "Spawn",

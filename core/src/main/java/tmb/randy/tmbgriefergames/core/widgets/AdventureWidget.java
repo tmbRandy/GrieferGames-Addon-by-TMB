@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
+import java.util.Objects;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
@@ -12,10 +13,9 @@ import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.component.data.DataComponentKey;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.nbt.tags.NBTTagCompound;
-import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.widgets.AdventureWidget.AdventureWidgetConfig;
-import java.util.Objects;
 
 public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
 
@@ -25,23 +25,25 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
     public AdventureWidget(HudWidgetCategory category) {
         super("adventure", AdventureWidgetConfig.class);
         this.name = Laby.labyAPI().getName();
-        setIcon(Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/alert.png")));
+        setIcon(Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/adventure.png")));
         this.bindCategory(category);
     }
 
     @Override
     public void load(AdventureWidgetConfig config) {
         super.load(config);
-        line = super.createLine(I18n.getTranslation("tmbgriefergames.hudWidget.adventure.name"), name);
+        line = super.createLine(I19n.translate("hudWidget.adventure.name"), name);
     }
 
     @Override
     public void onTick(boolean isEditorContext) {
-        String newName = isEditorContext ? getEditorDummy(config.getOneLine().get()) : getAdventurerForItemStack(null, this.config.getOneLine().get());
-        if(name != null && name.equals(newName)) return;
-        name = newName;
+        if(Addon.isGG()) {
+            String newName = isEditorContext ? getEditorDummy(config.getOneLine().get()) : getAdventurerForItemStack(null, this.config.getOneLine().get());
+            if(name != null && name.equals(newName)) return;
+            name = newName;
 
-        this.line.updateAndFlush(name);
+            this.line.updateAndFlush(name);
+        }
     }
 
     @Override
@@ -84,9 +86,9 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
                                 float percentRounded = Math.round(percent * 10) / 10.0f;
 
                                 if(oneLine)
-                                    return I18n.translate("tmbgriefergames.tooltip.adventurerTooltipOneLine", percentRounded, DKs, stacks, items);
+                                    return I19n.translate("tooltip.adventurerTooltipOneLine", percentRounded, DKs, stacks, items);
                                 else
-                                    return I18n.translate("tmbgriefergames.tooltip.adventurerTooltipMultiLine", percentRounded, DKs, stacks, items);
+                                    return I19n.translate("tooltip.adventurerTooltipMultiLine", percentRounded, DKs, stacks, items);
                             }
 
                         }
@@ -100,8 +102,8 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
 
     private String getEditorDummy(boolean oneLine) {
         if(oneLine)
-            return I18n.translate("tmbgriefergames.tooltip.adventurerTooltipOneLine", 25.3, 1, 13, 9);
+            return I19n.translate("tooltip.adventurerTooltipOneLine", 25.3, 1, 13, 9);
         else
-            return I18n.translate("tmbgriefergames.tooltip.adventurerTooltipMultiLine", 25.3, 1, 13, 9);
+            return I19n.translate("tooltip.adventurerTooltipMultiLine", 25.3, 1, 13, 9);
     }
 }

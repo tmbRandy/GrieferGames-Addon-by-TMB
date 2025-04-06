@@ -1,5 +1,10 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.component.TextComponent;
@@ -14,59 +19,33 @@ import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
 import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
-import net.labymod.api.util.I18n;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget.NearbyWidgetConfig;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
-
-    private static final List<String> blacklist = Arrays.asList(
-        "Adventurer",
-        "Admin-Shop",
-        "Statistik",
-        "Händler",
-        "Lotterie",
-        "Vote-System",
-        "Rand-Schmied",
-        "Bürgermeister",
-        "Adventurer",
-        "Verkäufer",
-        "Citybuild",
-        "Skyblock Museum",
-        "Impressum",
-        "Datenschutz",
-        "Jobs",
-        "Block des Tages",
-        "GS-Bewertungen",
-        "Auktionshaus"
-    );
-
     private TextComponent name;
     private TextLine line;
 
     public NearbyWidget(HudWidgetCategory category) {
         super("nearby", NearbyWidgetConfig.class);
         this.name = Component.text(Laby.labyAPI().getName());
-        setIcon(Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/nearby.png")));
+        setIcon(Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/nearby.png")));
         this.bindCategory(category);
     }
 
     @Override
     public void load(NearbyWidgetConfig config) {
         super.load(config);
-        this.line = super.createLine(I18n.getTranslation("tmbgriefergames.nearby.nearby"), name);
+        this.line = super.createLine(I19n.translate("nearby.nearby"), name);
     }
 
     @Override
     public void onTick(boolean isEditorContext) {
-        name = getPlayersListAsString();
-        this.line.updateAndFlush(name);
+        if(Addon.isGG()) {
+            name = getPlayersListAsString();
+            this.line.updateAndFlush(name);
+        }
     }
 
     @Override
@@ -110,22 +89,15 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
     public static List<Player> getPlayersList() {
         List<Player> output = new ArrayList<>();
 
-        outerLoop: for (Entity entity : Laby.labyAPI().minecraft().clientWorld().getEntities()) {
+        for (Entity entity : Laby.labyAPI().minecraft().clientWorld().getEntities()) {
 
             if(entity instanceof Player player) {
                 if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
-                    if(player.getName().equals(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getName())) {
+                    if(player.getName().equals(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getName()))
                         continue;
-                    }
                 }
-
-                if(player.getName().startsWith("§6"))
+                if((player.getName().startsWith("§") && !player.getName().contains("Zauberer")) || player.getName().contains(" "))
                     continue;
-
-                for (String string : blacklist) {
-                    if(player.getName().contains(string))
-                        continue outerLoop;
-                }
 
                 int dist = (int)Math.sqrt(player.getDistanceSquared(Laby.labyAPI().minecraft().getClientPlayer()));
 
@@ -273,8 +245,8 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
             for (Map.Entry<MobType, Integer> entry : mobCountMap.entrySet()) {
                 int count = entry.getValue();
                 if (count > 0 && entry.getKey() != null) {
-                    String translationKey = "tmbgriefergames.mobs." + entry.getKey().name().toLowerCase();
-                    String mobName = I18n.getTranslation(translationKey);
+                    String translationKey = "mobs." + entry.getKey().name().toLowerCase();
+                    String mobName = I19n.translate(translationKey);
 
                     result.append("\n§d").append(count).append("x §6").append(mobName);
                 }

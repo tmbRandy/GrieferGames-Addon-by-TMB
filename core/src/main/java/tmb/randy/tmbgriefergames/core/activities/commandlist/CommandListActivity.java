@@ -7,7 +7,7 @@ import net.labymod.api.client.gui.screen.activity.types.SimpleActivity;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.ScrollWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.layout.list.VerticalListWidget;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.commands.TmbCommand;
+import tmb.randy.tmbgriefergames.core.commands.DescribedCommand;
 
 @AutoActivity
 @Link("commandlistactivity.lss")
@@ -22,7 +22,7 @@ public class CommandListActivity extends SimpleActivity {
     ScrollWidget scrollWidget = new ScrollWidget(list);
     scrollWidget.addId("scroll");
 
-    for (TmbCommand command : Addon.getSharedInstance().getCommands()) {
+    for (DescribedCommand command : Addon.getSharedInstance().getCommands()) {
         StringBuilder title = new StringBuilder("/" + command.getPrefix());
 
         for (String alias : command.getAliases()) {

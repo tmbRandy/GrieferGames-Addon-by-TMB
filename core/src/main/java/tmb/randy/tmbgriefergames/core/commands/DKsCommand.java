@@ -2,10 +2,7 @@ package tmb.randy.tmbgriefergames.core.commands;
 
 import tmb.randy.tmbgriefergames.core.Addon;
 
-public class DKsCommand extends TmbCommand {
-
-    private final String LEVELSTYLE = "§6";
-    private final String SEPARATORSTYLE = "§7";
+public class DKsCommand extends DescribedCommand {
 
     public DKsCommand() {
         super("dks", "dk");
@@ -72,6 +69,8 @@ public class DKsCommand extends TmbCommand {
 
             StringBuilder builder = new StringBuilder();
 
+            String LEVELSTYLE = "§6";
+            String SEPARATORSTYLE = "§7";
             if(dksLevel7 > 0) {
                 builder.append(LEVELSTYLE).append(dksLevel7).append(" * Ⅶ").append(SEPARATORSTYLE);
             }
@@ -125,7 +124,8 @@ public class DKsCommand extends TmbCommand {
                 builder.append(LEVELSTYLE).append(restItems).append(" Items").append(SEPARATORSTYLE);
             }
 
-            Addon.getSharedInstance().displayNotification("§e" + numberOfDKs + " DKs" + SEPARATORSTYLE + " = " + builder);
+            Addon.getSharedInstance().displayNotification("§e" + numberOfDKs + " DKs" + SEPARATORSTYLE
+                + " = " + builder);
         }
 
         return true;

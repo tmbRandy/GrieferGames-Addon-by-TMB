@@ -23,9 +23,6 @@
             "natureSubConfig": {
                 "name": "CB Nature Plotgrenzen",
                 "description": "Einstellungen für die Darstellung der Plotgrenzen auf CB Nature und Extreme.",
-                "showBorders": {
-                    "name": "Plotgrenzen darstellen"
-                },
                 "borderRadius": {
                     "name": "Radius",
                     "description": "Legt fest, in welchem Abstand um dich herum die Grenzen dargestellt werden."
@@ -180,6 +177,10 @@
                 "name": "Itemschutz",
                 "description": "Verhindert das Nutzen von wertvollen Items wie Bonze Klinge, Birth Klinge, Birth Bogen, setzen eines SoS. ACHTUNG! Diese Funktion verhindert lediglich Klicks, welche vom Spieler selbst ausgeführt werden. Softwareseitige Klicks (z.B. durch einen Autoclicker) können ein SoS trotzdem setzen oder mit einer Bonze Klinge zuschlagen."
             },
+            "blockMarker": {
+                "name": "Block Marker",
+                "description": "Umrandet bei Verwendung von Spezialwerkzeugen (z.B. Orb-Spitzhacke, Orb-Schaufel, Baumeisterpicke, Abrissschaufel...) alle Blöcke, die abgebaut werden."
+            },
             "tooltipConfig": {
                 "name": "Tooltip Info",
                 "showCompTooltip": {
@@ -275,6 +276,46 @@
             "openDocs": {
                 "name": "Alle Befehle",
                 "text": "anzeigen"
+            },
+            "tmbDC": {
+                "name": "TMB Discord",
+                "text": "beitreten"
+            }
+        },
+        "functions": {
+            "enable": "%s §a§lAKTIVIERT",
+            "disable": "%s §c§lDEAKTIVIERT",
+            "playertracer": {
+                "name": "Fahndung"
+            },
+            "craftv2": {
+                "name": "AutoCrafter V2"
+            },
+            "craftv3": {
+                "name": "AutoCrafter V3"
+            },
+            "comp": {
+                "name": "AutoKomprimierer"
+            },
+            "decomp": {
+                "name": "AutoDekomprimierer"
+            },
+            "eject": {
+                "name": "Auswurf"
+            },
+            "vabk": {
+                "name": "VABK"
+            },
+            "naturebordersrenderer": {
+                "name": "Sichtbare Plotgrenzen"
+            },
+            "potionTimer": {
+                "flyPotion": "Flugtrank",
+                "breakPotion": "Abbautrank",
+                "flyPotionUsed": "Flugtrank benutzt.",
+                "breakPotionUsed": "Abbautrank benutzt.",
+                "flyPotionExpired": "Flugtrank abgelaufen.",
+                "breakPotionExpired": "Abbautrank abgelaufen."
             }
         },
         "chat": {
@@ -308,24 +349,15 @@
             "foundPlayer": "Spieler gefunden!",
             "tracingEnded": "Fahndung beendet."
         },
-        "flyTimer": {
-            "flyPotion": "Flugtrank",
-            "flyPotionUsed": "Flugtrank benutzt.",
-            "flyPotionExpired": "Flugtrank abgelaufen."
-        },
         "itemRemover": {
             "itemRemover": "Item remover"
         },
         "nearby": {
             "nearby": "In der Nähe"
         },
-        "natureBorders": {
-            "plotBordersVisible": "Plotgrenzen §a§lSICHTBAR",
-            "plotBordersInvisible": "Plotgrenzen §c§lUNSICHTBAR"
-        },
         "hudWidget": {
-            "flytimer": {
-                "name": "Flugtrank Timer"
+            "potiontimer": {
+                "name": "Trank Timer"
             },
             "itemclear": {
                 "name": "Item remover"
@@ -342,22 +374,18 @@
                     "name": "Mobs zeigen"
                 }
             },
-            "hopper_mode": {
-                "name": "Trichter-Verbindung",
-                "description": "Zeigt per Icon an, ob du dich im Trichter-Verbindungsmodus befindest. Überflüssige Chatausgaben werden dadurch unterdrückt."
-            },
             "adventure": {
                 "name": "Abenteuer",
                 "oneLine": {
                     "name": "Eine Zeile"
                 }
+            },
+            "activefunctions": {
+                "name": "Aktive Funktionen"
             }
         },
         "autoComp": {
-            "list": "Liste #"
-        },
-        "autoDecomp": {
-            "started": "Dekomprimiere..."
+            "list": "Liste #%s"
         },
         "autoCrafter": {
             "recipeSaved": "Rezept gespeichert",
@@ -368,18 +396,8 @@
             "startedCrafting": "Alle benötigten Materialien wurden erfasst. Crafte...",
             "setChestForMaterial": "Quellkiste für %s festgelegt.",
             "mixedChest": "Die Kiste enthält verschiedene Items und kann daher nicht als Quellkiste verwendet werden.",
-            "V3started": "Autocrafter V3 gestartet...",
-            "V3stopped": "Autocrafter V3 beendet.",
             "noSourceFound": "Keine Quellkiste gefunden.",
             "chooseVariant": "Es gibt mehrere mögliche Rezepte für dieses Item. Bitte wähle eines aus und halte ENTER gedrückt, bis das Rezept gespeichert wurde."
-        },
-        "eject": {
-            "enabled": "Auswurf §a§lAKTIVIERT. §fÖffne ein unendliches Lager!",
-            "disabled": "Auswurf §c§lDEAKTIVIERT"
-        },
-        "autoSword": {
-            "enabled": "VABK §aAKTIVIERT. §fÖffne den Chat, um automatisch zu schießen.",
-            "disabled": "VABK §4DEAKTIVIERT"
         },
         "mobs": {
             "spawn": "Erschaffe",

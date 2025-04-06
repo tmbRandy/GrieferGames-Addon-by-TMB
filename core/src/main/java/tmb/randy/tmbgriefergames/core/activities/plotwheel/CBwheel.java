@@ -6,7 +6,7 @@ import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.WheelWidget;
-import tmb.randy.tmbgriefergames.core.CBtracker;
+import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.enums.CBs;
 
 @AutoWidget

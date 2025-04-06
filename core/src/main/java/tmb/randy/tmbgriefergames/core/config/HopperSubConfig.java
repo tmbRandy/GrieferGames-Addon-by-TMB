@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core.config;
 
+import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SliderWidget.SliderSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
@@ -10,9 +11,9 @@ import net.labymod.api.configuration.loader.annotation.ShowSettingInParent;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.configuration.settings.annotation.SettingSection;
 import net.labymod.api.util.MethodOrder;
-import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.HopperFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.HopperItemStackSizeEnum;
+import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
 
 public class HopperSubConfig extends Config {
 
@@ -42,7 +43,9 @@ public class HopperSubConfig extends Config {
     private final ConfigProperty<Boolean> showRadius = new ConfigProperty<>(true);
     @MethodOrder(after = "showRadius")
     @ButtonSetting
-    public void resetLines() {Addon.getSharedInstance().getBridge().resetLines();}
+    public void resetLines() {
+        Laby.fireEvent(new ResetLinesEvent());
+    }
 
     public ConfigProperty<Boolean> getEnabled() {
         return this.enabled;

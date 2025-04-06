@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -23,29 +24,33 @@ import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
+import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent.Side;
+import net.labymod.api.event.client.render.overlay.IngameOverlayElementRenderEvent;
+import net.labymod.api.event.client.render.overlay.IngameOverlayElementRenderEvent.OverlayElementType;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryAddEvent;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryRemoveEvent;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamUpdateEvent;
 import net.labymod.api.util.Color;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.core.events.MoneyBalanceChangedEvent;
 import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget.GameInfoWidgetConfig;
 
 public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
-    private final Icon widgetIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/gameinfo.png"));
-    private final Icon serverIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/server.png"));
-    private final Icon playersIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/players.png"));
-    private final Icon moneyIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/money.png"));
-    private final Icon bankIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/bank.png"));
-    private final Icon hoursIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/hours.png"));
-    private final Icon itemRemoverIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/itemremover.png"));
-    private final Icon mobRemoverIcon = Icon.texture(ResourceLocation.create(Addon.getSharedInstance().addonInfo().getNamespace(), "textures/widgets/scoreboard/mobremover.png"));
+    private final Icon widgetIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/gameinfo.png"));
+    private final Icon serverIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/server.png"));
+    private final Icon playersIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/players.png"));
+    private final Icon moneyIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/money.png"));
+    private final Icon bankIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/bank.png"));
+    private final Icon hoursIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/hours.png"));
+    private final Icon itemRemoverIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/itemremover.png"));
+    private final Icon mobRemoverIcon = Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/scoreboard/mobremover.png"));
 
     private static final Pattern TIME_PATTERN = Pattern.compile("\\[MobRemover\\] Achtung! In (\\d+) Minute(n)? werden alle Tiere gel\\u00f6scht.");
     private static final Pattern REMOVED_PATTERN = Pattern.compile("\\[MobRemover\\] Es wurden .* Tiere entfernt.");
@@ -106,25 +111,39 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
     @Subscribe
     public void tickEvent(GameTickEvent event) {
-        update();
+        if(Addon.isGG())
+            update();
     }
 
     @Subscribe
     public void scoreboardAddTeam(ScoreboardTeamEntryAddEvent event) {
-        readScoreboard();
-        update();
+        if(Addon.isGG()) {
+            readScoreboard();
+            update();
+        }
     }
 
     @Subscribe
     public void scoreboardRemoveTeam(ScoreboardTeamEntryRemoveEvent event) {
-        readScoreboard();
-        update();
+        if(Addon.isGG()) {
+            readScoreboard();
+            update();
+        }
     }
 
     @Subscribe
     public void scoreboardUpdateTeam(ScoreboardTeamUpdateEvent event) {
-        readScoreboard();
-        update();
+        if(Addon.isGG()) {
+            readScoreboard();
+            update();
+        }
+    }
+
+    @Subscribe
+    public void onScoreboardRender(IngameOverlayElementRenderEvent event) {
+        if (Addon.isGG() && Addon.getSharedInstance().getGameInfoWidget().isEnabled() && event.elementType() == OverlayElementType.SCOREBOARD && Addon.getSharedInstance().getGameInfoWidget().isVisibleInGame() && event.phase() == Phase.PRE) {
+            event.setCancelled(true);
+        }
     }
 
     private void readScoreboard() {
@@ -136,7 +155,18 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
         for (ScoreboardTeam team : scoreboard.getTeams()) {
             if (team.getTeamName().equals("money_value")) {
-                moneyValue = ((TextComponent) team.getPrefix()).getText();
+                String newValue = ((TextComponent) team.getPrefix()).getText();
+
+                try {
+                    BigDecimal newBalance = moneyStingToDecimal(newValue);
+                    BigDecimal oldBalance = moneyStingToDecimal(moneyValue);
+                    if (!newBalance.equals(oldBalance))
+                        Laby.fireEvent(new MoneyBalanceChangedEvent(oldBalance, newBalance));
+                } catch (Exception e) {
+                    Addon.getSharedInstance().logger().error(e.getMessage());
+                }
+
+                moneyValue = newValue;
             } else if (team.getTeamName().equals("online_value")) {
                 playersValue = ((TextComponent) team.getPrefix()).getText();
             } else if (team.getTeamName().equals("playtime_value")) {
@@ -149,9 +179,8 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
     @Subscribe
     public void networkPayloadEvent(NetworkPayloadEvent event) {
-        if (!Addon.isGG()) {
+        if (!Addon.isGG())
             return;
-        }
 
         if (event.side() == Side.RECEIVE) {
             byte[] packetBuffer = event.getPayload().clone();
@@ -217,10 +246,8 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
     @Subscribe
     public void onMessageReceiveEvent(ChatReceiveEvent event) {
-        if (!Laby.labyAPI().minecraft().isIngame()
-            || Laby.labyAPI().minecraft().getClientPlayer() == null) {
+        if (!Addon.isGG())
             return;
-        }
 
         String message = event.chatMessage().getPlainText();
         Instant now = Instant.now();
@@ -255,7 +282,8 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
     @Subscribe
     void cbChanged(CbChangedEvent event) {
-        mobRemover = null;
+        if(Addon.isGG())
+            mobRemover = null;
     }
 
     public static class GameInfoWidgetConfig extends TextHudWidgetConfig {
@@ -264,5 +292,13 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
         private final ConfigProperty<Boolean> showBank = new ConfigProperty<>(true);
 
         public ConfigProperty<Boolean> getShowBank() {return showBank;}
+    }
+
+    public BigDecimal moneyStingToDecimal(String input) {
+        input = input.replace("$", "");
+        input = input.replace(".", "");
+        input = input.replace(",", ".");
+
+        return new BigDecimal(input);
     }
 }
