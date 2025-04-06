@@ -71,6 +71,9 @@ Das Addon verhindert die Abnutzung wertvoller Farmitems. So ist ein Zuschlagen m
 ### Tooltip Erweiterung
 Mit diesem Addon siehst du die genaue Anzahl an DKs, Stacks und Items komprimierter Items, wenn du mit der Maus darüber fährst. Außerdem wird dir bei Adventurer Werkzeugen der Fortschritt in %, sowie die Menge des Materials in DKs, Stacks und Items angezeigt, sodass du einen verbesserten Überblick hast, wie viel du damit noch abbauen musst.
 
+### Block Marker
+Der Block Marker umrandet bei Verwendung von Spezialwerkzeugen (z.B. Orb-Spitzhacke oder Abrissschaufel der Builder) alle Blöcke, die abgebaut werden.
+
 ### PlotSwitch
 Nachdem du einen /p h Befehl eingegeben hast, kannst du mit diesem Addon durch eine Tastenkombination (standardmäßig SHIFT + Pfeiltaste links️ bzw. SHIFT + Pfeiltaste rechts️) durch die Plots des Spielers wechseln. Wenn du beispielsweise "/p h AbgegrieftHD 5" eingibst, kannst du anschließend mit SHIFT + Pfeiltaste links️ zu "/p h AbgegrieftHD 4" oder mit SHIFT + Pfeiltaste rechts️ zu "/p h AbgegrieftHD 6" wechseln.
 
@@ -80,14 +83,14 @@ Du kannst ein Widget hinzufügen, das dir immer anzeigt, wann der nächste Item 
 ### Widget Ingame Info
 Wenn dich die große Anzeigetafel rechts stört, kannst du diese nun ausblenden. Entferne diese einfach aus dem GUI Menü und füge die GrieferGames Ingame Info hinzu. Diese zeigt dir alle wichtigen Informationen, wie CB, Kontostand, Spielerzahl und Spielstunden wesentlich kompakter an und lässt alle unnötigen Informationen weg.
 
-### Widget Flugtrank Timer
-Wenn du wisst, kannst du dir nach Einnahme eines Flugtranks einen 15 Minuten Countdown einblenden lassen, sodass du immer siehst, wann dein Flugeffekt ausläuft.
+### Widget Trank Timer
+Wenn du wisst, kannst du dir nach Einnahme eines Flug- oder Abbautranks einen 15 Minuten Countdown einblenden lassen, sodass du immer siehst, wann dein Flugeffekt ausläuft.
 
 ### Widget In der Nähe
 Dieses Widget zeigt dir eine Liste von Spielern in deiner unmittelbaren Umgebung an. Auch Mobs werden angezeigt und zählt diese sogar zusammen - selbst wenn sie gestackt sind.
 
-### Widget Verbindungsmodus
-Beim Verbinden von Trichtern kann der Chat durch die Benachrichtigungen zum Verbindungsmodus des Trichters schnell unübersichtlich werden. Ziehe einfach das Widget "Verbindungsmodus" in deine GUI. Dadurch werden die Trichternachrichten unterdrückt und du siehst stattdessen per Symbol, ob du im Verbindungsmodus oder im Multi-Verbindungsmodus bist.
+### Widget Aktive Funktionen
+Dieses Widget zeigt dir anhand von Symbolen an, welche Funktionen das Addons gerade aktiv sind. Außerdem zeigt es an, ob und in welchem Trichter-Verbindungsmodus du dich befindest.
 
 ### Chatfunktionen
 
