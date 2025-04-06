@@ -2,7 +2,7 @@
  
 ## Dieses Addon wurde speziell für das GrieferGames 1.8 Netzwerk entwickelt und bietet einige nützliche Funktionen:
 
-### Autokomprimiererr
+### Autokomprimierer
 Drücke bei geschlossenem Inventar die Pfeiltastet LINKS, RECHTS und OBEN gleichzeitig, um den Autokomprimierer zu starten. Es öffnet sich das Komprimieren-Menü mit dem Item, welches in deinem ersten Hotbar Slot liegt. Es gibt 2 verschiedene Listen, zwischen denen du während des Komprimierens mit den Pfeiltastet HOCH und RUNTER:
 
 ### Autodekomprimierer
