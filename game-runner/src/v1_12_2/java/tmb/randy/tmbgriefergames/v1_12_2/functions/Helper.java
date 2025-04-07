@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -18,11 +19,18 @@ public class Helper {
         return Minecraft.getMinecraft().world;
     }
 
-    public static BlockPos getBlockLookingAt() {
+    public static BlockPos getBlockPosLookingAt() {
         RayTraceResult trace = getPlayer().rayTrace(5, 1.0F);
-        if(trace != null && trace.typeOfHit == Type.BLOCK) {
+        if(trace != null && trace.typeOfHit == Type.BLOCK)
             return trace.getBlockPos();
-        }
+
+        return null;
+    }
+
+    public static Block getBlockLookingAt() {
+        BlockPos pos = getBlockPosLookingAt();
+        if(pos != null && Helper.getWorld() != null)
+            return getWorld().getBlockState(pos).getBlock();
 
         return null;
     }

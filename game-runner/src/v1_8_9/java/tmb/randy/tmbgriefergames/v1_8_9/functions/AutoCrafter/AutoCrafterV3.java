@@ -231,7 +231,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                 if(nextItem == null) {
                     Addon.sendCommand("/rezepte");
                 } else {
-                    BlockPos lookingAtBlock = Helper.getBlockLookingAt();
+                    BlockPos lookingAtBlock = Helper.getBlockPosLookingAt();
                     BlockPos neededBlock = sourceChests.get(nextItem);
 
                     if(neededBlock != null) {

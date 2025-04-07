@@ -169,7 +169,7 @@ public class AutoHopper extends Function {
     }
 
     private boolean isLookingAtHopper() {
-        BlockPos blockPos = Helper.getBlockLookingAt();
+        BlockPos blockPos = Helper.getBlockPosLookingAt();
         if (blockPos != null) {
             Block block = Helper.getWorld().getBlockState(blockPos).getBlock();
 
