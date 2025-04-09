@@ -84,7 +84,7 @@ public class HopperConnections extends Function {
                 }
             } else if(invName.equals("§6Trichter-Einstellungen")) {
                 ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(16);
-                if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
+                if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
                     String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
                     if(firstLine.contains("Weiterleiten an ")) {
                         String coordinateString = firstLine.replace("Weiterleiten an ", "").replace("\"", "").replace(".0", "").replace("§7", "").replace("§e", "").trim();
