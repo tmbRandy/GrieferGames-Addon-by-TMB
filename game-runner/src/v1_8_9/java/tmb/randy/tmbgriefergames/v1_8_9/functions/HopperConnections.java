@@ -62,7 +62,7 @@ public class HopperConnections extends Function {
             if(invName.equals("§6Trichter-Mehrfach-Verbindungen")) {
                 for (int i = 0; i < 44; i++) {
                     ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(i);
-                    if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
+                    if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
                         String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
                         if(firstLine.contains("Verbunden mit:")) {
                             String coordinateString = firstLine.replace("§7Verbunden mit: §e", "").replace("\"", "").replace(".0", "");
