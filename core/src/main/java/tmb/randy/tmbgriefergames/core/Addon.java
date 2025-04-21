@@ -53,6 +53,7 @@ import tmb.randy.tmbgriefergames.core.widgets.ItemClearWidget;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget;
 import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget;
 
+
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
 
@@ -249,7 +250,7 @@ public class Addon extends LabyAddon<Configuration> {
             return false;
 
         for (Key key : keys) {
-            if(!key.isPressed())
+            if(!Laby.labyAPI().minecraft().isKeyPressed(key))
                 return false;
         }
         return true;
