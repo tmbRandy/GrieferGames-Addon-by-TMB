@@ -210,7 +210,6 @@ public class HopperConnections extends Function {
             }
         }
 
-
         if(currentConnectingHopper != null) {
             drawSphere(currentConnectingHopper);
         }

@@ -39,13 +39,16 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
 
     @Subscribe
     public void onTick(boolean isEditorContext) {
-        if(Addon.isGG())
-            return;
-
         if (isEditorContext) {
             String placeholder = "15:00";
             flyLine.updateAndFlush(placeholder);
             breakLine.updateAndFlush(placeholder);
+            return;
+        }
+
+        if (!Addon.isGG()) {
+            flyLine.setState(State.HIDDEN);
+            breakLine.setState(State.HIDDEN);
             return;
         }
 
@@ -70,6 +73,7 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
             if (remainingTime < 0) {
                 breakTimer = null;
                 Addon.getSharedInstance().displayNotification(I19n.translate("functions.potionTimer.breakPotionExpired"));
+                breakLine.updateAndFlush("");
                 breakLine.setState(State.HIDDEN);
             } else {
                 breakLine.updateAndFlush(formatTime(remainingTime));

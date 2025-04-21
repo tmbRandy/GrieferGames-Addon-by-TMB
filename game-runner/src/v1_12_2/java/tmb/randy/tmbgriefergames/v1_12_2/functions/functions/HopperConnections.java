@@ -41,9 +41,8 @@ public class HopperConnections extends Function {
 
     private record HopperConnection(BlockPos pos1, BlockPos pos2, @Nullable ItemStack stack, CBs cb) {
         public String toString() {
-            if(stack != null) {
+            if(stack != null)
                 return cb.getName() + "." + stack.getItem().toString() + ":" + stack.getMetadata() + "." + pos1;
-            }
 
             return cb.getName() + "." + pos1;
         }
@@ -51,9 +50,8 @@ public class HopperConnections extends Function {
 
     @Override
     public void hopperStateChangedEvent(HopperStateChangedEvent event) {
-        if(event.newState() == HopperState.NONE) {
+        if(event.newState() == HopperState.NONE)
             currentConnectingHopper = null;
-        }
     }
 
     public void onGuiOpenEvent() {
@@ -212,9 +210,8 @@ public class HopperConnections extends Function {
         }
 
 
-        if(currentConnectingHopper != null) {
+        if(currentConnectingHopper != null)
             drawSphere(currentConnectingHopper);
-        }
     }
 
     private void drawLineBetween(HopperConnection connection) {

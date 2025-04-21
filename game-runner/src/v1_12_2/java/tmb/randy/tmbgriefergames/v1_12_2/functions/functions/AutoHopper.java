@@ -87,7 +87,6 @@ public class AutoHopper extends Function {
                         toggeledSneak = false;
                     }
 
-
                     boolean clicked = false;
                     if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                         if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFilterItem().get() &&
