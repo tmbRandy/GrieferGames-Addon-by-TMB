@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -47,7 +48,7 @@ public class Eject extends ActiveFunction {
                             Helper.getPlayer().closeScreen();
                             RayTraceResult rayTraceResult = Minecraft.getMinecraft().objectMouseOver;
                             if(rayTraceResult.typeOfHit == Type.BLOCK && rayTraceResult.getBlockPos().equals(chestPos)) {
-                                Helper.rightClick();
+                                Minecraft.getMinecraft().playerController.processRightClickBlock(Helper.getPlayer(), Helper.getWorld(), rayTraceResult.getBlockPos(), rayTraceResult.sideHit, rayTraceResult.hitVec, EnumHand.MAIN_HAND);
                             }
                         }
                     }

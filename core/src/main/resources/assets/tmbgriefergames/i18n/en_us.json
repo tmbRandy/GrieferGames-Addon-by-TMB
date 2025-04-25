@@ -285,7 +285,7 @@
         },
         "functions": {
             "enable": "%s §a§lENABLED",
-            "disable": "%s §c§DISABLED",
+            "disable": "%s §c§lDISABLED",
             "playertracer": {
                 "name": "Player tracer"
             },

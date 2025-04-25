@@ -85,26 +85,23 @@ public class AutoCrafterV3 extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(isEnabled() && event.state() == State.PRESS && event.key() == Key.ESCAPE) {
+        if(isEnabled() && event.state() == State.PRESS && event.key() == Key.ESCAPE)
             stop();
-        }
     }
 
     @Override
     public void chatReceiveEvent(ChatReceiveEvent event) {
         if(isEnabled()) {
-            if(event.chatMessage().getPlainText().equals("Du kannst diese Kiste nicht öffnen, solange sie von einem anderen Spieler benutzt wird.")) {
+            if(event.chatMessage().getPlainText().equals("Du kannst diese Kiste nicht öffnen, solange sie von einem anderen Spieler benutzt wird."))
                 event.setCancelled(true);
-            } else if(event.chatMessage().getPlainText().equals("[Rezepte] Es konnte kein Vanilla Rezept für dieses Item gefunden werden.")) {
+            else if(event.chatMessage().getPlainText().equals("[Rezepte] Es konnte kein Vanilla Rezept für dieses Item gefunden werden."))
                 stop();
-            }
         }
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
         if(isEnabled()) {
-
             if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getDelay().get() > 0) {
                 if(tickCounter < Addon.getSharedInstance().configuration().getAutoCrafterConfig().getDelay().get()) {
                     tickCounter++;
@@ -125,14 +122,13 @@ public class AutoCrafterV3 extends ActiveFunction {
                             } else if(chestInventory.getName().equals("§6Minecraft-Rezepte")) {
                                 if(Helper.getPlayer().inventory.mainInventory.getFirst().getItem().equals(Items.GOLD_INGOT)) {
                                     int slot = getSlotForGoldIngot();
-                                    if(slot > 0) {
+                                    if(slot > 0)
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, ClickType.QUICK_MOVE));
-                                    } else {
+                                    else
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 53, 0, ClickType.QUICK_MOVE));
-                                    }
-                                } else {
+                                } else
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 81, 0, ClickType.QUICK_MOVE));
-                                }
+
                             } else if(chestInventory.getName().equals("§6Vanilla Bauanleitung") && areItemStacksEqual(chestInventory.getStackInSlot(25), Helper.getPlayer().inventory.mainInventory.getFirst())) {
                                 ItemStack pageIndicator = chestInventory.getStackInSlot(49);
                                 if(pageIndicator != null && pageIndicator.getItem() == Items.SKULL) {

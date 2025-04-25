@@ -29,7 +29,7 @@ public class Helper {
 
     public static Block getBlockLookingAt() {
         BlockPos pos = getBlockPosLookingAt();
-        if(pos != null && Helper.getWorld() != null)
+        if(pos != null && getWorld() != null)
             return getWorld().getBlockState(pos).getBlock();
 
         return null;
