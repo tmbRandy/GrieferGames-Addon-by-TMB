@@ -25,6 +25,7 @@ import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCra
 import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV2;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV3;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoDecomp;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoFisher;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoHopper;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoLoot;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.BlockMarker;
@@ -64,6 +65,7 @@ public class VersionedConnect implements IConnect {
         Addon.getSharedInstance().addFunction(new ItemShifter());
         Addon.getSharedInstance().addFunction(new NatureBordersRenderer());
         Addon.getSharedInstance().addFunction(new VABK());
+        Addon.getSharedInstance().addFunction(new AutoFisher());
     }
 
     @Subscribe

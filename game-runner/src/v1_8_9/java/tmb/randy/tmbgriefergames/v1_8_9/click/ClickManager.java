@@ -85,4 +85,8 @@ public class ClickManager {
     private void addDropClick(int slot) {
         queues.get(QueueType.MEDIUM).add(new Click(Helper.getPlayer().openContainer.windowId, slot, 0, 0));
     }
+
+    public void rightClick() {
+        Helper.getPlayer().getHeldItem().useItemRightClick(Helper.getWorld(), Helper.getPlayer());
+    }
 }

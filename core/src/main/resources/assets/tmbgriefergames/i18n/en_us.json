@@ -281,6 +281,45 @@
             "tmbDC": {
                 "name": "TMB Discord",
                 "text": "join"
+            },
+            "autoFisherSubConfig":{
+                "name": "Auto Fisher",
+                "enabled": {
+                    "name": "Enabled"
+                },
+                "allowEC": {
+                    "name": "Move items to EC.",
+                    "description": "Automatically moves your fished loot into your EC if it's open."
+                },
+                "autoDropRods": {
+                    "name": "Discard fishing rods",
+                    "description": "Your inventory or enderchest must be open. Rods with custom name will not be dropped."
+                },
+                "autoDropBows": {
+                    "name": "Discard bows",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "autoDropSaddle": {
+                    "name": "Discard saddles",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "autoDropFish": {
+                    "name": "Discard fish",
+                    "description": "Only cod and salmon."
+                },
+                "autoDropBooks": {
+                    "name": "Discard enchanted books",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "autoDropLilypads": {
+                    "name": "Discard lily pads",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "header": {
+                    "rubbish": {
+                        "name": "Trash Items"
+                    }
+                }
             }
         },
         "functions": {

@@ -28,6 +28,7 @@ public class Configuration extends AddonConfig {
         this.swordsSubConfig = new SwordsSubConfig();
         this.accountUnitySubConfig = new AccountUnitySubConfig();
         this.plotSwitchSubConfig = new PlotSwitchSubConfig();
+        this.autoFisherSubConfig = new AutoFisherSubConfig();
     }
 
     @SwitchSetting
@@ -49,6 +50,9 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 4)
     @SwitchSetting
     private final ConfigProperty<Boolean> blockMarker = new ConfigProperty<>(true);
+
+    @SpriteSlot(size = SPRITE_SIZE, x = 5, y = 4)
+    private final AutoFisherSubConfig autoFisherSubConfig;
 
     @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 2)
     private final HopperSubConfig hopperSubConfig;
@@ -108,4 +112,5 @@ public class Configuration extends AddonConfig {
     public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
     public AccountUnitySubConfig getAccountUnitySubConfig() {return accountUnitySubConfig;}
     public PlotSwitchSubConfig getPlotSwitchSubConfig() {return plotSwitchSubConfig;}
+    public AutoFisherSubConfig getAutoFisherSubConfig() {return autoFisherSubConfig;}
 }

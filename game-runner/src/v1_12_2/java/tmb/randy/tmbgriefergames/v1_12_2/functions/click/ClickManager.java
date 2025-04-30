@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
+import net.minecraft.util.EnumHand;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
 
@@ -85,5 +86,9 @@ public class ClickManager {
 
     private void addDropClick(int slot) {
         queues.get(QueueType.MEDIUM).add(new Click(Helper.getPlayer().openContainer.windowId, slot, 0, ClickType.PICKUP));
+    }
+
+    public void rightClick() {
+        Helper.getPlayer().getHeldItemMainhand().useItemRightClick(Helper.getWorld(), Helper.getPlayer(), EnumHand.MAIN_HAND);
     }
 }

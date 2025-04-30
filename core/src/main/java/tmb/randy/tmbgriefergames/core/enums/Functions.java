@@ -3,7 +3,7 @@ package tmb.randy.tmbgriefergames.core.enums;
 import tmb.randy.tmbgriefergames.core.helper.I19n;
 
 public enum Functions {
-                PLAYERTRACER,
+    PLAYERTRACER,
     HABK,
     VABK,
     COMP,
@@ -20,14 +20,15 @@ public enum Functions {
     HOPPERCONNECTIONS,
     ITEMSHIFTER,
     NATUREBORDERSRENDERER,
-                ACCOUNTUNITY,
+    ACCOUNTUNITY,
     ITEMSAVER,
     TOOLTIPEXTENSION,
     CHATCLEANER,
     COOLDOWNNOTIFIER,
-                MSGTABS,
+    MSGTABS,
     PAYMENTVALIDATOR,
-    TYPECORRECTION;
+    TYPECORRECTION,
+    AUTOFISHER;
 
     public String getLocalizedName() {return I19n.translate("functions." + name().toLowerCase() + ".name");}
 }

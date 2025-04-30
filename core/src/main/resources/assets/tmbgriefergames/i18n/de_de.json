@@ -280,6 +280,45 @@
             "tmbDC": {
                 "name": "TMB Discord",
                 "text": "beitreten"
+            },
+            "autoFisherSubConfig":{
+                "name": "Auto Angler",
+                "enabled": {
+                    "name": "Aktiviert"
+                },
+                "allowEC": {
+                    "name": "Items in die EC bewegen.",
+                    "description": "Bewegt deinen geangelten Loot automatisch in deine EC, falls diese geöffnet ist."
+                },
+                "autoDropRods": {
+                    "name": "Angeln wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist. Es werden nur nicht umbenannte Angeln weggeworfen."
+                },
+                "autoDropBows": {
+                    "name": "Bögen wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "autoDropSaddle": {
+                    "name": "Sattel wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "autoDropFish": {
+                    "name": "Fische wegwerfen",
+                    "description": "Nur Kabeljau und Lachs."
+                },
+                "autoDropBooks": {
+                    "name": "Zauberbücher wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "autoDropLilypads": {
+                    "name": "Seerosenblätter wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "header": {
+                    "rubbish": {
+                        "name": "Müll Items"
+                    }
+                }
             }
         },
         "functions": {
