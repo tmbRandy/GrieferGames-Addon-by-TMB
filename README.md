@@ -29,6 +29,9 @@ Lege eine Bonze oder BIRTH Klinge in den ersten Slot deiner Hotbar. Lege Pfeile 
 ### Vollautomatische Bonzeklinge (VABK)
 Lege eine Bonze oder BIRTH Klinge in den ersten Slot deiner Hotbar. Lege Pfeile in den zweiten Slot. Lege einen Bogen in deinen Dritten Slot. Aktiviere mit deinem festgelegten Hotkey (Standardmäßig SHIFT + V) die VABK. Öffne nun dein Chatfenster. Das Addon spannt automatisch den Bogen, schießt den Pfeil, wechselt auf die Klinge und wechselt nach kurzer Zeit wieder zurück. Du kannst die Spannzeit einstellen. Je niedriger, umso näher kannst du am Mob stehen und umso höher die Schussrate. Der Wechselcooldown gibt die Zeit an, bis der nächste Schuss abgegeben wird. Zu niedrige Werte können dazu führen, dass entweder kein Pfeil verschossen wird oder der Plünderungseffekt der Klinge nicht angewendet wird. Versuche möglichst nah an den Mobs zu stehen (ca. 1 Block Abstand) und die Werte möglichst niedrig einzustellen, ohne dass der Plünderungseffekt verloren geht. Tipp: Ein umbenannter Lucky Bow verliert keine Dura.
 
+### Auto Angler
+Der Auto Angler zieht die Angel automatisch ein und wirft sie wieder aus. Er kann festgelegte Müll Items automatisch wegwerfen oder den Angel Loot in deine EC legen (sofern Inventar oder EC geöffnet sind). Angeln werden wie einer Dura von 0 automatisch gewechselt und auch der Item Remover wird berücksichtigt.
+
 ### Optisch dargestellte Plotgrenzen auf CB Nature und Extreme
 Die Plotgrenzen auf den beiden Natur-CBs können mit Linien grafisch dargestellt werden. Die Darstellung lässt sich bei Bedarf über einen Hotkey ein- und ausschalten und optisch anpassen.
 

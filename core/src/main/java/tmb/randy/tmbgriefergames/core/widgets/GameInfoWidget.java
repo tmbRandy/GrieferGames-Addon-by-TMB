@@ -158,9 +158,9 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
                 String newValue = ((TextComponent) team.getPrefix()).getText();
 
                 try {
-                    BigDecimal newBalance = moneyStingToDecimal(newValue);
-                    BigDecimal oldBalance = moneyStingToDecimal(moneyValue);
-                    if (!newBalance.equals(oldBalance))
+                    double newBalance = moneyStringToDouble(newValue);
+                    double oldBalance = moneyStringToDouble(moneyValue);
+                    if (newBalance != oldBalance)
                         Laby.fireEvent(new MoneyBalanceChangedEvent(oldBalance, newBalance));
                 } catch (Exception e) {
                     Addon.getSharedInstance().logger().error(e.getMessage());
@@ -294,11 +294,12 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
         public ConfigProperty<Boolean> getShowBank() {return showBank;}
     }
 
-    public BigDecimal moneyStingToDecimal(String input) {
+    public double moneyStringToDouble(String input) {
         input = input.replace("$", "");
         input = input.replace(".", "");
         input = input.replace(",", ".");
 
-        return new BigDecimal(input);
+        return Double.parseDouble(input);
     }
+
 }

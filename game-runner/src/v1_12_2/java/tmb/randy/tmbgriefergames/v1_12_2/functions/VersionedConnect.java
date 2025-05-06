@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 import javax.inject.Singleton;
@@ -96,14 +95,14 @@ public class VersionedConnect implements IConnect {
         if(!Addon.isGG())
             return;
 
-        BigDecimal difference = event.getNewBalance().subtract(event.getOldBalance());
+        double difference = event.getNewBalance() - event.getOldBalance();
 
         NumberFormat format = NumberFormat.getNumberInstance(Locale.GERMANY);
         format.setMinimumFractionDigits(2);
         format.setMaximumFractionDigits(2);
         format.setGroupingUsed(true);
 
-        Minecraft.getMinecraft().ingameGUI.setOverlayMessage((difference.signum() < 0 ? "§c§l" : "§a§l+")+ format.format(difference) + "$", true);
+        Minecraft.getMinecraft().ingameGUI.setOverlayMessage((difference < 0 ? "§c§l" : "§a§l+")+ format.format(difference) + "$", true);
     }
 
 

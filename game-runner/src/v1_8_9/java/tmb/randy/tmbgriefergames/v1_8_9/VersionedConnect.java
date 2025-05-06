@@ -1,5 +1,7 @@
 package tmb.randy.tmbgriefergames.v1_8_9;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import javax.inject.Singleton;
 import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
@@ -33,9 +35,6 @@ import tmb.randy.tmbgriefergames.v1_8_9.functions.ItemShifter;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.NatureBordersRenderer;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.PotionTimer;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.VABK;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 @Singleton
 @Implements(IConnect.class)
@@ -96,13 +95,13 @@ public class VersionedConnect implements IConnect {
         if(!Addon.isGG())
             return;
 
-        BigDecimal difference = event.getNewBalance().subtract(event.getOldBalance());
+        double difference = event.getNewBalance() - event.getOldBalance();
 
         NumberFormat format = NumberFormat.getNumberInstance(Locale.GERMANY);
         format.setMinimumFractionDigits(2);
         format.setMaximumFractionDigits(2);
         format.setGroupingUsed(true);
-        Minecraft.getMinecraft().ingameGUI.setRecordPlaying((difference.signum() < 0 ? "§c§l" : "§a§l+")+ format.format(difference) + "$", false);
+        Minecraft.getMinecraft().ingameGUI.setRecordPlaying((difference < 0 ? "§c§l" : "§a§l+")+ format.format(difference) + "$", false);
     }
 
     public void onGuiOpenEvent(GuiScreen screen) {
