@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -163,7 +162,7 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
                     if (newBalance != oldBalance)
                         Laby.fireEvent(new MoneyBalanceChangedEvent(oldBalance, newBalance));
                 } catch (Exception e) {
-                    Addon.getSharedInstance().logger().error(e.getMessage());
+                    //Do nothing to avoid performance issues
                 }
 
                 moneyValue = newValue;
