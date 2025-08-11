@@ -84,7 +84,7 @@ public class ItemShifter extends Function {
                     }
                 }
             }
-        } else if(currentChest.getLowerChestInventory().getName().equals(Helper.getPlayer().inventory.mainInventory[0].getDisplayName()) && topToBottom) {
+        } else if(Helper.getPlayer().inventory.mainInventory[0] != null && currentChest.getLowerChestInventory().getName().equals(Helper.getPlayer().inventory.mainInventory[0].getDisplayName()) && topToBottom) {
             if(Helper.isInventoryFull())
                 return;
             shiftClick(11);
