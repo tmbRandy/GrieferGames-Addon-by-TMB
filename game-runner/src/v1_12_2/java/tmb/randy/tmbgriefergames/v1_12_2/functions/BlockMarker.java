@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class BlockMarker extends Function {
 
@@ -33,7 +33,15 @@ public class BlockMarker extends Function {
             if (tag == null || (!tag.hasKey("orb_pickaxe") && !tag.hasKey("orb_shovel")))
                 return;
 
-            int size = tag.hasKey("orb_tool_level") && "LARGE".equals(tag.getString("orb_tool_level")) ? 7 : 3;
+            int size =  3;
+
+            if(tag.hasKey("orb_tool_level")) {
+                size = switch (tag.getString("orb_tool_level")) {
+                    case "LARGE" -> 7;
+                    case "MEDIUM" -> 5;
+                    default -> 3;
+                };
+            }
 
             RayTraceResult rayTrace = Minecraft.getMinecraft().objectMouseOver;
             if (rayTrace == null || rayTrace.typeOfHit != RayTraceResult.Type.BLOCK)

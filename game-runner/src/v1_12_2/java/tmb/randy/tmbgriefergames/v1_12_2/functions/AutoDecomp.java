@@ -1,8 +1,9 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiCrafting;
@@ -15,9 +16,9 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class AutoDecomp extends ActiveFunction {
 
@@ -31,11 +32,10 @@ public class AutoDecomp extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(Key.ESCAPE.isPressed()) {
+        if(event.state() == State.PRESS && event.key() == Key.ESCAPE)
             stop();
-        } else if (Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
+        else if (Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get()))
             start();
-        }
     }
 
     @Override

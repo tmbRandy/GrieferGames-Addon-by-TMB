@@ -51,7 +51,7 @@ abstract public class ActiveFunction extends Function {
     }
 
     public void toggle(String[] arguments) {
-        if(enabled)
+        if(isEnabled())
             stop();
         else
             start(arguments);

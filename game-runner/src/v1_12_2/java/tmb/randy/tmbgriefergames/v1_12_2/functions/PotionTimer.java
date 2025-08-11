@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import net.labymod.api.Laby;
 import net.labymod.api.client.world.item.ItemStack;
@@ -13,7 +13,7 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget;
 import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget.Timer;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class PotionTimer extends Function {
 

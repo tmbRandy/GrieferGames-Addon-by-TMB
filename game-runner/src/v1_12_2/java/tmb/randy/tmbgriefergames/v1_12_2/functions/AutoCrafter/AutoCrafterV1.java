@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter;
+package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,9 +18,9 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.helper.I19n;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class AutoCrafterV1 extends Function {
     private ContainerWorkbench inv;

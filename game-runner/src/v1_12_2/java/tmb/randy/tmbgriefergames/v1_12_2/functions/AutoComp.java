@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -20,9 +20,9 @@ import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.I19n;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class AutoComp extends ActiveFunction {
 
@@ -43,8 +43,13 @@ public class AutoComp extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS) {
-            if (isEnabled() && Helper.getPlayer().openContainer != null) {
+        if(event.state() == State.PRESS && isEnabled()) {
+            if(event.key() == Key.ESCAPE) {
+                stop();
+                return;
+            }
+
+            if (Helper.getPlayer().openContainer != null) {
 
                 if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
                     IInventory inv = chest.getLowerChestInventory();

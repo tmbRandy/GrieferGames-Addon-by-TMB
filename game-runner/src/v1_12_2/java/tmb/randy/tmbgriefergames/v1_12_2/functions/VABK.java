@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class VABK extends ActiveFunction {
     private int cooldown = 0;

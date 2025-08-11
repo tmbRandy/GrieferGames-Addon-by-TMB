@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.click;
+package tmb.randy.tmbgriefergames.v1_12_2.click;
 
 import java.util.LinkedList;
 import net.minecraft.client.Minecraft;
@@ -6,7 +6,7 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class ClickQueue {
     private final LinkedList<Click> clickQueue = new LinkedList<>();

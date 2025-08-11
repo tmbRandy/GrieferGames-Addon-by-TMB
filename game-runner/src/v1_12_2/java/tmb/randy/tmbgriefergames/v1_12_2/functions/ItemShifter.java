@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import java.util.LinkedList;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -21,9 +21,9 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class ItemShifter extends Function {
 
@@ -75,13 +75,31 @@ public class ItemShifter extends Function {
                                 int count = Integer.parseInt(string.replace("§e", "").replace(" Verfügbar", ""). replace(".", ""));
                                 if(count > 0) {
                                     for (int k = 0; k < count; k++) {
-                                        this.shiftClick(i);
+                                        shiftClick(i);
                                     }
                                     sendQueue();
                                     break outerLoop;
                                 }
                             }
                         }
+                    }
+                }
+            }
+        } else if(currentChest.getLowerChestInventory().getName().equals(Helper.getPlayer().inventory.mainInventory.getFirst().getDisplayName()) && topToBottom) {
+            if(Helper.isInventoryFull())
+                return;
+            shiftClick(11);
+            sendQueue();
+        } else if(currentChest.getLowerChestInventory().getName().equals("§6spezielle Items") && topToBottom) {
+            if(Helper.isInventoryFull())
+                return;
+            for (int i = 0; i < currentChest.getLowerChestInventory().getSizeInventory(); i++) {
+                ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
+                if(stack != null && !stack.isEmpty()) {
+                    if(stack.hasDisplayName() && stack.getDisplayName().equals(Helper.getPlayer().inventory.mainInventory.getFirst().getDisplayName())) {
+                        shiftClick(i);
+                        sendQueue();
+                        break;
                     }
                 }
             }
@@ -147,11 +165,10 @@ public class ItemShifter extends Function {
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Helper.getPlayer().openContainer instanceof ContainerChest))
+        if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Helper.getPlayer().openContainer instanceof ContainerChest chest))
             return;
 
         if (Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
-            ContainerChest chest = ((ContainerChest) Helper.getPlayer().openContainer);
             IInventory inv = chest.getLowerChestInventory();
 
             if (currentChest != null && inv.getName().contains("Komprimierung")) {

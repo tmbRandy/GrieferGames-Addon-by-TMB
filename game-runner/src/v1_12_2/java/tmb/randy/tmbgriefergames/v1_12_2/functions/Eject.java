@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -17,8 +17,8 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class Eject extends ActiveFunction {
     private BlockPos chestPos;

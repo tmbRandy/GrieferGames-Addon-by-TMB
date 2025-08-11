@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import static tmb.randy.tmbgriefergames.core.functions.ItemSaver.findHotbarSlotforItem;
 
@@ -16,7 +16,7 @@ import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver.ProtectionItems;
 import tmb.randy.tmbgriefergames.core.helper.I19n;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class HABK extends Function {
 

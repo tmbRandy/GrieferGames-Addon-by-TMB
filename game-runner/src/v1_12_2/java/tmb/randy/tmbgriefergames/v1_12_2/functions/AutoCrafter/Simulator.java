@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter;
+package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
 import java.util.List;
 

@@ -31,6 +31,7 @@ import tmb.randy.tmbgriefergames.v1_8_9.functions.BlockMarker;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.Eject;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.HABK;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.HopperConnections;
+import tmb.randy.tmbgriefergames.v1_8_9.functions.InfinityMiner;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.ItemShifter;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.NatureBordersRenderer;
 import tmb.randy.tmbgriefergames.v1_8_9.functions.PotionTimer;
@@ -65,6 +66,7 @@ public class VersionedConnect implements IConnect {
         Addon.getSharedInstance().addFunction(new NatureBordersRenderer());
         Addon.getSharedInstance().addFunction(new VABK());
         Addon.getSharedInstance().addFunction(new AutoFisher());
+        Addon.getSharedInstance().addFunction(new InfinityMiner());
     }
 
     @Subscribe

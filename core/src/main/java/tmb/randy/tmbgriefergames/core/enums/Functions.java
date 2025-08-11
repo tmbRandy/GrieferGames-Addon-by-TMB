@@ -28,7 +28,8 @@ public enum Functions {
     MSGTABS,
     PAYMENTVALIDATOR,
     TYPECORRECTION,
-    AUTOFISHER;
+    AUTOFISHER,
+    INFINITYMINER;
 
     public String getLocalizedName() {return I19n.translate("functions." + name().toLowerCase() + ".name");}
 }

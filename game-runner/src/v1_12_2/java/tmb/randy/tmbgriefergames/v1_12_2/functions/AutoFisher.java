@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,9 +23,9 @@ import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class AutoFisher extends ActiveFunction {
 

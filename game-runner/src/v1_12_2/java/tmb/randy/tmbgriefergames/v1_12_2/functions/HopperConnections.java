@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class HopperConnections extends Function {
 

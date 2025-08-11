@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.click;
+package tmb.randy.tmbgriefergames.v1_12_2.click;
 
 import net.minecraft.inventory.ClickType;
 

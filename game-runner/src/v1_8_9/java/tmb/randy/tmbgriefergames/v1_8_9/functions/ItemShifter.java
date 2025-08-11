@@ -84,6 +84,24 @@ public class ItemShifter extends Function {
                     }
                 }
             }
+        } else if(currentChest.getLowerChestInventory().getName().equals(Helper.getPlayer().inventory.mainInventory[0].getDisplayName()) && topToBottom) {
+            if(Helper.isInventoryFull())
+                return;
+            shiftClick(11);
+            sendQueue();
+        } else if(currentChest.getLowerChestInventory().getName().equals("§6spezielle Items") && topToBottom) {
+            if(Helper.isInventoryFull())
+                return;
+            for (int i = 0; i < currentChest.getLowerChestInventory().getSizeInventory(); i++) {
+                ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
+                if(stack != null) {
+                    if(stack.hasDisplayName() && stack.getDisplayName().equals(Helper.getPlayer().inventory.mainInventory[0].getDisplayName())) {
+                        shiftClick(i);
+                        sendQueue();
+                        break;
+                    }
+                }
+            }
         } else {
             this.itemToMove = Helper.getPlayer().getCurrentEquippedItem() != null ?
                 Helper.getPlayer().getCurrentEquippedItem().getDisplayName() : "";
@@ -151,11 +169,10 @@ public class ItemShifter extends Function {
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Helper.getPlayer().openContainer instanceof ContainerChest))
+        if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Helper.getPlayer().openContainer instanceof ContainerChest chest))
             return;
 
         if (Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
-            ContainerChest chest = ((ContainerChest) Helper.getPlayer().openContainer);
             IInventory inv = chest.getLowerChestInventory();
 
             if (currentChest != null && inv.getName().contains("Komprimierung")) {

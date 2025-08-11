@@ -21,6 +21,9 @@
                 "name": "Enabled",
                 "description": "Activates or disables the functionality of this addon."
             },
+            "skipHub": {
+                "name": "Spawn on"
+            },
             "natureSubConfig": {
                 "name": "Show plot borders on CB Nature",
                 "description": "Settings for the rendered borders on CB Nature and Extreme.",
@@ -130,8 +133,11 @@
                     }
                 }
             },
-            "skipHub":{
-                "name": "Skip the hub"
+            "spawn": {
+                "spawnat": "Spawn at",
+                "entries": {
+
+                }
             },
             "chatConfig": {
                 "name": "Chat",
@@ -320,6 +326,10 @@
                         "name": "Trash Items"
                     }
                 }
+            },
+            "infinityMiner": {
+                "name": "InfinityMiner Hotkey",
+                "description": "InfnityMiner keeps mining blocks until your tool has reached it's maximum duration."
             }
         },
         "functions": {
@@ -356,6 +366,9 @@
                 "breakPotionUsed": "Break potion used.",
                 "flyPotionExpired": "Fly potion expired.",
                 "breakPotionExpired": "Break potion expired."
+            },
+            "infinityminer": {
+                "name": "InfinityMiner"
             }
         },
         "chat": {

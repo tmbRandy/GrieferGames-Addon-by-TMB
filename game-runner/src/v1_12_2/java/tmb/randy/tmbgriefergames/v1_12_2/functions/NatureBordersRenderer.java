@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions;
+package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
@@ -21,7 +21,7 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class NatureBordersRenderer extends ActiveFunction {
 

@@ -76,7 +76,7 @@ public class Addon extends LabyAddon<Configuration> {
 
     private final Set<DescribedCommand> commands = new HashSet<>();
 
-    private static final int commandCountdownLimit = 80;
+    private static final int commandCountdownLimit = 100;
     private static int commandCountdown = 0;
     public static PlotWheelPlot queuedPlot = null;
 
@@ -170,8 +170,18 @@ public class Addon extends LabyAddon<Configuration> {
 
     @Subscribe
     public void cbChanged(CbChangedEvent event) {
-        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get() && isGG())
-            Addon.sendCommand("/portal");
+        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get() != CBs.NONE && Addon.getSharedInstance().configuration().getSkipHub().get() != CBs.LOBBY && isGG())
+            new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if(Addon.getSharedInstance().configuration().getSkipHub().get() == CBs.PORTAL)
+                            Addon.sendCommand("/portal");
+                        else if(Addon.getSharedInstance().configuration().getSkipHub().get() != CBs.NONE)
+                            Addon.sendCommand("/switch " + Addon.getSharedInstance().configuration().getSkipHub().get());
+                    }
+                }, 800
+            );
     }
 
     @Subscribe

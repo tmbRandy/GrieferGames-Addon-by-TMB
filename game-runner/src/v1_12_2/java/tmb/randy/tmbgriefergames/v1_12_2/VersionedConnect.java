@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions;
+package tmb.randy.tmbgriefergames.v1_12_2;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -18,23 +18,24 @@ import tmb.randy.tmbgriefergames.core.enums.FunctionState;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.events.MoneyBalanceChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoComp;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV1;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV2;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV3;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoDecomp;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoFisher;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoHopper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoLoot;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.BlockMarker;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.Eject;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.HABK;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.HopperConnections;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.ItemShifter;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.NatureBordersRenderer;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.PotionTimer;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.functions.VABK;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoComp;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV1;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV2;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoDecomp;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoFisher;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoHopper;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoLoot;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.BlockMarker;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.Eject;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.HABK;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.HopperConnections;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.InfinityMiner;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.ItemShifter;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.NatureBordersRenderer;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.PotionTimer;
+import tmb.randy.tmbgriefergames.v1_12_2.functions.VABK;
 
 @Singleton
 @Implements(IConnect.class)
@@ -65,6 +66,7 @@ public class VersionedConnect implements IConnect {
         Addon.getSharedInstance().addFunction(new NatureBordersRenderer());
         Addon.getSharedInstance().addFunction(new VABK());
         Addon.getSharedInstance().addFunction(new AutoFisher());
+        Addon.getSharedInstance().addFunction(new InfinityMiner());
     }
 
     @Subscribe

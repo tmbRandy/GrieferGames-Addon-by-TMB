@@ -33,7 +33,15 @@ public class BlockMarker extends Function {
             if (tag == null || (!tag.hasKey("orb_pickaxe") && !tag.hasKey("orb_shovel")))
                 return;
 
-            int size = tag.hasKey("orb_tool_level") && "LARGE".equals(tag.getString("orb_tool_level")) ? 7 : 3;
+            int size =  3;
+
+            if(tag.hasKey("orb_tool_level")) {
+                size = switch (tag.getString("orb_tool_level")) {
+                    case "LARGE" -> 7;
+                    case "MEDIUM" -> 5;
+                    default -> 3;
+                };
+            }
 
             MovingObjectPosition rayTrace = Minecraft.getMinecraft().objectMouseOver;
             if (rayTrace == null || rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)

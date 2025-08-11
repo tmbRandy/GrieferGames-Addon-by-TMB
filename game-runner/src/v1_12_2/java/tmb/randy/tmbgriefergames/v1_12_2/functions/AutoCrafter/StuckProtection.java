@@ -1,8 +1,8 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter;
+package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class StuckProtection {
     // To prevent the auto crafter from being stuck in a container, let's close the container if the same container is open for too many ticks

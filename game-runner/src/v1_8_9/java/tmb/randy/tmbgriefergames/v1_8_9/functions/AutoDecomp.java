@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.v1_8_9.functions;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiCrafting;
@@ -30,11 +31,10 @@ public class AutoDecomp extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(Key.ESCAPE.isPressed()) {
+        if(event.state() == State.PRESS && event.key() == Key.ESCAPE)
             stop();
-        } else if (Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get())) {
+         else if (Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get()))
             start();
-        }
     }
 
     @Override

@@ -3,21 +3,25 @@ package tmb.randy.tmbgriefergames.core.config;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.AddonConfig;
 import net.labymod.api.client.gui.screen.activity.Activity;
+import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.client.gui.screen.widget.widgets.activity.settings.ActivitySettingWidget.ActivitySetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget.ButtonSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.MultiKeybindWidget.MultiKeyBindSetting;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
+import net.labymod.api.client.gui.screen.widget.widgets.input.dropdown.DropdownWidget.DropdownSetting;
 import net.labymod.api.configuration.loader.annotation.ConfigName;
 import net.labymod.api.configuration.loader.annotation.SpriteSlot;
 import net.labymod.api.configuration.loader.annotation.SpriteTexture;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.util.MethodOrder;
 import tmb.randy.tmbgriefergames.core.activities.commandlist.CommandListActivity;
+import tmb.randy.tmbgriefergames.core.enums.CBs;
 
 @ConfigName("settings")
 @SpriteTexture("settings")
 public class Configuration extends AddonConfig {
 
-    public static final int SPRITE_SIZE = 21;
+    public static final int SPRITE_SIZE = 18;
 
     public Configuration() {
         this.chatConfig = new ChatSubConfig();
@@ -39,9 +43,11 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 1)
     private final ConfigProperty<Boolean> itemProtection = new ConfigProperty<>(true);
 
-    @SwitchSetting
+
+    //@DropdownEntryTranslationPrefix("tmbgriefergames.settings.autoCrafterConfig.finalActionV3.entries")
+    @DropdownSetting
     @SpriteSlot(size = SPRITE_SIZE, x = 4, y = 2)
-    private final ConfigProperty<Boolean> skipHub = new ConfigProperty<>(true);
+    private final ConfigProperty<CBs> skipHub = new ConfigProperty<>(CBs.PORTAL);
 
     @SpriteSlot(size = SPRITE_SIZE, x = 2, y = 3)
     @SwitchSetting
@@ -75,6 +81,10 @@ public class Configuration extends AddonConfig {
     @SpriteSlot(size = SPRITE_SIZE, y = 4)
     private final AccountUnitySubConfig accountUnitySubConfig;
 
+    @SpriteSlot(size = SPRITE_SIZE, x = 6)
+    @MultiKeyBindSetting
+    private final ConfigProperty<Key[]> infinityMiner = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.I});
+
     @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 4)
     private final PlotSwitchSubConfig plotSwitchSubConfig;
 
@@ -103,7 +113,7 @@ public class Configuration extends AddonConfig {
     }
     public ChatSubConfig getChatConfig() {return this.chatConfig; }
     public TooltipSubConfig getTooltipConfig() {return this.tooltipConfig; }
-    public ConfigProperty<Boolean> getSkipHub() {return skipHub;}
+    public ConfigProperty<CBs> getSkipHub() {return skipHub;}
     public ConfigProperty<Boolean> getBlockMarker() {return blockMarker;}
     public HopperSubConfig getHopperSubConfig() {return hopperSubConfig;}
     public NatureSubConfig getNatureSubConfig() {return natureSubConfig;}
@@ -111,6 +121,7 @@ public class Configuration extends AddonConfig {
     public SwordsSubConfig getSwordsSubConfig() {return swordsSubConfig;}
     public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
     public AccountUnitySubConfig getAccountUnitySubConfig() {return accountUnitySubConfig;}
+    public ConfigProperty<Key[]> getInfinityMiner() {return infinityMiner;}
     public PlotSwitchSubConfig getPlotSwitchSubConfig() {return plotSwitchSubConfig;}
     public AutoFisherSubConfig getAutoFisherSubConfig() {return autoFisherSubConfig;}
 }

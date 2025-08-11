@@ -20,6 +20,9 @@
                 "name": "Aktiviert",
                 "description": "Aktiviert oder deaktiviert das gesamte Addon."
             },
+            "skipHub": {
+                "name": "Spawnen auf"
+            },
             "natureSubConfig": {
                 "name": "CB Nature Plotgrenzen",
                 "description": "Einstellungen für die Darstellung der Plotgrenzen auf CB Nature und Extreme.",
@@ -192,8 +195,11 @@
                     "description": "Bewege die Maus über ein Adventurer-Werkzeug, um deinen Fortschritt in Prozent zu sehen. Du siehst außerdem, wie viele DKs, Stacks und Items du noch abbauen musst."
                 }
             },
-            "skipHub": {
-                "name": "Lobby überspringen"
+            "spawn": {
+                "spawnat": "Spawn auf",
+                "entries": {
+
+                }
             },
             "autoCrafterConfig": {
                 "name": "Autocrafter & Auto(de)komprimierer",
@@ -319,6 +325,10 @@
                         "name": "Müll Items"
                     }
                 }
+            },
+            "infinityMiner": {
+                "name": "InfinityMiner Hotkey",
+                "description": "InfnityMiner baut fortlaufend Blöcke ab, bis dein Werkzeug am Ende seiner Haltbarkeit ist."
             }
         },
         "functions": {
@@ -355,6 +365,9 @@
                 "breakPotionUsed": "Abbautrank benutzt.",
                 "flyPotionExpired": "Flugtrank abgelaufen.",
                 "breakPotionExpired": "Abbautrank abgelaufen."
+            },
+            "infinityminer": {
+                "name": "InfinityMiner"
             }
         },
         "chat": {

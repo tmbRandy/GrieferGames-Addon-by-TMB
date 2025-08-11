@@ -1,9 +1,9 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter;
+package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP1;
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.FINISHED;
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.IDLE;
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.OPEN_COMP;
+import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP1;
+import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.FINISHED;
+import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.IDLE;
+import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.OPEN_COMP;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +35,9 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.I19n;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class AutoCrafterV3 extends ActiveFunction {
     enum COMP_STATE {

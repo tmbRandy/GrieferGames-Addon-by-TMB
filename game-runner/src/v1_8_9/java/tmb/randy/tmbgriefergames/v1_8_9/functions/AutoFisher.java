@@ -55,7 +55,7 @@ public class AutoFisher extends ActiveFunction {
         double z = currentFishHook.motionZ;
         double y = currentFishHook.motionY;
 
-        if(y < -0.05 && currentFishHook.isInWater() && x == 0 && z == 0) {
+        if(y < -0.001 && currentFishHook.isInWater() && x == 0 && z == 0) {
             NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getNetHandler();
             if(nethandler != null) {
                 ItemStack heldItem = Helper.getPlayer().getHeldItem();

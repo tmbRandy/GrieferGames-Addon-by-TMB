@@ -99,7 +99,7 @@ public class AutoHopper extends Function {
 
                         if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
                             if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() == 0) {
-                                if (chest.getSlot(30).getStack().getItem() instanceof ItemSkull) {
+                                if (chest.getSlot(30).getStack() != null && chest.getSlot(30).getStack().getItem() instanceof ItemSkull) {
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, 1));
                                     clicked = true;
                                 }

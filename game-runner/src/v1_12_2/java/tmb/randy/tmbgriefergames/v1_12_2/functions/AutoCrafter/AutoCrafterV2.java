@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.v1_12_2.functions.functions.AutoCrafter;
+package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
 import java.util.LinkedList;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -20,9 +20,10 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.Helper;
+import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
+import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_12_2.enums.CompressionLevel;
 
 public class AutoCrafterV2 extends ActiveFunction {
     private enum STATE {
@@ -150,7 +151,11 @@ public class AutoCrafterV2 extends ActiveFunction {
                         if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
                             click(11);
                         } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung-Bauanleitung")) {
-                            click(81);
+                            int slot = Helper.getSlotForItem(itemToCraft, subIDtoCraft, CompressionLevel.UNCOMPRESSED);
+                            if(slot > -1)
+                                click(slot + inv.getSizeInventory());
+                             else
+                                click(81);
                         } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung")) {
                             currentState = STATE.COMP1;
                         }
@@ -325,4 +330,6 @@ public class AutoCrafterV2 extends ActiveFunction {
         }
         return -1;
     }
+
+
 }

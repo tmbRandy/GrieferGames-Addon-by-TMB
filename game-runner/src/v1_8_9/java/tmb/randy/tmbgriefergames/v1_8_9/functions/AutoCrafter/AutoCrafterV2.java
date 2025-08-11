@@ -22,6 +22,7 @@ import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 import tmb.randy.tmbgriefergames.v1_8_9.click.Click;
 import tmb.randy.tmbgriefergames.v1_8_9.click.ClickManager;
+import tmb.randy.tmbgriefergames.v1_8_9.enums.CompressionLevel;
 
 public class AutoCrafterV2 extends ActiveFunction {
     private enum STATE {
@@ -149,7 +150,11 @@ public class AutoCrafterV2 extends ActiveFunction {
                         if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
                             click(11);
                         } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung-Bauanleitung")) {
-                            click(81);
+                            int slot = Helper.getSlotForItem(itemToCraft, subIDtoCraft, CompressionLevel.UNCOMPRESSED);
+                            if(slot > -1)
+                                click(slot + inv.getSizeInventory());
+                            else
+                                click(81);
                         } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung")) {
                             currentState = STATE.COMP1;
                         }
@@ -158,6 +163,9 @@ public class AutoCrafterV2 extends ActiveFunction {
                 case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6 -> {
                     if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                         if(cont instanceof ContainerChest) {
+                            if(Helper.getPlayer().openContainer.getSlot(49).getStack() != null)
+                                return;
+
                             String headName = Helper.getPlayer().openContainer.getSlot(49).getStack().getDisplayName();
                             if(headName.contains("§6Komprimierungsstufe")) {
                                 int step = Integer.parseInt(headName.replace("§6Komprimierungsstufe ", ""));
