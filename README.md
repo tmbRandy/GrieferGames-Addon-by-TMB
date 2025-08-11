@@ -32,6 +32,9 @@ Lege eine Bonze oder BIRTH Klinge in den ersten Slot deiner Hotbar. Lege Pfeile 
 ### Auto Angler
 Der Auto Angler zieht die Angel automatisch ein und wirft sie wieder aus. Er kann festgelegte Müll Items automatisch wegwerfen oder den Angel Loot in deine EC legen (sofern Inventar oder EC geöffnet sind). Angeln werden wie einer Dura von 0 automatisch gewechselt und auch der Item Remover wird berücksichtigt.
 
+### InfinityMiner
+Der InfinityMiner hält deine linke Maustaste gedrückt, sodass du dauerhaft Blöcke abbauen kannst, ohne eine Taste gedrückt zu halten. Sobald dein Werkzeug keine Dura mehr hat, hört der InfinityMiner auf.
+
 ### Optisch dargestellte Plotgrenzen auf CB Nature und Extreme
 Die Plotgrenzen auf den beiden Natur-CBs können mit Linien grafisch dargestellt werden. Die Darstellung lässt sich bei Bedarf über einen Hotkey ein- und ausschalten und optisch anpassen.
 
@@ -42,7 +45,7 @@ Wenn du eine Vielzahl an Trichtern einstellen musst, kannst du die gewünschten 
 Du kannst die Verbindungen von Trichtern mit Linien darstellen lassen. Direktverbindungen erscheinen blau, Multiverbindungen rot. Bei Multiverbindungen siehst du außerdem, welches Item wohin geleitet wird. Du siehst die Verbindungslinien, nachdem du eine Verbindung gesetzt hast, oder wenn du das entsprechende Trichtermenü öffnest. Beachte, dass die Linien nicht persistent gespeichert werden. Die Verbindungsgrenze von 30 Blöcken kannst du während des Verbindungsmodus außerdem durch eine rote Sphere darstellen lassen. So weißt du immer, wie weit du verbinden kannst.
 
 ### Lobby automatisch überspringen
-Wenn du willst, kannst du direkt im Portalraum spawnen.
+Wenn du willst, kannst du direkt im Portalraum oder einem beliebigen CityBuild spawnen.
 
 ### Auto Loot
 Deine /freekiste und /grieferboost kann das Addon automatisch für dich abholen. Es merkt sich, wenn diese abgeholt wurden und führt die Befehle automatisch aus, sobald die Cooldowns abgelaufen sind. Außerdem erinnert es dich, sobald du wieder /kopf nutzen kannst.
@@ -95,9 +98,9 @@ Dieses Widget zeigt dir eine Liste von Spielern in deiner unmittelbaren Umgebung
 ### Widget Aktive Funktionen
 Dieses Widget zeigt dir anhand von Symbolen an, welche Funktionen das Addons gerade aktiv sind. Außerdem zeigt es an, ob und in welchem Trichter-Verbindungsmodus du dich befindest.
 
-### Chatfunktionen
+## Chatfunktionen
 
-Validierung von Zahlungen
+### Validierung von Zahlungen
 Bei eingehenden Zahlungen wird überprüft, ob es eine echte Zahlung, oder Fake Money ist. Hinter der Zahlung siehst du eine entsprechende Nachricht.
 
 ### /msg in Tabs
@@ -124,7 +127,7 @@ Der Chat cleaner entfernt einige GrieferGames seitige Nachrichten, die keinen wi
 ### Streamer mute
 Falls du keine Benachrichtigungen sehen willst, wenn Streamer live gehen, kannst du diese Nachrichten ausblenden.
 
-### Folgende Tippfehler werden ausgebessert:
+### Folgende Tippfehler werden korrigiert:
 "7r" => "/r"
 "(r" => "/r"
 "t/r" => "/r"
