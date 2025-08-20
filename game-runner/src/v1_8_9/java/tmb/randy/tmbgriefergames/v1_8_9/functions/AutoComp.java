@@ -42,22 +42,15 @@ public class AutoComp extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && isEnabled()) {
-            if(event.key() == Key.ESCAPE) {
-                stop();
-                return;
-            }
-
-            if (Helper.getPlayer().openContainer != null) {
-
+        if(event.state() == State.PRESS) {
+            if (isEnabled() && Helper.getPlayer().openContainer != null) {
                 if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
                     IInventory inv = chest.getLowerChestInventory();
                     if(inv.getName().equals("§6Item-Komprimierung")) {
-                        if (event.key() == Key.ARROW_UP) {
+                        if (event.key() == Key.ARROW_UP)
                             changeList(true);
-                        } else if (event.key() == Key.ARROW_DOWN) {
+                        else if (event.key() == Key.ARROW_DOWN)
                             changeList(false);
-                        }
                     }
                 }
             } else {
@@ -242,7 +235,7 @@ public class AutoComp extends ActiveFunction {
         }
 
         Addon.getSharedInstance().displayNotification(
-            I19n.translate("autoComp.list") + (currentList + 1));
+            I19n.translate("autoComp.list", currentList + 1));
     }
 
     private void click(int slot) {
