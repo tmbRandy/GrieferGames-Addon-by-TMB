@@ -121,7 +121,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 12, 0, ClickType.QUICK_MOVE));
                             } else if(chestInventory.getName().equals("§6Minecraft-Rezepte")) {
                                 if(Helper.getPlayer().inventory.mainInventory.getFirst().getItem().equals(Items.GOLD_INGOT)) {
-                                    int slot = getSlotForGoldIngot();
+                                    int slot = Helper.getSlotForGoldIngot();
                                     if(slot > 0)
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, ClickType.QUICK_MOVE));
                                     else
@@ -271,7 +271,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                         } else {
                             if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                                 if(craftItem.getItem().equals(Items.GOLD_INGOT)) {
-                                    int slot = getSlotForGoldIngot();
+                                    int slot = Helper.getSlotForGoldIngot();
                                     if(slot > 0) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, ClickType.QUICK_MOVE));
                                     } else {
@@ -386,20 +386,6 @@ public class AutoCrafterV3 extends ActiveFunction {
                 comp();
             }
         }
-    }
-
-    private int getSlotForGoldIngot() {
-        for (int i = 10; i < 44; i++) {
-            ItemStack stack = Helper.getPlayer().openContainer.getSlot(i).getStack();
-            if(!stack.isEmpty()) {
-                if(stack.getItem().equals(Items.GOLD_INGOT)) {
-                    if(stack.getCount() == 1) {
-                        return i;
-                    }
-                }
-            }
-        }
-        return -1;
     }
 
     private int maxRecipeCraftCount() {

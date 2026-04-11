@@ -71,7 +71,7 @@ public class AutoCrafterV2 extends ActiveFunction {
                         if(inv.getName().equalsIgnoreCase("§6Minecraft-Rezepte")) {
                             if(itemToCraft != null) {
                                 if(itemToCraft.equals(Items.GOLD_INGOT)) {
-                                    int slot = getSlotForGoldIngot();
+                                    int slot = Helper.getSlotForGoldIngot();
                                     if(slot > 0) {
                                         click(slot);
                                     } else {
@@ -316,20 +316,5 @@ public class AutoCrafterV2 extends ActiveFunction {
         }
         return -1;
     }
-
-    private int getSlotForGoldIngot() {
-        for (int i = 10; i < 44; i++) {
-            ItemStack stack = Helper.getPlayer().openContainer.getSlot(i).getStack();
-            if(!stack.isEmpty()) {
-                if(stack.getItem().equals(Items.GOLD_INGOT)) {
-                    if(stack.getCount() == 1) {
-                        return i;
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
 
 }

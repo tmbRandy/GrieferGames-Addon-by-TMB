@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
@@ -135,6 +136,15 @@ public class Helper {
                     return i;
         }
 
+        return -1;
+    }
+
+    public static int getSlotForGoldIngot() {
+        for (int i = 10; i < 44; i++) {
+            ItemStack stack = getPlayer().openContainer.getSlot(i).getStack();
+            if (stack != null && stack.getItem().equals(Items.gold_ingot) && stack.stackSize == 1)
+                return i;
+        }
         return -1;
     }
 }

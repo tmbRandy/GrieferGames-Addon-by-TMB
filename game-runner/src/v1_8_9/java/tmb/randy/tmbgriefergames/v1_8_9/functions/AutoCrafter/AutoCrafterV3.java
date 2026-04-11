@@ -168,7 +168,7 @@ public class AutoCrafterV3 extends ActiveFunction {
 
     private void handleMinecraftRecipes(ContainerChest chest, ItemStack firstItem) {
         if (firstItem.getItem().equals(Items.gold_ingot)) {
-            int slot = getSlotForGoldIngot();
+            int slot = Helper.getSlotForGoldIngot();
             click(chest.windowId, slot > 0 ? slot : 53);
         } else {
             click(chest.windowId, 81);
@@ -321,7 +321,7 @@ public class AutoCrafterV3 extends ActiveFunction {
         if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
 
         if (craftItem.getItem().equals(Items.gold_ingot)) {
-            int slot = getSlotForGoldIngot();
+            int slot = Helper.getSlotForGoldIngot();
             click(chest.windowId, slot > 0 ? slot : 53);
         } else {
             int slot = getFirstSlotForCraftItem();
@@ -513,17 +513,6 @@ public class AutoCrafterV3 extends ActiveFunction {
         lastEmptyChest = null;
         emptyChestCounter = 0;
         StuckProtection.reset();
-    }
-
-    private int getSlotForGoldIngot() {
-        Container container = Helper.getPlayer().openContainer;
-        for (int i = 10; i < 44; i++) {
-            ItemStack stack = container.getSlot(i).getStack();
-            if (stack != null && stack.getItem().equals(Items.gold_ingot) && stack.stackSize == 1) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private int maxRecipeCraftCount() {
