@@ -248,6 +248,10 @@
                     "name": "Verzögerung",
                     "description": "Wenn es zu Problemen kommt, erhöhe die Verzögerung um den Crafter zu verlangsamen."
                 },
+                "goldBlockToIngot": {
+                    "name": "Goldbarren aus Goldblöcken craften",
+                    "description": "Aktiviere diese Option, um Goldbarren aus Blöcken herzustellen.\nDeaktiviere diese Option, um Goldbarren aus Nuggets herzustellen."
+                },
                 "header": {
                     "v1": {
                         "name": "V1 (/craft)"
@@ -277,6 +281,10 @@
                 "voteBooster": {
                     "name": "Vote Booster",
                     "description": "Wenn einer deiner eigenen Accounts einen /startkick oder /startjail startet, voten deine übrigen Accounts automatisch /ja."
+                },
+                "mainAccount": {
+                    "name": "Zahlung an Hauptaccount",
+                    "description": "Trage hier den Namen deines Hauptaccounts ein, damit alle deine Accounts ihre Einnahmen direkt an ihn überweisen."
                 }
             },
             "openDocs": {

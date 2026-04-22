@@ -1,10 +1,9 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
-import net.labymod.api.Laby;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.FunctionState;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 
 public class PlayerTracerCommand extends DescribedCommand {
     public PlayerTracerCommand() {
@@ -16,7 +15,8 @@ public class PlayerTracerCommand extends DescribedCommand {
         if(!Addon.isGG())
             return false;
 
-        Laby.fireEvent(new ToggleFunctionEvent(Functions.PLAYERTRACER, FunctionState.TOGGLE, arguments));
+        if(Commander.canSend())
+            Addon.toggleActiveFunction(Functions.PLAYERTRACER.name(), FunctionState.TOGGLE, arguments);
 
         return true;
     }

@@ -17,7 +17,6 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 import tmb.randy.tmbgriefergames.v1_8_9.click.Click;
 import tmb.randy.tmbgriefergames.v1_8_9.click.ClickManager;
@@ -35,7 +34,7 @@ public class AutoCrafterV1 extends Function {
     private boolean endlessModeToggle = false;
 
     public AutoCrafterV1() {
-        super(Functions.CRAFTV1);
+        super(Functions.CRAFTV1.name());
         this.stored = new int[9];
         this.meta = new int[9];
         this.names = new String[9];
@@ -49,10 +48,10 @@ public class AutoCrafterV1 extends Function {
             if(event.key() == Key.ENTER && event.state() == State.PRESS) {
                 if(Key.L_SHIFT.isPressed()) {
                     storeCrafting();
-                    Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.recipeSaved"));
-                } else if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getEndlessMode().get() && event.state() == State.PRESS) {
+                    Addon.displayNotification(Addon.translate("autoCrafter.recipeSaved"));
+                } else if(Addon.settings().getAutoCrafterConfig().getEndlessMode().get() && event.state() == State.PRESS) {
                     this.setEndlessModeToggle(!endlessModeToggle);
-                } else if(!Addon.getSharedInstance().configuration().getAutoCrafterConfig().getEndlessMode().get() && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed())) {
+                } else if(!Addon.settings().getAutoCrafterConfig().getEndlessMode().get() && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed())) {
                     craft();
                 }
             }
@@ -141,7 +140,7 @@ public class AutoCrafterV1 extends Function {
                 ItemStack curr = this.simulator.stackAt(j);
                 if (curr == null) continue;
                 String name = curr.getDisplayName();
-                boolean isFullStack = curr.stackSize == curr.getMaxStackSize() || !Addon.getSharedInstance().configuration().getAutoCrafterConfig().getOnlyFullStacks().get();
+                boolean isFullStack = curr.stackSize == curr.getMaxStackSize() || !Addon.settings().getAutoCrafterConfig().getOnlyFullStacks().get();
                 if (Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && name.equals(names[i]) && isFullStack) {
                     this.click(j);
                     this.click(i+1);
@@ -237,7 +236,7 @@ public class AutoCrafterV1 extends Function {
     }
 
     private void dropItems() {
-        if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDrop().get()) {
+        if(Addon.settings().getAutoCrafterConfig().getAutoDrop().get()) {
             for (int j = 10; j <= 45; j++) {
                 ItemStack curr = this.simulator.stackAt(j);
                 if (curr == null) continue;
@@ -267,10 +266,10 @@ public class AutoCrafterV1 extends Function {
 
     private void setEndlessModeToggle(boolean value) {
         endlessModeToggle = value;
-        Addon.getSharedInstance().displayNotification(I19n.translate(value ? "autoCrafter.active" : "autoCrafter.inactive"));
+        Addon.displayNotification(Addon.translate(value ? "autoCrafter.active" : "autoCrafter.inactive"));
     }
 
     private QueueType getCraftingSpeed() {
-        return Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCraftSpeed().get();
+        return Addon.settings().getAutoCrafterConfig().getAutoCraftSpeed().get();
     }
 }

@@ -25,6 +25,7 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
+import tmb.randy.tmbgriefergames.core.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 import tmb.randy.tmbgriefergames.v1_8_9.click.Click;
@@ -36,13 +37,12 @@ public class AutoFisher extends ActiveFunction {
     private boolean waitForFishingAfterRemover = false;
 
     public AutoFisher() {
-        super(Functions.AUTOFISHER);
+        super(Functions.AUTOFISHER.name());
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(!Addon.getSharedInstance().configuration().getAutoFisherSubConfig().getEnabled().get()) return;
-        if(!Helper.getPlayer().getUniqueID().equals(Helper.getPlayer().getUniqueID())) return;
+        if(!Addon.settings().getAutoFisherSubConfig().getEnabled().get()) return;
         if(Helper.getPlayer().getHeldItem() == null) return;
         if(!(Helper.getPlayer().getHeldItem().getItem() instanceof ItemFishingRod)) return;
 
@@ -56,40 +56,7 @@ public class AutoFisher extends ActiveFunction {
         double y = currentFishHook.motionY;
 
         if(y < -0.001 && currentFishHook.isInWater() && x == 0 && z == 0) {
-            NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getNetHandler();
-            if(nethandler != null) {
-                ItemStack heldItem = Helper.getPlayer().getHeldItem();
-                if (heldItem != null)
-                    nethandler.addToSendQueue(new C08PacketPlayerBlockPlacement(heldItem));
-
-            } else
-                ClickManager.getSharedInstance().rightClick();
-
-            if(!fished) {
-                fished = true;
-                startTimer();
-            }
-            if(Helper.getPlayer().getHeldItem() == null) return;
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000);
-
-                    if(Helper.getPlayer().getHeldItem().getItemDamage() < Helper.getPlayer().getHeldItem().getMaxDamage() && !waitForFishingAfterRemover) {
-                        if(nethandler != null) {
-                            ItemStack heldItem = Helper.getPlayer().getHeldItem();
-                            if (heldItem != null)
-                                nethandler.addToSendQueue(new C08PacketPlayerBlockPlacement(heldItem));
-
-                            dropRubbishFishedItems();
-                        } else
-                            ClickManager.getSharedInstance().rightClick();
-                    } else
-                        selectSimilarItem();
-
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }).start();
+            catchFish();
         }
     }
 
@@ -140,6 +107,12 @@ public class AutoFisher extends ActiveFunction {
         }
     }
 
+    @Override
+    public void fishEvent(FishEvent event) {
+        if(findPlayerFishHook() != null)
+            catchFish();
+    }
+
     private EntityFishHook findPlayerFishHook() {
         List<Entity> entities = Helper.getWorld().loadedEntityList;
 
@@ -163,7 +136,7 @@ public class AutoFisher extends ActiveFunction {
             IInventory lowerChestInventory = container.getLowerChestInventory();
 
             if (lowerChestInventory.getDisplayName().getUnformattedText().equals("Endertruhe") &&
-                Addon.getSharedInstance().configuration().getAutoFisherSubConfig().getAllowEC().get()) {
+                Addon.settings().getAutoFisherSubConfig().getAllowEC().get()) {
 
                 int ecSize = lowerChestInventory.getSizeInventory();
                 int containerSize = container.inventorySlots.size();
@@ -193,14 +166,14 @@ public class AutoFisher extends ActiveFunction {
 
         Item item = stack.getItem();
         int meta = stack.getMetadata();
-        AutoFisherSubConfig subConfig = Addon.getSharedInstance().configuration().getAutoFisherSubConfig();
+        AutoFisherSubConfig subConfig = Addon.settings().getAutoFisherSubConfig();
 
         return (item == Items.fishing_rod && subConfig.getAutoDropRods().get()) ||
             (item == Items.bow && subConfig.getAutoDropBows().get()) ||
             (item == Items.enchanted_book && subConfig.getAutoDropBooks().get()) ||
             (item == Items.saddle && subConfig.getAutoDropSaddle().get()) ||
             (Item.getIdFromItem(item) == 111 && subConfig.getAutoDropLilypads().get()) ||
-            (item == Items.fish && subConfig.getAutoDropFish().get() && (meta == 0 || meta == 1));
+            ((item == Items.fish || item == Items.cooked_fish) && subConfig.getAutoDropFish().get() && (meta == 0 || meta == 1));
     }
 
     private void dropRubbish(Container container, int minSlot, int maxSlot) {
@@ -275,5 +248,42 @@ public class AutoFisher extends ActiveFunction {
                 fished = false;
             }
         }
+    }
+
+    private void catchFish() {
+        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getNetHandler();
+        if(nethandler != null) {
+            ItemStack heldItem = Helper.getPlayer().getHeldItem();
+            if (heldItem != null)
+                nethandler.addToSendQueue(new C08PacketPlayerBlockPlacement(heldItem));
+
+        } else
+            ClickManager.getSharedInstance().rightClick();
+
+        if(!fished) {
+            fished = true;
+            startTimer();
+        }
+        if(Helper.getPlayer().getHeldItem() == null) return;
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+
+                if(Helper.getPlayer().getHeldItem().getItemDamage() < Helper.getPlayer().getHeldItem().getMaxDamage() && !waitForFishingAfterRemover) {
+                    if(nethandler != null) {
+                        ItemStack heldItem = Helper.getPlayer().getHeldItem();
+                        if (heldItem != null)
+                            nethandler.addToSendQueue(new C08PacketPlayerBlockPlacement(heldItem));
+
+                        dropRubbishFishedItems();
+                    } else
+                        ClickManager.getSharedInstance().rightClick();
+                } else
+                    selectSimilarItem();
+
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }).start();
     }
 }

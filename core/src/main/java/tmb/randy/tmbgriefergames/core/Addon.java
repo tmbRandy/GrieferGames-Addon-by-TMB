@@ -15,8 +15,10 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.models.addon.annotation.AddonMain;
+import net.labymod.api.util.I18n;
+import net.labymod.api.util.logging.Logging;
+import org.jetbrains.annotations.NotNull;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelActivity;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelPlot;
 import tmb.randy.tmbgriefergames.core.commands.AutocraftV2Command;
@@ -28,7 +30,7 @@ import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
 import tmb.randy.tmbgriefergames.core.enums.CBs;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
+import tmb.randy.tmbgriefergames.core.enums.FunctionState;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.AccountUnity;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
@@ -44,6 +46,7 @@ import tmb.randy.tmbgriefergames.core.functions.chat.PaymentValidator;
 import tmb.randy.tmbgriefergames.core.functions.chat.TypeCorrection;
 import tmb.randy.tmbgriefergames.core.generated.DefaultReferenceStorage;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.core.helper.HopperTracker;
 import tmb.randy.tmbgriefergames.core.helper.ItemClearTimerListener;
 import tmb.randy.tmbgriefergames.core.widgets.ActiveFunctionsWidget;
@@ -57,8 +60,7 @@ import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget;
 @AddonMain
 public class Addon extends LabyAddon<Configuration> {
 
-  private static Addon SharedInstance;
-  private GameInfoWidget gameInfoWidget;
+  private static Addon INSTANCE;
   private IConnect connection;
 
     private final List<Function> functionList = new ArrayList<>(Arrays.asList(
@@ -76,13 +78,11 @@ public class Addon extends LabyAddon<Configuration> {
 
     private final Set<DescribedCommand> commands = new HashSet<>();
 
-    private static final int commandCountdownLimit = 100;
-    private static int commandCountdown = 0;
     public static PlotWheelPlot queuedPlot = null;
 
     @Override
   protected void enable() {
-        SharedInstance = this;
+        INSTANCE = this;
         connection = ((DefaultReferenceStorage) this.referenceStorageAccessor()).iConnect();
         connection.loadFunctions();
         registerSettingCategory();
@@ -92,6 +92,7 @@ public class Addon extends LabyAddon<Configuration> {
     registerListener(new CBtracker());
     registerListener(new HopperTracker());
     registerListener(new ItemClearTimerListener());
+    registerListener(Commander.INSTANCE());
     registerListener(this);
 
       registerCommand(new DKsCommand());
@@ -104,9 +105,7 @@ public class Addon extends LabyAddon<Configuration> {
       HudWidgetCategory category = new HudWidgetCategory(getNamespace());
       labyAPI().hudWidgetRegistry().categoryRegistry().register(category);
 
-      gameInfoWidget = new GameInfoWidget(category);
-
-        labyAPI().hudWidgetRegistry().register(gameInfoWidget);
+        labyAPI().hudWidgetRegistry().register(new GameInfoWidget(category));
       labyAPI().hudWidgetRegistry().register(new PotionTimerWidget(category));
       labyAPI().hudWidgetRegistry().register(new ItemClearWidget(category));
       labyAPI().hudWidgetRegistry().register(new NearbyWidget(category));
@@ -121,12 +120,22 @@ public class Addon extends LabyAddon<Configuration> {
     return Configuration.class;
   }
 
-    public void displayNotification(String msg) {
+  public static Configuration settings() {
+        return INSTANCE.configuration();
+  }
+
+    public static void displayNotification(String msg) {
         String ADDON_PREFIX = "§6[§5§l§oT§b§l§oM§5§l§oB§6] ";
         Laby.labyAPI().minecraft().chatExecutor().displayClientMessage(ADDON_PREFIX + msg);
     }
 
-    public static Addon getSharedInstance() {return SharedInstance;}
+    public static Logging log() {
+        return INSTANCE.logger();
+    }
+
+    public static Set<DescribedCommand> getCommands() {
+        return INSTANCE.commands;
+    }
 
   public static boolean isGG() {
     if(!Laby.labyAPI().serverController().isConnected() ||
@@ -139,10 +148,6 @@ public class Addon extends LabyAddon<Configuration> {
 
     return Objects.requireNonNull(Laby.references().serverController().getCurrentServerData()).address().getHost().toLowerCase().contains("griefergames");
   }
-
-    public GameInfoWidget getGameInfoWidget() {
-        return gameInfoWidget;
-    }
 
     public static boolean isChatGuiOpen() {
       if(!Laby.labyAPI().minecraft().isMouseLocked())
@@ -158,27 +163,21 @@ public class Addon extends LabyAddon<Configuration> {
 
     @Subscribe
     public void keyInput(KeyEvent event) {
-        if(event.state() == State.PRESS && event.key() == configuration().getPlotSwitchSubConfig().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB() && isGG())
+        if(event.state() == State.PRESS && event.key() == settings().getPlotSwitchSubConfig().getPlotWheelHotkey().get() && !isChatGuiOpen() && CBtracker.isCommandAbleCB() && isGG())
             Laby.labyAPI().minecraft().minecraftWindow().displayScreen(new PlotWheelActivity());
     }
 
     @Subscribe
-    public void tick(GameTickEvent event) {
-        if(isGG())
-            commandCountdown();
-    }
-
-    @Subscribe
     public void cbChanged(CbChangedEvent event) {
-        if(event.CB() == CBs.LOBBY && Addon.getSharedInstance().configuration().getSkipHub().get() != CBs.NONE && Addon.getSharedInstance().configuration().getSkipHub().get() != CBs.LOBBY && isGG())
+        if(event.CB() == CBs.LOBBY && INSTANCE.settings().getSkipHub().get() != CBs.NONE && INSTANCE.settings().getSkipHub().get() != CBs.LOBBY && isGG())
             new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        if(Addon.getSharedInstance().configuration().getSkipHub().get() == CBs.PORTAL)
-                            Addon.sendCommand("/portal");
-                        else if(Addon.getSharedInstance().configuration().getSkipHub().get() != CBs.NONE)
-                            Addon.sendCommand("/switch " + Addon.getSharedInstance().configuration().getSkipHub().get());
+                        if(INSTANCE.settings().getSkipHub().get() == CBs.PORTAL)
+                            Commander.queue("/portal");
+                        else if(INSTANCE.settings().getSkipHub().get() != CBs.NONE)
+                            Commander.queue("/switch " + INSTANCE.settings().getSkipHub().get());
                     }
                 }, 800
             );
@@ -205,37 +204,18 @@ public class Addon extends LabyAddon<Configuration> {
         }
     }
 
-    public static boolean canSendCommand() { return commandCountdown <= 0; }
-
-    public static void sendCommand(String command) {
-        if(canSendCommand()) {
-            Laby.references().chatExecutor().chat(command);
-            commandCountdown = commandCountdownLimit;
-        }
-    }
-
-    private static void commandCountdown() {
-        if (commandCountdown > 0) {
-            commandCountdown--;
-        }
-    }
-
-    public Set<DescribedCommand> getCommands() {
-        return commands;
-    }
-
     public void registerCommand(DescribedCommand command) {
         commands.add(command);
         super.registerCommand(command);
     }
 
-    static public String getNamespace() {
-        return getSharedInstance().addonInfo().getNamespace();
+    public static String getNamespace() {
+        return INSTANCE.addonInfo().getNamespace();
     }
 
-    public Function getFunction(Functions type) {
-        for (Function function : functionList) {
-            if (function.getType() == type) {
+    public static Function getFunction(String identifier) {
+        for (Function function : INSTANCE.functionList) {
+            if (function.getIdentifier().equals(identifier)) {
                 return function;
             }
         }
@@ -243,16 +223,30 @@ public class Addon extends LabyAddon<Configuration> {
         return null;
     }
 
-    public ActiveFunction getActiveFunction(Functions type) {
-        Function function = getFunction(type);
+    public static ActiveFunction getActiveFunction(String identifier) {
+        Function function = getFunction(identifier);
         return function instanceof ActiveFunction ? (ActiveFunction) function : null;
+    }
+
+    public static void toggleActiveFunction(String identifier, FunctionState state) {
+        toggleActiveFunction(identifier, state, null);
+    }
+
+    public static void toggleActiveFunction(String identifier, FunctionState state, String[] params) {
+        if(getActiveFunction(identifier) instanceof ActiveFunction af) {
+            switch (state) {
+                case START -> af.start(params);
+                case STOP -> af.stop();
+                case TOGGLE -> af.toggle(params);
+            }
+        }
     }
 
     public static boolean isGUIOpen() {
         return !Laby.labyAPI().minecraft().isMouseLocked();
     }
 
-    public boolean allKeysPressed(Key[] keys) {
+    public static boolean allKeysPressed(Key[] keys) {
         if(keys.length == 0)
             return false;
 
@@ -266,7 +260,7 @@ public class Addon extends LabyAddon<Configuration> {
         return true;
     }
 
-    public boolean isChatGuiClosed() {
+    public static boolean isChatGuiClosed() {
         for (IngameOverlayActivity activity : Laby.labyAPI().ingameOverlay().getActivities()) {
             if(activity.isAcceptingInput()) {
                 return false;
@@ -276,26 +270,27 @@ public class Addon extends LabyAddon<Configuration> {
         return true;
     }
 
-    public void openChat() {
+    public static void openChat() {
         Laby.labyAPI().minecraft().openChat("");
     }
 
-    public IConnect getConnection() {
-        return connection;
+    public static IConnect getConnection() {
+        return INSTANCE.connection;
     }
 
-    public void addFunction(Function function) {
-        functionList.add(function);
+    public static void registerFunction(Function function) {
+        INSTANCE.functionList.add(function);
     }
 
-    public List<Function> getFunctions() {
-        return functionList;
+    public static List<Function> getFunctions() {
+        return INSTANCE.functionList;
     }
 
-    public List<ActiveFunction> getActiveFunctions() {
+    public static List<ActiveFunction> getActiveFunctions() {
+
         List<ActiveFunction> output = new ArrayList<>();
 
-        for (Function function : functionList) {
+        for (Function function : INSTANCE.functionList) {
             if(function instanceof ActiveFunction activeFunction) {
                 if(activeFunction.isEnabled()) {
                     output.add(activeFunction);
@@ -303,5 +298,9 @@ public class Addon extends LabyAddon<Configuration> {
             }
         }
         return output;
+    }
+
+    public static @NotNull String translate(@NotNull String key, Object... args) {
+        return I18n.translate(getNamespace() + "." + key, args);
     }
 }

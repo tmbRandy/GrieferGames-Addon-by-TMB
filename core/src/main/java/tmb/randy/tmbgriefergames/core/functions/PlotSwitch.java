@@ -19,7 +19,7 @@ public class PlotSwitch extends Function {
     private boolean waitingForPlotSwitch = false;
 
     public PlotSwitch() {
-        super(Functions.PLOTSWITCH);
+        super(Functions.PLOTSWITCH.name());
     }
 
     private enum DIRECTION {
@@ -30,7 +30,7 @@ public class PlotSwitch extends Function {
 
     @Override
     public void chatMessageSendEvent(ChatMessageSendEvent event) {
-        if(event.getMessage().toLowerCase().startsWith("/p h")) {
+        if(event.getMessage() != null && event.getMessage().toLowerCase().startsWith("/p h")) {
             lastPlot = event.getMessage();
         }
     }
@@ -40,7 +40,7 @@ public class PlotSwitch extends Function {
         if(event.phase() == Phase.PRE) {
             if(COMMAND_COOLDOWN_COUNTER > 0) {
                 COMMAND_COOLDOWN_COUNTER--;
-                Addon.getSharedInstance().logger().info("Counting: " + COMMAND_COOLDOWN_COUNTER);
+                Addon.log().info("Counting: " + COMMAND_COOLDOWN_COUNTER);
                 return;
             }
 
@@ -70,9 +70,9 @@ public class PlotSwitch extends Function {
         String command = null;
 
         if(event.state() == State.PRESS) {
-            if(Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getPlotSwitchSubConfig().getPreviousPlot().get())) {
+            if(Addon.allKeysPressed(Addon.settings().getPlotSwitchSubConfig().getPreviousPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.PREVIOUS);
-            } else if(Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getPlotSwitchSubConfig().getNextPlot().get())) {
+            } else if(Addon.allKeysPressed(Addon.settings().getPlotSwitchSubConfig().getNextPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.NEXT);
             }
 

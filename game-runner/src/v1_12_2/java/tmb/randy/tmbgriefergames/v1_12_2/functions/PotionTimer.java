@@ -20,7 +20,7 @@ public class PotionTimer extends Function {
     private ItemStack lastRenderedTooltipItemStack;
 
     public PotionTimer() {
-        super(Functions.POTIONTIMER);
+        super(Functions.POTIONTIMER.name());
     }
 
     @Override

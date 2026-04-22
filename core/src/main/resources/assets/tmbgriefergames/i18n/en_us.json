@@ -249,6 +249,10 @@
                     "name": "Delay",
                     "description": "If it is buggy increase the delay to make it slower."
                 },
+                "goldBlockToIngot": {
+                    "name": "Craft gold ingots from blocks",
+                    "description": "Activate this to craft gold ingots from gold blocks.\nDeactivate this to craft gold ingots from gold nuggets."
+                },
                 "header": {
                     "v1": {
                         "name": "V1 (/craft)"
@@ -278,6 +282,10 @@
                 "voteBooster": {
                     "name": "Vote booster",
                     "description": "It one of your accounts starts a /startjail or /startkick, all of your accounts will vote /ja."
+                },
+                "mainAccount": {
+                    "name": "Pay to main account",
+                    "description": "Enter the name of your main account to make all your accounts pay their income directly to you."
                 }
             },
             "openDocs": {

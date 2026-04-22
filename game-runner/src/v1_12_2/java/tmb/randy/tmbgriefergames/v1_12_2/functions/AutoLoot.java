@@ -13,22 +13,21 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.core.helper.FileManager;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
-import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class AutoLoot extends Function {
 
     public AutoLoot() {
-        super(Functions.AUTOLOOT);
+        super(Functions.AUTOLOOT.name());
     }
 
     @Override
     public void chatReceiveEvent(ChatReceiveEvent event) {
         String message = event.chatMessage().getPlainText();
 
-        if(Addon.getSharedInstance().configuration().getAutoLoot().get()) {
-            ActiveFunction playerTracer = Addon.getSharedInstance().getActiveFunction(Functions.PLAYERTRACER);
+        if(Addon.settings().getAutoLoot().get()) {
+            ActiveFunction playerTracer = Addon.getActiveFunction(Functions.PLAYERTRACER.name());
             if(CBtracker.getCurrentCB() != CBs.NONE && message.equals("[Switcher] Daten heruntergeladen!") && playerTracer != null && !playerTracer.isEnabled()) {
 
                 String rank = getPlayerRank(Laby.labyAPI().getName());
@@ -58,20 +57,20 @@ public class AutoLoot extends Function {
                                         LocalDateTime freeBoosterDate = LocalDateTime.parse(freeBoosterString);
 
                                         if(freeBoosterDate.isBefore(LocalDateTime.now())) {
-                                            Helper.getPlayer().sendChatMessage("/grieferboost");
+                                            Commander.queue("/grieferboost");
                                         }
                                     } else {
-                                        Helper.getPlayer().sendChatMessage("/grieferboost");
+                                        Commander.queue("/grieferboost");
                                     }
 
                                     if(!freeChestString.isEmpty()) {
                                         LocalDateTime freeChestDate = LocalDateTime.parse(freeChestString);
 
                                         if(freeChestDate.isBefore(LocalDateTime.now())) {
-                                            Helper.getPlayer().sendChatMessage("/freekiste");
+                                            Commander.queue("/freekiste");
                                         }
                                     } else {
-                                        Helper.getPlayer().sendChatMessage("/freekiste");
+                                        Commander.queue("/freekiste");
                                     }
                                 }
 
@@ -80,7 +79,7 @@ public class AutoLoot extends Function {
                                     LocalDateTime freeSkullDate = LocalDateTime.parse(freeSkullString);
 
                                     if(freeSkullDate.isBefore(LocalDateTime.now())) {
-                                        Addon.getSharedInstance().displayNotification(I19n.translate("autoLoot.skullAvailable"));
+                                        Addon.displayNotification(Addon.translate("autoLoot.skullAvailable"));
                                     }
                                 }
                             }

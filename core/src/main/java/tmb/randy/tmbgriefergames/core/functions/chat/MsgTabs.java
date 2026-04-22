@@ -22,27 +22,27 @@ public class MsgTabs extends Function {
     private static boolean clearedMsgTabs = false;
 
     public MsgTabs() {
-        super(Functions.MSGTABS);
+        super(Functions.MSGTABS.name());
     }
 
     @Override
     public void chatReceiveEvent(ChatReceiveEvent event) {
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get()) return;
+        if(!Addon.settings().getChatConfig().getMsgTabMode().get()) return;
 
         currentChatPartner = getChatPartnerName(event.chatMessage().getPlainText());
         if(currentChatPartner != null) {
             getTabForName(event.chatMessage().getPlainText());
 
-            if(Addon.getSharedInstance().isChatGuiClosed() && event.chatMessage().getPlainText().contains("[mir -> ")) {
+            if(Addon.isChatGuiClosed() && event.chatMessage().getPlainText().contains("[mir -> ")) {
                 reloadChat();
-                Addon.getSharedInstance().openChat();
+                Addon.openChat();
             }
         }
     }
 
     @Override
     public void chatMessageSendEvent(ChatMessageSendEvent event) {
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get() || event.getMessage().startsWith("/msg") || event.getMessage().startsWith("7msg") || event.getMessage().startsWith("(msg"))
+        if(!Addon.settings().getChatConfig().getMsgTabMode().get() || event.getMessage().startsWith("/msg") || event.getMessage().startsWith("7msg") || event.getMessage().startsWith("(msg"))
             return;
 
         ChatWindow mainWindow = getChatWindow();
@@ -79,7 +79,7 @@ public class MsgTabs extends Function {
     @Override
     public void cbChangedEvent(CbChangedEvent event) {
         //Clear all /msg tabs on first start as they are empty
-        if(Addon.isGG() && !clearedMsgTabs && event.CB() == CBs.PORTAL && Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get()) {
+        if(Addon.isGG() && !clearedMsgTabs && event.CB() == CBs.PORTAL && Addon.settings().getChatConfig().getMsgTabMode().get()) {
             clearedMsgTabs = true;
             clearAllMsgTabs();
         }
@@ -191,7 +191,7 @@ public class MsgTabs extends Function {
 
 
     private ChatWindow getChatWindow() {
-        if(Addon.getSharedInstance().configuration().getChatConfig().getMsgTabMode().get()) {
+        if(Addon.settings().getChatConfig().getMsgTabMode().get()) {
             for (ChatWindow window : Laby.references().advancedChatController().getWindows()) {
                 if (window.isMainWindow()) {
                     return window;

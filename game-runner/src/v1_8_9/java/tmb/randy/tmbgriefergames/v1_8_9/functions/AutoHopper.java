@@ -31,12 +31,12 @@ public class AutoHopper extends Function {
     private boolean toggeledSneak = false;
 
     public AutoHopper() {
-        super(Functions.AUTOHOPPER);
+        super(Functions.AUTOHOPPER.name());
     }
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if(event.button().isRight() && event.action() == Action.CLICK && isLookingAtHopper() && Addon.getSharedInstance().configuration().getHopperSubConfig().getAutoSneak().get()) {
+        if(event.button().isRight() && event.action() == Action.CLICK && isLookingAtHopper() && Addon.settings().getHopperSubConfig().getAutoSneak().get()) {
             MovingObjectPosition trace = Helper.getPlayer().rayTrace(5, 1.0F);
 
             if(trace != null) {
@@ -71,7 +71,7 @@ public class AutoHopper extends Function {
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(Addon.getSharedInstance().configuration().getHopperSubConfig().getEnabled().get()) {
+        if(Addon.settings().getHopperSubConfig().getEnabled().get()) {
             Container cont = Helper.getPlayer().openContainer;
             if (cont instanceof ContainerChest chest) {
                 IInventory inv = chest.getLowerChestInventory();
@@ -89,7 +89,9 @@ public class AutoHopper extends Function {
 
                     boolean clicked = false;
                     if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFilterItem().get() &&
+                        if (Addon.settings().getHopperSubConfig().getFilterItem().get() &&
+                            chest.getSlot(28).getStack() != null &&
+                            chest.getSlot(72).getStack() != null &&
                             (((!chest.getSlot(28).getStack().getItem().equals(chest.getSlot(72).getStack().getItem())) &&
                                 !(Block.getBlockFromItem(chest.getSlot(28).getStack().getItem()) == Blocks.barrier && !chest.getSlot(72).getHasStack())) ||
                                 (chest.getSlot(28).getStack().getMetadata() != chest.getSlot(72).getStack().getMetadata()))) {
@@ -97,26 +99,26 @@ public class AutoHopper extends Function {
                             clicked = true;
                         }
 
-                        if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
-                            if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() == 0) {
+                        if (Addon.settings().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
+                            if (Addon.settings().getHopperSubConfig().getRadius().get() == 0) {
                                 if (chest.getSlot(30).getStack() != null && chest.getSlot(30).getStack().getItem() instanceof ItemSkull) {
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, 1));
                                     clicked = true;
                                 }
                             } else {
-                                if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() > chest.getSlot(31).getStack().stackSize) {
+                                if (Addon.settings().getHopperSubConfig().getRadius().get() > chest.getSlot(31).getStack().stackSize) {
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 32, 0, 1));
                                     clicked = true;
-                                } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getRadius().get() < chest.getSlot(31).getStack().stackSize) {
+                                } else if (Addon.settings().getHopperSubConfig().getRadius().get() < chest.getSlot(31).getStack().stackSize) {
                                     ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, 1));
                                     clicked = true;
                                 }
                             }
                         }
 
-                        if(!clicked && Addon.getSharedInstance().configuration().getHopperSubConfig().getStackSize().get() != HopperItemStackSizeEnum.NONE && chest.inventorySlots.get(10).getHasStack()) {
+                        if(!clicked && Addon.settings().getHopperSubConfig().getStackSize().get() != HopperItemStackSizeEnum.NONE && chest.inventorySlots.get(10).getHasStack()) {
                             int currentStackSize = chest.getSlot(10).getStack().stackSize;
-                            switch (Addon.getSharedInstance().configuration().getHopperSubConfig().getStackSize().get()) {
+                            switch (Addon.settings().getHopperSubConfig().getStackSize().get()) {
                                 case SINGLEITEM:
                                     if(currentStackSize != 1) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, 1));
@@ -138,18 +140,18 @@ public class AutoHopper extends Function {
                             }
                         }
 
-                        if (!clicked && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() != HopperFinalAction.NONE && chest.inventorySlots.get(10).getHasStack()) {
-                            if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CLOSE) {
+                        if (!clicked && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.settings().getHopperSubConfig().getFinalAction().get() != HopperFinalAction.NONE && chest.inventorySlots.get(10).getHasStack()) {
+                            if (Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CLOSE) {
                                 Helper.getPlayer().closeScreen();
-                            } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CONNECT) {
+                            } else if (Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CONNECT) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 16, 0, 0));
-                            } else if (Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
+                            } else if (Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                                 ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 15, 0, 0));
                             }
                         }
                     }
 
-                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.getSharedInstance().configuration().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
+                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                     ClickManager.getSharedInstance().addClick(
                         QueueType.MEDIUM, new Click(chest.windowId, 53, 0, 0));
                 }

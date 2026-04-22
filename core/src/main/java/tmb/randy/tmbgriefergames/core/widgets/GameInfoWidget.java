@@ -29,6 +29,7 @@ import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent.Side;
+import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.render.overlay.IngameOverlayElementRenderEvent;
 import net.labymod.api.event.client.render.overlay.IngameOverlayElementRenderEvent.OverlayElementType;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryAddEvent;
@@ -69,7 +70,10 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
     private static Instant itemRemover = null;
     private static Instant mobRemover = null;
 
+    private boolean waitingForCrystalMessage = false;
+
     private static long bankAmount = -1;
+    private static int crystals = -1;
 
     public GameInfoWidget(HudWidgetCategory category) {
         super("gameinfo", GameInfoWidgetConfig.class);
@@ -140,9 +144,40 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
     @Subscribe
     public void onScoreboardRender(IngameOverlayElementRenderEvent event) {
-        if (Addon.isGG() && Addon.getSharedInstance().getGameInfoWidget().isEnabled() && event.elementType() == OverlayElementType.SCOREBOARD && Addon.getSharedInstance().getGameInfoWidget().isVisibleInGame() && event.phase() == Phase.PRE) {
+        if (Addon.isGG() && isEnabled() && event.elementType() == OverlayElementType.SCOREBOARD && isVisibleInGame() && event.phase() == Phase.PRE) {
             event.setCancelled(true);
         }
+    }
+
+    @Subscribe
+    public void chatReceiveEvent(ChatReceiveEvent event) {
+        String message = event.chatMessage().getPlainText();
+        if(waitingForCrystalMessage) {
+            if(message.equals("[CaseOpening] Du hast 72 Kristalle auf deinem Konto.")) {
+                event.setCancelled(true);
+            } else {
+                Pattern pattern = java.util.regex.Pattern.compile("Du hast (\\d+) Kristalle");
+                Matcher matcher = pattern.matcher(message);
+
+                if (matcher.find()) {
+                    crystals = Integer.parseInt(matcher.group(1));
+                    waitingForCrystalMessage = false;
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @Subscribe
+    public void serverDisconnectEvent(ServerDisconnectEvent event) {
+        crystals = -1;
+        bankAmount = -1;
+        waitingForCrystalMessage = false;
+    }
+
+    @Subscribe
+    public void cbChangedEvent(CbChangedEvent event) {
+
     }
 
     private void readScoreboard() {

@@ -48,12 +48,30 @@
 }
 
 .plot-segment {
-    .plot-segment-display {
-        alignment-x: center;
-          alignment-y: center;
+        .plot-segment-display-plot {
+                alignment-x: center;
+                alignment-y: center;
+                text-color: gold;
+        }
 
+        .plot-segment-display-home {
+            alignment-x: center;
+            alignment-y: center;
+            text-color: yellow;
+        }
+
+        .plot-segment-display-warp {
+            alignment-x: center;
+            alignment-y: center;
+            text-color: red;
+        }
+
+        .plot-segment-display-else {
+            alignment-x: center;
+            alignment-y: center;
+            text-color: green;
+        }
     }
-}
 
 .cb-display {
     text-color: red;

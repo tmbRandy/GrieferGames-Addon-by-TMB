@@ -16,7 +16,6 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 
 public class PlayerTracer extends ActiveFunction {
     public static final List<CBs> CBlist = Arrays.asList(CBs.NONE, CBs.CB1, CBs.CB22, CBs.CB21, CBs.CB20, CBs.CB7, CBs.NATURE, CBs.CB2, CBs.CB3, CBs.CB4, CBs.CB5, CBs.CB6, CBs.CB8, CBs.CB9, CBs.CB10, CBs.CB11, CBs.CB12, CBs.CB13, CBs.CB14, CBs.CB15, CBs.CB16, CBs.CB17, CBs.CB18, CBs.CB19, CBs.EXTREME, CBs.CBE);
@@ -24,7 +23,7 @@ public class PlayerTracer extends ActiveFunction {
     private String playerName;
 
     public PlayerTracer() {
-        super(Functions.PLAYERTRACER);
+        super(Functions.PLAYERTRACER.name());
     }
 
     @Override
@@ -55,7 +54,7 @@ public class PlayerTracer extends ActiveFunction {
 
             if(CBtracker.isPlotworldCB())  {
                 if(isPlayerOnCB()) {
-                    Addon.getSharedInstance().displayNotification(I19n.translate("playerTracer.foundPlayer"));
+                    Addon.displayNotification(Addon.translate("playerTracer.foundPlayer"));
                     stop();
                 } else if(nextServer < CBlist.size()) {
                     nextServer++;
@@ -77,7 +76,7 @@ public class PlayerTracer extends ActiveFunction {
 
     @Override
     public void toggleFunctionEvent(ToggleFunctionEvent event) {
-        if(event.function() == type)
+        if(event.function() == identifier)
             toggle(event.arguments());
     }
 
@@ -88,19 +87,19 @@ public class PlayerTracer extends ActiveFunction {
 
             switch (args.length) {
                 case 0 -> {
-                    Addon.getSharedInstance().displayNotification(I19n.translate("playerTracer.startedHopping"));
+                    Addon.displayNotification(Addon.translate("playerTracer.startedHopping"));
                     nextServer = 1;
                     Laby.labyAPI().minecraft().chatExecutor().chat("/switch " + CBlist.get(nextServer));
                     return true;
                 }
                 case 1 -> {
-                    Addon.getSharedInstance().displayNotification(I19n.translate("playerTracer.lookingForPlayer", arguments[0]));
+                    Addon.displayNotification(Addon.translate("playerTracer.lookingForPlayer", arguments[0]));
                     playerName = args[0].toLowerCase();
                     nextServer = 1;
                     Laby.labyAPI().minecraft().chatExecutor().chat("/switch " + CBlist.get(nextServer));
                     return true;
                 }
-                default -> Addon.getSharedInstance().displayNotification(I19n.translate("playerTracer.tooManyArguments"));
+                default -> Addon.displayNotification(Addon.translate("playerTracer.tooManyArguments"));
             }
         }
 

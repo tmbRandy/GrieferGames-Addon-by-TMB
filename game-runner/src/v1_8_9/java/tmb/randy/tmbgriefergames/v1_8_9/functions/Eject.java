@@ -23,7 +23,7 @@ public class Eject extends ActiveFunction {
     private BlockPos chestPos;
 
     public Eject() {
-        super(Functions.EJECT);
+        super(Functions.EJECT.name());
     }
 
     @Override

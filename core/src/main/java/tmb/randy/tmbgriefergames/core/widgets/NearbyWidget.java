@@ -20,7 +20,6 @@ import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.Switc
 import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget.NearbyWidgetConfig;
 
 public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
@@ -37,7 +36,7 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
     @Override
     public void load(NearbyWidgetConfig config) {
         super.load(config);
-        this.line = super.createLine(I19n.translate("nearby.nearby"), name);
+        this.line = super.createLine(Addon.translate("nearby.nearby"), name);
     }
 
     @Override
@@ -246,7 +245,7 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
                 int count = entry.getValue();
                 if (count > 0 && entry.getKey() != null) {
                     String translationKey = "mobs." + entry.getKey().name().toLowerCase();
-                    String mobName = I19n.translate(translationKey);
+                    String mobName = Addon.translate(translationKey);
 
                     result.append("\n§d").append(count).append("x §6").append(mobName);
                 }

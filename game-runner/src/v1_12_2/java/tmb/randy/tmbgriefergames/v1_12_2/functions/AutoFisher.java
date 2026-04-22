@@ -22,6 +22,7 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
+import tmb.randy.tmbgriefergames.core.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
@@ -33,13 +34,12 @@ public class AutoFisher extends ActiveFunction {
     private boolean waitForFishingAfterRemover = false;
 
     public AutoFisher() {
-        super(Functions.AUTOFISHER);
+        super(Functions.AUTOFISHER.name());
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(!Addon.getSharedInstance().configuration().getAutoFisherSubConfig().getEnabled().get()) return;
-        if(!Helper.getPlayer().getUniqueID().equals(Helper.getPlayer().getUniqueID())) return;
+        if(!Addon.settings().getAutoFisherSubConfig().getEnabled().get()) return;
         if(!(Helper.getPlayer().getHeldItemMainhand().getItem() instanceof ItemFishingRod)) return;
 
         if(Helper.getPlayer().fishEntity == null) return;
@@ -50,35 +50,7 @@ public class AutoFisher extends ActiveFunction {
         double z = fishingHook.motionZ;
         double y = fishingHook.motionY;
         if(y < -0.05 && Helper.getPlayer().fishEntity.isInWater() && x == 0 && z == 0) {
-            NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-
-            if(nethandler != null)
-                nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-            else
-                ClickManager.getSharedInstance().rightClick();
-
-            if(!fished) {
-                fished = true;
-                startTimer();
-            }
-            if(Helper.getPlayer().getHeldItemMainhand().isEmpty()) return;
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000);
-
-                    if(Helper.getPlayer().getHeldItemMainhand().getItemDamage() < Helper.getPlayer().getHeldItemMainhand().getMaxDamage() && !waitForFishingAfterRemover) {
-                        if(nethandler != null) {
-                            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                            dropRubbishFishedItems();
-                        } else
-                            ClickManager.getSharedInstance().rightClick();
-                    } else
-                        selectSimilarItem();
-
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }).start();
+            catchFish();
         }
     }
 
@@ -123,6 +95,11 @@ public class AutoFisher extends ActiveFunction {
         }
     }
 
+    @Override
+    public void fishEvent(FishEvent event) {
+        catchFish();
+    }
+
     private void dropRubbishFishedItems() {
         if(Helper.getPlayer().openContainer instanceof ContainerPlayer container) {
             int size = container.inventorySlots.size();
@@ -131,7 +108,7 @@ public class AutoFisher extends ActiveFunction {
             IInventory lowerChestInventory = container.getLowerChestInventory();
 
             if (lowerChestInventory.getDisplayName().getUnformattedText().equals("Endertruhe") &&
-                Addon.getSharedInstance().configuration().getAutoFisherSubConfig().getAllowEC().get()) {
+                Addon.settings().getAutoFisherSubConfig().getAllowEC().get()) {
 
                 int ecSize = lowerChestInventory.getSizeInventory();
                 int containerSize = container.inventorySlots.size();
@@ -161,14 +138,14 @@ public class AutoFisher extends ActiveFunction {
 
         Item item = stack.getItem();
         int meta = stack.getMetadata();
-        AutoFisherSubConfig subConfig = Addon.getSharedInstance().configuration().getAutoFisherSubConfig();
+        AutoFisherSubConfig subConfig = Addon.settings().getAutoFisherSubConfig();
 
         return (item == Items.FISHING_ROD && subConfig.getAutoDropRods().get()) ||
             (item == Items.BOW && subConfig.getAutoDropBows().get()) ||
             (item == Items.ENCHANTED_BOOK && subConfig.getAutoDropBooks().get()) ||
             (item == Items.SADDLE && subConfig.getAutoDropSaddle().get()) ||
             (Item.getIdFromItem(item) == 111 && subConfig.getAutoDropLilypads().get()) ||
-            (item == Items.FISH && subConfig.getAutoDropFish().get() && (meta == 0 || meta == 1));
+            ((item == Items.FISH || item == Items.COOKED_FISH) && subConfig.getAutoDropFish().get() && (meta == 0 || meta == 1));
     }
 
     private void dropRubbish(Container container, int minSlot, int maxSlot) {
@@ -240,5 +217,37 @@ public class AutoFisher extends ActiveFunction {
                 fished = false;
             }
         }
+    }
+
+    private void catchFish() {
+        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
+
+        if(nethandler != null)
+            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+        else
+            ClickManager.getSharedInstance().rightClick();
+
+        if(!fished) {
+            fished = true;
+            startTimer();
+        }
+        if(Helper.getPlayer().getHeldItemMainhand().isEmpty()) return;
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+
+                if(Helper.getPlayer().getHeldItemMainhand().getItemDamage() < Helper.getPlayer().getHeldItemMainhand().getMaxDamage() && !waitForFishingAfterRemover) {
+                    if(nethandler != null) {
+                        nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+                        dropRubbishFishedItems();
+                    } else
+                        ClickManager.getSharedInstance().rightClick();
+                } else
+                    selectSimilarItem();
+
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }).start();
     }
 }

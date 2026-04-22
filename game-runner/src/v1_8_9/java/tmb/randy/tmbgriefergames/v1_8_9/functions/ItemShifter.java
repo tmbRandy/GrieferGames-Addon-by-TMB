@@ -39,7 +39,7 @@ public class ItemShifter extends Function {
     private static ItemShifter sharedInstance;
 
     public ItemShifter() {
-        super(Functions.ITEMSHIFTER);
+        super(Functions.ITEMSHIFTER.name());
     }
 
     public static ItemShifter getSharedInsance() {
@@ -189,7 +189,7 @@ public class ItemShifter extends Function {
                     setTopToBottom(false);
                     startShifting();
                 }
-            } else if (Keyboard.isKeyDown(Key.ARROW_DOWN.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW) && !Addon.getSharedInstance().getActiveFunction(Functions.COMP).isEnabled()) {
+            } else if (Keyboard.isKeyDown(Key.ARROW_DOWN.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW) && !Addon.getActiveFunction(Functions.COMP.name()).isEnabled()) {
                 setTopToBottom(true);
                 startShifting();
             }

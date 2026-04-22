@@ -1,38 +1,38 @@
 package tmb.randy.tmbgriefergames.v1_8_9.enums;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 public enum CompressionLevel {
-    UNCOMPRESSED,
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN;
+    NONE(0),
+    ONE(1),
+    TWO(2),
+    THREE(3),
+    FOUR(4),
+    FIVE(5),
+    SIX(6),
+    SEVEN(7);
 
-    public static CompressionLevel fromStack(ItemStack itemStack) {
-        if (itemStack == null || !itemStack.hasTagCompound())
-            return UNCOMPRESSED;
+    private final int level;
 
-        NBTTagCompound nbt = itemStack.getTagCompound();
+    CompressionLevel(int level) {
+        this.level = level;
+    }
 
-        if (!nbt.hasKey("compressionLevel"))
-            return UNCOMPRESSED;
+    public int getLevel() {
+        return level;
+    }
 
-        String level = nbt.getString("compressionLevel");
-
-        return switch (level) {
-            case "ONE" -> ONE;
-            case "TWO" -> TWO;
-            case "THREE" -> THREE;
-            case "FOUR" -> FOUR;
-            case "FIVE" -> FIVE;
-            case "SIX" -> SIX;
-            case "SEVEN" -> SEVEN;
-            default -> UNCOMPRESSED;
-        };
+    public static CompressionLevel fromItemStack(ItemStack stack) {
+        if (stack == null || stack.stackSize <= 0 || !stack.hasTagCompound()) {
+            return NONE;
+        }
+        if (!stack.getTagCompound().hasKey("CompressionLevel")) {
+            return NONE;
+        }
+        try {
+            return CompressionLevel.valueOf(stack.getTagCompound().getString("CompressionLevel").toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return NONE;
+        }
     }
 }

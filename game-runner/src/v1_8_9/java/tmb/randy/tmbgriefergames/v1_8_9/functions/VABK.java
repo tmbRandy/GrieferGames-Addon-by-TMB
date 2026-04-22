@@ -16,7 +16,7 @@ public class VABK extends ActiveFunction {
     private int cooldown = 0;
 
     public VABK() {
-        super(Functions.VABK);
+        super(Functions.VABK.name());
     }
 
     @Override
@@ -24,12 +24,12 @@ public class VABK extends ActiveFunction {
         if (event.phase() == Phase.PRE && isEnabled()) {
             cooldown++;
 
-            if (cooldown >= (Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKswitchCooldown().get() + Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKloadTime().get())) {
+            if (cooldown >= (Addon.settings().getSwordsSubConfig().getVABKswitchCooldown().get() + Addon.settings().getSwordsSubConfig().getVABKloadTime().get())) {
                 cooldown = 0;
                 shoot();
-            } else if (cooldown == Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKswitchCooldown().get() - 2) {
+            } else if (cooldown == Addon.settings().getSwordsSubConfig().getVABKswitchCooldown().get() - 2) {
                 Helper.getPlayer().inventory.currentItem = 2;
-            } else if (cooldown == Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKswitchCooldown().get()) {
+            } else if (cooldown == Addon.settings().getSwordsSubConfig().getVABKswitchCooldown().get()) {
                 startUsingBow();
             }
         }
@@ -37,7 +37,7 @@ public class VABK extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getSwordsSubConfig().getVABKhotkey().get()) && Addon.getSharedInstance().isChatGuiClosed())
+        if(event.state() == State.PRESS && Addon.allKeysPressed(Addon.settings().getSwordsSubConfig().getVABKhotkey().get()) && Addon.isChatGuiClosed())
             toggle();
     }
 

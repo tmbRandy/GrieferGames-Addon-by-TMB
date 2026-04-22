@@ -8,14 +8,13 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.widgets.ActiveFunctionsWidget;
 
 abstract public class ActiveFunction extends Function {
     private boolean enabled;
 
-    public ActiveFunction(Functions type) {
-        super(type);
+    public ActiveFunction(String identifier) {
+        super(identifier);
     }
 
     public boolean start() {
@@ -29,7 +28,7 @@ abstract public class ActiveFunction extends Function {
         enabled = true;
 
         if(!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
-            Addon.getSharedInstance().displayNotification(I19n.translate("functions.enable", type.getLocalizedName()));
+            Addon.displayNotification(Addon.translate("functions.enable", Functions.valueOf(identifier).getLocalizedName()));
 
         return true;
     }
@@ -39,7 +38,7 @@ abstract public class ActiveFunction extends Function {
             enabled = false;
 
             if(!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
-                Addon.getSharedInstance().displayNotification(I19n.translate("functions.disable", type.getLocalizedName()));
+                Addon.displayNotification(Addon.translate("functions.disable", Functions.valueOf(identifier).getLocalizedName()));
             return true;
         }
 
@@ -58,7 +57,7 @@ abstract public class ActiveFunction extends Function {
     }
 
     public Icon getIcon() {
-        ResourceLocation resourceLocation = ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/" + type.name() + ".png");
+        ResourceLocation resourceLocation = ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/" + identifier + ".png");
         return resourceLocation.exists() ? Icon.texture(resourceLocation) : null;
     }
 
@@ -77,7 +76,7 @@ abstract public class ActiveFunction extends Function {
 
     @Override
     public void toggleFunctionEvent(ToggleFunctionEvent event) {
-        if(event.function() == type) {
+        if(event.function().equals(identifier)) {
             switch (event.state()) {
                 case START -> start();
                 case STOP -> stop();

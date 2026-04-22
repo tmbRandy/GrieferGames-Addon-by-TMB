@@ -8,8 +8,10 @@ import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
+import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryAddEvent;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.core.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
 import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
@@ -21,7 +23,7 @@ public class Listener {
     public void gameTickEvent(GameTickEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.tickEvent(e);
     }
 
@@ -29,7 +31,7 @@ public class Listener {
     public void chatReceiveEvent(ChatReceiveEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.chatReceiveEvent(e);
     }
 
@@ -37,7 +39,7 @@ public class Listener {
     public void chatMessageSendEvent(ChatMessageSendEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.chatMessageSendEvent(e);
     }
 
@@ -45,7 +47,7 @@ public class Listener {
     public void renderWorldEvent(RenderWorldEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.renderWorldEvent(e);
     }
 
@@ -53,7 +55,7 @@ public class Listener {
     public void keyEvent(KeyEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.keyEvent(e);
     }
 
@@ -61,7 +63,7 @@ public class Listener {
     public void mouseButtonEvent(MouseButtonEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.mouseButtonEvent(e);
     }
 
@@ -69,7 +71,7 @@ public class Listener {
     public void itemStackTooltipEvent(ItemStackTooltipEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.itemStackTooltipEvent(e);
     }
 
@@ -77,7 +79,7 @@ public class Listener {
     public void serverDisconnectEvent(ServerDisconnectEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.serverDisconnectEvent(e);
     }
 
@@ -87,7 +89,7 @@ public class Listener {
     public void cbChangedEvent(CbChangedEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.cbChangedEvent(e);
     }
 
@@ -95,7 +97,7 @@ public class Listener {
     public void resetLinesEvent(ResetLinesEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.resetLinesEvent(e);
     }
 
@@ -103,7 +105,7 @@ public class Listener {
     public void hopperStateChangedEvent(HopperStateChangedEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.hopperStateChangedEvent(e);
     }
 
@@ -111,7 +113,23 @@ public class Listener {
     public void toggleFunctionEvent(ToggleFunctionEvent e) {
         if(!Addon.isGG()) return;
 
-        for (Function function : Addon.getSharedInstance().getFunctions())
+        for (Function function : Addon.getFunctions())
             function.toggleFunctionEvent(e);
+    }
+
+    @Subscribe
+    public void scoreboardTeamEntryAddEvent(ScoreboardTeamEntryAddEvent e) {
+        if(!Addon.isGG()) return;
+
+        for (Function function : Addon.getFunctions())
+            function.scoreboardTeamEntryAddEvent(e);
+    }
+
+    @Subscribe
+    public void fishEvent(FishEvent e) {
+        if(!Addon.isGG()) return;
+
+        for (Function function : Addon.getFunctions())
+            function.fishEvent(e);
     }
 }

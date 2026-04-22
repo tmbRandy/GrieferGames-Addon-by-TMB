@@ -1,14 +1,14 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
 import java.util.List;
-import net.labymod.api.Laby;
+import javax.inject.Singleton;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.binding.dropzone.NamedHudWidgetDropzones;
 import net.labymod.api.client.gui.hud.hudwidget.HudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.SimpleHudWidget;
 import net.labymod.api.client.gui.hud.position.HudSize;
 import net.labymod.api.client.gui.icon.Icon;
-import net.labymod.api.client.gui.mouse.MutableMouse;
+import net.labymod.api.client.gui.screen.ScreenContext;
 import net.labymod.api.client.render.matrix.Stack;
 import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.event.Subscribe;
@@ -18,7 +18,6 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.HopperState;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.HopperTracker;
-import javax.inject.Singleton;
 
 @Singleton
 public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
@@ -33,12 +32,16 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
         sharedInstance = this;
         bindDropzones(NamedHudWidgetDropzones.ACTION_BAR);
         this.bindCategory(category);
-        this.setIcon(Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status.png")));
     }
 
-    public void render(Stack stack, MutableMouse mouse, float partialTicks, boolean isEditorContext, HudSize size) {
-        if(stack != null) {
-            List<ActiveFunction> active = isEditorContext ? getDemoFunctions() : Addon.getSharedInstance().getActiveFunctions();
+    @Override
+    public Icon getIcon() {
+        return Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status.png"));
+    }
+
+    public void render(RenderPhase phase, ScreenContext context, boolean isEditorContext, HudSize size) {
+        if(context.stack() instanceof Stack stack) {
+            List<ActiveFunction> active = isEditorContext ? getDemoFunctions() : Addon.getActiveFunctions();
 
             int xPos = 0;
             int yPos = 0;
@@ -73,7 +76,6 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
                 }
             }
 
-            Laby.references().renderPipeline().resourceRenderer().render(stack);
             size.setHeight((float)Math.max(ICON_SIZE, yPos));
             size.setWidth((float)Math.max(ICON_SIZE, xPos));
         }
@@ -100,8 +102,8 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
 
     private List<ActiveFunction> getDemoFunctions() {
         return List.of(
-            Addon.getSharedInstance().getActiveFunction(Functions.PLAYERTRACER),
-            Addon.getSharedInstance().getActiveFunction(Functions.COMP),
-            Addon.getSharedInstance().getActiveFunction(Functions.CRAFTV3));
+            Addon.getActiveFunction(Functions.PLAYERTRACER.name()),
+            Addon.getActiveFunction(Functions.COMP.name()),
+            Addon.getActiveFunction(Functions.CRAFTV3.name()));
     }
 }

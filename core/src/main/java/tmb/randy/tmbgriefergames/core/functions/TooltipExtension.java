@@ -13,13 +13,12 @@ import net.labymod.api.nbt.tags.NBTTagCompound;
 import net.labymod.api.nbt.tags.NBTTagList;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.widgets.AdventureWidget;
 
 public class TooltipExtension extends Function {
 
     public TooltipExtension() {
-        super(Functions.TOOLTIPEXTENSION);
+        super(Functions.TOOLTIPEXTENSION.name());
     }
 
     @Override
@@ -28,7 +27,7 @@ public class TooltipExtension extends Function {
 
         if(stack.hasDataComponentContainer()) {
 
-            if(Addon.getSharedInstance().configuration().getTooltipConfig().getShowCompTooltip().get() && (stack.getDataComponentContainer().has(DataComponentKey.simple("currentAmount")) || stack.getDataComponentContainer().has(DataComponentKey.simple("stackSize")))) {
+            if(Addon.settings().getTooltipConfig().getShowCompTooltip().get() && (stack.getDataComponentContainer().has(DataComponentKey.simple("currentAmount")) || stack.getDataComponentContainer().has(DataComponentKey.simple("stackSize")))) {
                 if(stack.getDataComponentContainer() instanceof NbtDataComponentContainer compound) {
 
                     int endlessChestAmount = getEndlessChestAmount(compound.getWrapped());
@@ -46,7 +45,7 @@ public class TooltipExtension extends Function {
 
                     event.getTooltipLines().add(Component.translatable(Addon.getNamespace() + ".tooltip.compressedTooltip", Component.text(DKs), Component.text(stacks), Component.text(items)));
                 }
-            } else if(Addon.getSharedInstance().configuration().getTooltipConfig().getShowAdventurerTooltip().get() && stack.getDataComponentContainer().has(DataComponentKey.simple("adventure"))) {
+            } else if(Addon.settings().getTooltipConfig().getShowAdventurerTooltip().get() && stack.getDataComponentContainer().has(DataComponentKey.simple("adventure"))) {
                 if(Laby.labyAPI().minecraft().getClientPlayer() != null && Laby.labyAPI().minecraft().isIngame()) {
                     String adventureTooltip = AdventureWidget.getAdventurerForItemStack(stack, true);
                     if(!adventureTooltip.isEmpty()) {
@@ -55,11 +54,11 @@ public class TooltipExtension extends Function {
                 }
             } else if(stack.getDataComponentContainer().get(DataComponentKey.simple("EntityTag")) instanceof NBTTagCompound entityTagContainer) {
                 if(entityTagContainer.getString("id") instanceof String idString) {
-                    String translated = I19n.translate("mobs." + idString.replace("minecraft:", ""));
+                    String translated = Addon.translate("mobs." + idString.replace("minecraft:", ""));
                     if(translated.isEmpty())
                         translated = capitalizeFirstLetter(idString.replace("minecraft:", ""));
 
-                    event.getTooltipLines().add(TextComponent.builder().text("§f" + I19n.translate("mobs.spawn") + ": §a" + translated + "§a§l✔").build());
+                    event.getTooltipLines().add(TextComponent.builder().text("§f" + Addon.translate("mobs.spawn") + ": §a" + translated + "§a§l✔").build());
                 }
             }
         }

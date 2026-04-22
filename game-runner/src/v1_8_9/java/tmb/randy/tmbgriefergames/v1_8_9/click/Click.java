@@ -1,10 +1,12 @@
 package tmb.randy.tmbgriefergames.v1_8_9.click;
 
 
+import org.jetbrains.annotations.NotNull;
+
 public record Click(int windowID, int slot, int data, int action) {
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "window: " + windowID + " slot: " + slot;
     }
 }

@@ -36,7 +36,7 @@ public class ChatCleaner extends Function {
     ));
 
     public ChatCleaner() {
-        super(Functions.CHATCLEANER);
+        super(Functions.CHATCLEANER.name());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ChatCleaner extends Function {
 
         // Handle specific messages regardless of clean chat setting
         if (message.equals("[Freunde] Du hast aktuell keine Freundschaftsanfragen.") &&
-            Addon.getSharedInstance().configuration().getChatConfig().getCleanChat().get()) {
+            Addon.settings().getChatConfig().getCleanChat().get()) {
             event.setCancelled(true);
             return;
         }
@@ -66,7 +66,7 @@ public class ChatCleaner extends Function {
         }
 
         // Case opening filter
-        if (Addon.getSharedInstance().configuration().getChatConfig().getMuteCaseOpening().get() &&
+        if (Addon.settings().getChatConfig().getMuteCaseOpening().get() &&
             (message.startsWith("[CaseOpening] Folgender Preis wurde gezogen: ") ||
                 (message.startsWith("[CaseOpening] Der Spieler ") &&
                     message.endsWith(" hat einen Hauptpreis gewonnen!")) ||
@@ -76,7 +76,7 @@ public class ChatCleaner extends Function {
         }
 
         // Lucky blocks filter
-        if (Addon.getSharedInstance().configuration().getChatConfig().getMuteLuckyBlocks().get() &&
+        if (Addon.settings().getChatConfig().getMuteLuckyBlocks().get() &&
             !message.contains(Laby.labyAPI().getName()) &&
             (message.startsWith("[LuckyBlock] ") ||
                 (message.startsWith("[TEAM] Admin ┃ ") &&
@@ -86,7 +86,7 @@ public class ChatCleaner extends Function {
         }
 
         // Only process the rest if clean chat is enabled
-        if (!Addon.getSharedInstance().configuration().getChatConfig().getCleanChat().get()) {
+        if (!Addon.settings().getChatConfig().getCleanChat().get()) {
             return;
         }
 
@@ -106,21 +106,21 @@ public class ChatCleaner extends Function {
         }
 
         // Streamer filter
-        if (Addon.getSharedInstance().configuration().getChatConfig().getMuteStreamer().get() &&
+        if (Addon.settings().getChatConfig().getMuteStreamer().get() &&
             message.contains("§8[§6Streamer§8]")) {
             event.setCancelled(true);
             return;
         }
 
         // Empty lines filter
-        if (Addon.getSharedInstance().configuration().getChatConfig().getHideEmptyLines().get() &&
+        if (Addon.settings().getChatConfig().getHideEmptyLines().get() &&
             (message.isBlank() || message.equals("»"))) {
             event.setCancelled(true);
             return;
         }
 
         // News filter - toggle blocking state when seeing the delimiter
-        if (Addon.getSharedInstance().configuration().getChatConfig().getHideNews().get()) {
+        if (Addon.settings().getChatConfig().getHideNews().get()) {
 
             if (isBlocking)
                 event.setCancelled(true);

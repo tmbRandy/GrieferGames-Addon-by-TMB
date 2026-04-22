@@ -1,6 +1,6 @@
 package tmb.randy.tmbgriefergames.core.enums;
 
-import tmb.randy.tmbgriefergames.core.helper.I19n;
+import tmb.randy.tmbgriefergames.core.Addon;
 
 public enum Functions {
     PLAYERTRACER,
@@ -31,5 +31,5 @@ public enum Functions {
     AUTOFISHER,
     INFINITYMINER;
 
-    public String getLocalizedName() {return I19n.translate("functions." + name().toLowerCase() + ".name");}
+    public String getLocalizedName() {return Addon.translate("functions." + name().toLowerCase() + ".name");}
 }

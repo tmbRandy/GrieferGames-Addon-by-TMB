@@ -26,7 +26,6 @@ import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheel.PlotSegment
 import tmb.randy.tmbgriefergames.core.enums.CBs;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.FileManager;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 
 @AutoActivity
 @Link("plotwheelactivity.lss")
@@ -90,7 +89,7 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
         cbDropdownWidget = new DropdownWidget<>().addId("cb-dropdown");
         HorizontalListEntry cbListTag = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.cb").addId("label"));
 
-        cbDropdownWidget.add(I19n.translate("plotWheel.all"));
+        cbDropdownWidget.add(Addon.translate("plotWheel.all"));
         for (CBs cb : CBs.values()) {
             if(CBtracker.isPlotworldCB(cb) && cb != CBs.EVENT) {
                 cbDropdownWidget.add(cb.getName());
@@ -133,7 +132,7 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
         addButton.setPressable(() -> {
             if(!addCommandTextField.getText().trim().isEmpty()) {
                 String plotName = addNameTextField.getText().trim().isEmpty() ? null : addNameTextField.getText().trim();
-                CBs selectedCB = (cbDropdownWidget.getSelected() == null ? I19n.translate("plotWheel.all") : cbDropdownWidget.getSelected()).equals(I19n.translate("plotWheel.all")) ? CBs.NONE : CBs.valueOf(cbDropdownWidget.getSelected());
+                CBs selectedCB = (cbDropdownWidget.getSelected() == null ? Addon.translate("plotWheel.all") : cbDropdownWidget.getSelected()).equals(Addon.translate("plotWheel.all")) ? CBs.NONE : CBs.valueOf(cbDropdownWidget.getSelected());
                 UUID uuid = accountOnlyWidget.state() == CheckBoxWidget.State.CHECKED ? Laby.labyAPI().getUniqueId() : null;
                 String command = addCommandTextField.getText().trim();
 

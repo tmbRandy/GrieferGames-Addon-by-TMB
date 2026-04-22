@@ -19,7 +19,7 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
@@ -38,7 +38,7 @@ public class AutoComp extends ActiveFunction {
     private int currentEntry = 0;
 
     public AutoComp() {
-        super(Functions.COMP);
+        super(Functions.COMP.name());
     }
 
     @Override
@@ -55,7 +55,7 @@ public class AutoComp extends ActiveFunction {
                     }
                 }
             } else {
-                if (Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoCompHotkey().get())) {
+                if (Addon.allKeysPressed(Addon.settings().getAutoCrafterConfig().getAutoCompHotkey().get())) {
                     start();
                 }
             }
@@ -119,7 +119,7 @@ public class AutoComp extends ActiveFunction {
     public boolean start() {
         if(super.start()) {
             compState = CompressorState.WAITING_FOR_MENU1;
-            Addon.sendCommand("/rezepte");
+            Commander.queue("/rezepte");
             return true;
         }
 
@@ -235,8 +235,7 @@ public class AutoComp extends ActiveFunction {
             currentList--;
         }
 
-        Addon.getSharedInstance().displayNotification(
-            I19n.translate("autoComp.list", currentList + 1));
+        Addon.displayNotification(Addon.translate("autoComp.list", currentList + 1));
     }
 
     private void click(int slot) {

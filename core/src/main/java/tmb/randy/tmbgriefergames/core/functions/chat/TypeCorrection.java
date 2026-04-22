@@ -6,6 +6,7 @@ import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 
 public class TypeCorrection extends Function {
 
@@ -85,30 +86,32 @@ public class TypeCorrection extends Function {
       put("/cb22", "/switch cb22");
       put("/nature", "/switch nature");
       put("/evil", "/switch cbevil");
-      put("/extreme", "/switch extreme");
+        put("/extreme", "/switch extreme");
+        put("/lava", "/switch lava");
+        put("/wasser", "/switch wasser");
     }
   };
 
     public TypeCorrection() {
-        super(Functions.TYPECORRECTION);
+        super(Functions.TYPECORRECTION.name());
     }
 
     @Override
   public void chatMessageSendEvent(ChatMessageSendEvent event) {
-    if(!Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get() && !Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get())
+    if(!Addon.settings().getChatConfig().getTypeCorrection().get() && !Addon.settings().getChatConfig().getMessageSplit().get())
       return;
 
     String message = event.getMessage();
 
     // Type correction
-    if(Addon.getSharedInstance().configuration().getChatConfig().getTypeCorrection().get()) {
+    if(Addon.settings().getChatConfig().getTypeCorrection().get()) {
         for (Map.Entry<String, String> entry : replacements.entrySet()) {
             message = message.replace(entry.getKey(), entry.getValue());
         }
     }
 
     // Message split
-    if(message.length() > 100 && (message.toLowerCase().startsWith("/msg ") || message.toLowerCase().startsWith("/r ")) && Addon.getSharedInstance().configuration().getChatConfig().getMessageSplit().get()) {
+    if(message.length() > 100 && (message.toLowerCase().startsWith("/msg ") || message.toLowerCase().startsWith("/r ")) && Addon.settings().getChatConfig().getMessageSplit().get()) {
       String[] messageArray;
 
       messageArray = message.split("(?<=\\G.{" + 97 + "})");
@@ -118,7 +121,7 @@ public class TypeCorrection extends Function {
       }
 
         for (String s : messageArray) {
-            Addon.getSharedInstance().sendMessage(s);
+            Commander.queue(s);
         }
 
       message = "";

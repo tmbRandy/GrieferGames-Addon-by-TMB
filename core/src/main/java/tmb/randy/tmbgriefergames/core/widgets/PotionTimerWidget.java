@@ -11,7 +11,6 @@ import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.event.Subscribe;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 
 @Singleton
 public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
@@ -33,8 +32,8 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
     @Override
     public void load(TextHudWidgetConfig config) {
         super.load(config);
-        flyLine = createLine(I19n.translate("functions.potionTimer.flyPotion"), "");
-        breakLine = createLine(I19n.translate("functions.potionTimer.breakPotion"), "");
+        flyLine = createLine(Addon.translate("functions.potionTimer.flyPotion"), "");
+        breakLine = createLine(Addon.translate("functions.potionTimer.breakPotion"), "");
     }
 
     @Subscribe
@@ -56,7 +55,7 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
             long remainingTime = getRemainingTime(Timer.FLY);
             if (remainingTime < 0) {
                 flyTimer = null;
-                Addon.getSharedInstance().displayNotification(I19n.translate("functions.potionTimer.flyPotionExpired"));
+                Addon.displayNotification(Addon.translate("functions.potionTimer.flyPotionExpired"));
                 flyLine.updateAndFlush("");
                 flyLine.setState(State.HIDDEN);
             } else {
@@ -72,7 +71,7 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
             long remainingTime = getRemainingTime(Timer.BREAK);
             if (remainingTime < 0) {
                 breakTimer = null;
-                Addon.getSharedInstance().displayNotification(I19n.translate("functions.potionTimer.breakPotionExpired"));
+                Addon.displayNotification(Addon.translate("functions.potionTimer.breakPotionExpired"));
                 breakLine.updateAndFlush("");
                 breakLine.setState(State.HIDDEN);
             } else {
@@ -97,11 +96,11 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
         switch (timer) {
             case FLY -> {
                 flyTimer = new Date(expirationTime);
-                Addon.getSharedInstance().displayNotification(I19n.translate("functions.potionTimer.flyPotionUsed"));
+                Addon.displayNotification(Addon.translate("functions.potionTimer.flyPotionUsed"));
             }
             case BREAK -> {
                 breakTimer = new Date(expirationTime);
-                Addon.getSharedInstance().displayNotification(I19n.translate("functions.potionTimer.breakPotionUsed"));
+                Addon.displayNotification(Addon.translate("functions.potionTimer.breakPotionUsed"));
             }
         }
     }

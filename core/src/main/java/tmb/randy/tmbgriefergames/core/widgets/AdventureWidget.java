@@ -14,7 +14,6 @@ import net.labymod.api.component.data.DataComponentKey;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.nbt.tags.NBTTagCompound;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.widgets.AdventureWidget.AdventureWidgetConfig;
 
 public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
@@ -32,7 +31,7 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
     @Override
     public void load(AdventureWidgetConfig config) {
         super.load(config);
-        line = super.createLine(I19n.translate("hudWidget.adventure.name"), name);
+        line = super.createLine(Addon.translate("hudWidget.adventure.name"), name);
     }
 
     @Override
@@ -86,9 +85,9 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
                                 float percentRounded = Math.round(percent * 10) / 10.0f;
 
                                 if(oneLine)
-                                    return I19n.translate("tooltip.adventurerTooltipOneLine", percentRounded, DKs, stacks, items);
+                                    return Addon.translate("tooltip.adventurerTooltipOneLine", percentRounded, DKs, stacks, items);
                                 else
-                                    return I19n.translate("tooltip.adventurerTooltipMultiLine", percentRounded, DKs, stacks, items);
+                                    return Addon.translate("tooltip.adventurerTooltipMultiLine", percentRounded, DKs, stacks, items);
                             }
 
                         }
@@ -102,8 +101,8 @@ public class AdventureWidget extends TextHudWidget<AdventureWidgetConfig> {
 
     private String getEditorDummy(boolean oneLine) {
         if(oneLine)
-            return I19n.translate("tooltip.adventurerTooltipOneLine", 25.3, 1, 13, 9);
+            return Addon.translate("tooltip.adventurerTooltipOneLine", 25.3, 1, 13, 9);
         else
-            return I19n.translate("tooltip.adventurerTooltipMultiLine", 25.3, 1, 13, 9);
+            return Addon.translate("tooltip.adventurerTooltipMultiLine", 25.3, 1, 13, 9);
     }
 }

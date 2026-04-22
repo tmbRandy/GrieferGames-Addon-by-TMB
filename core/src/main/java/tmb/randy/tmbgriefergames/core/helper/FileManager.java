@@ -51,7 +51,7 @@ public class FileManager {
                 gson.toJson(allData, writer);
             }
         } catch (IOException e) {
-            Addon.getSharedInstance().logger().error("FileManager", e);
+            Addon.log().error("FileManager", e);
         }
     }
 
@@ -78,9 +78,9 @@ public class FileManager {
                 playerData = new HashMap<>();
             }
         } catch (IOException e) {
-            Addon.getSharedInstance().logger().error("FileManager", e);
+            Addon.log().error("FileManager", e);
         } catch (ClassCastException e) {
-            Addon.getSharedInstance().logger().error("FileManager - Invalid format", e);
+            Addon.log().error("FileManager - Invalid format", e);
         }
     }
 

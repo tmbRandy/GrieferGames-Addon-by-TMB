@@ -29,12 +29,12 @@ public class CBtracker {
                         try {
                             newCB = CBs.valueOf(CBString.toUpperCase());
                         } catch (IllegalArgumentException e) {
-                            Addon.getSharedInstance().logger().warn(e.getMessage());
+                            Addon.log().warn(e.getMessage());
                         }
 
                         if(newCB != currentCB) {
                             currentCB = newCB;
-                            Addon.getSharedInstance().logger().info("Joined " + newCB.getName());
+                            Addon.log().info("Joined " + newCB.getName());
                             Laby.fireEvent(new CbChangedEvent(newCB));
                         }
                     }

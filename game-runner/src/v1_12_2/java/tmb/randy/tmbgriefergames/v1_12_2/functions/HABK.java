@@ -15,7 +15,6 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver.ProtectionItems;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class HABK extends Function {
@@ -23,12 +22,12 @@ public class HABK extends Function {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public HABK() {
-        super(Functions.HABK);
+        super(Functions.HABK.name());
     }
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if (Addon.getSharedInstance().configuration().getSwordsSubConfig().getHABKenabled().get() && event.button().isRight() && event.action() == Action.RELEASE) {
+        if (Addon.settings().getSwordsSubConfig().getHABKenabled().get() && event.button().isRight() && event.action() == Action.RELEASE) {
             int selectedSlot = Helper.getPlayer().inventory.currentItem;
 
             ItemStack heldItemStack = Helper.getPlayer().inventory.getStackInSlot(selectedSlot);
@@ -37,15 +36,15 @@ public class HABK extends Function {
             String enchantments = getEnchantments(heldItemStack);
 
             if(enchantments != null && enchantments.equals(ItemSaver.getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW))) {
-                Addon.getSharedInstance().getConnection().changeSlot(findHotbarSlotforItem());
-                Addon.getSharedInstance().displayNotification("§4§l" + I19n.translate("itemSaver.item_saver_message_birth_bow"));
+                Addon.getConnection().changeSlot(findHotbarSlotforItem());
+                Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_birth_bow"));
                 event.setCancelled(true);
             } else if (heldItemStack != null && heldItemStack.getItem() instanceof ItemBow && firstItemStack.getItem() instanceof ItemSword) {
 
                 scheduler.schedule(() -> {
                     Helper.getPlayer().inventory.currentItem = 0;
                     scheduler.schedule(() -> Helper.getPlayer().inventory.currentItem = selectedSlot,
-                        Addon.getSharedInstance().configuration().getSwordsSubConfig().getHABKcooldown().get(), TimeUnit.MILLISECONDS);
+                        Addon.settings().getSwordsSubConfig().getHABKcooldown().get(), TimeUnit.MILLISECONDS);
                 }, 5, TimeUnit.MILLISECONDS);
             }
         }

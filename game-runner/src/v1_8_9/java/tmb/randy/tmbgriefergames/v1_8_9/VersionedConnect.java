@@ -50,23 +50,23 @@ public class VersionedConnect implements IConnect {
 
     @Override
     public void loadFunctions() {
-        Addon.getSharedInstance().addFunction(new AutoCrafterV1());
-        Addon.getSharedInstance().addFunction(new AutoCrafterV2());
-        Addon.getSharedInstance().addFunction(new AutoCrafterV3());
-        Addon.getSharedInstance().addFunction(new AutoComp());
-        Addon.getSharedInstance().addFunction(new AutoDecomp());
-        Addon.getSharedInstance().addFunction(new AutoHopper());
-        Addon.getSharedInstance().addFunction(new AutoLoot());
-        Addon.getSharedInstance().addFunction(new BlockMarker());
-        Addon.getSharedInstance().addFunction(new Eject());
-        Addon.getSharedInstance().addFunction(new PotionTimer());
-        Addon.getSharedInstance().addFunction(new HABK());
-        Addon.getSharedInstance().addFunction(new HopperConnections());
-        Addon.getSharedInstance().addFunction(new ItemShifter());
-        Addon.getSharedInstance().addFunction(new NatureBordersRenderer());
-        Addon.getSharedInstance().addFunction(new VABK());
-        Addon.getSharedInstance().addFunction(new AutoFisher());
-        Addon.getSharedInstance().addFunction(new InfinityMiner());
+        Addon.registerFunction(new AutoCrafterV1());
+        Addon.registerFunction(new AutoCrafterV2());
+        Addon.registerFunction(new AutoCrafterV3());
+        Addon.registerFunction(new AutoComp());
+        Addon.registerFunction(new AutoDecomp());
+        Addon.registerFunction(new AutoHopper());
+        Addon.registerFunction(new AutoLoot());
+        Addon.registerFunction(new BlockMarker());
+        Addon.registerFunction(new Eject());
+        Addon.registerFunction(new PotionTimer());
+        Addon.registerFunction(new HABK());
+        Addon.registerFunction(new HopperConnections());
+        Addon.registerFunction(new ItemShifter());
+        Addon.registerFunction(new NatureBordersRenderer());
+        Addon.registerFunction(new VABK());
+        Addon.registerFunction(new AutoFisher());
+        Addon.registerFunction(new InfinityMiner());
     }
 
     @Subscribe
@@ -81,7 +81,7 @@ public class VersionedConnect implements IConnect {
                 || Minecraft.getMinecraft().currentScreen instanceof GuiCrafting
                 || Minecraft.getMinecraft().currentScreen instanceof GuiInventory)) {
                 ClickManager.getSharedInstance().clearAllQueues();
-                Laby.fireEvent(new ToggleFunctionEvent(Functions.COMP, FunctionState.STOP, null));
+                Laby.fireEvent(new ToggleFunctionEvent(Functions.COMP.name(), FunctionState.STOP, null));
                 ItemShifter.getSharedInsance().stopShifting();
             }
 
@@ -109,11 +109,11 @@ public class VersionedConnect implements IConnect {
     public void onGuiOpenEvent(GuiScreen screen) {
         ClickManager.getSharedInstance().clearAllQueues();
         if(screen == null) {
-            Laby.fireEvent(new ToggleFunctionEvent(Functions.COMP, FunctionState.STOP, null));
-            if(Addon.getSharedInstance().getFunction(Functions.ITEMSHIFTER) instanceof ItemShifter itemShifter)
+            Laby.fireEvent(new ToggleFunctionEvent(Functions.COMP.name(), FunctionState.STOP, null));
+            if(Addon.getFunction(Functions.ITEMSHIFTER.name()) instanceof ItemShifter itemShifter)
                 itemShifter.stopShifting();
         }
-        if(Addon.getSharedInstance().getFunction(Functions.HOPPERCONNECTIONS) instanceof HopperConnections hopperConnections)
+        if(Addon.getFunction(Functions.HOPPERCONNECTIONS.name()) instanceof HopperConnections hopperConnections)
             hopperConnections.onGuiOpenEvent();
     }
 

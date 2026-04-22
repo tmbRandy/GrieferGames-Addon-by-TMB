@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core.activities.plotwheel;
 
+import java.util.ArrayList;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
@@ -11,12 +12,10 @@ import net.labymod.api.client.gui.screen.widget.context.ContextMenu;
 import net.labymod.api.client.gui.screen.widget.context.ContextMenuEntry;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.WheelWidget;
-import net.labymod.api.util.Color;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.enums.CBs;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.FileManager;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
-import java.util.ArrayList;
 
 @AutoWidget
 @Link("plotwheel.lss")
@@ -56,16 +55,15 @@ public class PlotWheel extends WheelWidget {
             ComponentWidget display = ComponentWidget.text(plot.name() == null ? plot.command() : plot.name());
 
             if (plot.command().toLowerCase().startsWith("/p h ")) {
-                display.textColor().set(Color.ORANGE.getValue());
+                display.addId("plot-segment-display-plot");
             } else if(plot.command().toLowerCase().startsWith("/home ")) {
-                display.textColor().set(Color.YELLOW.getValue());
+                display.addId("plot-segment-display-home");
             } else if(plot.command().toLowerCase().startsWith("/warp ")) {
-                display.textColor().set(Color.RED.getValue());
+                display.addId("plot-segment-display-warp");
             } else {
-                display.textColor().set(Color.PINK.getValue());
+                display.addId("plot-segment-display-else");
             }
 
-            display.addId("plot-segment-display");
             this.addChild(display);
 
             ContextMenu contextMenu = new ContextMenu();

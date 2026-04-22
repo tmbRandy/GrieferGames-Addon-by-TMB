@@ -8,8 +8,6 @@ import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
-
 
 public class CooldownNotifier extends Function {
 
@@ -22,12 +20,12 @@ public class CooldownNotifier extends Function {
     );
 
     public CooldownNotifier() {
-        super(Functions.COOLDOWNNOTIFIER);
+        super(Functions.COOLDOWNNOTIFIER.name());
     }
 
     @Override
     public void chatMessageSendEvent(ChatMessageSendEvent event) {
-        if(!Addon.getSharedInstance().configuration().getChatConfig().getCooldownNotifier().get())
+        if(!Addon.settings().getChatConfig().getCooldownNotifier().get())
             return;
 
         String str = event.getMessage().toLowerCase();
@@ -37,7 +35,7 @@ public class CooldownNotifier extends Function {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Addon.getSharedInstance().displayNotification("§f" + I19n.translate(cooldown.notificationKey()));
+                        Addon.displayNotification("§f" + Addon.translate(cooldown.notificationKey()));
                     }
                 }, cooldown.cooldown());
             }

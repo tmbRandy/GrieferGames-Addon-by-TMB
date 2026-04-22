@@ -5,7 +5,7 @@ import net.labymod.api.client.component.TextComponent;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 
 public class PayAllCommand extends DescribedCommand {
     public PayAllCommand() {
@@ -17,24 +17,26 @@ public class PayAllCommand extends DescribedCommand {
         if(!Addon.isGG())
             return false;
 
-        if(arguments.length == 2) {
-            if((arguments[0].equals("**") || arguments[0].equals("/")) && Float.parseFloat(arguments[1]) >= 1F) {
-                String playersString = getPlayersString();
-                int players = Integer.parseInt(playersString);
-                if(players > 1) {
-                    float totalAmount = Float.parseFloat(arguments[1]);
-                    int perPlayer = (int) (totalAmount / (float) players);
-                    int realTotalAmount = players * perPlayer;
+        if(Commander.canSend()) {
+            if(arguments.length == 2) {
+                if((arguments[0].equals("**") || arguments[0].equals("/")) && Float.parseFloat(arguments[1]) >= 1F) {
+                    String playersString = getPlayersString();
+                    int players = Integer.parseInt(playersString);
+                    if(players > 1) {
+                        float totalAmount = Float.parseFloat(arguments[1]);
+                        int perPlayer = (int) (totalAmount / (float) players);
+                        int realTotalAmount = players * perPlayer;
 
-                    if(perPlayer < 1) {
-                        Addon.getSharedInstance().displayNotification(I19n.translate("payAll.amountTooLow"));
-                        return false;
+                        if(perPlayer < 1) {
+                            Addon.displayNotification(Addon.translate("payAll.amountTooLow"));
+                            return false;
+                        }
+
+                        Laby.labyAPI().minecraft().chatExecutor().chat("/pay * " + perPlayer);
+                        Addon.displayNotification(Addon.translate("payAll.response", players, perPlayer, realTotalAmount));
                     }
-
-                    Laby.labyAPI().minecraft().chatExecutor().chat("/pay * " + perPlayer);
-                    Addon.getSharedInstance().displayNotification(I19n.translate("payAll.response", players, perPlayer, realTotalAmount));
+                    return true;
                 }
-                return true;
             }
         }
 

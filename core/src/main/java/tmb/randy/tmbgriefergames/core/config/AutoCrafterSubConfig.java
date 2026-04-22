@@ -44,6 +44,9 @@ public class AutoCrafterSubConfig extends Config {
     @SliderSetting(min = 0, max = 80)
     private final ConfigProperty<Integer> delay = new ConfigProperty<>(0);
 
+    @SwitchSetting
+    private final ConfigProperty<Boolean> goldBlockToIngot = new ConfigProperty<>(false);
+
     @SettingSection("autocomp")
 
     @MultiKeyBindSetting
@@ -65,4 +68,5 @@ public class AutoCrafterSubConfig extends Config {
     public ConfigProperty<Key[]> getAutoDecompHotkey() {return autoDecompHotkey;}
     public ConfigProperty<AutoCrafterNewFinalAction> getFinalActionV3() {return finalActionV3;}
     public ConfigProperty<Integer> getDelay() {return delay;}
+    public ConfigProperty<Boolean> getGoldBlockToIngot() {return goldBlockToIngot;}
 }

@@ -16,6 +16,7 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
@@ -27,14 +28,14 @@ public class AutoDecomp extends ActiveFunction {
     private int counter;
 
     public AutoDecomp() {
-        super(Functions.DECOMP);
+        super(Functions.DECOMP.name());
     }
 
     @Override
     public void keyEvent(KeyEvent event) {
         if(event.state() == State.PRESS && event.key() == Key.ESCAPE)
             stop();
-        else if (Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getAutoDecompHotkey().get()))
+        else if (Addon.allKeysPressed(Addon.settings().getAutoCrafterConfig().getAutoDecompHotkey().get()))
             start();
     }
 
@@ -126,9 +127,7 @@ public class AutoDecomp extends ActiveFunction {
                 }
             }
         } else {
-            if (Addon.canSendCommand()) {
-                Addon.sendCommand("/craft");
-            }
+            Commander.queue("/craft");
         }
     }
 

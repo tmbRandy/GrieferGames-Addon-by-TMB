@@ -8,7 +8,6 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.resources.ResourceLocation;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 import tmb.randy.tmbgriefergames.core.helper.ItemClearTimerListener;
 
 public class ItemClearWidget extends TextHudWidget<TextHudWidgetConfig> {
@@ -25,7 +24,7 @@ public class ItemClearWidget extends TextHudWidget<TextHudWidgetConfig> {
     @Override
     public void load(TextHudWidgetConfig config) {
         super.load(config);
-        this.line = super.createLine(I19n.translate("itemRemover.itemRemover"), name);
+        this.line = super.createLine(Addon.translate("itemRemover.itemRemover"), name);
     }
 
     @Override

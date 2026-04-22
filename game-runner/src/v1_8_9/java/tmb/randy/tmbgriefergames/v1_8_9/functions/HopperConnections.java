@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Addon;
@@ -36,11 +37,11 @@ public class HopperConnections extends Function {
     private BlockPos currentConnectingHopper;
 
     public HopperConnections() {
-        super(Functions.HOPPERCONNECTIONS);
+        super(Functions.HOPPERCONNECTIONS.name());
     }
 
     private record HopperConnection(BlockPos pos1, BlockPos pos2, @Nullable ItemStack stack, CBs cb) {
-        public String toString() {
+        public @NotNull String toString() {
             if(stack != null) {
                 return cb.getName() + "." + stack.getItem().toString() + ":" + stack.getMetadata() + "." + pos1;
             }
@@ -196,6 +197,9 @@ public class HopperConnections extends Function {
         for (Entry<String, HopperConnection> entry : conntections.entrySet()) {
             HopperConnection conntection = entry.getValue();
 
+            if(conntection.pos1 == null)
+                return;
+
             double distance = conntection.pos1.distanceSq(Helper.getPlayer().posX,
                 Helper.getPlayer().posY, Helper.getPlayer().posZ);
             double actualDistance = Math.sqrt(distance);
@@ -216,7 +220,7 @@ public class HopperConnections extends Function {
     }
 
     private void drawLineBetween(HopperConnection connection) {
-        if(!Addon.getSharedInstance().configuration().getHopperSubConfig().getShowLines().get())
+        if(!Addon.settings().getHopperSubConfig().getShowLines().get())
             return;
 
         double x1 = connection.pos1.getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX + 0.5;
@@ -273,7 +277,7 @@ public class HopperConnections extends Function {
     }
 
     private void renderItemStackAt(ItemStack stack, double x, double y, double z) {
-        if(!Addon.getSharedInstance().configuration().getHopperSubConfig().getShowLines().get())
+        if(!Addon.settings().getHopperSubConfig().getShowLines().get())
             return;
 
         GlStateManager.pushMatrix();
@@ -295,7 +299,7 @@ public class HopperConnections extends Function {
     }
 
     private void drawSphere(BlockPos center) {
-        if(!Addon.getSharedInstance().configuration().getHopperSubConfig().getShowRadius().get())
+        if(!Addon.settings().getHopperSubConfig().getShowRadius().get())
             return;
 
         double cx = center.getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX;

@@ -2,7 +2,7 @@ package tmb.randy.tmbgriefergames.core.commands;
 
 import net.labymod.api.client.chat.command.Command;
 import org.jetbrains.annotations.NotNull;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
+import tmb.randy.tmbgriefergames.core.Addon;
 
 public abstract class DescribedCommand extends Command {
 
@@ -11,6 +11,6 @@ public abstract class DescribedCommand extends Command {
     }
 
     public String getDescription() {
-        return I19n.translate("commands." + this.prefix);
+        return Addon.translate("commands." + this.prefix);
     }
 }

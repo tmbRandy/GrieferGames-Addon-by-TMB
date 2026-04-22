@@ -30,7 +30,7 @@ public class NatureBordersRenderer extends ActiveFunction {
     private float lineBlue = 0.0F;
 
     public NatureBordersRenderer() {
-        super(Functions.NATUREBORDERSRENDERER);
+        super(Functions.NATUREBORDERSRENDERER.name());
     }
 
     public static double getDistanceSq(double x1, double z1, double x2, double z2) {
@@ -41,7 +41,7 @@ public class NatureBordersRenderer extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getNatureSubConfig().getHotkey().get()) && CBtracker.isNatureWorldCB()) {
+        if(Addon.allKeysPressed(Addon.settings().getNatureSubConfig().getHotkey().get()) && CBtracker.isNatureWorldCB()) {
             toggle();
         }
     }
@@ -154,7 +154,7 @@ public class NatureBordersRenderer extends ActiveFunction {
             GL11.glPushMatrix();
             Tessellator tesselator = Tessellator.getInstance();
             BufferBuilder render = tesselator.getBuffer();
-            if(Addon.getSharedInstance().configuration().getNatureSubConfig().getRainbow().get()) {
+            if(Addon.settings().getNatureSubConfig().getRainbow().get()) {
                 Vector3f hsv = this.RGB2HSV(this.lineRed, this.lineGreen, this.lineBlue);
                 Vector3f rgb = this.HSV2RGB((hsv.x + 0.01F) % 1.0F, hsv.y, hsv.z);
                 this.lineRed = rgb.x;
@@ -162,11 +162,11 @@ public class NatureBordersRenderer extends ActiveFunction {
                 this.lineBlue = rgb.z;
                 GL11.glColor4f(rgb.x, rgb.y, rgb.z, 0.35F);
             } else {
-                Color color = Color.of(Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderColor().get());
+                Color color = Color.of(Addon.settings().getNatureSubConfig().getBorderColor().get());
                 GL11.glColor4f(((float) color.getRed())/255, ((float) color.getGreen())/255, ((float) color.getBlue())/255, 0.35F);
             }
             render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-            int rad = 16 * Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderRadius().get();
+            int rad = 16 * Addon.settings().getNatureSubConfig().getBorderRadius().get();
             int hrf = rad / 2;
 
             for (int xx = 0; xx < rad; ++xx)
@@ -184,7 +184,7 @@ public class NatureBordersRenderer extends ActiveFunction {
                         double yy = 1.0D - y;
                         double yy2 = 256.0D - y;
 
-                        if (!Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderMaxHeight().get())
+                        if (!Addon.settings().getNatureSubConfig().getBorderMaxHeight().get())
                         {
                             pos = this.getTopLiquidOrSolidBlock2(Helper.getWorld(), pos);
                             posN = this.getTopLiquidOrSolidBlock2(Helper.getWorld(), posN);
@@ -195,10 +195,10 @@ public class NatureBordersRenderer extends ActiveFunction {
 
                         if ((pos.getZ() + additionalOffsetZ) % 42 == 0)
                         {
-                            if (!Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderMaxHeight().get())
+                            if (!Addon.settings().getNatureSubConfig().getBorderMaxHeight().get())
                             {
                                 yy = Math.max(pos.getY(), posN.getY()) - y;
-                                yy2 = yy + Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderheight().get();
+                                yy2 = yy + Addon.settings().getNatureSubConfig().getBorderheight().get();
                             }
 
                             render.pos(pos.getX() - x, yy, pos.getZ() - z).endVertex();
@@ -211,10 +211,10 @@ public class NatureBordersRenderer extends ActiveFunction {
 
                         if ((pos.getX() + 1 + additionalOffsetX) % 42 == 0)
                         {
-                            if (!Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderMaxHeight().get())
+                            if (!Addon.settings().getNatureSubConfig().getBorderMaxHeight().get())
                             {
                                 yy = Math.max(pos.getY(), posE.getY()) - y;
-                                yy2 = yy + Addon.getSharedInstance().configuration().getNatureSubConfig().getBorderheight().get();
+                                yy2 = yy + Addon.settings().getNatureSubConfig().getBorderheight().get();
                             }
 
                             render.pos(pos.getX() + 1.0D - x, yy, pos.getZ() - z).endVertex();

@@ -19,12 +19,12 @@ import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 public class BlockMarker extends Function {
 
     public BlockMarker() {
-        super(Functions.BLOCKMARKER);
+        super(Functions.BLOCKMARKER.name());
     }
 
     @Override
     public void renderWorldEvent(RenderWorldEvent event) {
-        if(Addon.getSharedInstance().configuration().getBlockMarker().get()) {
+        if(Addon.settings().getBlockMarker().get()) {
             ItemStack heldItem = Helper.getPlayer().getHeldItem();
             if (heldItem == null || !heldItem.hasTagCompound())
                 return;

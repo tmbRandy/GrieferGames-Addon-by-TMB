@@ -8,12 +8,11 @@ import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
 
 public class ItemSaver extends Function {
 
     public ItemSaver() {
-        super(Functions.ITEMSAVER);
+        super(Functions.ITEMSAVER.name());
     }
 
     public enum ProtectionItems {
@@ -41,7 +40,7 @@ public class ItemSaver extends Function {
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if(Addon.getSharedInstance().configuration().getItemProtection().get()) {
+        if(Addon.settings().getItemProtection().get()) {
             if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
                 if(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack() != null) {
                     ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack();
@@ -51,16 +50,16 @@ public class ItemSaver extends Function {
 
                             if(event.action() == Action.CLICK) {
                                 if((enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BONZE_SWORD)) || enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_SWORD))) && event.button().isLeft()) {
-                                    Addon.getSharedInstance().displayNotification("§4§l" + I19n.translate("itemSaver.item_saver_message_sword"));
-                                    Addon.getSharedInstance().getConnection().changeSlot(findHotbarSlotforItem());
+                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_sword"));
+                                    Addon.getConnection().changeSlot(findHotbarSlotforItem());
                                     event.setCancelled(true);
                                 } else if(enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.SOS)) && event.button().isRight()) {
-                                    Addon.getSharedInstance().displayNotification("§4§l" + I19n.translate("itemSaver.item_saver_message_sos"));
-                                    Addon.getSharedInstance().getConnection().changeSlot(findHotbarSlotforBlock());
+                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_sos"));
+                                    Addon.getConnection().changeSlot(findHotbarSlotforBlock());
                                     event.setCancelled(true);
                                 } else if(enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW)) && event.button().isRight()) {
-                                    Addon.getSharedInstance().displayNotification("§4§l" + I19n.translate("itemSaver.item_saver_message_birth_bow"));
-                                    Addon.getSharedInstance().getConnection().changeSlot(findHotbarSlotforItem());
+                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_birth_bow"));
+                                    Addon.getConnection().changeSlot(findHotbarSlotforItem());
                                     event.setCancelled(true);
                                 }
                             }

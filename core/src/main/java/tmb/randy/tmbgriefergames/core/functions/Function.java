@@ -8,24 +8,23 @@ import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
+import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryAddEvent;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.core.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
 import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
 import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
 
 abstract public class Function {
 
-    protected Functions type;
+    protected String identifier;
 
-    public Function(Functions type) {
-        this.type = type;
+    public Function(String identifier) {
+        this.identifier = identifier;
     }
 
-    public Functions getType() {
-        return type;
-    }
+    public String getIdentifier() {return identifier;}
 
     public void tickEvent(GameTickEvent event) {}
     public void renderWorldEvent(RenderWorldEvent event) {}
@@ -40,4 +39,6 @@ abstract public class Function {
     public void resetLinesEvent(ResetLinesEvent event) {}
     public void hopperStateChangedEvent(HopperStateChangedEvent event) {}
     public void toggleFunctionEvent(ToggleFunctionEvent event) {}
+    public void scoreboardTeamEntryAddEvent(ScoreboardTeamEntryAddEvent event) {}
+    public void fishEvent(FishEvent event) {}
 }

@@ -22,7 +22,7 @@ public class CommandListActivity extends SimpleActivity {
     ScrollWidget scrollWidget = new ScrollWidget(list);
     scrollWidget.addId("scroll");
 
-    for (DescribedCommand command : Addon.getSharedInstance().getCommands()) {
+    for (DescribedCommand command : Addon.getCommands()) {
         StringBuilder title = new StringBuilder("/" + command.getPrefix());
 
         for (String alias : command.getAliases()) {

@@ -4,7 +4,6 @@ import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import org.lwjgl.input.Keyboard;
@@ -15,10 +14,9 @@ import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
 public class InfinityMiner extends ActiveFunction {
     private boolean didBreakLastTick;
-    private ItemStack currentItem;
 
     public InfinityMiner() {
-        super(Functions.INFINITYMINER);
+        super(Functions.INFINITYMINER.name());
     }
 
     @Override
@@ -29,7 +27,7 @@ public class InfinityMiner extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if (event.state() == State.PRESS && Addon.getSharedInstance().allKeysPressed(Addon.getSharedInstance().configuration().getInfinityMiner().get())) {
+        if (event.state() == State.PRESS && Addon.allKeysPressed(Addon.settings().getInfinityMiner().get())) {
             if (!isEnabled() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
                 return;
 

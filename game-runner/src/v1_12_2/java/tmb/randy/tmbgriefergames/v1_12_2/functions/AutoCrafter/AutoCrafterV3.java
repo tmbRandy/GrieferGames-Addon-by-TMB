@@ -34,7 +34,7 @@ import tmb.randy.tmbgriefergames.core.enums.AutoCrafterNewFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.core.helper.I19n;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
@@ -80,7 +80,7 @@ public class AutoCrafterV3 extends ActiveFunction {
     private int tickCounter = 0;
 
     public AutoCrafterV3() {
-        super(Functions.CRAFTV3);
+        super(Functions.CRAFTV3.name());
     }
 
     @Override
@@ -102,8 +102,8 @@ public class AutoCrafterV3 extends ActiveFunction {
     @Override
     public void tickEvent(GameTickEvent event) {
         if(isEnabled()) {
-            if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getDelay().get() > 0) {
-                if(tickCounter < Addon.getSharedInstance().configuration().getAutoCrafterConfig().getDelay().get()) {
+            if(Addon.settings().getAutoCrafterConfig().getDelay().get() > 0) {
+                if(tickCounter < Addon.settings().getAutoCrafterConfig().getDelay().get()) {
                     tickCounter++;
                     return;
                 }
@@ -133,7 +133,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                                 ItemStack pageIndicator = chestInventory.getStackInSlot(49);
                                 if(pageIndicator != null && pageIndicator.getItem() == Items.SKULL) {
                                     if(!displayedSelectMessage) {
-                                        Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.chooseVariant"));
+                                        Addon.displayNotification(Addon.translate("autoCrafter.chooseVariant"));
                                         displayedSelectMessage = true;
                                     }
 
@@ -157,14 +157,14 @@ public class AutoCrafterV3 extends ActiveFunction {
 
                                 closeChest();
 
-                                Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.recipeSavedV3"));
+                                Addon.displayNotification(Addon.translate("autoCrafter.recipeSavedV3"));
                             }
                         }
                     } else {
-                        Addon.sendCommand("/rezepte");
+                        Commander.queue("/rezepte");
                     }
                 } else {
-                    Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.noItemFound"));
+                    Addon.displayNotification(Addon.translate("autoCrafter.noItemFound"));
                     stop();
                 }
             } else {
@@ -182,14 +182,14 @@ public class AutoCrafterV3 extends ActiveFunction {
                                 closeChest();
 
                                 if(allSourceChestsScanned()) {
-                                    Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.startedCrafting"));
+                                    Addon.displayNotification(Addon.translate("autoCrafter.startedCrafting"));
                                     maxRecipeCount = maxRecipeCraftCount();
                                 } else {
-                                    Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.setChestForMaterial", chestItemStack.getDisplayName()));
+                                    Addon.displayNotification(Addon.translate("autoCrafter.setChestForMaterial", chestItemStack.getDisplayName()));
                                 }
                             }
                         } else {
-                            Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.mixedChest"));
+                            Addon.displayNotification(Addon.translate("autoCrafter.mixedChest"));
                             closeChest();
                         }
                     }
@@ -217,7 +217,7 @@ public class AutoCrafterV3 extends ActiveFunction {
 
     private void craft() {
         int numberOfFinishedStacks = getNumperOfRecipeStacksInInventory();
-        if(numberOfFinishedStacks <= 1 || (Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP && compState == FINISHED)) {
+        if(numberOfFinishedStacks <= 1 || (Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP && compState == FINISHED)) {
 
             if(Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
                 closeChest();
@@ -228,7 +228,7 @@ public class AutoCrafterV3 extends ActiveFunction {
 
             if(!isContainerOpen()) {
                 if(nextItem == null) {
-                    Addon.sendCommand("/rezepte");
+                    Commander.queue("/rezepte");
                 } else {
                     BlockPos lookingAtBlock = Helper.getBlockPosLookingAt();
                     BlockPos neededBlock = sourceChests.get(nextItem);
@@ -247,7 +247,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                             }
                         }
                     } else {
-                        Addon.getSharedInstance().displayNotification(I19n.translate("autoCrafter.noSourceFound"));
+                        Addon.displayNotification(Addon.translate("autoCrafter.noSourceFound"));
                     }
                 }
 
@@ -270,7 +270,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                             closeChest();
                         } else {
                             if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                                if(craftItem.getItem().equals(Items.GOLD_INGOT)) {
+                                if(craftItem.getItem().equals(Items.GOLD_INGOT) && !Addon.settings().getAutoCrafterConfig().getGoldBlockToIngot().get()) {
                                     int slot = getSlotForGoldIngot();
                                     if(slot > 0) {
                                         ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, ClickType.QUICK_MOVE));
@@ -352,7 +352,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                 }
             }
         } else {
-            if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.DROP) {
+            if(Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.DROP) {
                 //Drop crafted items
                 if(Helper.getPlayer().openContainer instanceof ContainerChest) {
                     closeChest();
@@ -377,7 +377,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                 } else {
                     Minecraft.getMinecraft().displayGuiScreen(new GuiInventory(Helper.getPlayer()));
                 }
-            } else if(Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP) {
+            } else if(Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP) {
                 if(compState == IDLE) {
                     closeChest();
                     compState = OPEN_COMP;
@@ -409,7 +409,7 @@ public class AutoCrafterV3 extends ActiveFunction {
             slots += entry.getValue();
         }
 
-        return Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP ? (27 / slots) : (32 / slots);
+        return Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP ? (27 / slots) : (32 / slots);
     }
 
     private ItemStack allItemsAreEqual(IInventory inventory) {
@@ -568,7 +568,7 @@ public class AutoCrafterV3 extends ActiveFunction {
                         closeChest();
                     }
                 } else {
-                    Addon.sendCommand("/rezepte");
+                    Commander.queue("/rezepte");
                 }
             }
             case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6, FINISHED -> {

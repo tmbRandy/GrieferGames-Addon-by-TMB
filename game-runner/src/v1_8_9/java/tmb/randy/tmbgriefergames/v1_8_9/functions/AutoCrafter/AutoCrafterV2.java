@@ -19,6 +19,7 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 import tmb.randy.tmbgriefergames.v1_8_9.click.Click;
 import tmb.randy.tmbgriefergames.v1_8_9.click.ClickManager;
@@ -38,7 +39,7 @@ public class AutoCrafterV2 extends ActiveFunction {
     private STATE currentState = STATE.OPEN_RECEIPTS;
 
     public AutoCrafterV2() {
-        super(Functions.CRAFTV2);
+        super(Functions.CRAFTV2.name());
     }
 
     @Override
@@ -61,7 +62,7 @@ public class AutoCrafterV2 extends ActiveFunction {
                             currentState = STATE.OPEN_CRAFT_PAGE;
                         }
                     } else {
-                        Addon.sendCommand("/rezepte");
+                        Commander.queue("/rezepte");
                     }
                 }
                 case OPEN_CRAFT_PAGE -> {
@@ -95,7 +96,7 @@ public class AutoCrafterV2 extends ActiveFunction {
                     }
 
                     if(getSlotCountOfItemInInventory() >= 27) {
-                        switch (Addon.getSharedInstance().configuration().getAutoCrafterConfig().getFinalActionV2().get()) {
+                        switch (Addon.settings().getAutoCrafterConfig().getFinalActionV2().get()) {
                             case COMP -> currentState = STATE.GO_BACK;
                             case DROP -> {
                                 Helper.getPlayer().closeScreen();
@@ -150,7 +151,7 @@ public class AutoCrafterV2 extends ActiveFunction {
                         if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
                             click(11);
                         } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung-Bauanleitung")) {
-                            int slot = Helper.getSlotForItem(itemToCraft, subIDtoCraft, CompressionLevel.UNCOMPRESSED);
+                            int slot = Helper.getSlotForItem(itemToCraft, subIDtoCraft, CompressionLevel.NONE);
                             if(slot > -1)
                                 click(slot + inv.getSizeInventory());
                             else
