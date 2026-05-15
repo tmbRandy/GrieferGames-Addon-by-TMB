@@ -1,14 +1,14 @@
-package tmb.randy.tmbgriefergames.core.events;
+package tmb.randy.tmbgriefergames.api.events;
 
 import net.labymod.api.event.Event;
 
 public class MoneyBalanceChangedEvent implements Event {
-    double oldBalance;
-    double newBalance;
+    private final double oldBalance;
+    private final double newBalance;
 
     public MoneyBalanceChangedEvent(double oldBalance, double newBalance) {
-        this.newBalance = newBalance;
         this.oldBalance = oldBalance;
+        this.newBalance = newBalance;
     }
 
     public double getOldBalance() {

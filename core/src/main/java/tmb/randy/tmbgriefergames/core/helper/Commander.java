@@ -2,15 +2,13 @@ package tmb.randy.tmbgriefergames.core.helper;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import javax.inject.Singleton;
 import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 
-@Singleton
 public class Commander {
 
     private static final Commander INSTANCE = new Commander();
@@ -41,8 +39,11 @@ public class Commander {
         if (!queue.isEmpty()) {
             String command = queue.poll();
             dispatching = true;
-            Laby.labyAPI().minecraft().chatExecutor().chat(command);
-            dispatching = false;
+            try {
+                Laby.labyAPI().minecraft().chatExecutor().chat(command);
+            } finally {
+                dispatching = false;
+            }
             counter = COOLDOWN;
         }
     }
@@ -54,6 +55,7 @@ public class Commander {
             return;
 
         String message = event.getMessage();
+        if (message == null) return;
         if (!message.startsWith("/")) {
             return;
         }
@@ -77,7 +79,7 @@ public class Commander {
     }
 
     public static boolean canSend() {
-        return INSTANCE().counter == 0 && INSTANCE().queue.isEmpty();
+        return INSTANCE.counter == 0 && INSTANCE.queue.isEmpty();
     }
 
 }

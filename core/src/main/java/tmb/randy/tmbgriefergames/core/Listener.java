@@ -10,12 +10,12 @@ import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryAddEvent;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.FishEvent;
-import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
-import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
-import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.FishEvent;
+import tmb.randy.tmbgriefergames.api.events.HopperStateChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.ResetLinesEvent;
+import tmb.randy.tmbgriefergames.api.events.ToggleFunctionEvent;
+import tmb.randy.tmbgriefergames.api.functions.Function;
 
 public class Listener {
 

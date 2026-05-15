@@ -17,6 +17,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.HopperFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.HopperItemStackSizeEnum;
@@ -75,7 +76,7 @@ public class AutoHopper extends Function {
             Container cont = Helper.getPlayer().openContainer;
             if (cont instanceof ContainerChest chest) {
                 IInventory inv = chest.getLowerChestInventory();
-                if (inv.getName().equalsIgnoreCase("§6Trichter-Einstellungen")) {
+                if (inv.getName().equalsIgnoreCase(Const.Menu.TRICHTER_EINSTELLUNGEN)) {
 
                     if(toggeledSneak) {
                         KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
@@ -151,7 +152,7 @@ public class AutoHopper extends Function {
                         }
                     }
 
-                } else if (inv.getName().equalsIgnoreCase("§6Trichter-Mehrfach-Verbindungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
+                } else if (inv.getName().equalsIgnoreCase(Const.Menu.TRICHTER_MEHRFACH_VERBINDUNGEN) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
                     ClickManager.getSharedInstance().addClick(
                         QueueType.MEDIUM, new Click(chest.windowId, 53, 0, 0));
                 }

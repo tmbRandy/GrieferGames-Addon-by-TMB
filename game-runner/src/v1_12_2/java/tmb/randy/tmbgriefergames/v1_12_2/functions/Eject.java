@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
@@ -31,7 +32,7 @@ public class Eject extends ActiveFunction {
     public void tickEvent(GameTickEvent event) {
         if(Helper.getPlayer().openContainer instanceof ContainerChest chest && isEnabled()) {
             IInventory inv = chest.getLowerChestInventory();
-            if(inv.getName().startsWith("§0Lager: ")) {
+            if(inv.getName().startsWith(Const.Menu.LAGER_PREFIX)) {
                 if(chestPos == null) {
                     chestPos = getChestPos();
                 } else {

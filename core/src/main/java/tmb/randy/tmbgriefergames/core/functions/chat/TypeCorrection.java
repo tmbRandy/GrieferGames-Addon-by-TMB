@@ -102,6 +102,7 @@ public class TypeCorrection extends Function {
       return;
 
     String message = event.getMessage();
+    if(message == null) return;
 
     // Type correction
     if(Addon.settings().getChatConfig().getTypeCorrection().get()) {

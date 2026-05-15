@@ -21,12 +21,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.enums.HopperState;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
+import tmb.randy.tmbgriefergames.api.enums.HopperState;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.HopperStateChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.ResetLinesEvent;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
@@ -60,13 +61,13 @@ public class HopperConnections extends Function {
     public void onGuiOpenEvent() {
         if(Helper.getPlayer().openContainer instanceof ContainerChest chestContainer) {
             String invName = chestContainer.getLowerChestInventory().getName();
-            if(invName.equals("§6Trichter-Mehrfach-Verbindungen")) {
+            if(invName.equals(Const.Menu.TRICHTER_MEHRFACH_VERBINDUNGEN)) {
                 for (int i = 0; i < 44; i++) {
                     ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(i);
                     if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
                         String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
-                        if(firstLine.contains("Verbunden mit:")) {
-                            String coordinateString = firstLine.replace("§7Verbunden mit: §e", "").replace("\"", "").replace(".0", "");
+                        if(firstLine.contains(Const.Lore.VERBUNDEN_MIT_LABEL)) {
+                            String coordinateString = firstLine.replace(Const.Lore.VERBUNDEN_MIT_PREFIX, "").replace("\"", "").replace(".0", "");
                             String[] coodStrings = coordinateString.split(";");
                             if(coodStrings.length == 3) {
                                 int x = Integer.parseInt(coodStrings[0]);
@@ -83,12 +84,12 @@ public class HopperConnections extends Function {
                         }
                     }
                 }
-            } else if(invName.equals("§6Trichter-Einstellungen")) {
+            } else if(invName.equals(Const.Menu.TRICHTER_EINSTELLUNGEN)) {
                 ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(16);
                 if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
                     String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
-                    if(firstLine.contains("Weiterleiten an ")) {
-                        String coordinateString = firstLine.replace("Weiterleiten an ", "").replace("\"", "").replace(".0", "").replace("§7", "").replace("§e", "").trim();
+                    if(firstLine.contains(Const.Lore.WEITERLEITEN_AN)) {
+                        String coordinateString = firstLine.replace(Const.Lore.WEITERLEITEN_AN, "").replace("\"", "").replace(".0", "").replace("§7", "").replace("§e", "").trim();
                         String[] coodStrings = coordinateString.split(";");
                         if(coodStrings.length == 3) {
                             int x = Integer.parseInt(coodStrings[0]);
@@ -112,8 +113,8 @@ public class HopperConnections extends Function {
     public void chatReceiveEvent(ChatReceiveEvent event) {
         String message = event.chatMessage().getPlainText();
         switch (message) {
-            case "[Trichter] Das Verbinden wurde aktiviert. Klicke auf den gewünschten Endpunkt.",
-                 "[Trichter] Das Multi-Verbinden wurde aktiviert. Klicke mit dem gewünschten Item auf den gewünschten Endpunkt." -> {
+            case Const.Chat.TRICHTER_CONNECT_START,
+                 Const.Chat.TRICHTER_MULTI_CONNECT_START -> {
                 MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
                 if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
                     BlockPos blockPos = mop.getBlockPos();
@@ -124,10 +125,10 @@ public class HopperConnections extends Function {
                     }
                 }
             }
-            case "[Trichter] Der Trichter wurde erfolgreich verbunden.",
-                 "[Trichter] Der Verbindungsmodus wurde beendet.",
-                 "[Trichter] Der Startpunkt ist zu weit entfernt. Bitte starte erneut." -> {
-                if (message.equals("[Trichter] Der Trichter wurde erfolgreich verbunden.")) {
+            case Const.Chat.TRICHTER_CONNECTED,
+                 Const.Chat.TRICHTER_CONNECT_ENDED,
+                 Const.Chat.TRICHTER_START_TOO_FAR -> {
+                if (message.equals(Const.Chat.TRICHTER_CONNECTED)) {
                     MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
                     if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
 
@@ -138,7 +139,7 @@ public class HopperConnections extends Function {
 
                 currentConnectingHopper = null;
             }
-            case "[Trichter] Die Multi-Verbindung wurde hinzugefügt." -> {
+            case Const.Chat.TRICHTER_MULTI_ADDED -> {
                 MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
                 if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
                     ItemStack stack = Helper.getPlayer().inventory.getCurrentItem();
@@ -146,7 +147,7 @@ public class HopperConnections extends Function {
                     conntections.put(newConn.toString(), newConn);
                 }
             }
-            case "[Trichter] Die Mehrfach-Verbindungen wurden aufgehoben." -> {
+            case Const.Chat.TRICHTER_MULTI_REMOVED -> {
                 ArrayList<String> removeKeys = new ArrayList<>();
                 MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
                 if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
@@ -164,7 +165,7 @@ public class HopperConnections extends Function {
                     }
                 }
             }
-            case "[Trichter] Die Verbindung wurde aufgehoben." -> {
+            case Const.Chat.TRICHTER_REMOVED -> {
                 String removeKey = null;
                 MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
                 if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {

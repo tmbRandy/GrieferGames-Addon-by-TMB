@@ -4,9 +4,10 @@ import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.HopperState;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.HopperStateChangedEvent;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.api.enums.HopperState;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.HopperStateChangedEvent;
 
 public class HopperTracker {
     private static HopperState currentHopperState = HopperState.NONE;
@@ -24,11 +25,11 @@ public class HopperTracker {
         String message = event.chatMessage().getPlainText();
 
         setCurrentHopperState(switch (message) {
-            case "[Trichter] Das Multi-Verbinden wurde aktiviert. Klicke mit dem gewünschten Item auf den gewünschten Endpunkt." -> HopperState.MULTICONNECT;
-            case "[Trichter] Das Verbinden wurde aktiviert. Klicke auf den gewünschten Endpunkt." -> HopperState.CONNECT;
-            case "[Trichter] Der Trichter wurde erfolgreich verbunden.",
-                 "[Trichter] Der Verbindungsmodus wurde beendet.",
-                 "[Trichter] Der Startpunkt ist zu weit entfernt. Bitte starte erneut." -> HopperState.NONE;
+            case Const.Chat.TRICHTER_MULTI_CONNECT_START -> HopperState.MULTICONNECT;
+            case Const.Chat.TRICHTER_CONNECT_START -> HopperState.CONNECT;
+            case Const.Chat.TRICHTER_CONNECTED,
+                 Const.Chat.TRICHTER_CONNECT_ENDED,
+                 Const.Chat.TRICHTER_START_TOO_FAR -> HopperState.NONE;
             default -> currentHopperState;
         });
     }

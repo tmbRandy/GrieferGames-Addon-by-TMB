@@ -13,7 +13,7 @@ import net.labymod.api.configuration.settings.annotation.SettingSection;
 import net.labymod.api.util.MethodOrder;
 import tmb.randy.tmbgriefergames.core.enums.HopperFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.HopperItemStackSizeEnum;
-import tmb.randy.tmbgriefergames.core.events.ResetLinesEvent;
+import tmb.randy.tmbgriefergames.api.events.ResetLinesEvent;
 
 public class HopperSubConfig extends Config {
 

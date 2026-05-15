@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import tmb.randy.tmbgriefergames.core.events.FishEvent;
+import tmb.randy.tmbgriefergames.api.events.FishEvent;
 
 @Mixin(SoundManager.class)
 public class MixinSoundManager {

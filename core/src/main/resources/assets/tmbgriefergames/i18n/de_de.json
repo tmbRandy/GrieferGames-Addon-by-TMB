@@ -337,6 +337,9 @@
             "infinityMiner": {
                 "name": "InfinityMiner Hotkey",
                 "description": "InfnityMiner baut fortlaufend Blöcke ab, bis dein Werkzeug am Ende seiner Haltbarkeit ist."
+            },
+            "inventoryDrop": {
+                "name": "Hotkey zum Inventar Drop"
             }
         },
         "functions": {

@@ -338,6 +338,9 @@
             "infinityMiner": {
                 "name": "InfinityMiner Hotkey",
                 "description": "InfnityMiner keeps mining blocks until your tool has reached it's maximum duration."
+            },
+            "inventoryDrop": {
+                "name": "Hotkey for inventory drop"
             }
         },
         "functions": {

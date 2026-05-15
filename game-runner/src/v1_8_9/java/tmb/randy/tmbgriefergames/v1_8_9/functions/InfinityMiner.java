@@ -26,7 +26,7 @@ public class InfinityMiner extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if (event.state() == State.PRESS && Addon.allKeysPressed(Addon.settings().getInfinityMiner().get())) {
+        if (event.state() == State.PRESS && Addon.allKeysPressedAndGuiClosed(Addon.settings().getInfinityMiner().get())) {
             if (!isEnabled() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
                 return;
 

@@ -11,10 +11,11 @@ import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.ToggleFunctionEvent;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 
 public class PlayerTracer extends ActiveFunction {
@@ -41,15 +42,15 @@ public class PlayerTracer extends ActiveFunction {
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        Laby.labyAPI().minecraft().chatExecutor().chat("/switch " + CBlist.get(nextServer));
+                        Laby.labyAPI().minecraft().chatExecutor().chat(Const.Cmd.SWITCH + CBlist.get(nextServer));
                     }
                 },
                 1000
             );
             event.setCancelled(true);
-        } else if(isEnabled() && ((msg.startsWith("[GrieferGames] Du wurdest automatisch auf ") && msg.endsWith(" verbunden.") || (msg.startsWith("[GrieferGames] Serverwechsel auf ") && msg.endsWith(" wurde gestartet..")))))  {
+        } else if(isEnabled() && ((msg.startsWith(Const.Chat.AUTOSWITCH_START) && msg.endsWith(Const.Chat.AUTOSWITCH_END) || (msg.startsWith(Const.Chat.SERVERSWITCH_START) && msg.endsWith(Const.Chat.SERVERSWITCH_END)))))  {
             event.setCancelled(true);
-        } else if (msg.equals("[Switcher] Daten heruntergeladen!")) {
+        } else if (msg.equals(Const.Chat.SWITCHER_DATA_DOWNLOADED)) {
             if(!Addon.isGG() || !isEnabled()) return;
 
             if(CBtracker.isPlotworldCB())  {
@@ -63,7 +64,7 @@ public class PlayerTracer extends ActiveFunction {
                             @Override
                             public void run() {
                                 if (isEnabled())
-                                    Laby.labyAPI().minecraft().chatExecutor().chat("/switch " + CBlist.get(nextServer));
+                                    Laby.labyAPI().minecraft().chatExecutor().chat(Const.Cmd.SWITCH + CBlist.get(nextServer));
                             }
                         },
                         6000
@@ -89,14 +90,14 @@ public class PlayerTracer extends ActiveFunction {
                 case 0 -> {
                     Addon.displayNotification(Addon.translate("playerTracer.startedHopping"));
                     nextServer = 1;
-                    Laby.labyAPI().minecraft().chatExecutor().chat("/switch " + CBlist.get(nextServer));
+                    Laby.labyAPI().minecraft().chatExecutor().chat(Const.Cmd.SWITCH + CBlist.get(nextServer));
                     return true;
                 }
                 case 1 -> {
                     Addon.displayNotification(Addon.translate("playerTracer.lookingForPlayer", arguments[0]));
                     playerName = args[0].toLowerCase();
                     nextServer = 1;
-                    Laby.labyAPI().minecraft().chatExecutor().chat("/switch " + CBlist.get(nextServer));
+                    Laby.labyAPI().minecraft().chatExecutor().chat(Const.Cmd.SWITCH + CBlist.get(nextServer));
                     return true;
                 }
                 default -> Addon.displayNotification(Addon.translate("playerTracer.tooManyArguments"));

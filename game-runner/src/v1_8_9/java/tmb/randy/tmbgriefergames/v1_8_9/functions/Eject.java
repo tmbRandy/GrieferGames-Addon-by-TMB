@@ -13,6 +13,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
@@ -30,7 +31,7 @@ public class Eject extends ActiveFunction {
     public void tickEvent(GameTickEvent event) {
         if(Helper.getPlayer().openContainer instanceof ContainerChest chest && isEnabled()) {
             IInventory inv = chest.getLowerChestInventory();
-            if(inv.getName().startsWith("§0Lager: ")) {
+            if(inv.getName().startsWith(Const.Menu.LAGER_PREFIX)) {
                 if(chestPos == null) {
                     chestPos = getChestPos();
                 } else {

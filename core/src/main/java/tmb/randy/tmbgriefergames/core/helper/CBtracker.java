@@ -7,8 +7,8 @@ import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamUpdateEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import javax.inject.Singleton;
 
 @Singleton

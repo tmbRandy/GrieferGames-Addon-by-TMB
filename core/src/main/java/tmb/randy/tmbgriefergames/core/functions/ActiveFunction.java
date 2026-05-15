@@ -2,91 +2,47 @@ package tmb.randy.tmbgriefergames.core.functions;
 
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.resources.ResourceLocation;
-import net.labymod.api.event.client.network.server.ServerDisconnectEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.ToggleFunctionEvent;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.widgets.ActiveFunctionsWidget;
 
-abstract public class ActiveFunction extends Function {
-    private boolean enabled;
+public abstract class ActiveFunction extends tmb.randy.tmbgriefergames.api.functions.ActiveFunction {
 
     public ActiveFunction(String identifier) {
         super(identifier);
     }
 
-    public boolean start() {
-        return start(new String[0]);
-    }
-
+    @Override
     public boolean start(String[] arguments) {
-        if(enabled) return false;
-        if(!CBtracker.isCommandAbleCB()) return false;
-
-        enabled = true;
-
-        if(!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
-            Addon.displayNotification(Addon.translate("functions.enable", Functions.valueOf(identifier).getLocalizedName()));
-
-        return true;
+        if (!CBtracker.isCommandAbleCB()) return false;
+        boolean result = super.start(arguments);
+        if (result) {
+            if (!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
+                Addon.displayNotification(Addon.translate("functions.enable", Functions.valueOf(identifier).getLocalizedName()));
+        }
+        return result;
     }
 
+    @Override
     public boolean stop() {
-        if(enabled) {
-            enabled = false;
-
-            if(!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
+        boolean result = super.stop();
+        if (result) {
+            if (!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
                 Addon.displayNotification(Addon.translate("functions.disable", Functions.valueOf(identifier).getLocalizedName()));
-            return true;
         }
-
-        return false;
-    }
-
-    public void toggle() {
-        toggle(null);
-    }
-
-    public void toggle(String[] arguments) {
-        if(isEnabled())
-            stop();
-        else
-            start(arguments);
-    }
-
-    public Icon getIcon() {
-        ResourceLocation resourceLocation = ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/" + identifier + ".png");
-        return resourceLocation.exists() ? Icon.texture(resourceLocation) : null;
-    }
-
-    public boolean hasIcon() {
-        return getIcon() != null;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public void serverDisconnectEvent(ServerDisconnectEvent event) {
-        stop();
-    }
-
-    @Override
-    public void toggleFunctionEvent(ToggleFunctionEvent event) {
-        if(event.function().equals(identifier)) {
-            switch (event.state()) {
-                case START -> start();
-                case STOP -> stop();
-                case TOGGLE -> toggle();
-            }
-        }
+        return result;
     }
 
     @Override
     public void cbChangedEvent(CbChangedEvent event) {
         stop();
+    }
+
+    @Override
+    public Icon getIcon() {
+        ResourceLocation resourceLocation = ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/" + identifier + ".png");
+        return resourceLocation.exists() ? Icon.texture(resourceLocation) : null;
     }
 }

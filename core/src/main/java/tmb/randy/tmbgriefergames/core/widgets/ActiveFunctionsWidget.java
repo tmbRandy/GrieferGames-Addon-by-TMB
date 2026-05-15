@@ -13,10 +13,11 @@ import net.labymod.api.client.render.matrix.Stack;
 import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.enums.HopperState;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.api.enums.HopperState;
+import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.HopperTracker;
 
 @Singleton
@@ -85,11 +86,11 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
     public void messageReceived(ChatReceiveEvent event) {
         if(this.isEnabled() && Addon.isGG()) {
             String message = event.chatMessage().getPlainText();
-            if (message.equals("[Trichter] Das Multi-Verbinden wurde aktiviert. Klicke mit dem gewünschten Item auf den gewünschten Endpunkt.") ||
-                message.equals("[Trichter] Das Verbinden wurde aktiviert. Klicke auf den gewünschten Endpunkt.") ||
-                message.equals("[Trichter] Der Trichter wurde erfolgreich verbunden.") ||
-                message.equals("[Trichter] Der Verbindungsmodus wurde beendet.") ||
-                message.equals("[Trichter] Der Startpunkt ist zu weit entfernt. Bitte starte erneut.")) {
+            if (message.equals(Const.Chat.TRICHTER_MULTI_CONNECT_START) ||
+                message.equals(Const.Chat.TRICHTER_CONNECT_START) ||
+                message.equals(Const.Chat.TRICHTER_CONNECTED) ||
+                message.equals(Const.Chat.TRICHTER_CONNECT_ENDED) ||
+                message.equals(Const.Chat.TRICHTER_START_TOO_FAR)) {
                 event.setCancelled(true);
             }
         }

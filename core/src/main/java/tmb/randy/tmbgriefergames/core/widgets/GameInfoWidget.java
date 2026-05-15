@@ -37,8 +37,9 @@ import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryRemoveEvent;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamUpdateEvent;
 import net.labymod.api.util.Color;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.events.MoneyBalanceChangedEvent;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.MoneyBalanceChangedEvent;
 import tmb.randy.tmbgriefergames.core.widgets.GameInfoWidget.GameInfoWidgetConfig;
 
 public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
@@ -153,7 +154,7 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
     public void chatReceiveEvent(ChatReceiveEvent event) {
         String message = event.chatMessage().getPlainText();
         if(waitingForCrystalMessage) {
-            if(message.equals("[CaseOpening] Du hast 72 Kristalle auf deinem Konto.")) {
+            if(message.equals(Const.Chat.CASEOPENING_KRISTALLE)) {
                 event.setCancelled(true);
             } else {
                 Pattern pattern = java.util.regex.Pattern.compile("Du hast (\\d+) Kristalle");

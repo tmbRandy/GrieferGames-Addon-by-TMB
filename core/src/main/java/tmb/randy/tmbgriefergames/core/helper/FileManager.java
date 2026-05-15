@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import net.labymod.api.Laby;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelPlot;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -123,7 +123,7 @@ public class FileManager {
 
     public static void deletePlot(PlotWheelPlot plot) {
         List<PlotWheelPlot> plots = loadPlots();
-        plots.removeIf(plott -> plott.toString().equals(plot.toString()));
+        plots.removeIf(p -> p.equals(plot));
         setGlobalValue("PlotWheel", plots);
     }
 

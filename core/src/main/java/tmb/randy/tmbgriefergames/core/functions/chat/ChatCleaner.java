@@ -8,6 +8,7 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.component.event.ClickEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 
@@ -17,22 +18,22 @@ public class ChatCleaner extends Function {
     private static final java.util.regex.Pattern PLOT_COORDINATES_PATTERN = Pattern.compile("^\\[GrieferGames] \\[(-?\\d+);(-?\\d+)] \\w+ betrat dein Grundstück\\.$");
 
     private final Set<String> cleanupMessages = new HashSet<>(Arrays.asList(
-        "[GrieferGames] Download: https://mysterymod.net/download/",
-        "[GrieferGames] Wir sind optimiert für MysteryMod. Lade Dir gerne die Mod runter!",
-        "[GrieferGames] Du bist im Portalraum. Wähle deinen Citybuild aus.",
-        "[Switcher] Lade Daten herunter!",
-        "[Switcher] Daten heruntergeladen!",
-        "[GrieferGames] Deine Daten wurden vollständig heruntergeladen.",
-        "[GrieferGames] Bitte warte 12 Sekunden zwischen jedem Teleport.",
-        "[GGAuth] Du wurdest erfolgreich verifiziert.",
-        "Already connecting to this server!",
-        "[GrieferGames] Du wurdest zum Grundstück teleportiert.",
-        "[GrieferGames] Deine Tageszeit wurde vom Grundstück aktualisiert.",
-        "[GrieferGames] Deine Tageszeit wurde wiederhergestellt.",
-        "[GrieferGames] Bitte warte 15 Sekunden zwischen jedem Join-Versuch.",
-        "------------ [ Server-Status ] ------------",
-        "Ergriffene Maßnahmen:",
-        "Versuche in den Portalraum zu verbinden."
+        Const.Chat.GG_DOWNLOAD,
+        Const.Chat.GG_MYSTERYMOD,
+        Const.Chat.GG_PORTALRAUM,
+        Const.Chat.SWITCHER_LOADING,
+        Const.Chat.SWITCHER_DATA_DOWNLOADED,
+        Const.Chat.GG_DATA_DOWNLOADED,
+        Const.Chat.GG_TELEPORT_WAIT,
+        Const.Chat.GGAUTH_VERIFIED,
+        Const.Chat.ALREADY_CONNECTING,
+        Const.Chat.TELEPORTED_TO_PLOT,
+        Const.Chat.GG_DAYTIME_UPDATED,
+        Const.Chat.GG_DAYTIME_RESTORED,
+        Const.Chat.GG_JOIN_WAIT,
+        Const.Chat.SERVER_STATUS,
+        Const.Chat.ERGRIFFENE_MASSNAHMEN,
+        Const.Chat.PORTALRAUM_CONNECTING
     ));
 
     public ChatCleaner() {
@@ -48,13 +49,13 @@ public class ChatCleaner extends Function {
         String message = event.chatMessage().getPlainText();
 
         // Handle specific messages regardless of clean chat setting
-        if (message.equals("[Freunde] Du hast aktuell keine Freundschaftsanfragen.") &&
+        if (message.equals(Const.Chat.FREUNDE_KEINE_ANFRAGEN) &&
             Addon.settings().getChatConfig().getCleanChat().get()) {
             event.setCancelled(true);
             return;
         }
 
-        if (message.equals("[Rezepte] Du hast nicht genug Material, um dieses Rezept herzustellen.")) {
+        if (message.equals(Const.Chat.REZEPTE_NOT_ENOUGH_MATERIAL)) {
             event.setCancelled(true);
             return;
         }
@@ -62,15 +63,15 @@ public class ChatCleaner extends Function {
         // Add click event for plot coordinates
         String coordinates = plotEnterCoordinates(message);
         if (coordinates != null) {
-            event.chatMessage().component().clickEvent(ClickEvent.runCommand("/p h " + coordinates));
+            event.chatMessage().component().clickEvent(ClickEvent.runCommand(Const.Cmd.PLOT_HOME + coordinates));
         }
 
         // Case opening filter
         if (Addon.settings().getChatConfig().getMuteCaseOpening().get() &&
-            (message.startsWith("[CaseOpening] Folgender Preis wurde gezogen: ") ||
-                (message.startsWith("[CaseOpening] Der Spieler ") &&
-                    message.endsWith(" hat einen Hauptpreis gewonnen!")) ||
-                message.equals("[CaseOpening] Ein Spieler hat einen Hauptpreis gewonnen!"))) {
+            (message.startsWith(Const.Chat.CASEOPENING_PRIZE_DRAWN) ||
+                (message.startsWith(Const.Chat.CASEOPENING_PLAYER_WON_START) &&
+                    message.endsWith(Const.Chat.CASEOPENING_PLAYER_WON_END)) ||
+                message.equals(Const.Chat.CASEOPENING_MAIN_PRIZE))) {
             event.setCancelled(true);
             return;
         }
@@ -78,9 +79,9 @@ public class ChatCleaner extends Function {
         // Lucky blocks filter
         if (Addon.settings().getChatConfig().getMuteLuckyBlocks().get() &&
             !message.contains(Laby.labyAPI().getName()) &&
-            (message.startsWith("[LuckyBlock] ") ||
-                (message.startsWith("[TEAM] Admin ┃ ") &&
-                    message.endsWith(" » Hey Leute, was geht?")))) {
+            (message.startsWith(Const.Chat.LUCKYBLOCK_PREFIX) ||
+                (message.startsWith(Const.Chat.TEAM_ADMIN_PREFIX) &&
+                    message.endsWith(Const.Chat.TEAM_ADMIN_END)))) {
             event.setCancelled(true);
             return;
         }
@@ -97,17 +98,17 @@ public class ChatCleaner extends Function {
         }
 
         // Server change messages
-        if ((message.startsWith("[GrieferGames] Du wurdest automatisch auf ") &&
-            message.endsWith(" verbunden.")) ||
-            (message.startsWith("[GrieferGames] Serverwechsel auf ") &&
-                message.endsWith(" wurde gestartet.."))) {
+        if ((message.startsWith(Const.Chat.AUTOSWITCH_START) &&
+            message.endsWith(Const.Chat.AUTOSWITCH_END)) ||
+            (message.startsWith(Const.Chat.SERVERSWITCH_START) &&
+                message.endsWith(Const.Chat.SERVERSWITCH_END))) {
             event.setCancelled(true);
             return;
         }
 
         // Streamer filter
         if (Addon.settings().getChatConfig().getMuteStreamer().get() &&
-            message.contains("§8[§6Streamer§8]")) {
+            message.contains(Const.Chat.STREAMER_TAG)) {
             event.setCancelled(true);
             return;
         }
@@ -125,7 +126,7 @@ public class ChatCleaner extends Function {
             if (isBlocking)
                 event.setCancelled(true);
 
-            if (message.equals("------------ [ News ] ------------"))
+            if (message.equals(Const.Chat.NEWS_DELIMITER))
                 isBlocking = !isBlocking;
 
             if (isBlocking)

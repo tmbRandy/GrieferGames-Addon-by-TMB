@@ -7,10 +7,12 @@ import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.IChatComponent;
+import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
@@ -28,7 +30,7 @@ public class AutoLoot extends Function {
 
         if(Addon.settings().getAutoLoot().get()) {
             ActiveFunction playerTracer = Addon.getActiveFunction(Functions.PLAYERTRACER.name());
-            if(CBtracker.getCurrentCB() != CBs.NONE && message.equals("[Switcher] Daten heruntergeladen!") && playerTracer != null && !playerTracer.isEnabled()) {
+            if(CBtracker.getCurrentCB() != CBs.NONE && message.equals(Const.Chat.SWITCHER_DATA_DOWNLOADED) && playerTracer != null && !playerTracer.isEnabled()) {
 
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodSkull = getTimePeriodForFreeSkull(rank);
@@ -57,20 +59,20 @@ public class AutoLoot extends Function {
                                         LocalDateTime freeBoosterDate = LocalDateTime.parse(freeBoosterString);
 
                                         if(freeBoosterDate.isBefore(LocalDateTime.now())) {
-                                            Commander.queue("/grieferboost");
+                                            Commander.queue(Const.Cmd.GRIEFERBOOST);
                                         }
                                     } else {
-                                        Commander.queue("/grieferboost");
+                                        Commander.queue(Const.Cmd.GRIEFERBOOST);
                                     }
 
                                     if(!freeChestString.isEmpty()) {
                                         LocalDateTime freeChestDate = LocalDateTime.parse(freeChestString);
 
                                         if(freeChestDate.isBefore(LocalDateTime.now())) {
-                                            Commander.queue("/freekiste");
+                                            Commander.queue(Const.Cmd.FREEKISTE);
                                         }
                                     } else {
-                                        Commander.queue("/freekiste");
+                                        Commander.queue(Const.Cmd.FREEKISTE);
                                     }
                                 }
 
@@ -88,25 +90,25 @@ public class AutoLoot extends Function {
                 );
             }
 
-            if(message.startsWith("[CaseOpening] Du kannst erst am ") && message.endsWith(" wieder Free-Kisten abholen.")) {
+            if(message.startsWith(Const.Chat.CASE_OPENING_TIMER_START) && message.endsWith(Const.Chat.CASE_OPENING_TIMER_END)) {
                 event.setCancelled(true);
-                String isolatedDate = message.replace("[CaseOpening] Du kannst erst am ", "").replace(" wieder Free-Kisten abholen.", "");
+                String isolatedDate = message.replace(Const.Chat.CASE_OPENING_TIMER_START, "").replace(Const.Chat.CASE_OPENING_TIMER_END, "");
                 FileManager.setPlayerValue("freeChest", stringToDate(isolatedDate).toString());
-            } else if(message.startsWith("Du kannst erst am ") && message.endsWith(" wieder einen Free-Booster abholen.")) {
+            } else if(message.startsWith(Const.Chat.FREE_BOOSTER_TIMER_START) && message.endsWith(Const.Chat.FREE_BOOSTER_TIMER_END)) {
                 event.setCancelled(true);
-                String isolatedDate = message.replace("Du kannst erst am ", "").replace(" wieder einen Free-Booster abholen.", "");
+                String isolatedDate = message.replace(Const.Chat.FREE_BOOSTER_TIMER_START, "").replace(Const.Chat.FREE_BOOSTER_TIMER_END, "");
                 FileManager.setPlayerValue("freeBooster", stringToDate(isolatedDate).toString());
-            } else if(message.equals("[CaseOpening] Du hast 2 Kisten erhalten.")) {
+            } else if(message.equals(Const.Chat.CASE_OPENING_RECEIVED)) {
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodChest = getTimePeriodForFreeChest(rank);
                 if(periodChest > -1)
                     FileManager.setPlayerValue("freeChest", LocalDateTime.now().plusDays(periodChest).toString());
-            } else if(message.startsWith("Du hast 1 ") && message.endsWith("-Booster erhalten. Danke für deine Unterstützung von GrieferGames!")) {
+            } else if(message.startsWith(Const.Chat.FREE_BOOSTER_RECEIVED_START) && message.endsWith(Const.Chat.FREE_BOOSTER_RECEIVED_END)) {
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodChest = getTimePeriodForFreeChest(rank);
                 if(periodChest > -1)
                     FileManager.setPlayerValue("freeBooster", LocalDateTime.now().plusDays(periodChest).toString());
-            } else if(message.startsWith("[Kopf] Du hast einen ") && message.endsWith("-Kopf erhalten!")) {
+            } else if(message.startsWith(Const.Chat.KOPF_START) && message.endsWith(Const.Chat.KOPF_END)) {
                 String rank = getPlayerRank(Laby.labyAPI().getName());
                 int periodSkull = getTimePeriodForFreeSkull(rank);
                 if(periodSkull > -1)

@@ -15,7 +15,7 @@ import net.labymod.api.configuration.loader.annotation.SpriteTexture;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import net.labymod.api.util.MethodOrder;
 import tmb.randy.tmbgriefergames.core.activities.commandlist.CommandListActivity;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 
 @ConfigName("settings")
 @SpriteTexture("settings")
@@ -85,6 +85,9 @@ public class Configuration extends AddonConfig {
     @MultiKeyBindSetting
     private final ConfigProperty<Key[]> infinityMiner = new ConfigProperty<>(new Key[]{Key.L_SHIFT, Key.I});
 
+    @MultiKeyBindSetting
+    private final ConfigProperty<Key[]> inventoryDrop = new ConfigProperty<>(new Key[]{Key.ARROW_LEFT, Key.ARROW_UP, Key.ARROW_RIGHT});
+
     @SpriteSlot(size = SPRITE_SIZE, x = 1, y = 4)
     private final PlotSwitchSubConfig plotSwitchSubConfig;
 
@@ -122,6 +125,7 @@ public class Configuration extends AddonConfig {
     public ConfigProperty<Boolean> getAutoLoot() {return autoLoot;}
     public AccountUnitySubConfig getAccountUnitySubConfig() {return accountUnitySubConfig;}
     public ConfigProperty<Key[]> getInfinityMiner() {return infinityMiner;}
+    public ConfigProperty<Key[]> getInventoryDrop() {return inventoryDrop;}
     public PlotSwitchSubConfig getPlotSwitchSubConfig() {return plotSwitchSubConfig;}
     public AutoFisherSubConfig getAutoFisherSubConfig() {return autoFisherSubConfig;}
 }

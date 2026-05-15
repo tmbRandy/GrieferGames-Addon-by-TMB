@@ -39,7 +39,7 @@ public class VABK extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && Addon.allKeysPressed(Addon.settings().getSwordsSubConfig().getVABKhotkey().get()) && Addon.isChatGuiClosed()) {
+        if(event.state() == State.PRESS && Addon.allKeysPressedAndGuiClosed(Addon.settings().getSwordsSubConfig().getVABKhotkey().get()) && Addon.isChatGuiClosed()) {
             toggle();
         }
     }

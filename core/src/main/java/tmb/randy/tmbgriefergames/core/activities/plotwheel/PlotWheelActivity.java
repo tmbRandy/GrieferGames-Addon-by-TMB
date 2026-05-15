@@ -23,7 +23,7 @@ import net.labymod.api.util.Color;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.CBwheel.CBsegment;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheel.PlotSegment;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.FileManager;
 
@@ -57,100 +57,64 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
 
         VerticalListWidget<Widget> centerList = new VerticalListWidget<>();
         centerList.addId("center-container");
-
         centerList.addChild(cbDisplay);
         centerList.addChild(plotDisplay);
-
         this.document.addChild(centerList);
-
-        /////////////////////////
 
         VerticalListWidget<HorizontalListWidget> addContainer = new VerticalListWidget<>().addId("add-container");
 
         HorizontalListWidget addPlotTitle = new HorizontalListWidget().addId("title-list");
-        HorizontalListEntry addPlotEntry = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.addPlot"));
-        addPlotTitle.addChild(addPlotEntry);
-        addContainer.addChild(addPlotTitle);
+        addPlotTitle.addChild(new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.addPlot")));
         addContainer.addChild(addPlotTitle);
 
-        //////////////
-
-        HorizontalListWidget plotNameList = new HorizontalListWidget();
-        HorizontalListEntry plotNameListTag = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.name").addId("label"));
         addNameTextField = new TextFieldWidget().placeholder(Component.translatable("tmbgriefergames.plotWheel.optional")).addId("name-textfield");
-        HorizontalListEntry plotNameListTextfield = new HorizontalListEntry(addNameTextField);
-        plotNameList.addChild(plotNameListTag);
-        plotNameList.addChild(plotNameListTextfield);
-        addContainer.addChild(plotNameList);
+        addContainer.addChild(buildLabelRow("tmbgriefergames.plotWheel.name", addNameTextField));
 
-        //////////////
-
-        HorizontalListWidget CBlist = new HorizontalListWidget();
-        cbDropdownWidget = new DropdownWidget<>().addId("cb-dropdown");
-        HorizontalListEntry cbListTag = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.cb").addId("label"));
-
+        cbDropdownWidget = new DropdownWidget<String>().addId("cb-dropdown");
         cbDropdownWidget.add(Addon.translate("plotWheel.all"));
         for (CBs cb : CBs.values()) {
-            if(CBtracker.isPlotworldCB(cb) && cb != CBs.EVENT) {
+            if (CBtracker.isPlotworldCB(cb) && cb != CBs.EVENT)
                 cbDropdownWidget.add(cb.getName());
-            }
         }
-
-        if(CBtracker.isPlotworldCB())
+        if (CBtracker.isPlotworldCB())
             cbDropdownWidget.setSelected(CBtracker.getCurrentCB().getName());
+        addContainer.addChild(buildLabelRow("tmbgriefergames.plotWheel.cb", cbDropdownWidget));
 
-
-        HorizontalListEntry CBlistEntry = new HorizontalListEntry(cbDropdownWidget);
-        CBlist.addChild(cbListTag);
-        CBlist.addChild(CBlistEntry);
-        addContainer.addChild(CBlist);
-
-        //////////////
-
-        HorizontalListWidget commandList = new HorizontalListWidget();
-        HorizontalListEntry commandListTag = new HorizontalListEntry(ComponentWidget.i18n("tmbgriefergames.plotWheel.command").addId("label"));
         addCommandTextField = new TextFieldWidget().placeholder(Component.text("/p h Farm")).addId("command-textfield");
-        HorizontalListEntry commandListTextfield = new HorizontalListEntry(addCommandTextField);
-        commandList.addChild(commandListTag);
-        commandList.addChild(commandListTextfield);
-        addContainer.addChild(commandList);
+        addContainer.addChild(buildLabelRow("tmbgriefergames.plotWheel.command", addCommandTextField));
 
-        //////////////
-
-        HorizontalListWidget accountList = new HorizontalListWidget();
-        HorizontalListEntry accountListTag = new HorizontalListEntry(ComponentWidget.i18n(Addon.getNamespace() + ".plotWheel.thisAccountOnly"));
         accountOnlyWidget = new CheckBoxWidget();
-        HorizontalListEntry accountListCheckbox = new HorizontalListEntry(accountOnlyWidget);
-        accountList.addChild(accountListTag);
-        accountList.addChild(accountListCheckbox);
-        addContainer.addChild(accountList);
+        addContainer.addChild(buildLabelRow(Addon.getNamespace() + ".plotWheel.thisAccountOnly", accountOnlyWidget));
 
-        //////////////
-
-        HorizontalListWidget addPlotButtonList = new HorizontalListWidget();
         ButtonWidget addButton = ButtonWidget.i18n(Addon.getNamespace() + ".plotWheel.add");
         addButton.setPressable(() -> {
-            if(!addCommandTextField.getText().trim().isEmpty()) {
-                String plotName = addNameTextField.getText().trim().isEmpty() ? null : addNameTextField.getText().trim();
-                CBs selectedCB = (cbDropdownWidget.getSelected() == null ? Addon.translate("plotWheel.all") : cbDropdownWidget.getSelected()).equals(Addon.translate("plotWheel.all")) ? CBs.NONE : CBs.valueOf(cbDropdownWidget.getSelected());
-                UUID uuid = accountOnlyWidget.state() == CheckBoxWidget.State.CHECKED ? Laby.labyAPI().getUniqueId() : null;
-                String command = addCommandTextField.getText().trim();
+            String command = addCommandTextField.getText().trim();
+            if (command.isEmpty()) return;
 
-                PlotWheelPlot plot = new PlotWheelPlot(selectedCB, plotName, command, uuid);
-                FileManager.addPlot(plot);
+            String plotNameText = addNameTextField.getText().trim();
+            String selected = cbDropdownWidget.getSelected();
+            CBs plotCB = selected == null || selected.equals(Addon.translate("plotWheel.all"))
+                ? CBs.NONE
+                : CBs.valueOf(selected);
+            UUID uuid = accountOnlyWidget.state() == CheckBoxWidget.State.CHECKED ? Laby.labyAPI().getUniqueId() : null;
 
-                resetAddWidgets();
-                plotWheel.loadPlots(this.selectedCB);
-            }
+            FileManager.addPlot(new PlotWheelPlot(plotCB, plotNameText.isEmpty() ? null : plotNameText, command, uuid));
+            resetAddWidgets();
+            plotWheel.loadPlots(this.selectedCB);
         });
 
-        HorizontalListEntry addPlotButtonEntry = new HorizontalListEntry(addButton);
-        addPlotButtonList.addChild(addPlotButtonEntry);
+        HorizontalListWidget addPlotButtonList = new HorizontalListWidget();
+        addPlotButtonList.addChild(new HorizontalListEntry(addButton));
         addContainer.addChild(addPlotButtonList);
 
-        //////////////
-
         document.addChild(addContainer);
+    }
+
+    private HorizontalListWidget buildLabelRow(String translationKey, Widget widget) {
+        HorizontalListWidget row = new HorizontalListWidget();
+        row.addChild(new HorizontalListEntry(ComponentWidget.i18n(translationKey).addId("label")));
+        row.addChild(new HorizontalListEntry(widget));
+        return row;
     }
 
     @Override
@@ -161,7 +125,7 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
 
     @Override
     public void setSelectedCB(CBs cb) {
-        if(isOpen() && cbDisplay != null) {
+        if (isOpen()) {
             selectedCB = cb;
             cbDisplay.setText(cb.getName());
             cbDisplay.textColor().set(CBtracker.getCurrentCB() == cb ? Color.GREEN.get() : Color.ORANGE.get());
@@ -171,30 +135,24 @@ public class PlotWheelActivity extends SimpleActivity implements ISelectableCB {
 
     @Subscribe
     public void tick(GameTickEvent event) {
-        if(isOpen() && Addon.isGG()) {
-            for (AbstractWidget<?> child : cbWheel.getChildren()) {
-                if(child instanceof CBsegment segment) {
-                    if(segment.isSegmentSelected()) {
-                        if(segment.getCb() != selectedCB) {
-                            setSelectedCB(segment.getCb());
-                        }
-                        break;
-                    }
-                }
-            }
+        if (!isOpen() || !Addon.isGG()) return;
 
-            for (AbstractWidget<?> child : plotWheel.getChildren()) {
-                if(child instanceof PlotSegment segment) {
-                    if(segment.isSegmentSelected()) {
-                        plotDisplay.setText(segment.getPlot().command());
-                        return;
-                    }
-                }
+        for (AbstractWidget<?> child : cbWheel.getChildren()) {
+            if (child instanceof CBsegment segment && segment.isSegmentSelected()) {
+                if (segment.getCb() != selectedCB)
+                    setSelectedCB(segment.getCb());
+                break;
             }
-
-            if(plotDisplay != null)
-                plotDisplay.setText("");
         }
+
+        for (AbstractWidget<?> child : plotWheel.getChildren()) {
+            if (child instanceof PlotSegment segment && segment.isSegmentSelected()) {
+                plotDisplay.setText(segment.getPlot().command());
+                return;
+            }
+        }
+
+        plotDisplay.setText("");
     }
 
     private void resetAddWidgets() {

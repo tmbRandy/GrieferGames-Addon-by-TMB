@@ -9,6 +9,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.EnumHand;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget;
@@ -38,12 +39,12 @@ public class PotionTimer extends Function {
             if(cont != null) {
                 if(cont instanceof ContainerChest chest) {
                     IInventory inv = chest.getLowerChestInventory();
-                    if(inv.getName().equalsIgnoreCase("§6Möchtest du den Trank benutzen?")) {
+                    if(inv.getName().equalsIgnoreCase(Const.Menu.TRANK_BENUTZEN)) {
                         if(lastRenderedTooltipItemStack != null) {
                             if(lastRenderedTooltipItemStack.getAsItem().getIdentifier().getPath().equals("dye") && lastRenderedTooltipItemStack.getDisplayName().toString().contains("Bestätigen")) {
                                 switch (Helper.getPlayer().getHeldItem(EnumHand.MAIN_HAND).getDisplayName()) {
-                                    case "§6Flugtrank" -> PotionTimerWidget.startTimer(Timer.FLY);
-                                    case "§6Abbautrank" -> PotionTimerWidget.startTimer(Timer.BREAK);
+                                    case Const.Item.FLUGTRANK -> PotionTimerWidget.startTimer(Timer.FLY);
+                                    case Const.Item.ABBAUTRANK -> PotionTimerWidget.startTimer(Timer.BREAK);
                                 }
                             }
                         }

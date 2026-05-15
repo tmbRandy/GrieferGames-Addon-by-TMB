@@ -6,8 +6,9 @@ import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.WheelWidget;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
 
 @AutoWidget
 @Link("cbwheel.lss")
@@ -21,21 +22,16 @@ public class CBwheel extends WheelWidget {
     public void refresh() {
         this.removeChildIf((widget) -> widget instanceof Segment);
 
-        for (int i = CBs.values().length - 1; i >= 0; i--) {
-            CBs cb = CBs.values()[i];
-
-            if(cb == CBs.EVENT)
-                continue;
-
-            if(!CBtracker.isPlotworldCB(cb)) continue;
+        CBs[] cbs = CBs.values();
+        for (int i = cbs.length - 1; i >= 0; i--) {
+            CBs cb = cbs[i];
+            if (cb == CBs.EVENT || !CBtracker.isPlotworldCB(cb)) continue;
 
             CBsegment segment = new CBsegment(cb);
             segment.addId("segment-" + cb, "cb-segment");
-
             this.addSegment(segment);
 
-
-            if(CBtracker.getCurrentCB() == cb)
+            if (CBtracker.getCurrentCB() == cb)
                 segment.setSelected(true);
         }
     }
@@ -52,7 +48,7 @@ public class CBwheel extends WheelWidget {
 
             this.setPressable(() -> {
                 if(cb != CBtracker.getCurrentCB()) {
-                    Laby.references().chatExecutor().chat("/switch " + cb);
+                    Laby.references().chatExecutor().chat(Const.Cmd.SWITCH + cb);
                 }
             });
         }

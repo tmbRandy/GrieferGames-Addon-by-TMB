@@ -8,6 +8,7 @@ import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 
 public class PlotSwitch extends Function {
@@ -57,7 +58,7 @@ public class PlotSwitch extends Function {
     public void chatReceiveEvent(ChatReceiveEvent event) {
         String message = event.chatMessage().getPlainText();
 
-        if(message.equals("[GrieferGames] Du wurdest zum Grundstück teleportiert.") && waitingForPlotSwitch) {
+        if(message.equals(Const.Chat.TELEPORTED_TO_PLOT) && waitingForPlotSwitch) {
             waitingForPlotSwitch = false;
         }
     }
@@ -70,9 +71,9 @@ public class PlotSwitch extends Function {
         String command = null;
 
         if(event.state() == State.PRESS) {
-            if(Addon.allKeysPressed(Addon.settings().getPlotSwitchSubConfig().getPreviousPlot().get())) {
+            if(Addon.allKeysPressedAndGuiClosed(Addon.settings().getPlotSwitchSubConfig().getPreviousPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.PREVIOUS);
-            } else if(Addon.allKeysPressed(Addon.settings().getPlotSwitchSubConfig().getNextPlot().get())) {
+            } else if(Addon.allKeysPressedAndGuiClosed(Addon.settings().getPlotSwitchSubConfig().getNextPlot().get())) {
                 command = getPlotCommand(lastPlot, DIRECTION.NEXT);
             }
 

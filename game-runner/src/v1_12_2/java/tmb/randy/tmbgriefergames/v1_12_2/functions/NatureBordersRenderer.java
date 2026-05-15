@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
@@ -41,7 +41,7 @@ public class NatureBordersRenderer extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(Addon.allKeysPressed(Addon.settings().getNatureSubConfig().getHotkey().get()) && CBtracker.isNatureWorldCB()) {
+        if(Addon.allKeysPressedAndGuiClosed(Addon.settings().getNatureSubConfig().getHotkey().get()) && CBtracker.isNatureWorldCB()) {
             toggle();
         }
     }

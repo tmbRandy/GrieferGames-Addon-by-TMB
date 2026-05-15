@@ -1,11 +1,9 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.COMP1;
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.FINISHED;
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.IDLE;
-import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.OPEN_COMP;
+import static tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3.COMP_STATE.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -15,6 +13,7 @@ import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -30,6 +29,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.AutoCrafterNewFinalAction;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
@@ -69,15 +69,23 @@ public class AutoCrafterV3 extends ActiveFunction {
     }};
 
     private static final int[] RECIPE_SLOTS = {10, 11, 12, 19, 20, 21, 28, 29, 30};
+    private static final Set<String> RECIPE_MENU_NAMES = Set.of(
+        Const.Menu.CUSTOM_KATEGORIEN, Const.Menu.MINECRAFT_REZEPTE, Const.Menu.VANILLA_BAUANLEITUNG);
 
     private ItemStack craftItem;
-    private Map<String, Integer> recipe = new HashMap<>();
-    private Map<String, BlockPos> sourceChests = new HashMap<>();
+    private final Map<String, Integer> recipe = new HashMap<>();
+    private final Map<String, BlockPos> sourceChests = new HashMap<>();
     private int maxRecipeCount = 0;
     private COMP_STATE compState = IDLE;
     private boolean displayedSelectMessage;
     private int variantPage = -1;
     private int tickCounter = 0;
+
+    private BlockPos lastEmptyChest = null;
+    private int emptyChestCounter = 0;
+    private static final int MAX_EMPTY_CHEST_ATTEMPTS = 3;
+    private boolean rezepteQueued = false;
+    private final Map<String, Integer> maxStackSizes = new HashMap<>();
 
     public AutoCrafterV3() {
         super(Functions.CRAFTV3.name());
@@ -85,347 +93,496 @@ public class AutoCrafterV3 extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(isEnabled() && event.state() == State.PRESS && event.key() == Key.ESCAPE)
+        if (isEnabled() && event.state() == State.PRESS && event.key() == Key.ESCAPE)
             stop();
     }
 
     @Override
     public void chatReceiveEvent(ChatReceiveEvent event) {
-        if(isEnabled()) {
-            if(event.chatMessage().getPlainText().equals("Du kannst diese Kiste nicht öffnen, solange sie von einem anderen Spieler benutzt wird."))
-                event.setCancelled(true);
-            else if(event.chatMessage().getPlainText().equals("[Rezepte] Es konnte kein Vanilla Rezept für dieses Item gefunden werden."))
-                stop();
+        if (!isEnabled()) return;
+
+        String message = event.chatMessage().getPlainText();
+        if (Const.Chat.CHEST_IN_USE.equals(message)) {
+            event.setCancelled(true);
+        } else if (Const.Chat.NO_VANILLA_RECIPE.equals(message)) {
+            stop();
         }
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(isEnabled()) {
-            if(Addon.settings().getAutoCrafterConfig().getDelay().get() > 0) {
-                if(tickCounter < Addon.settings().getAutoCrafterConfig().getDelay().get()) {
-                    tickCounter++;
-                    return;
-                }
-                tickCounter = 0;
-            }
+        if (!isEnabled()) return;
 
-            StuckProtection.tick(Helper.getPlayer().openContainer);
+        if (!handleDelay()) return;
 
-            if(craftItem == null) {
-                if(!Helper.getPlayer().inventory.mainInventory.getFirst().isEmpty()) {
-                    if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
-                        if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                            IInventory chestInventory = chest.getLowerChestInventory();
-                            if(chestInventory.getName().equals("§6Custom-Kategorien")) {
-                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 12, 0, ClickType.QUICK_MOVE));
-                            } else if(chestInventory.getName().equals("§6Minecraft-Rezepte")) {
-                                if(Helper.getPlayer().inventory.mainInventory.getFirst().getItem().equals(Items.GOLD_INGOT)) {
-                                    int slot = getSlotForGoldIngot();
-                                    if(slot > 0)
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, ClickType.QUICK_MOVE));
-                                    else
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 53, 0, ClickType.QUICK_MOVE));
-                                } else
-                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 81, 0, ClickType.QUICK_MOVE));
+        StuckProtection.tick(Helper.getPlayer().openContainer);
 
-                            } else if(chestInventory.getName().equals("§6Vanilla Bauanleitung") && areItemStacksEqual(chestInventory.getStackInSlot(25), Helper.getPlayer().inventory.mainInventory.getFirst())) {
-                                ItemStack pageIndicator = chestInventory.getStackInSlot(49);
-                                if(pageIndicator != null && pageIndicator.getItem() == Items.SKULL) {
-                                    if(!displayedSelectMessage) {
-                                        Addon.displayNotification(Addon.translate("autoCrafter.chooseVariant"));
-                                        displayedSelectMessage = true;
-                                    }
-
-                                    if(!Keyboard.isKeyDown(Key.ENTER.getId()))
-                                        return;
-                                    else {
-                                        String variantPageNumberString = pageIndicator.getDisplayName().replace("§6Variante ", "");
-                                        variantPage = Integer.parseInt(variantPageNumberString);
-                                    }
-                                }
-
-                                craftItem = chestInventory.getStackInSlot(25);
-
-                                for (int recipeSlot : RECIPE_SLOTS) {
-                                    ItemStack stack = chestInventory.getStackInSlot(recipeSlot);
-                                    if(!isStainedGlassPane(stack) && stack != null && !stack.isEmpty()) {
-                                        String key = getItemKey(stack);
-                                        recipe.put(key, recipe.getOrDefault(key, 0) + 1);
-                                    }
-                                }
-
-                                closeChest();
-
-                                Addon.displayNotification(Addon.translate("autoCrafter.recipeSavedV3"));
-                            }
-                        }
-                    } else {
-                        Commander.queue("/rezepte");
-                    }
-                } else {
-                    Addon.displayNotification(Addon.translate("autoCrafter.noItemFound"));
-                    stop();
-                }
-            } else {
-                if(allSourceChestsScanned()) {
-                    craft();
-                } else {
-                    if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
-                        IInventory chestInventory = chest.getLowerChestInventory();
-                        ItemStack chestItemStack = allItemsAreEqual(chestInventory);
-                        if(chestItemStack != null) {
-                            String itemKey = getItemKey(chestItemStack);
-                            RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
-                            if(trace != null && trace.typeOfHit == Type.BLOCK) {
-                                sourceChests.put(itemKey, trace.getBlockPos());
-                                closeChest();
-
-                                if(allSourceChestsScanned()) {
-                                    Addon.displayNotification(Addon.translate("autoCrafter.startedCrafting"));
-                                    maxRecipeCount = maxRecipeCraftCount();
-                                } else {
-                                    Addon.displayNotification(Addon.translate("autoCrafter.setChestForMaterial", chestItemStack.getDisplayName()));
-                                }
-                            }
-                        } else {
-                            Addon.displayNotification(Addon.translate("autoCrafter.mixedChest"));
-                            closeChest();
-                        }
-                    }
-                }
-            }
+        if (craftItem == null) {
+            handleRecipeSelection();
+        } else if (allSourceChestsScanned()) {
+            craft();
+        } else {
+            handleChestScanning();
         }
     }
-
-
 
     @Override
     public boolean stop() {
-       if(super.stop()) {
-           displayedSelectMessage = false;
-           variantPage = -1;
-           craftItem = null;
-           recipe = new HashMap<>();
-           sourceChests = new HashMap<>();
-           maxRecipeCount = 0;
-           compState = IDLE;
-           StuckProtection.reset();
-       }
-       return true;
+        if (super.stop()) {
+            resetState();
+        }
+        return true;
     }
 
-    private void craft() {
-        int numberOfFinishedStacks = getNumperOfRecipeStacksInInventory();
-        if(numberOfFinishedStacks <= 1 || (Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP && compState == FINISHED)) {
-
-            if(Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
-                closeChest();
+    private boolean handleDelay() {
+        int delay = Addon.settings().getAutoCrafterConfig().getDelay().get();
+        if (delay > 0) {
+            if (tickCounter < delay) {
+                tickCounter++;
+                return false;
             }
+            tickCounter = 0;
+        }
+        return true;
+    }
 
-            //Craft more
-            String nextItem = getNextItemToTake();
+    private void handleRecipeSelection() {
+        ItemStack firstItem = Helper.getPlayer().inventory.mainInventory.getFirst();
+        if (firstItem.isEmpty()) {
+            Addon.displayNotification(Addon.translate("autoCrafter.noItemFound"));
+            stop();
+            return;
+        }
 
-            if(!isContainerOpen()) {
-                if(nextItem == null) {
-                    Commander.queue("/rezepte");
-                } else {
-                    BlockPos lookingAtBlock = Helper.getBlockPosLookingAt();
-                    BlockPos neededBlock = sourceChests.get(nextItem);
-
-                    if(neededBlock != null) {
-                        if(lookingAtBlock != null) {
-                            if(lookingAtBlock.equals(neededBlock)) {
-                                if(!Helper.getPlayer().isSneaking()) {
-                                    RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
-                                    if(trace != null) {
-                                        Minecraft.getMinecraft().playerController.processRightClickBlock(Helper.getPlayer(), Helper.getWorld(), lookingAtBlock, trace.sideHit, trace.hitVec, EnumHand.MAIN_HAND);
-                                    }
-                                }
-                            } else {
-                                Helper.lookAtBlockPos(neededBlock);
-                            }
-                        }
-                    } else {
-                        Addon.displayNotification(Addon.translate("autoCrafter.noSourceFound"));
-                    }
-                }
-
-            } else if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
-                IInventory chestInventory = chest.getLowerChestInventory();
-
-                switch (chestInventory.getName()) {
-                    case "§6Custom-Kategorien": {
-                        if(nextItem != null) {
-                            closeChest();
-                        } else {
-                            if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 12, 0, ClickType.QUICK_MOVE));
-                            }
-                        }
-                        break;
-                    }
-                    case "§6Minecraft-Rezepte": {
-                        if(nextItem != null) {
-                            closeChest();
-                        } else {
-                            if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                                if(craftItem.getItem().equals(Items.GOLD_INGOT) && !Addon.settings().getAutoCrafterConfig().getGoldBlockToIngot().get()) {
-                                    int slot = getSlotForGoldIngot();
-                                    if(slot > 0) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, slot, 0, ClickType.QUICK_MOVE));
-                                    } else {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 53, 0, ClickType.QUICK_MOVE));
-                                    }
-                                } else {
-                                    int slot = getFirstSlotForCraftItem();
-                                    int translatedSlot = translateInventorySlotToContainerCHestSlot(slot);
-                                    if(slot > -1) {
-                                        int clickSlot = translatedSlot + chest.getLowerChestInventory().getSizeInventory();
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, clickSlot, 0, ClickType.QUICK_MOVE));
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-                    case "§6Vanilla Bauanleitung": {
-                        if(!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM))
-                            return;
-
-                        if(nextItem != null)
-                            closeChest();
-                        else {
-                            if(variantPage != -1) {
-                                if(chestInventory.getStackInSlot(49) != null && !chestInventory.getStackInSlot(49).isEmpty()) {
-                                    ItemStack pageIndicatorSkull = chestInventory.getStackInSlot(49);
-                                    String pageIndicatorName = pageIndicatorSkull.getDisplayName().replace("§6Variante ", "");
-                                    int currentPage = Integer.parseInt(pageIndicatorName);
-                                    if(currentPage == variantPage) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 52, 0, ClickType.QUICK_MOVE));
-                                        compState = IDLE;
-                                    } else if (currentPage < variantPage) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 50, 0, ClickType.QUICK_MOVE));
-                                    } else {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 48, 0, ClickType.QUICK_MOVE));
-                                    }
-                                }
-                            } else {
-                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 52, 0, ClickType.QUICK_MOVE));
-                                compState = IDLE;
-                            }
-                        }
-                        break;
-                    }
-                    default: {
-                        if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                            ItemStack itemStack = allItemsAreEqual(chestInventory);
-                            if(itemStack != null) {
-                                String itemKeyForChest = getItemKey(itemStack);
-                                int stacksInInventory = getCountOfItemKeyStacksInInventory(itemKeyForChest);
-                                int neededStacks = (recipe.get(itemKeyForChest) * maxRecipeCount) - stacksInInventory;
-
-                                int size = chestInventory.getSizeInventory();
-
-                                int stacksTaken = 0;
-                                for (int i = 0; i < size; i++) {
-                                    ItemStack currentStack = chestInventory.getStackInSlot(i);
-
-                                    if (getItemKey(currentStack) != null && getItemKey(currentStack).equals(itemKeyForChest) && currentStack.getCount() == currentStack.getMaxStackSize()) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, i, 0, ClickType.QUICK_MOVE));
-                                        stacksTaken++;
-                                    }
-
-                                    if(stacksTaken >= neededStacks)
-                                        break;
-                                }
-
-                                if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                                    closeChest();
-                                }
-                            } else {
-                                closeChest();
-                            }
-                        }
-                        break;
-                    }
-                }
+        Container container = Helper.getPlayer().openContainer;
+        if (!(container instanceof ContainerChest chest)) {
+            if (!rezepteQueued) {
+                Commander.queue(Const.Cmd.REZEPTE);
+                rezepteQueued = true;
             }
+            return;
+        }
+        rezepteQueued = false;
+
+        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
+
+        IInventory chestInventory = chest.getLowerChestInventory();
+        String chestName = chestInventory.getName();
+
+        switch (chestName) {
+            case Const.Menu.CUSTOM_KATEGORIEN -> click(chest.windowId, 12);
+            case Const.Menu.MINECRAFT_REZEPTE -> handleMinecraftRecipes(chest, firstItem);
+            case Const.Menu.VANILLA_BAUANLEITUNG -> handleVanillaBauanleitung(chest, chestInventory);
+        }
+    }
+
+    private void handleMinecraftRecipes(ContainerChest chest, ItemStack firstItem) {
+        if (firstItem.getItem().equals(Items.GOLD_INGOT)) {
+            int slot = getSlotForGoldIngot(Addon.settings().getAutoCrafterConfig().getGoldBlockToIngot().get());
+            click(chest.windowId, slot > 0 ? slot : 53);
         } else {
-            if(Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.DROP) {
-                //Drop crafted items
-                if(Helper.getPlayer().openContainer instanceof ContainerChest) {
-                    closeChest();
-                } else if(Helper.getPlayer().openContainer instanceof ContainerPlayer inv && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
-                    boolean skippedFirst = false;
-                    if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        int size = inv.inventorySlots.size();
-                        for(int i = 9; i < size; i++) {
-                            if(inv.getSlot(i).getHasStack()) {
-                                ItemStack stack = inv.getSlot(i).getStack();
-                                String key = getItemKey(stack);
-                                String craftItemKey = getItemKey(craftItem);
-                                if(key.equals(craftItemKey)) {
-                                    if(skippedFirst)
-                                        ClickManager.getSharedInstance().dropClick(i);
-                                    else
-                                        skippedFirst = true;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    Minecraft.getMinecraft().displayGuiScreen(new GuiInventory(Helper.getPlayer()));
-                }
-            } else if(Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP) {
-                if(compState == IDLE) {
-                    closeChest();
-                    compState = OPEN_COMP;
-                }
+            click(chest.windowId, 81);
+        }
+    }
 
-                comp();
+    private void handleVanillaBauanleitung(ContainerChest chest, IInventory chestInventory) {
+        if (!areItemStacksEqual(chestInventory.getStackInSlot(25), Helper.getPlayer().inventory.mainInventory.getFirst()))
+            return;
+
+        ItemStack pageIndicator = chestInventory.getStackInSlot(49);
+        if (!pageIndicator.isEmpty() && pageIndicator.getItem() == Items.SKULL) {
+            if (!displayedSelectMessage) {
+                Addon.displayNotification(Addon.translate("autoCrafter.chooseVariant"));
+                displayedSelectMessage = true;
+            }
+
+            if (!Keyboard.isKeyDown(Key.ENTER.getId())) return;
+
+            String variantPageNumberString = pageIndicator.getDisplayName().replace(Const.Menu.VARIANT_PREFIX, "");
+            variantPage = Integer.parseInt(variantPageNumberString);
+        }
+
+        craftItem = chestInventory.getStackInSlot(25);
+        extractRecipe(chestInventory);
+        closeChest();
+        Addon.displayNotification(Addon.translate("autoCrafter.recipeSavedV3"));
+    }
+
+    private void extractRecipe(IInventory chestInventory) {
+        for (int recipeSlot : RECIPE_SLOTS) {
+            ItemStack stack = chestInventory.getStackInSlot(recipeSlot);
+            if (!isStainedGlassPane(stack) && !stack.isEmpty()) {
+                recipe.merge(getItemKey(stack), 1, Integer::sum);
             }
         }
     }
 
-    private int getSlotForGoldIngot() {
-        for (int i = 10; i < 44; i++) {
-            ItemStack stack = Helper.getPlayer().openContainer.getSlot(i).getStack();
-            if(!stack.isEmpty()) {
-                if(stack.getItem().equals(Items.GOLD_INGOT)) {
-                    if(stack.getCount() == 1) {
-                        return i;
+    private void handleChestScanning() {
+        Container container = Helper.getPlayer().openContainer;
+        if (!(container instanceof ContainerChest chest)) return;
+
+        IInventory chestInventory = chest.getLowerChestInventory();
+        if (RECIPE_MENU_NAMES.contains(chestInventory.getName())) {
+            closeChest();
+            return;
+        }
+
+        ItemStack chestItemStack = allItemsAreEqual(chestInventory);
+
+        if (chestItemStack == null) {
+            Addon.displayNotification(Addon.translate("autoCrafter.mixedChest"));
+            closeChest();
+            return;
+        }
+
+        String itemKey = getItemKey(chestItemStack);
+        RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
+
+        if (trace != null && trace.typeOfHit == Type.BLOCK) {
+            sourceChests.put(itemKey, trace.getBlockPos());
+            maxStackSizes.put(itemKey, chestItemStack.getMaxStackSize());
+            closeChest();
+
+            if (allSourceChestsScanned()) {
+                Addon.displayNotification(Addon.translate("autoCrafter.startedCrafting"));
+                maxRecipeCount = maxRecipeCraftCount();
+            } else {
+                Addon.displayNotification(Addon.translate("autoCrafter.setChestForMaterial", chestItemStack.getDisplayName()));
+            }
+        }
+    }
+
+    private void craft() {
+        int numberOfFinishedStacks = getNumberOfRecipeStacksInInventory();
+        AutoCrafterNewFinalAction finalAction = Addon.settings().getAutoCrafterConfig().getFinalActionV3().get();
+
+        if (numberOfFinishedStacks <= 1 || (finalAction == AutoCrafterNewFinalAction.COMP && compState == FINISHED)) {
+            handleCrafting();
+        } else {
+            handleFinalAction(finalAction);
+        }
+    }
+
+    private void handleCrafting() {
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
+            closeChest();
+        }
+
+        String nextItem = getNextItemToTake();
+
+        if (!isContainerOpen()) {
+            handleContainerClosed(nextItem);
+        } else if (Helper.getPlayer().openContainer instanceof ContainerChest chest) {
+            handleContainerOpen(chest, nextItem);
+        }
+    }
+
+    private void handleContainerClosed(String nextItem) {
+        if (nextItem == null) {
+            if (!rezepteQueued) {
+                Commander.queue(Const.Cmd.REZEPTE);
+                rezepteQueued = true;
+            }
+            return;
+        }
+
+        BlockPos lookingAtBlock = Helper.getBlockPosLookingAt();
+        BlockPos neededBlock = sourceChests.get(nextItem);
+
+        if (neededBlock == null) {
+            Addon.displayNotification(Addon.translate("autoCrafter.noSourceFound"));
+            return;
+        }
+
+        if (lookingAtBlock != null) {
+            if (lookingAtBlock.equals(neededBlock)) {
+                if (!Helper.getPlayer().isSneaking()) {
+                    RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
+                    if (trace != null) {
+                        Minecraft.getMinecraft().playerController.processRightClickBlock(
+                            Helper.getPlayer(), Helper.getWorld(), lookingAtBlock, trace.sideHit, trace.hitVec, EnumHand.MAIN_HAND
+                        );
                     }
                 }
+            } else {
+                Helper.lookAtBlockPos(neededBlock);
+            }
+        }
+    }
+
+    private void handleContainerOpen(ContainerChest chest, String nextItem) {
+        IInventory chestInventory = chest.getLowerChestInventory();
+        String chestName = chestInventory.getName();
+
+        switch (chestName) {
+            case Const.Menu.CUSTOM_KATEGORIEN -> {
+                rezepteQueued = false;
+                if (nextItem == null && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
+                    click(chest.windowId, 12);
+                } else if (nextItem != null) {
+                    closeChest();
+                }
+            }
+            case Const.Menu.MINECRAFT_REZEPTE -> handleMinecraftRecipesCrafting(chest, nextItem);
+            case Const.Menu.VANILLA_BAUANLEITUNG -> handleVanillaBauanleitungCrafting(chest, nextItem);
+            default -> handleMaterialChest(chest, chestInventory);
+        }
+    }
+
+    private void handleMinecraftRecipesCrafting(ContainerChest chest, String nextItem) {
+        if (nextItem != null) {
+            closeChest();
+            return;
+        }
+
+        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
+
+        if (craftItem.getItem().equals(Items.GOLD_INGOT)) {
+            int slot = getSlotForGoldIngot(Addon.settings().getAutoCrafterConfig().getGoldBlockToIngot().get());
+            click(chest.windowId, slot > 0 ? slot : 53);
+        } else {
+            int slot = getFirstSlotForCraftItem();
+            if (slot > -1) {
+                int translatedSlot = translateInventorySlotToContainerChestSlot(slot);
+                click(chest.windowId, translatedSlot + chest.getLowerChestInventory().getSizeInventory());
+            }
+        }
+    }
+
+    private void handleVanillaBauanleitungCrafting(ContainerChest chest, String nextItem) {
+        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
+
+        if (nextItem != null) {
+            closeChest();
+            return;
+        }
+
+        IInventory chestInventory = chest.getLowerChestInventory();
+        if (variantPage != -1) {
+            ItemStack pageIndicatorSkull = chestInventory.getStackInSlot(49);
+            if (!pageIndicatorSkull.isEmpty()) {
+                String pageIndicatorName = pageIndicatorSkull.getDisplayName().replace(Const.Menu.VARIANT_PREFIX, "");
+                int currentPage = Integer.parseInt(pageIndicatorName);
+
+                if (currentPage == variantPage) {
+                    click(chest.windowId, 52);
+                    compState = IDLE;
+                } else if (currentPage < variantPage) {
+                    click(chest.windowId, 50);
+                } else {
+                    click(chest.windowId, 48);
+                }
+            }
+        } else {
+            click(chest.windowId, 52);
+            compState = IDLE;
+        }
+    }
+
+    private void handleMaterialChest(ContainerChest chest, IInventory chestInventory) {
+        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
+
+        if (checkEmptyChest(chestInventory)) {
+            closeChest();
+            return;
+        }
+
+        ItemStack itemStack = allItemsAreEqual(chestInventory);
+        if (itemStack == null) {
+            closeChest();
+            return;
+        }
+
+        String itemKeyForChest = getItemKey(itemStack);
+        int stacksInInventory = getCountOfItemKeyStacksInInventory(itemKeyForChest);
+        int maxStackSize = maxStackSizes.getOrDefault(itemKeyForChest, itemStack.getMaxStackSize());
+        int targetStacks = (int) Math.ceil((double) maxRecipeCount * recipe.get(itemKeyForChest) / maxStackSize);
+        int neededStacks = targetStacks - stacksInInventory;
+
+        int stacksTaken = 0;
+        int size = chestInventory.getSizeInventory();
+
+        for (int i = 0; i < size && stacksTaken < neededStacks; i++) {
+            ItemStack currentStack = chestInventory.getStackInSlot(i);
+            if (getItemKey(currentStack) != null &&
+                getItemKey(currentStack).equals(itemKeyForChest) &&
+                currentStack.getCount() == currentStack.getMaxStackSize()) {
+                click(chest.windowId, i);
+                stacksTaken++;
+            }
+        }
+
+        if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
+            closeChest();
+        }
+    }
+
+    private void handleFinalAction(AutoCrafterNewFinalAction finalAction) {
+        switch (finalAction) {
+            case DROP -> handleDropAction();
+            case COMP -> handleCompAction();
+        }
+    }
+
+    private void handleDropAction() {
+        Container container = Helper.getPlayer().openContainer;
+
+        if (container instanceof ContainerChest) {
+            closeChest();
+        } else if (container instanceof ContainerPlayer inv &&
+            Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
+            dropCraftedItems(inv);
+        } else {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiInventory(Helper.getPlayer()));
+        }
+    }
+
+    private void dropCraftedItems(ContainerPlayer inv) {
+        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
+
+        boolean skippedFirst = false;
+        String craftItemKey = getItemKey(craftItem);
+
+        for (int i = 9; i < inv.inventorySlots.size(); i++) {
+            Slot slot = inv.getSlot(i);
+            if (slot.getHasStack()) {
+                String key = getItemKey(slot.getStack());
+                if (craftItemKey.equals(key)) {
+                    if (skippedFirst) {
+                        ClickManager.getSharedInstance().dropClick(i);
+                    } else {
+                        skippedFirst = true;
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleCompAction() {
+        if (compState == IDLE) {
+            closeChest();
+            compState = OPEN_COMP;
+        }
+        comp();
+    }
+
+    private void comp() {
+        Container container = Helper.getPlayer().openContainer;
+
+        switch (compState) {
+            case OPEN_COMP -> handleCompOpen(container);
+            case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6, FINISHED -> handleCompSteps(container);
+        }
+    }
+
+    private void handleCompOpen(Container container) {
+        if (!(container instanceof ContainerChest chest)) {
+            if (!rezepteQueued) {
+                Commander.queue(Const.Cmd.REZEPTE);
+                rezepteQueued = true;
+            }
+            return;
+        }
+
+        IInventory inv = chest.getLowerChestInventory();
+        String name = inv.getName();
+
+        switch (name) {
+            case Const.Menu.CUSTOM_KATEGORIEN -> {
+                rezepteQueued = false;
+                click(11);
+            }
+            case Const.Menu.ITEM_KOMPRIMIERUNG_BAUANLEITUNG -> click(getBestCompSlot());
+            case Const.Menu.ITEM_KOMPRIMIERUNG -> compState = COMP1;
+            case Const.Menu.VANILLA_BAUANLEITUNG -> closeChest();
+        }
+    }
+
+    private void handleCompSteps(Container container) {
+        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
+
+        ItemStack stepIndicator = container.getSlot(49).getStack();
+        if (!(container instanceof ContainerChest) || stepIndicator.isEmpty()) return;
+
+        String name = stepIndicator.getDisplayName();
+        if (!name.startsWith(Const.Comp.LEVEL_PREFIX)) return;
+
+        int step = Integer.parseInt(name.replace(Const.Comp.LEVEL_PREFIX, ""));
+        int expectedStep = compState.ordinal() - COMP_STATE.COMP1.ordinal() + 1;
+
+        if (compState == COMP_STATE.FINISHED) {
+            closeChest();
+        } else if (compState == COMP1 && step > 1) {
+            decreaseStep();
+        } else if (step == expectedStep) {
+            compClick();
+            compState = COMP_STATE.values()[compState.ordinal() + 1];
+        } else if (step < expectedStep) {
+            increaseStep();
+        } else {
+            decreaseStep();
+        }
+    }
+
+    private void resetState() {
+        displayedSelectMessage = false;
+        variantPage = -1;
+        craftItem = null;
+        recipe.clear();
+        sourceChests.clear();
+        maxRecipeCount = 0;
+        compState = IDLE;
+        lastEmptyChest = null;
+        emptyChestCounter = 0;
+        rezepteQueued = false;
+        maxStackSizes.clear();
+        StuckProtection.reset();
+    }
+
+    private int getSlotForGoldIngot(Boolean blockToIngot) {
+        for (int i = 10; i < 44; i++) {
+            ItemStack stack = Helper.getPlayer().openContainer.getSlot(i).getStack();
+            if (!stack.isEmpty() && stack.getItem().equals(Items.GOLD_INGOT)) {
+                if((blockToIngot && stack.getCount() == 9) || (!blockToIngot && stack.getCount() == 1))
+                    return i;
             }
         }
         return -1;
     }
 
     private int maxRecipeCraftCount() {
-        int slots = 0;
-
-        for (Map.Entry<String, Integer> entry : recipe.entrySet()) {
-            slots += entry.getValue();
+        AutoCrafterNewFinalAction finalAction = Addon.settings().getAutoCrafterConfig().getFinalActionV3().get();
+        int targetSlots = Helper.getPlayer().inventory.mainInventory.size() - (finalAction == AutoCrafterNewFinalAction.COMP ? 10 : 2);
+        int lo = 1, hi = targetSlots * 64, result = 1;
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+            if (slotsNeededForCrafts(mid) <= targetSlots) {
+                result = mid;
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
         }
+        return result;
+    }
 
-        return Addon.settings().getAutoCrafterConfig().getFinalActionV3().get() == AutoCrafterNewFinalAction.COMP ? (27 / slots) : (32 / slots);
+    private int slotsNeededForCrafts(int crafts) {
+        return recipe.entrySet().stream()
+            .mapToInt(e -> (int) Math.ceil((double) crafts * e.getValue() / maxStackSizes.getOrDefault(e.getKey(), 64)))
+            .sum();
     }
 
     private ItemStack allItemsAreEqual(IInventory inventory) {
-        int size = inventory.getSizeInventory();
         ItemStack firstStack = null;
+        int size = inventory.getSizeInventory();
 
         for (int i = 0; i < size; i++) {
             ItemStack currentStack = inventory.getStackInSlot(i);
-
-            if (currentStack != ItemStack.EMPTY) {
+            if (!currentStack.isEmpty()) {
                 if (firstStack == null) {
                     firstStack = currentStack;
-                } else {
-                    if (!areItemStacksEqual(firstStack, currentStack)) {
-                        return null;
-                    }
+                } else if (!areItemStacksEqual(firstStack, currentStack)) {
+                    return null;
                 }
             }
         }
@@ -433,24 +590,19 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
-        if (stack1.getItem() != stack2.getItem())
-            return false;
-
+        if (stack1.getItem() != stack2.getItem()) return false;
         String key1 = getItemKey(stack1);
         String key2 = getItemKey(stack2);
-
         return key1 != null && key1.equals(key2);
     }
 
     private String getItemKey(ItemStack stack) {
-        if (stack == null || stack.getCount() == 0)
-            return null;
+        if (stack == null || stack.getCount() == 0) return null;
 
         String itemName = Item.REGISTRY.getNameForObject(stack.getItem()).toString();
 
         if (craftItem != null) {
             String craftItemKey = Item.REGISTRY.getNameForObject(craftItem.getItem()).toString();
-
             if (META_FREE_MATERIALS.containsKey(craftItemKey) &&
                 META_FREE_MATERIALS.get(craftItemKey).contains(itemName)) {
                 return itemName;
@@ -461,22 +613,12 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     public static boolean isStainedGlassPane(ItemStack stack) {
-        if (stack == null || stack.isEmpty())
-            return false;
-
-        Item stainedGlassPaneItem = Item.getItemFromBlock(net.minecraft.init.Blocks.STAINED_GLASS_PANE);
-        return stack.getItem() == stainedGlassPaneItem;
+        return stack != null && !stack.isEmpty() &&
+            stack.getItem() == Item.getItemFromBlock(Blocks.STAINED_GLASS_PANE);
     }
 
     private boolean allSourceChestsScanned() {
-        for (Map.Entry<String, Integer> entry : recipe.entrySet()) {
-            String item = entry.getKey();
-
-            if(!sourceChests.containsKey(item))
-                return false;
-        }
-
-        return true;
+        return recipe.keySet().stream().allMatch(sourceChests::containsKey);
     }
 
     private void closeChest() {
@@ -485,16 +627,9 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private int getCountOfItemKeyStacksInInventory(String itemKey) {
-        int count = 0;
-
-        for (ItemStack itemStack : Helper.getPlayer().inventory.mainInventory) {
-            String key = getItemKey(itemStack);
-            if(key != null && key.equals(itemKey)) {
-                count++;
-            }
-        }
-
-        return count;
+        return (int) Helper.getPlayer().inventory.mainInventory.stream()
+            .filter(stack -> itemKey.equals(getItemKey(stack)))
+            .count();
     }
 
     public static boolean isContainerOpen() {
@@ -503,106 +638,45 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private String getNextItemToTake() {
-        for (Map.Entry<String, Integer> entry : recipe.entrySet()) {
-            String item = entry.getKey();
-            Integer count = entry.getValue();
-
-            int neededCount = (count * maxRecipeCount) - getCountOfItemKeyStacksInInventory(item);
-
-            if(neededCount >= 1) {
-                return item;
-            }
-        }
-
-        return null;
+        return recipe.entrySet().stream()
+            .filter(entry -> {
+                int maxStackSize = maxStackSizes.getOrDefault(entry.getKey(), 64);
+                int targetStacks = (int) Math.ceil((double) maxRecipeCount * entry.getValue() / maxStackSize);
+                return getCountOfItemKeyStacksInInventory(entry.getKey()) < targetStacks;
+            })
+            .map(Map.Entry::getKey)
+            .findFirst()
+            .orElse(null);
     }
 
     private int getFirstSlotForCraftItem() {
-        for (int i = 0; i < Helper.getPlayer().inventory.mainInventory.size(); i++) {
-            ItemStack itemStack = Helper.getPlayer().inventory.mainInventory.get(i);
-            if(getItemKey(craftItem).equals(getItemKey(itemStack))) {
+        List<ItemStack> inventory = Helper.getPlayer().inventory.mainInventory;
+        String craftItemKey = getItemKey(craftItem);
+        for (int i = 0; i < inventory.size(); i++) {
+            if (craftItemKey.equals(getItemKey(inventory.get(i)))) {
                 return i;
             }
         }
         return -1;
     }
 
-    private int translateInventorySlotToContainerCHestSlot(int slot) {
-        if(slot >= 0 && slot <= 8)
-            return slot + 27;
-        else
-            return slot - 9;
+    private int translateInventorySlotToContainerChestSlot(int slot) {
+        return (slot >= 0 && slot <= 8) ? slot + 27 : slot - 9;
     }
 
-    private int getNumperOfRecipeStacksInInventory() {
-        int count = 0;
-        for (ItemStack itemStack : Helper.getPlayer().inventory.mainInventory) {
-            String itemKey = getItemKey(itemStack);
-            String recipeKey = getItemKey(craftItem);
-            if(itemKey != null && itemKey.equals(recipeKey)) {
-                count++;
-            }
-
-        }
-
-        return count;
-    }
-
-    private void comp() {
-        var player = Helper.getPlayer();
-        var container = player.openContainer;
-
-        switch (compState) {
-            case OPEN_COMP -> {
-                if (container instanceof ContainerChest chest) {
-                    IInventory inv = chest.getLowerChestInventory();
-                    String name = inv.getName();
-
-                    if (name.equalsIgnoreCase("§6Custom-Kategorien")) {
-                        click(11);
-                    } else if (name.equalsIgnoreCase("§6Item-Komprimierung-Bauanleitung")) {
-                        click(getBestCompSlot());
-                    } else if (name.equalsIgnoreCase("§6Item-Komprimierung")) {
-                        compState = COMP1;
-                    } else if (name.equalsIgnoreCase("§6Vanilla Bauanleitung")) {
-                        closeChest();
-                    }
-                } else {
-                    Commander.queue("/rezepte");
-                }
-            }
-            case COMP1, COMP2, COMP3, COMP4, COMP5, COMP6, FINISHED -> {
-                if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
-                if (!(container instanceof ContainerChest) || container.getSlot(49).getStack() == null) return;
-
-                String name = container.getSlot(49).getStack().getDisplayName();
-                if (!name.contains("§6Komprimierungsstufe")) return;
-
-                int step = Integer.parseInt(name.replace("§6Komprimierungsstufe ", ""));
-                int expectedStep = compState.ordinal() - COMP_STATE.COMP1.ordinal() + 1;
-
-                if (compState == COMP_STATE.FINISHED) {
-                    closeChest();
-                    return;
-                }
-
-                if (step == expectedStep) {
-                    compClick();
-                    compState = COMP_STATE.values()[compState.ordinal() + 1];
-                } else if (step < expectedStep) {
-                    increaseStep();
-                } else {
-                    decreaseStep();
-                }
-            }
-        }
+    private int getNumberOfRecipeStacksInInventory() {
+        String recipeKey = getItemKey(craftItem);
+        return (int) Helper.getPlayer().inventory.mainInventory.stream()
+            .filter(stack -> recipeKey.equals(getItemKey(stack)))
+            .count();
     }
 
     private void click(int slot) {
-        ClickManager.getSharedInstance().addClick(
-            QueueType.MEDIUM,
-            new Click(Helper.getPlayer().openContainer.windowId, slot, 0, ClickType.QUICK_MOVE)
-        );
+        click(Helper.getPlayer().openContainer.windowId, slot);
+    }
+
+    private void click(int windowId, int slot) {
+        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(windowId, slot, 0, ClickType.QUICK_MOVE));
     }
 
     private void compClick() {
@@ -618,10 +692,10 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private int getBestCompSlot() {
-        var container = Helper.getPlayer().openContainer;
+        Container container = Helper.getPlayer().openContainer;
         String targetKey = getItemKey(craftItem);
+        String[] priority = {"", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN"};
 
-        String[] priority = { "", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN" };
         int bestSlot = 81;
         int bestLevel = 8;
 
@@ -642,10 +716,43 @@ public class AutoCrafterV3 extends ActiveFunction {
                     }
                 }
             } else {
-                return i; // unkomprimiertes Item sofort nehmen
+                return i;
             }
         }
 
         return bestSlot;
+    }
+
+    private boolean checkEmptyChest(IInventory chestInventory) {
+        boolean isEmpty = true;
+        for (int i = 0; i < chestInventory.getSizeInventory(); i++) {
+            if (!chestInventory.getStackInSlot(i).isEmpty()) {
+                isEmpty = false;
+                break;
+            }
+        }
+
+        if (isEmpty) {
+            RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
+            if (trace != null && trace.typeOfHit == Type.BLOCK) {
+                BlockPos currentChestPos = trace.getBlockPos();
+                if (currentChestPos.equals(lastEmptyChest)) {
+                    emptyChestCounter++;
+                } else {
+                    lastEmptyChest = currentChestPos;
+                    emptyChestCounter = 1;
+                }
+                if (emptyChestCounter >= MAX_EMPTY_CHEST_ATTEMPTS) {
+                    Addon.displayNotification(Addon.translate("autoCrafter.emptyChestDetected"));
+                    stop();
+                    return true;
+                }
+            }
+        } else {
+            lastEmptyChest = null;
+            emptyChestCounter = 0;
+        }
+
+        return isEmpty;
     }
 }

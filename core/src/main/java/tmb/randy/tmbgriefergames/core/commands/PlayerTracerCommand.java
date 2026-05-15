@@ -1,7 +1,7 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.FunctionState;
+import tmb.randy.tmbgriefergames.api.enums.FunctionState;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
 

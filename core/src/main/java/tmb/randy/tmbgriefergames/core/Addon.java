@@ -29,12 +29,14 @@ import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
-import tmb.randy.tmbgriefergames.core.enums.FunctionState;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
+import tmb.randy.tmbgriefergames.api.enums.FunctionState;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.AccountUnity;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.api.ITmbGGAddonAPI;
+import tmb.randy.tmbgriefergames.api.TmbGGAddonAPI;
+import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.api.functions.Function;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver;
 import tmb.randy.tmbgriefergames.core.functions.PlayerTracer;
 import tmb.randy.tmbgriefergames.core.functions.PlotSwitch;
@@ -112,6 +114,19 @@ public class Addon extends LabyAddon<Configuration> {
         labyAPI().hudWidgetRegistry().register(new AdventureWidget(category));
         labyAPI().hudWidgetRegistry().register(new ActiveFunctionsWidget(category));
 
+        TmbGGAddonAPI.setProvider(new ITmbGGAddonAPI() {
+            @Override
+            public void registerFunction(Function function) { Addon.registerFunction(function); }
+            @Override
+            public Function getFunction(String identifier) { return Addon.getFunction(identifier); }
+            @Override
+            public ActiveFunction getActiveFunction(String identifier) { return Addon.getActiveFunction(identifier); }
+            @Override
+            public List<Function> getFunctions() { return Addon.getFunctions(); }
+            @Override
+            public List<ActiveFunction> getActiveFunctions() { return Addon.getActiveFunctions(); }
+        });
+
     this.logger().info("Enabled the Addon");
   }
 
@@ -175,9 +190,9 @@ public class Addon extends LabyAddon<Configuration> {
                     @Override
                     public void run() {
                         if(INSTANCE.settings().getSkipHub().get() == CBs.PORTAL)
-                            Commander.queue("/portal");
+                            Commander.queue(Const.Cmd.PORTAL);
                         else if(INSTANCE.settings().getSkipHub().get() != CBs.NONE)
-                            Commander.queue("/switch " + INSTANCE.settings().getSkipHub().get());
+                            Commander.queue(Const.Cmd.SWITCH + INSTANCE.settings().getSkipHub().get());
                     }
                 }, 800
             );
@@ -185,7 +200,7 @@ public class Addon extends LabyAddon<Configuration> {
 
     @Subscribe
     public void messageReceived(ChatReceiveEvent event) {
-        if(isGG() && event.chatMessage().getPlainText().equals("[Switcher] Daten heruntergeladen!")) {
+        if(isGG() && event.chatMessage().getPlainText().equals(Const.Chat.SWITCHER_DATA_DOWNLOADED)) {
             if(queuedPlot != null) {
                 if(CBtracker.isPlotworldCB(CBtracker.getCurrentCB())) {
                     new java.util.Timer().schedule(
@@ -246,11 +261,18 @@ public class Addon extends LabyAddon<Configuration> {
         return !Laby.labyAPI().minecraft().isMouseLocked();
     }
 
-    public static boolean allKeysPressed(Key[] keys) {
+    public static boolean allKeysPressedAndGuiClosed(Key[] keys) {
         if(keys.length == 0)
             return false;
 
         if(isGUIOpen())
+            return false;
+
+        return allKeysPressed(keys);
+    }
+
+    public static boolean allKeysPressed(Key[] keys) {
+        if(keys.length == 0)
             return false;
 
         for (Key key : keys) {

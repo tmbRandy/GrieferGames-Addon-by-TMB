@@ -12,6 +12,7 @@ import net.labymod.api.nbt.NBTTagType;
 import net.labymod.api.nbt.tags.NBTTagCompound;
 import net.labymod.api.nbt.tags.NBTTagList;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.widgets.AdventureWidget;
 
@@ -72,8 +73,8 @@ public class TooltipExtension extends Function {
 
                 for (NBTTag<Object> tag : lore.tags()) {
                     if(tag.value() instanceof String str) {
-                        if(str.startsWith("§e") && str.endsWith(" Verfügbar")) {
-                            str = str.replace("§e", "").replace(" Verfügbar", "").replace(".", "");
+                        if(str.startsWith(Const.Lore.VERFUEGBAR_COLOR) && str.endsWith(Const.Lore.VERFUEGBAR_SUFFIX)) {
+                            str = str.replace(Const.Lore.VERFUEGBAR_COLOR, "").replace(Const.Lore.VERFUEGBAR_SUFFIX, "").replace(".", "");
                             return Integer.parseInt(str);
                         }
                     }

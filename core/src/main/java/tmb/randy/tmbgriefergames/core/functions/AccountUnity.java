@@ -12,6 +12,7 @@ import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamEntryAddEvent;
 import net.labymod.api.mojang.GameProfile;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
@@ -53,20 +54,20 @@ public class AccountUnity extends Function {
                 if (message.endsWith(name + " möchte sich zu dir teleportieren.")
                     || message.endsWith(
                     name + " möchte, dass du dich zu der Person teleportierst.")) {
-                    Laby.references().chatExecutor().chat("/tpaccept");
+                    Laby.references().chatExecutor().chat(Const.Cmd.TPACCEPT);
                 }
             }
         } else if (
             Addon.settings().getAccountUnitySubConfig().getVoteBooster()
-                .get() && message.startsWith("[StartKick] Ersteller: ") || message.startsWith(
-                "[StartJail] Ersteller: ")) {
+                .get() && message.startsWith(Const.Chat.STARTKICK_PREFIX) || message.startsWith(
+                Const.Chat.STARTJAIL_PREFIX)) {
             String[] split = message.split(" ");
             String name = split[split.length - 1];
 
             for (Account account : Laby.labyAPI().getAccountManager().getAccounts()) {
                 String accName = account.getUsername();
                 if (name.equals(accName)) {
-                    Laby.labyAPI().minecraft().chatExecutor().chat("/ja");
+                    Laby.labyAPI().minecraft().chatExecutor().chat(Const.Cmd.JA);
                 }
             }
         }

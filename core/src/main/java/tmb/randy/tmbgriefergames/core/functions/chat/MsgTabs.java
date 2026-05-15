@@ -11,9 +11,9 @@ import net.labymod.api.configuration.labymod.chat.config.RootChatTabConfig.Type;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.CBs;
+import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 
 public class MsgTabs extends Function {
@@ -42,7 +42,7 @@ public class MsgTabs extends Function {
 
     @Override
     public void chatMessageSendEvent(ChatMessageSendEvent event) {
-        if(!Addon.settings().getChatConfig().getMsgTabMode().get() || event.getMessage().startsWith("/msg") || event.getMessage().startsWith("7msg") || event.getMessage().startsWith("(msg"))
+        if(!Addon.settings().getChatConfig().getMsgTabMode().get() || event.getMessage() == null || event.getMessage().startsWith("/msg") || event.getMessage().startsWith("7msg") || event.getMessage().startsWith("(msg"))
             return;
 
         ChatWindow mainWindow = getChatWindow();

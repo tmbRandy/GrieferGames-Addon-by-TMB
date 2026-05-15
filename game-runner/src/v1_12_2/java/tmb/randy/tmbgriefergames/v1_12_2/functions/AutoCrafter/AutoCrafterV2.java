@@ -16,9 +16,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
@@ -57,19 +58,19 @@ public class AutoCrafterV2 extends ActiveFunction {
                 case OPEN_RECEIPTS -> {
                     if(cont instanceof ContainerChest chest) {
                         IInventory inv = chest.getLowerChestInventory();
-                        if (inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
+                        if (inv.getName().equalsIgnoreCase(Const.Menu.CUSTOM_KATEGORIEN)) {
                             click(12);
-                        } else if(inv.getName().equalsIgnoreCase("§6Minecraft-Rezepte")) {
+                        } else if(inv.getName().equalsIgnoreCase(Const.Menu.MINECRAFT_REZEPTE)) {
                             currentState = STATE.OPEN_CRAFT_PAGE;
                         }
                     } else {
-                        Commander.queue("/rezepte");
+                        Commander.queue(Const.Cmd.REZEPTE);
                     }
                 }
                 case OPEN_CRAFT_PAGE -> {
                     if(cont instanceof ContainerChest chest) {
                         IInventory inv = chest.getLowerChestInventory();
-                        if(inv.getName().equalsIgnoreCase("§6Minecraft-Rezepte")) {
+                        if(inv.getName().equalsIgnoreCase(Const.Menu.MINECRAFT_REZEPTE)) {
                             if(itemToCraft != null) {
                                 if(itemToCraft.equals(Items.GOLD_INGOT)) {
                                     int slot = getSlotForGoldIngot();
@@ -85,7 +86,7 @@ public class AutoCrafterV2 extends ActiveFunction {
                                     }
                                 }
                             }
-                        } else if (inv.getName().equalsIgnoreCase("§6Vanilla Bauanleitung")) {
+                        } else if (inv.getName().equalsIgnoreCase(Const.Menu.VANILLA_BAUANLEITUNG)) {
                             currentState = STATE.CRAFT;
                         }
                     }
@@ -137,11 +138,11 @@ public class AutoCrafterV2 extends ActiveFunction {
                 case GO_BACK -> {
                     if(cont instanceof ContainerChest chest) {
                         IInventory inv = chest.getLowerChestInventory();
-                        if(inv.getName().equalsIgnoreCase("§6Vanilla Bauanleitung") || inv.getName().equalsIgnoreCase("§6Minecraft-Rezepte")) {
+                        if(inv.getName().equalsIgnoreCase(Const.Menu.VANILLA_BAUANLEITUNG) || inv.getName().equalsIgnoreCase(Const.Menu.MINECRAFT_REZEPTE)) {
                             if(itemToCraft != null) {
                                 click(45);
                             }
-                        } else if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
+                        } else if(inv.getName().equalsIgnoreCase(Const.Menu.CUSTOM_KATEGORIEN)) {
                             currentState = STATE.OPEN_COMP;
                         }
                     }
@@ -149,15 +150,15 @@ public class AutoCrafterV2 extends ActiveFunction {
                 case OPEN_COMP -> {
                     if(cont instanceof ContainerChest chest) {
                         IInventory inv = chest.getLowerChestInventory();
-                        if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
+                        if(inv.getName().equalsIgnoreCase(Const.Menu.CUSTOM_KATEGORIEN)) {
                             click(11);
-                        } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung-Bauanleitung")) {
+                        } else if(inv.getName().equalsIgnoreCase(Const.Menu.ITEM_KOMPRIMIERUNG_BAUANLEITUNG)) {
                             int slot = Helper.getSlotForItem(itemToCraft, subIDtoCraft, CompressionLevel.NONE);
                             if(slot > -1)
                                 click(slot + inv.getSizeInventory());
                              else
                                 click(81);
-                        } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung")) {
+                        } else if(inv.getName().equalsIgnoreCase(Const.Menu.ITEM_KOMPRIMIERUNG)) {
                             currentState = STATE.COMP1;
                         }
                     }
@@ -166,8 +167,8 @@ public class AutoCrafterV2 extends ActiveFunction {
                     if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
                         if(cont instanceof ContainerChest) {
                             String headName = Helper.getPlayer().openContainer.getSlot(49).getStack().getDisplayName();
-                            if(headName.contains("§6Komprimierungsstufe")) {
-                                int step = Integer.parseInt(headName.replace("§6Komprimierungsstufe ", ""));
+                            if(headName.startsWith(Const.Comp.LEVEL_PREFIX)) {
+                                int step = Integer.parseInt(headName.replace(Const.Comp.LEVEL_PREFIX, ""));
 
                                 switch (currentState) {
                                     case COMP1 -> {
@@ -237,9 +238,9 @@ public class AutoCrafterV2 extends ActiveFunction {
                     if(cont instanceof ContainerChest chest) {
                         IInventory inv = chest.getLowerChestInventory();
 
-                        if(inv.getName().equalsIgnoreCase("§6Minecraft-Rezepte")) {
+                        if(inv.getName().equalsIgnoreCase(Const.Menu.MINECRAFT_REZEPTE)) {
                             currentState = STATE.OPEN_CRAFT_PAGE;
-                        } else if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien")) {
+                        } else if(inv.getName().equalsIgnoreCase(Const.Menu.CUSTOM_KATEGORIEN)) {
                             click(12);
                         } else {
                             click(45);

@@ -4,7 +4,7 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent;
 import net.labymod.api.event.client.network.server.NetworkPayloadEvent.Side;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 

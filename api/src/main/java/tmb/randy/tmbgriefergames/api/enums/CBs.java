@@ -1,4 +1,4 @@
-package tmb.randy.tmbgriefergames.core.enums;
+package tmb.randy.tmbgriefergames.api.enums;
 
 public enum CBs {
     LOBBY("LOBBY"),
@@ -43,4 +43,3 @@ public enum CBs {
         return name;
     }
 }
-

@@ -14,10 +14,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.CompressorState;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.core.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
@@ -47,7 +48,7 @@ public class AutoComp extends ActiveFunction {
             if (isEnabled() && Helper.getPlayer().openContainer != null) {
                 if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
                     IInventory inv = chest.getLowerChestInventory();
-                    if(inv.getName().equals("§6Item-Komprimierung")) {
+                    if(inv.getName().equals(Const.Menu.ITEM_KOMPRIMIERUNG)) {
                         if (event.key() == Key.ARROW_UP)
                             changeList(true);
                          else if (event.key() == Key.ARROW_DOWN)
@@ -55,7 +56,7 @@ public class AutoComp extends ActiveFunction {
                     }
                 }
             } else {
-                if (Addon.allKeysPressed(Addon.settings().getAutoCrafterConfig().getAutoCompHotkey().get())) {
+                if (Addon.allKeysPressedAndGuiClosed(Addon.settings().getAutoCrafterConfig().getAutoCompHotkey().get())) {
                     start();
                 }
             }
@@ -84,14 +85,14 @@ public class AutoComp extends ActiveFunction {
         if(cont instanceof ContainerChest chest) {
 
             IInventory inv = chest.getLowerChestInventory();
-            if(inv.getName().equalsIgnoreCase("§6Custom-Kategorien") && compState == CompressorState.WAITING_FOR_MENU1) {
+            if(inv.getName().equalsIgnoreCase(Const.Menu.CUSTOM_KATEGORIEN) && compState == CompressorState.WAITING_FOR_MENU1) {
                 compState = CompressorState.WAITING_FOR_MENU2;
                 click(11);
 
-            } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung-Bauanleitung")) {
+            } else if(inv.getName().equalsIgnoreCase(Const.Menu.ITEM_KOMPRIMIERUNG_BAUANLEITUNG)) {
                 compState = CompressorState.COMPRESS1;
                 click(81);
-            } else if(inv.getName().equalsIgnoreCase("§6Item-Komprimierung")) {
+            } else if(inv.getName().equalsIgnoreCase(Const.Menu.ITEM_KOMPRIMIERUNG)) {
                 ItemStack pageIndicator = chest.getSlot(49).getStack();
                 if(Item.getIdFromItem(pageIndicator.getItem()) == 397) {
                     String page = pageIndicator.getDisplayName();
@@ -119,7 +120,7 @@ public class AutoComp extends ActiveFunction {
     public boolean start() {
         if(super.start()) {
             compState = CompressorState.WAITING_FOR_MENU1;
-            Commander.queue("/rezepte");
+            Commander.queue(Const.Cmd.REZEPTE);
             return true;
         }
 
@@ -139,7 +140,7 @@ public class AutoComp extends ActiveFunction {
 
     private int getClickDirection(String current) {
         switch (current) {
-            case "§6Komprimierungsstufe 1":
+            case Const.Comp.LEVEL_1:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1:
                         return 0;
@@ -149,7 +150,7 @@ public class AutoComp extends ActiveFunction {
                         break;
                 }
                 break;
-            case "§6Komprimierungsstufe 2":
+            case Const.Comp.LEVEL_2:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1:
                         return -1;
@@ -161,7 +162,7 @@ public class AutoComp extends ActiveFunction {
                         break;
                 }
                 break;
-            case "§6Komprimierungsstufe 3":
+            case Const.Comp.LEVEL_3:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1, COMPRESS2:
                         return -1;
@@ -173,7 +174,7 @@ public class AutoComp extends ActiveFunction {
                         break;
                 }
                 break;
-            case "§6Komprimierungsstufe 4":
+            case Const.Comp.LEVEL_4:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1, COMPRESS2, COMPRESS3:
                         return -1;
@@ -185,7 +186,7 @@ public class AutoComp extends ActiveFunction {
                         break;
                 }
                 break;
-            case "§6Komprimierungsstufe 5":
+            case Const.Comp.LEVEL_5:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1, COMPRESS2, COMPRESS3, COMPRESS4:
                         return -1;
@@ -197,7 +198,7 @@ public class AutoComp extends ActiveFunction {
                         break;
                 }
                 break;
-            case "§6Komprimierungsstufe 6":
+            case Const.Comp.LEVEL_6:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1, COMPRESS2, COMPRESS3, COMPRESS4, COMPRESS5:
                         return -1;
@@ -207,7 +208,7 @@ public class AutoComp extends ActiveFunction {
                         break;
                 }
                 break;
-            case "§6Komprimierungsstufe 7":
+            case Const.Comp.LEVEL_7:
                 switch (lists.get(currentList).get(currentEntry)) {
                     case COMPRESS1, COMPRESS2, COMPRESS3, COMPRESS4, COMPRESS5, COMPRESS6:
                         return -1;

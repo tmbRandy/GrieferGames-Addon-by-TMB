@@ -28,6 +28,7 @@ public class CooldownNotifier extends Function {
         if(!Addon.settings().getChatConfig().getCooldownNotifier().get())
             return;
 
+        if (event.getMessage() == null) return;
         String str = event.getMessage().toLowerCase();
 
         for (Cooldown cooldown : cooldowns) {

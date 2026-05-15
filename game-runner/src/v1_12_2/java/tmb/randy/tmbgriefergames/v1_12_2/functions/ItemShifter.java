@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.v1_12_2.functions;
 import java.util.LinkedList;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
+import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
@@ -60,7 +62,7 @@ public class ItemShifter extends Function {
     public void startShifting() {
         this.currentChest = (ContainerChest) Helper.getPlayer().openContainer;
 
-        if(currentChest.getLowerChestInventory().getName().equals("§6Wähle deine Komprimierung") && topToBottom) {
+        if(currentChest.getLowerChestInventory().getName().equals(Const.Menu.WAEHLE_KOMPRIMIERUNG) && topToBottom) {
             outerLoop : for (int i = 16; i >= 10 ; i--) {
                 ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
                 if(stack.hasTagCompound() && stack.getTagCompound() != null) {
@@ -71,8 +73,8 @@ public class ItemShifter extends Function {
                         for (int j = 0; j < lore.tagCount(); j++) {
                             String string = lore.getStringTagAt(j);
 
-                            if(string.startsWith("§e") && string.endsWith(" Verfügbar")) {
-                                int count = Integer.parseInt(string.replace("§e", "").replace(" Verfügbar", ""). replace(".", ""));
+                            if(string.startsWith(Const.Lore.VERFUEGBAR_COLOR) && string.endsWith(Const.Lore.VERFUEGBAR_SUFFIX)) {
+                                int count = Integer.parseInt(string.replace(Const.Lore.VERFUEGBAR_COLOR, "").replace(Const.Lore.VERFUEGBAR_SUFFIX, ""). replace(".", ""));
                                 if(count > 0) {
                                     for (int k = 0; k < count; k++) {
                                         shiftClick(i);
@@ -90,7 +92,7 @@ public class ItemShifter extends Function {
                 return;
             shiftClick(11);
             sendQueue();
-        } else if(currentChest.getLowerChestInventory().getName().equals("§6spezielle Items") && topToBottom) {
+        } else if(currentChest.getLowerChestInventory().getName().equals(Const.Menu.SPEZIELLE_ITEMS) && topToBottom) {
             if(Helper.isInventoryFull())
                 return;
             for (int i = 0; i < currentChest.getLowerChestInventory().getSizeInventory(); i++) {
@@ -176,7 +178,7 @@ public class ItemShifter extends Function {
             }
 
             if (Keyboard.isKeyDown(Key.ARROW_UP.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
-                if (inv.getName().equalsIgnoreCase("§6Trichter-Einstellungen") && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
+                if (inv.getName().equalsIgnoreCase(Const.Menu.TRICHTER_EINSTELLUNGEN) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
                     shiftClick(49);
                     for (int i = 0; i < 15; i++) {
                         shiftClick(32);
@@ -194,10 +196,12 @@ public class ItemShifter extends Function {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if ((event.key() == Key.ARROW_UP || event.key() == Key.ARROW_LEFT || event.key() == Key.ARROW_RIGHT) &&
-            Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId()) &&
-            Helper.getPlayer().openContainer != null && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
-            ClickManager.getSharedInstance().dropInventory();
+        if(event.state() == State.PRESS) {
+            if (Addon.allKeysPressed(Addon.settings().getInventoryDrop().get()) &&
+                Helper.getPlayer().openContainer != null &&
+                ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
+                ClickManager.getSharedInstance().dropInventory();
+            }
         }
     }
 
@@ -206,7 +210,7 @@ public class ItemShifter extends Function {
             return false;
 
         IInventory inv = ((ContainerChest) Helper.getPlayer().openContainer).getLowerChestInventory();
-        return inv.getName().equalsIgnoreCase("§6Spawner - Lager");
+        return inv.getName().equalsIgnoreCase(Const.Menu.SPAWNER_LAGER);
     }
 
     private void shiftClick(int slot) {

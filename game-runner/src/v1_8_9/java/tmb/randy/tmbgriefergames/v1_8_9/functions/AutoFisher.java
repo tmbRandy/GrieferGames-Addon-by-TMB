@@ -22,10 +22,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.BlockPos;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.core.events.FishEvent;
+import tmb.randy.tmbgriefergames.api.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 import tmb.randy.tmbgriefergames.v1_8_9.click.Click;
@@ -62,7 +63,7 @@ public class AutoFisher extends ActiveFunction {
 
     @Override
     public void chatReceiveEvent(ChatReceiveEvent event) {
-        if(event.chatMessage().getPlainText().endsWith("Warnung! Die auf dem Boden liegenden Items werden in 20 Sekunden entfernt!")) {
+        if(event.chatMessage().getPlainText().endsWith(Const.Chat.AUTOFISHER_ITEMS_WARNING)) {
             EntityPlayerSP player = Helper.getPlayer();
             if(player != null && player.fishEntity != null) {
                 NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getNetHandler();
@@ -92,7 +93,7 @@ public class AutoFisher extends ActiveFunction {
                 }
             }, 4000);
 
-        } else if(event.chatMessage().getPlainText().endsWith("auf dem Boden liegende Items entfernt!")) {
+        } else if(event.chatMessage().getPlainText().endsWith(Const.Chat.AUTOFISHER_ITEMS_REMOVED)) {
             if(waitForFishingAfterRemover) {
                 waitForFishingAfterRemover = false;
                 EntityPlayerSP player = Helper.getPlayer();
@@ -135,7 +136,7 @@ public class AutoFisher extends ActiveFunction {
         } else if(player.openContainer instanceof ContainerChest container) {
             IInventory lowerChestInventory = container.getLowerChestInventory();
 
-            if (lowerChestInventory.getDisplayName().getUnformattedText().equals("Endertruhe") &&
+            if (lowerChestInventory.getDisplayName().getUnformattedText().equals(Const.Item.ENDERTRUHE) &&
                 Addon.settings().getAutoFisherSubConfig().getAllowEC().get()) {
 
                 int ecSize = lowerChestInventory.getSizeInventory();

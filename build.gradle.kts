@@ -6,7 +6,7 @@ plugins {
 val versions = providers.gradleProperty("net.labymod.minecraft-versions").get().split(";")
 
 group = "tmb.randy"
-version = providers.environmentVariable("VERSION").getOrElse("2.0.2")
+version = providers.environmentVariable("VERSION").getOrElse("2.1.0")
 
 labyMod {
     defaultPackageName = "tmb.randy.tmbgriefergames"
@@ -38,4 +38,9 @@ subprojects {
 
     group = rootProject.group
     version = rootProject.version
+
+    extensions.findByType(JavaPluginExtension::class.java)?.apply {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }
