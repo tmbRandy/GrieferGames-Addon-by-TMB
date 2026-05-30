@@ -1,13 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_8_9.functions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
-import net.labymod.api.nbt.NBTTagType;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -15,222 +8,92 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
-import tmb.randy.tmbgriefergames.api.enums.CBs;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.api.enums.HopperState;
-import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.api.events.HopperStateChangedEvent;
-import tmb.randy.tmbgriefergames.api.events.ResetLinesEvent;
-import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.core.functions.HopperConnectionsMaster;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 
-public class HopperConnections extends Function {
-
-    private Map<String, HopperConnection> conntections = new HashMap<>();
-    private BlockPos currentConnectingHopper;
-
-    public HopperConnections() {
-        super(Functions.HOPPERCONNECTIONS.name());
-    }
-
-    private record HopperConnection(BlockPos pos1, BlockPos pos2, @Nullable ItemStack stack, CBs cb) {
-        public @NotNull String toString() {
-            if(stack != null) {
-                return cb.getName() + "." + stack.getItem().toString() + ":" + stack.getMetadata() + "." + pos1;
-            }
-
-            return cb.getName() + "." + pos1;
-        }
-    }
-
-    @Override
-    public void hopperStateChangedEvent(HopperStateChangedEvent event) {
-        if(event.newState() == HopperState.NONE) {
-            currentConnectingHopper = null;
-        }
-    }
+public class HopperConnections extends HopperConnectionsMaster<BlockPos, ItemStack> {
 
     public void onGuiOpenEvent() {
         if(Helper.getPlayer().openContainer instanceof ContainerChest chestContainer) {
             String invName = chestContainer.getLowerChestInventory().getName();
+            BlockPos source = Helper.getBlockPosLookingAt();
             if(invName.equals(Const.Menu.TRICHTER_MEHRFACH_VERBINDUNGEN)) {
                 for (int i = 0; i < 44; i++) {
                     ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(i);
-                    if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
-                        String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
-                        if(firstLine.contains(Const.Lore.VERBUNDEN_MIT_LABEL)) {
-                            String coordinateString = firstLine.replace(Const.Lore.VERBUNDEN_MIT_PREFIX, "").replace("\"", "").replace(".0", "");
-                            String[] coodStrings = coordinateString.split(";");
-                            if(coodStrings.length == 3) {
-                                int x = Integer.parseInt(coodStrings[0]);
-                                int y = Integer.parseInt(coodStrings[1]);
-                                int z = Integer.parseInt(coodStrings[2]);
-
-                                MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                                if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-                                    HopperConnection newConn = new HopperConnection(mop.getBlockPos(), new BlockPos(x, y, z), stack, CBtracker.getCurrentCB());
-                                    conntections.put(newConn.toString(), newConn);
-                                }
-
-                            }
-                        }
-                    }
+                    String firstLine = Helper.getLoreLine(stack, 0);
+                    if(firstLine != null && firstLine.contains(Const.Lore.VERBUNDEN_MIT_LABEL))
+                        addConnection(source, Helper.parseBlockPos(firstLine, Const.Lore.VERBUNDEN_MIT_PREFIX, "\"", ".0"), stack);
                 }
             } else if(invName.equals(Const.Menu.TRICHTER_EINSTELLUNGEN)) {
                 ItemStack stack = chestContainer.getLowerChestInventory().getStackInSlot(16);
-                if(stack != null && stack.getTagCompound() != null && stack.getTagCompound().hasKey("display")) {
-                    String firstLine = stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(0).toString();
-                    if(firstLine.contains(Const.Lore.WEITERLEITEN_AN)) {
-                        String coordinateString = firstLine.replace(Const.Lore.WEITERLEITEN_AN, "").replace("\"", "").replace(".0", "").replace("§7", "").replace("§e", "").trim();
-                        String[] coodStrings = coordinateString.split(";");
-                        if(coodStrings.length == 3) {
-                            int x = Integer.parseInt(coodStrings[0]);
-                            int y = Integer.parseInt(coodStrings[1]);
-                            int z = Integer.parseInt(coodStrings[2]);
-
-                            MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                            if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-
-                                HopperConnection newConn = new HopperConnection(mop.getBlockPos(), new BlockPos(x, y, z), null, CBtracker.getCurrentCB());
-                                conntections.put(newConn.toString(), newConn);
-                            }
-                        }
-                    }
-                }
+                String firstLine = Helper.getLoreLine(stack, 0);
+                if(firstLine != null && firstLine.contains(Const.Lore.WEITERLEITEN_AN))
+                    addConnection(source, Helper.parseBlockPos(firstLine, Const.Lore.WEITERLEITEN_AN, "\"", ".0", "§7", "§e"), null);
             }
         }
     }
 
     @Override
-    public void chatReceiveEvent(ChatReceiveEvent event) {
-        String message = event.chatMessage().getPlainText();
-        switch (message) {
-            case Const.Chat.TRICHTER_CONNECT_START,
-                 Const.Chat.TRICHTER_MULTI_CONNECT_START -> {
-                MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-                    BlockPos blockPos = mop.getBlockPos();
-                    IBlockState state = Helper.getWorld().getBlockState(blockPos);
-
-                    if (state.getBlock() == Blocks.hopper) {
-                        currentConnectingHopper = blockPos;
-                    }
-                }
-            }
-            case Const.Chat.TRICHTER_CONNECTED,
-                 Const.Chat.TRICHTER_CONNECT_ENDED,
-                 Const.Chat.TRICHTER_START_TOO_FAR -> {
-                if (message.equals(Const.Chat.TRICHTER_CONNECTED)) {
-                    MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                    if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-
-                        HopperConnection newConn = new HopperConnection(currentConnectingHopper, mop.getBlockPos(), null, CBtracker.getCurrentCB());
-                        conntections.put(newConn.toString(), newConn);
-                    }
-                }
-
-                currentConnectingHopper = null;
-            }
-            case Const.Chat.TRICHTER_MULTI_ADDED -> {
-                MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-                    ItemStack stack = Helper.getPlayer().inventory.getCurrentItem();
-                    HopperConnection newConn = new HopperConnection(currentConnectingHopper, mop.getBlockPos(), stack, CBtracker.getCurrentCB());
-                    conntections.put(newConn.toString(), newConn);
-                }
-            }
-            case Const.Chat.TRICHTER_MULTI_REMOVED -> {
-                ArrayList<String> removeKeys = new ArrayList<>();
-                MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-                    for (String key : conntections.keySet()) {
-                        HopperConnection connection = conntections.get(key);
-                        if(connection.stack != null) {
-                            if(connection.pos1.equals(mop.getBlockPos())) {
-                                removeKeys.add(key);
-                            }
-                        }
-                    }
-
-                    for (String removeKey : removeKeys) {
-                        conntections.remove(removeKey);
-                    }
-                }
-            }
-            case Const.Chat.TRICHTER_REMOVED -> {
-                String removeKey = null;
-                MovingObjectPosition mop = Helper.getPlayer().rayTrace(5, 1.0F);
-                if(mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
-                    for (String key : conntections.keySet()) {
-                        HopperConnection connection = conntections.get(key);
-                        if(connection.stack == null) {
-                            if(connection.pos1.equals(mop.getBlockPos())) {
-                                removeKey = key;
-                                break;
-                            }
-                        }
-                    }
-
-                    if(removeKey != null) {
-                        conntections.remove(removeKey);
-                    }
-                }
-            }
-        }
+    protected BlockPos getLookingAtPos() {
+        return Helper.getBlockPosLookingAt();
     }
 
     @Override
-    public void cbChangedEvent(CbChangedEvent event) {
-        currentConnectingHopper = null;
+    protected boolean isHopper(BlockPos pos) {
+        return Helper.getWorld().getBlockState(pos).getBlock() == Blocks.hopper;
+    }
+
+    @Override
+    protected ItemStack getHeldStack() {
+        return Helper.getHeldItem();
+    }
+
+    @Override
+    protected String getStackKey(ItemStack stack) {
+        return stack.getItem().toString() + ":" + stack.getMetadata();
     }
 
     @Override
     public void renderWorldEvent(RenderWorldEvent event) {
 
-        for (Entry<String, HopperConnection> entry : conntections.entrySet()) {
-            HopperConnection conntection = entry.getValue();
+        for (Connection<BlockPos, ItemStack> conntection : getConnections()) {
 
-            if(conntection.pos1 == null)
-                return;
-
-            double distance = conntection.pos1.distanceSq(Helper.getPlayer().posX,
-                Helper.getPlayer().posY, Helper.getPlayer().posZ);
-            double actualDistance = Math.sqrt(distance);
-
-            if (actualDistance > 30)
+            if(conntection.pos1() == null)
                 continue;
 
-            if (conntection.cb == CBtracker.getCurrentCB()) {
+            double distance = conntection.pos1().distanceSq(Helper.getPlayer().posX,
+                Helper.getPlayer().posY, Helper.getPlayer().posZ);
+
+            if (distance > 900)
+                continue;
+
+            if (conntection.cb() == CBtracker.getCurrentCB()) {
                 if (Helper.getWorld().getBlockState(conntection.pos1()).getBlock() == Blocks.hopper) {
                     drawLineBetween(conntection);
                 }
             }
         }
 
-        if(currentConnectingHopper != null) {
-            drawSphere(currentConnectingHopper);
+        if(getCurrentConnectingHopper() != null) {
+            drawSphere(getCurrentConnectingHopper());
         }
     }
 
-    private void drawLineBetween(HopperConnection connection) {
+    private void drawLineBetween(Connection<BlockPos, ItemStack> connection) {
         if(!Addon.settings().getHopperSubConfig().getShowLines().get())
             return;
 
-        double x1 = connection.pos1.getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX + 0.5;
-        double y1 = connection.pos1.getY() - Minecraft.getMinecraft().getRenderManager().viewerPosY + 0.5;
-        double z1 = connection.pos1.getZ() - Minecraft.getMinecraft().getRenderManager().viewerPosZ + 0.5;
+        double x1 = connection.pos1().getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX + 0.5;
+        double y1 = connection.pos1().getY() - Minecraft.getMinecraft().getRenderManager().viewerPosY + 0.5;
+        double z1 = connection.pos1().getZ() - Minecraft.getMinecraft().getRenderManager().viewerPosZ + 0.5;
 
-        double x2 = connection.pos2.getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX + 0.5;
-        double y2 = connection.pos2.getY() - Minecraft.getMinecraft().getRenderManager().viewerPosY + 0.5;
-        double z2 = connection.pos2.getZ() - Minecraft.getMinecraft().getRenderManager().viewerPosZ + 0.5;
+        double x2 = connection.pos2().getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX + 0.5;
+        double y2 = connection.pos2().getY() - Minecraft.getMinecraft().getRenderManager().viewerPosY + 0.5;
+        double z2 = connection.pos2().getZ() - Minecraft.getMinecraft().getRenderManager().viewerPosZ + 0.5;
 
         GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();
@@ -241,7 +104,7 @@ public class HopperConnections extends Function {
         GL11.glLineWidth(64.0F);
         GL11.glBegin(GL11.GL_LINES);
 
-        if (connection.stack == null) {
+        if (connection.stack() == null) {
             GL11.glColor3f(0.333f, 1.0f, 1.0f);
             GL11.glVertex3d(x1, y1, z1);
 
@@ -263,7 +126,7 @@ public class HopperConnections extends Function {
         GlStateManager.enableTexture2D();
         GlStateManager.popMatrix();
 
-        if (connection.stack != null) {
+        if (connection.stack() != null) {
             long time = Helper.getWorld().getTotalWorldTime();
             double animationDuration = 100.0;
 
@@ -273,7 +136,7 @@ public class HopperConnections extends Function {
             double animY = y1 + (y2 - y1) * progress;
             double animZ = z1 + (z2 - z1) * progress;
 
-            renderItemStackAt(connection.stack, animX, animY, animZ);
+            renderItemStackAt(connection.stack(), animX, animY, animZ);
         }
     }
 
@@ -360,8 +223,4 @@ public class HopperConnections extends Function {
         GlStateManager.popMatrix();
     }
 
-    @Override
-    public void resetLinesEvent(ResetLinesEvent event) {
-        conntections = new HashMap<>();
-    }
 }

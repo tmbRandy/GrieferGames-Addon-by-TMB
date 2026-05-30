@@ -1,9 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import net.labymod.api.event.client.chat.ChatReceiveEvent;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.projectile.EntityFishHook;
@@ -21,84 +17,45 @@ import net.minecraft.util.EnumHand;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.api.events.FishEvent;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.functions.AutoFisherMaster;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
-public class AutoFisher extends ActiveFunction {
+public class AutoFisher extends AutoFisherMaster {
 
-    private boolean fished = false;
-    private boolean waitForFishingAfterRemover = false;
-
-    public AutoFisher() {
-        super(Functions.AUTOFISHER.name());
+    @Override
+    protected boolean isHoldingFishingRod() {
+        return Helper.getPlayer().getHeldItemMainhand().getItem() instanceof ItemFishingRod;
     }
 
     @Override
-    public void tickEvent(GameTickEvent event) {
-        if(!Addon.settings().getAutoFisherSubConfig().getEnabled().get()) return;
-        if(!(Helper.getPlayer().getHeldItemMainhand().getItem() instanceof ItemFishingRod)) return;
+    protected boolean hasFishHook() {
+        return Helper.getPlayer().fishEntity != null;
+    }
 
-        if(Helper.getPlayer().fishEntity == null) return;
-
-        if(fished) return;
+    @Override
+    protected boolean shouldCatchFish() {
         EntityFishHook fishingHook = Helper.getPlayer().fishEntity;
         double x = fishingHook.motionX;
         double z = fishingHook.motionZ;
         double y = fishingHook.motionY;
-        if(y < -0.05 && Helper.getPlayer().fishEntity.isInWater() && x == 0 && z == 0) {
-            catchFish();
-        }
+        return y < -0.05 && Helper.getPlayer().fishEntity.isInWater() && x == 0 && z == 0;
     }
 
     @Override
-    public void chatReceiveEvent(ChatReceiveEvent event) {
-        if(event.chatMessage().getPlainText().endsWith(Const.Chat.AUTOFISHER_ITEMS_WARNING)) {
-            if(Helper.getPlayer().fishEntity != null) {
-                NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                if(nethandler != null) {
-                    nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                } else {
-                    ClickManager.getSharedInstance().rightClick();
-                }
-                waitForFishingAfterRemover = true;
-            }
-
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(Helper.getPlayer().fishEntity != null) {
-                        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                        if(nethandler != null) {
-                            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                        } else
-                            ClickManager.getSharedInstance().rightClick();
-
-                        waitForFishingAfterRemover = true;
-                    }
-                }
-            }, 4000);
-
-        } else if(event.chatMessage().getPlainText().endsWith(Const.Chat.AUTOFISHER_ITEMS_REMOVED)) {
-            if(waitForFishingAfterRemover) {
-                waitForFishingAfterRemover = false;
-                NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                if(nethandler != null) {
-                    nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                } else {
-                    ClickManager.getSharedInstance().rightClick();
-                }
-            }
-        }
+    protected boolean shouldReactToFishEvent() {
+        return true;
     }
 
     @Override
-    public void fishEvent(FishEvent event) {
-        catchFish();
+    protected void castRod() {
+        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
+        if(nethandler != null)
+            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
+        else
+            ClickManager.getSharedInstance().rightClick();
     }
 
     private void dropRubbishFishedItems() {
@@ -169,17 +126,6 @@ public class AutoFisher extends ActiveFunction {
         return count;
     }
 
-    private void startTimer() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                fished = false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
     public void selectSimilarItem() {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.player != null) {
@@ -220,17 +166,13 @@ public class AutoFisher extends ActiveFunction {
         }
     }
 
-    private void catchFish() {
-        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-
-        if(nethandler != null)
-            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-        else
-            ClickManager.getSharedInstance().rightClick();
+    @Override
+    protected void catchFish() {
+        castRod();
 
         if(!fished) {
             fished = true;
-            startTimer();
+            startCatchCooldown();
         }
         if(Helper.getPlayer().getHeldItemMainhand().isEmpty()) return;
         new Thread(() -> {

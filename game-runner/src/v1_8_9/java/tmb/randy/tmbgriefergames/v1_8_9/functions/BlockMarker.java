@@ -12,15 +12,10 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.core.functions.BlockMarkerMaster;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 
-public class BlockMarker extends Function {
-
-    public BlockMarker() {
-        super(Functions.BLOCKMARKER.name());
-    }
+public class BlockMarker extends BlockMarkerMaster {
 
     @Override
     public void renderWorldEvent(RenderWorldEvent event) {
@@ -30,18 +25,10 @@ public class BlockMarker extends Function {
                 return;
 
             NBTTagCompound tag = heldItem.getTagCompound();
-            if (tag == null || (!tag.hasKey("orb_pickaxe") && !tag.hasKey("orb_shovel")))
+            if (tag == null || !isRelevantOrbTool(tag.hasKey("orb_pickaxe"), tag.hasKey("orb_shovel")))
                 return;
 
-            int size =  3;
-
-            if(tag.hasKey("orb_tool_level")) {
-                size = switch (tag.getString("orb_tool_level")) {
-                    case "LARGE" -> 7;
-                    case "MEDIUM" -> 5;
-                    default -> 3;
-                };
-            }
+            int size = tag.hasKey("orb_tool_level") ? getToolSize(tag.getString("orb_tool_level")) : 3;
 
             MovingObjectPosition rayTrace = Minecraft.getMinecraft().objectMouseOver;
             if (rayTrace == null || rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)

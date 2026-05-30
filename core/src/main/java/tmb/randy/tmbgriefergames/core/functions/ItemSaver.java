@@ -11,12 +11,20 @@ import tmb.randy.tmbgriefergames.core.enums.Functions;
 
 public class ItemSaver extends Function {
 
+    private static final long NOTIFICATION_COOLDOWN_MS = 750L;
+    private static String lastNotificationKey = "";
+    private static long lastNotificationTime = 0L;
+
     public ItemSaver() {
         super(Functions.ITEMSAVER.name());
     }
 
     public enum ProtectionItems {
         BONZE_SWORD, BIRTH_SWORD, SOS, BIRTH_BOW
+    }
+
+    public enum ProtectedAction {
+        ATTACK, USE_ITEM, RELEASE_USE_ITEM
     }
 
     public static String getVersionizedNbtStringFor(ProtectionItems item) {
@@ -40,33 +48,86 @@ public class ItemSaver extends Function {
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if(Addon.settings().getItemProtection().get()) {
-            if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
-                if(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack() != null) {
-                    ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack();
-                    if(stack.hasDataComponentContainer()) {
-                        if(stack.getDataComponentContainer().has(DataComponentKey.simple("ench"))) {
-                            String enchantments = stack.getDataComponentContainer().get(DataComponentKey.simple("ench")).toString();
+        if (event.action() == Action.CLICK && event.button().isLeft() && shouldBlockCurrentItemAction(ProtectedAction.ATTACK)) {
+            event.setCancelled(true);
+        } else if (event.action() == Action.CLICK && event.button().isRight() && shouldBlockCurrentItemAction(ProtectedAction.USE_ITEM)) {
+            event.setCancelled(true);
+        } else if (event.action() == Action.RELEASE && event.button().isRight() && shouldBlockCurrentItemAction(ProtectedAction.RELEASE_USE_ITEM)) {
+            event.setCancelled(true);
+        }
+    }
 
-                            if(event.action() == Action.CLICK) {
-                                if((enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BONZE_SWORD)) || enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_SWORD))) && event.button().isLeft()) {
-                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_sword"));
-                                    Addon.getConnection().changeSlot(findHotbarSlotforItem());
-                                    event.setCancelled(true);
-                                } else if(enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.SOS)) && event.button().isRight()) {
-                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_sos"));
-                                    Addon.getConnection().changeSlot(findHotbarSlotforBlock());
-                                    event.setCancelled(true);
-                                } else if(enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW)) && event.button().isRight()) {
-                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_birth_bow"));
-                                    Addon.getConnection().changeSlot(findHotbarSlotforItem());
-                                    event.setCancelled(true);
-                                }
-                            }
-                        }
-                    }
-                }
+    public static boolean shouldBlockCurrentItemAction(ProtectedAction action) {
+        ProtectedItem protectedItem = getProtectedItemForAction(action);
+
+        if (protectedItem == null)
+            return false;
+
+        displayProtectionNotification(protectedItem);
+        return true;
+    }
+
+    private static ProtectedItem getProtectedItemForAction(ProtectedAction action) {
+        if (!Addon.settings().getItemProtection().get())
+            return null;
+
+        String enchantments = getCurrentMainHandEnchantments();
+
+        if (enchantments == null)
+            return null;
+
+        return switch (action) {
+            case ATTACK -> {
+                if (enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BONZE_SWORD)) || enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_SWORD)))
+                    yield ProtectedItem.SWORD;
+
+                yield null;
             }
+            case USE_ITEM -> {
+                if (enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.SOS)))
+                    yield ProtectedItem.SOS;
+
+                if (enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW)))
+                    yield ProtectedItem.BIRTH_BOW;
+
+                yield null;
+            }
+            case RELEASE_USE_ITEM -> enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW)) ? ProtectedItem.BIRTH_BOW : null;
+        };
+    }
+
+    private static String getCurrentMainHandEnchantments() {
+        if (Laby.labyAPI().minecraft().getClientPlayer() == null)
+            return null;
+
+        ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack();
+
+        if (stack == null || !stack.hasDataComponentContainer() || !stack.getDataComponentContainer().has(DataComponentKey.simple("ench")))
+            return null;
+
+        return stack.getDataComponentContainer().get(DataComponentKey.simple("ench")).toString();
+    }
+
+    private static void displayProtectionNotification(ProtectedItem protectedItem) {
+        long now = System.currentTimeMillis();
+
+        if (protectedItem.messageKey.equals(lastNotificationKey) && now - lastNotificationTime < NOTIFICATION_COOLDOWN_MS)
+            return;
+
+        lastNotificationKey = protectedItem.messageKey;
+        lastNotificationTime = now;
+        Addon.displayNotification("§4§l" + Addon.translate(protectedItem.messageKey));
+    }
+
+    private enum ProtectedItem {
+        SWORD("itemSaver.item_saver_message_sword"),
+        SOS("itemSaver.item_saver_message_sos"),
+        BIRTH_BOW("itemSaver.item_saver_message_birth_bow");
+
+        private final String messageKey;
+
+        ProtectedItem(String messageKey) {
+            this.messageKey = messageKey;
         }
     }
 

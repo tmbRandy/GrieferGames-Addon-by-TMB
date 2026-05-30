@@ -1,6 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.util.Color;
 import net.minecraft.block.material.Material;
@@ -15,36 +14,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
 import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.functions.NatureBordersRendererMaster;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
-public class NatureBordersRenderer extends ActiveFunction {
-
-    private float lineRed = 1.0F;
-    private float lineGreen = 0.0F;
-    private float lineBlue = 0.0F;
-
-    public NatureBordersRenderer() {
-        super(Functions.NATUREBORDERSRENDERER.name());
-    }
-
-    public static double getDistanceSq(double x1, double z1, double x2, double z2) {
-        double xs = x1 - x2;
-        double zs = z1 - z2;
-        return xs * xs + zs * zs;
-    }
-
-    @Override
-    public void keyEvent(KeyEvent event) {
-        if(Addon.allKeysPressedAndGuiClosed(Addon.settings().getNatureSubConfig().getHotkey().get()) && CBtracker.isNatureWorldCB()) {
-            toggle();
-        }
-    }
+public class NatureBordersRenderer extends NatureBordersRendererMaster {
 
     public BlockPos getTopLiquidOrSolidBlock2(WorldClient world, BlockPos pos) {
         Chunk chunk = world.getChunk(pos);
@@ -82,54 +57,6 @@ public class NatureBordersRenderer extends ActiveFunction {
         return var3;
     }
 
-    Vector3f HSV2RGB(float h, float s, float v) {
-        float r = v;
-        float g = v;
-        float b = v;
-
-        if (s > 0.0F)
-        {
-            h *= 6.0F;
-            int i = (int)h;
-            float f = h - i;
-
-            switch (i)
-            {
-                case 0:
-                default:
-                    g = v * (1.0F - s * (1.0F - f));
-                    b = v * (1.0F - s);
-                    break;
-
-                case 1:
-                    r = v * (1.0F - s * f);
-                    b = v * (1.0F - s);
-                    break;
-
-                case 2:
-                    r = v * (1.0F - s);
-                    b = v * (1.0F - s * (1.0F - f));
-                    break;
-
-                case 3:
-                    r = v * (1.0F - s);
-                    g = v * (1.0F - s * f);
-                    break;
-
-                case 4:
-                    r = v * (1.0F - s * (1.0F - f));
-                    g = v * (1.0F - s);
-                    break;
-
-                case 5:
-                    g = v * (1.0F - s);
-                    b = v * (1.0F - s * f);
-            }
-        }
-
-        return new Vector3f(r, g, b);
-    }
-
     public boolean isPosInRenderableArea(EntityPlayerSP player, int posX, int posZ) {
         return getDistanceSq(player.posX, player.posZ, posX, posZ) < 36864.0D;
     }
@@ -155,8 +82,8 @@ public class NatureBordersRenderer extends ActiveFunction {
             Tessellator tesselator = Tessellator.getInstance();
             BufferBuilder render = tesselator.getBuffer();
             if(Addon.settings().getNatureSubConfig().getRainbow().get()) {
-                Vector3f hsv = this.RGB2HSV(this.lineRed, this.lineGreen, this.lineBlue);
-                Vector3f rgb = this.HSV2RGB((hsv.x + 0.01F) % 1.0F, hsv.y, hsv.z);
+                ColorVector hsv = this.RGB2HSV(this.lineRed, this.lineGreen, this.lineBlue);
+                ColorVector rgb = this.HSV2RGB((hsv.x + 0.01F) % 1.0F, hsv.y, hsv.z);
                 this.lineRed = rgb.x;
                 this.lineGreen = rgb.y;
                 this.lineBlue = rgb.z;
@@ -236,50 +163,6 @@ public class NatureBordersRenderer extends ActiveFunction {
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             RenderHelper.enableStandardItemLighting();
         }
-    }
-
-    @Override
-    public void cbChangedEvent(CbChangedEvent event) {
-        // Override to avoid stop() while switching CBs
-    }
-
-    Vector3f RGB2HSV(float r, float g, float b) {
-        float max = Math.max(r, g);
-        max = Math.max(max, b);
-        float min = Math.min(r, g);
-        min = Math.min(min, b);
-        float h = max - min;
-
-        if (h > 0.0F)
-        {
-            if (max == r)
-            {
-                h = (g - b) / h;
-
-                if (h < 0.0F)
-                {
-                    h += 6.0F;
-                }
-            }
-            else if (max == g)
-            {
-                h = 2.0F + (b - r) / h;
-            }
-            else
-            {
-                h = 4.0F + (r - g) / h;
-            }
-        }
-
-        h /= 6.0F;
-        float s = max - min;
-
-        if (max != 0.0F)
-        {
-            s /= max;
-        }
-
-        return new Vector3f(h, s, max);
     }
 
 }

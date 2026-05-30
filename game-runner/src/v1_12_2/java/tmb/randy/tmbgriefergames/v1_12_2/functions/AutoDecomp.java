@@ -1,10 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import net.labymod.api.client.gui.screen.key.Key;
-import net.labymod.api.event.Phase;
-import net.labymod.api.event.client.input.KeyEvent;
-import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.inventory.ClickType;
@@ -12,57 +7,30 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.core.helper.Commander;
+import tmb.randy.tmbgriefergames.core.functions.AutoDecompMaster;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
 import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
-public class AutoDecomp extends ActiveFunction {
-
-    private static final String[] ROMAN = {"", "I", "II", "III", "IV", "V", "VI", "VII"};
+public class AutoDecomp extends AutoDecompMaster {
 
     private Item compItem;
     private int compSubID;
-    private int counter;
-
-    public AutoDecomp() {
-        super(Functions.DECOMP.name());
-    }
 
     @Override
-    public void keyEvent(KeyEvent event) {
-        if (event.state() == State.PRESS && event.key() == Key.ESCAPE)
-            stop();
-        else if (Addon.allKeysPressedAndGuiClosed(Addon.settings().getAutoCrafterConfig().getAutoDecompHotkey().get()))
-            start();
-    }
-
-    @Override
-    public void tickEvent(GameTickEvent event) {
-        if (event.phase() == Phase.PRE && isEnabled()) {
-            if (++counter >= 5) {
-                decomp();
-                counter = 0;
-            }
-        }
-    }
-
-    private void decomp() {
+    protected void decomp() {
         if (Helper.getPlayer().openContainer == null
                 || !(Minecraft.getMinecraft().currentScreen instanceof GuiCrafting)) {
-            Commander.queue("/craft");
+            queueCraftCommand();
             return;
         }
         Container container = Helper.getPlayer().openContainer;
         if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
 
         if (compItem == null) {
-            ItemStack slot0 = Helper.getPlayer().inventory.mainInventory.getFirst();
-            if (!slot0.isEmpty()) {
+            ItemStack slot0 = Helper.getFirstInventoryStack();
+            if (!Helper.isStackEmpty(slot0)) {
                 compItem = slot0.getItem();
                 compSubID = slot0.getMetadata();
             }
@@ -111,7 +79,7 @@ public class AutoDecomp extends ActiveFunction {
     private int[] getCompCountForItem() {
         int[] output = new int[8];
         for (ItemStack stack : Helper.getPlayer().inventory.mainInventory) {
-            if (stack.isEmpty()) continue;
+            if (Helper.isStackEmpty(stack)) continue;
             if (!stack.getItem().equals(compItem) || stack.getMetadata() != compSubID) continue;
             int level = 0;
             if (stack.hasDisplayName()) {
@@ -157,8 +125,8 @@ public class AutoDecomp extends ActiveFunction {
             ItemStack stack = container.inventorySlots.get(i).getStack();
             if (!stack.getItem().equals(compItem) || stack.getMetadata() != compSubID) continue;
             if (!stack.hasDisplayName() || !stack.getDisplayName().endsWith(suffix)) continue;
-            if (stack.getCount() < lowestCount) {
-                lowestCount = stack.getCount();
+            if (Helper.getStackSize(stack) < lowestCount) {
+                lowestCount = Helper.getStackSize(stack);
                 lowestSlot = i;
             }
         }

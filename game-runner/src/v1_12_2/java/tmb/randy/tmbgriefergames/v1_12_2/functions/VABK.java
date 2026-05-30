@@ -1,63 +1,36 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import net.labymod.api.event.Phase;
-import net.labymod.api.event.client.input.KeyEvent;
-import net.labymod.api.event.client.input.KeyEvent.State;
-import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.functions.VABKMaster;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
-public class VABK extends ActiveFunction {
-    private int cooldown = 0;
+public class VABK extends VABKMaster {
 
-    public VABK() {
-        super(Functions.VABK.name());
+    @Override
+    protected void setSelectedSlot(int slot) {
+        Helper.getPlayer().inventory.currentItem = slot;
     }
 
     @Override
-    public void tickEvent(GameTickEvent event) {
-        if (event.phase() == Phase.PRE && isEnabled()) {
-            cooldown++;
-
-            if (cooldown >= (Addon.settings().getSwordsSubConfig().getVABKswitchCooldown().get() + Addon.settings().getSwordsSubConfig().getVABKloadTime().get())) {
-                cooldown = 0;
-                shoot();
-            } else if (cooldown == Addon.settings().getSwordsSubConfig().getVABKswitchCooldown().get() - 2) {
-                Helper.getPlayer().inventory.currentItem = 2;
-            } else if (cooldown == Addon.settings().getSwordsSubConfig().getVABKswitchCooldown().get()) {
-                startUsingBow();
-            }
-        }
-    }
-
-    @Override
-    public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && Addon.allKeysPressedAndGuiClosed(Addon.settings().getSwordsSubConfig().getVABKhotkey().get()) && Addon.isChatGuiClosed()) {
-            toggle();
-        }
-    }
-
-    private void startUsingBow() {
+    protected void startUsingBow() {
         ItemStack heldItem = Helper.getPlayer().getHeldItemMainhand();
 
         if (heldItem != null && heldItem.getItem() instanceof ItemBow)
             Helper.rightClick();
     }
 
-    private void shoot() {
+    @Override
+    protected void shoot() {
         if (Helper.getPlayer().isHandActive() && Helper.getPlayer().getActiveItemStack().getItem() instanceof ItemBow) {
             int useDuration = Helper.getPlayer().getItemInUseCount();
 
             if (useDuration >= 20) {
                 Helper.getPlayer().connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-                Helper.getPlayer().inventory.currentItem = 0;
+                setSelectedSlot(0);
             }
         }
     }

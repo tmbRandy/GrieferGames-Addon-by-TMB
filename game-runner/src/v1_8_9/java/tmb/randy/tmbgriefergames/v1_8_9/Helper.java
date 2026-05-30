@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_8_9;
 
+import net.labymod.api.nbt.NBTTagType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -26,8 +27,12 @@ public class Helper {
         return Minecraft.getMinecraft().theWorld;
     }
 
+    public static MovingObjectPosition getLookTrace() {
+        return getPlayer().rayTrace(5, 1.0F);
+    }
+
     public static BlockPos getBlockPosLookingAt() {
-        MovingObjectPosition trace = getPlayer().rayTrace(5, 1.0F);
+        MovingObjectPosition trace = getLookTrace();
         if(trace != null && trace.typeOfHit == MovingObjectType.BLOCK)
             return trace.getBlockPos();
 
@@ -76,7 +81,7 @@ public class Helper {
 
         for (int i = 0; i < inventory.mainInventory.length; i++) {
             ItemStack stack = inventory.mainInventory[i];
-            if (stack == null)
+            if (isStackEmpty(stack))
                 return false;
         }
 
@@ -88,7 +93,7 @@ public class Helper {
 
         for (int i = 0; i < inventory.mainInventory.length; i++) {
             ItemStack stack = inventory.mainInventory[i];
-            if (stack != null)
+            if (!isStackEmpty(stack))
                 return false;
         }
 
@@ -119,7 +124,7 @@ public class Helper {
 
         for (int i = 0; i < inventory.mainInventory.length; i++) {
             ItemStack stack = inventory.mainInventory[i];
-            if (stack == null)
+            if (isStackEmpty(stack))
                 freeSlots++;
         }
 
@@ -132,7 +137,7 @@ public class Helper {
 
         for (int i = 0; i < inventory.mainInventory.length; i++) {
             ItemStack stack = inventory.mainInventory[i];
-            if (stack != null && stack.getItem() == item && stack.getMetadata() == meta)
+            if (!isStackEmpty(stack) && stack.getItem() == item && stack.getMetadata() == meta)
                 slotCount++;
         }
 
@@ -144,7 +149,7 @@ public class Helper {
 
         for (int i = 0; i < inventory.mainInventory.length; i++) {
             ItemStack stack = inventory.mainInventory[i];
-            if (stack != null && stack.getItem() == item && (stack.getMetadata() == meta || meta == -1)) {
+            if (!isStackEmpty(stack) && stack.getItem() == item && (stack.getMetadata() == meta || meta == -1)) {
                 CompressionLevel level = CompressionLevel.fromItemStack(stack);
 
                 if(level.ordinal() <= maxCompressionLevel.ordinal())
@@ -160,7 +165,7 @@ public class Helper {
 
         for (int i = 0; i < inventory.mainInventory.length; i++) {
             ItemStack stack = inventory.mainInventory[i];
-            if (stack != null && stack.getItem() == item && (stack.getMetadata() == meta || meta == -1))
+            if (!isStackEmpty(stack) && stack.getItem() == item && (stack.getMetadata() == meta || meta == -1))
                     return i;
         }
 
@@ -168,7 +173,7 @@ public class Helper {
     }
 
     public static BlockPos getPlacementPosition() {
-        MovingObjectPosition mop = getPlayer().rayTrace(5, 1.0F);
+        MovingObjectPosition mop = getLookTrace();
 
         if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             int targetX = mop.getBlockPos().getX();
@@ -204,5 +209,36 @@ public class Helper {
         } else {
             return null;
         }
+    }
+
+    public static boolean isStackEmpty(ItemStack stack) {
+        return stack == null || stack.stackSize <= 0;
+    }
+
+    public static int getStackSize(ItemStack stack) {
+        return isStackEmpty(stack) ? 0 : stack.stackSize;
+    }
+
+    public static ItemStack getFirstInventoryStack() {
+        return getPlayer().inventory.mainInventory[0];
+    }
+
+    public static ItemStack getHeldItem() {
+        return getPlayer().getCurrentEquippedItem();
+    }
+
+    public static String getLoreLine(ItemStack stack, int line) {
+        if (isStackEmpty(stack) || !stack.hasTagCompound() || !stack.getTagCompound().hasKey("display"))
+            return null;
+
+        return stack.getTagCompound().getCompoundTag("display").getTagList("Lore", NBTTagType.STRING.getId()).get(line).toString();
+    }
+
+    public static BlockPos parseBlockPos(String value, String... removals) {
+        for (String removal : removals)
+            value = value.replace(removal, "");
+
+        String[] coords = value.trim().split(";");
+        return coords.length == 3 ? new BlockPos(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2])) : null;
     }
 }
