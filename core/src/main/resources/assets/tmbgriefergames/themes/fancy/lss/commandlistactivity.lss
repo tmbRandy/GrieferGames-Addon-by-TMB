@@ -1,0 +1,24 @@
+.list {
+  width: 100%;
+  height: fit-content;
+  space-between-entries: 12;
+
+  CommandEntry {
+    height: fit-content;
+
+
+    .title {
+    text-color: red;
+    font-size: 1.5;
+    }
+
+    .description {
+      text-color: gold;
+    }
+  }
+}
+
+.scroll {
+  width: 100%;
+  height: 100%;
+}

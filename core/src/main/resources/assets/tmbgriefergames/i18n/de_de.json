@@ -1,0 +1,537 @@
+{
+    "tmbgriefergames": {
+        "settings": {
+            "name": "GrieferGames Addon",
+            "plotSwitchSubConfig": {
+                "name": "Schneller Plotwechsel",
+                "plotWheelHotkey": {
+                    "name": "PlotWheel öffnen"
+                },
+                "nextPlot": {
+                    "name": "Nächstes Plot",
+                    "description": "Springe zum nächsten GS des Spielers (/p h <spieler> +1)"
+                },
+                "previousPlot": {
+                    "name": "Vorheriges Plot",
+                    "description": "Springe zum vorherigen GS des Spielers (/p h <spieler> -1)"
+                }
+            },
+            "enabled": {
+                "name": "Aktiviert",
+                "description": "Aktiviert oder deaktiviert das gesamte Addon."
+            },
+            "skipHub": {
+                "name": "Spawnen auf"
+            },
+            "natureSubConfig": {
+                "name": "CB Nature Plotgrenzen",
+                "description": "Einstellungen für die Darstellung der Plotgrenzen auf CB Nature und Extreme.",
+                "borderRadius": {
+                    "name": "Radius",
+                    "description": "Legt fest, in welchem Abstand um dich herum die Grenzen dargestellt werden."
+                },
+                "borderheight": {
+                    "name": "Höhe",
+                    "description": "Legt die Höhe der dargestellten Plotgrenzen fest."
+                },
+                "borderMaxHeight": {
+                    "name": "Maximale Höhe",
+                    "description": "Stellt die Plotgrenzen in maximaler Höhe dar (Epilepsiegefahr!)"
+                },
+                "hotkey": {
+                    "name": "Hotkey"
+                },
+                "rainbow": {
+                    "name": "Farbwechsel"
+                },
+                "borderColor": {
+                    "name": "Farbe"
+                }
+            },
+            "hopperSubConfig": {
+                "name": "Trichter",
+                "description": "Einstellungen für die automatische Einstellung von Trichtern.",
+                "filterItem": {
+                    "name": "Filteritem festlegen",
+                    "description": "Legt das erste Item in deiner Hotbar als Filteritem fest."
+                },
+                "radius": {
+                    "name": "Einsaugradius",
+                    "description": "Lege den Einsaugradius fest, der eingestellt werden soll. Bei -1 wird der Einsaugradius nicht verändert."
+                },
+                "finalAction": {
+                    "name": "Schlussaktion",
+                    "description": "Legt fest, was nach Einstellung der restlichen Einstellungen passieren soll.",
+                    "entries": {
+                        "none": "NICHT ÄNDERN",
+                        "close": "MENÜ SCHLIEßEN",
+                        "connect": "VERDINDEN",
+                        "multiconnection": "MULTI-VERBINDUNG"
+                    }
+                },
+                "stackSize": {
+                    "name": "Stackgröße",
+                    "description": "Legt fest, welche Menge an Items der Trichter pro Tick verarbeiten soll.",
+                    "entries": {
+                        "none": "NICHT ÄNDERN",
+                        "singleitem": "1",
+                        "twelve": "12",
+                        "fullstack": "64"
+                    }
+                },
+                "autoSneak": {
+                    "name": "Automatisch sneaken bei Rechtsklick"
+                },
+                "showRadius": {
+                    "name": "Verbindungsgrenze darstellen"
+                },
+                "showLines": {
+                    "name": "Verbindungslinien darstellen"
+                },
+                "header": {
+                    "auto": {
+                        "name": "Automatische Trichtereinstellungen"
+                    },
+                    "visual": {
+                        "name": "Visuelle Darstellungen"
+                    }
+                },
+                "resetLines": {
+                    "name": "Linien",
+                    "text": "zurücksetzen"
+                }
+            },
+            "swordsSubConfig": {
+                "name": "Automatische Klinge",
+                "description": "Lege deine Bonze oder BIRTH Klinge in den ersten, deine Pfeile in den zweiten und einen Bogen in den dritten Hotbar Slot. Nachdem du einen Schuss mit dem Bogen abgegeben hast, wird sofort die Klinge in die Hand genommen und nach einem eingestellten Cooldown wieder der Bogen ausgewählt.",
+                "HABKenabled": {
+                    "name": "Aktiviert"
+                },
+                "HABKcooldown": {
+                    "name": "Wechsel-Cooldown",
+                    "description": "Der Cooldown bis wieder auf den Bogen gewechselt wird in Millisekunden"
+                },
+                "VABKloadTime": {
+                    "name": "Spannzeit",
+                    "description": "Höhere Werte lassen den Pfeil weiter fliegen. Niedrige Werte erhöhen die Schussrate deutlich."
+                },
+                "VABKswitchCooldown": {
+                    "name": "Wechsel-Cooldown",
+                    "description": "Die Zeit, bis der nächste Schuss geladen wird"
+                },
+                "VABKhotkey": {
+                    "name": "Hotkey",
+                    "description": "Mit dieser Tastenkombination kannst du die vollautomatische Bonzeklinge ein- und ausschalten."
+                },
+                "header": {
+                    "habk": {
+                        "name": "Halbautomatische Klinge (HABK)"
+                    },
+                    "vabk": {
+                        "name": "Vollautomatische Klinge (VABK)"
+                    }
+                }
+            },
+            "chatConfig": {
+                "name": "Chat",
+                "typeCorrection": {
+                    "name": "Autokorrektur",
+                    "description": "Korrigiert gängige Fehler in Befehlen, wie z.B. 7ec, (msg or t/r."
+                },
+                "messageSplit": {
+                    "name": "/msg Teiler",
+                    "description": "Wenn du eine Nachricht versendest, die das 100-Zeichen Limit von GrieferGames überschreitet, wird die Nachricht automatisch in mehrere /msg Befehle aufgeteilt. Funktioniert mit /msg und /r."
+                },
+                "hideNews": {
+                    "name": "News verbergen",
+                    "description": "Entfernt die GrieferGames News aus dem Chat."
+                },
+                "antiFakeMoney": {
+                    "name": "Anti Fakemoney",
+                    "description": "Zeigt dir hinter eingehenden Zahlungen an, ob die Zahlung echt oder gefälscht ist."
+                },
+                "cooldownNotifier": {
+                    "name": "Benachrichtigung für Cooldowns",
+                    "description": "Benachrichtigt dich im Chat, sobald ein Cooldown für /wand /rand /boden /sign oder /anticopy abgelaufen ist."
+                },
+                "cleanChat": {
+                    "name": "Vereinfachter Chat",
+                    "description": "GrieferGames zeigt im Chat einige überflüssige Nachrichten im Chat an (z.B. \"Du befindest dich jetzt im Portalraum...\". Hiermit werden solche Nachrichten ausgeblendet."
+                },
+                "hideEmptyLines": {
+                    "name": "Leerzeilen entfernen",
+                    "description": "Entfernt alle Leerzeilen aus dem Chat und umgeht damit gleichzeitig /clearchat."
+                },
+                "muteStreamer": {
+                    "name": "Streamer Nachrichten entfernen",
+                    "description": "Entfernt die Chat Benachrichtigungen, wenn Streamer live gehen."
+                },
+                "msgTabMode": {
+                    "name": "/msg in Tabs"
+                },
+                "muteCaseOpening": {
+                    "name": "Hauptgewinne im Case Opening verbergen"
+                },
+                "muteLuckyBlocks": {
+                    "name": "Lucky Block Nachrichten verbergen"
+                }
+            },
+            "itemProtection": {
+                "name": "Itemschutz",
+                "description": "Verhindert das Nutzen von wertvollen Items wie Bonze Klinge, Birth Klinge, Birth Bogen, setzen eines SoS. ACHTUNG! Diese Funktion verhindert lediglich Klicks, welche vom Spieler selbst ausgeführt werden. Softwareseitige Klicks (z.B. durch einen Autoclicker) können ein SoS trotzdem setzen oder mit einer Bonze Klinge zuschlagen."
+            },
+            "blockMarker": {
+                "name": "Block Marker",
+                "description": "Umrandet bei Verwendung von Spezialwerkzeugen (z.B. Orb-Spitzhacke, Orb-Schaufel, Baumeisterpicke, Abrissschaufel...) alle Blöcke, die abgebaut werden."
+            },
+            "tooltipConfig": {
+                "name": "Tooltip Info",
+                "showCompTooltip": {
+                    "name": "Tooltip Info für komprimierte Items",
+                    "description": "Bewege die Maus über ein oder mehrere komprimierte Items um zu sehen, um die genaue Menge in DKs, Stacks und Items anzuzeigen."
+                },
+                "showAdventurerTooltip": {
+                    "name": "Tooltip Info für Adventurer-Werkzeuge",
+                    "description": "Bewege die Maus über ein Adventurer-Werkzeug, um deinen Fortschritt in Prozent zu sehen. Du siehst außerdem, wie viele DKs, Stacks und Items du noch abbauen musst."
+                }
+            },
+            "spawn": {
+                "spawnat": "Spawn auf",
+                "entries": {
+
+                }
+            },
+            "autoCrafterConfig": {
+                "name": "Autocrafter & Auto(de)komprimierer",
+                "description": "Es gibt 2 verschiedene Autocrafter:\\n\\nV1 nutzt das Vanilla Crafting Menü (Werkbank). Lege dein Rezept in die Werkbank und speichere mit SHIFT + ENTER. Drücke anschließend ENTER, um das Rezept zu craften.\\n\\nV2 nutzt das /rezepte Menü. Lege das Item, welches du craften willst in deinen ersten Hotbar Slot. Gib anschließend /autocraft in den Chat ein. Das /rezepte Menü öffnet sich automatisch und craftet deine Items.",
+                "autoCraftSpeed": {
+                    "name": "Geschwindigkeit",
+                    "entries": {
+                        "slow": "LANGSAM",
+                        "medium": "MITTEL",
+                        "fast": "SCHNELL"
+                    }
+                },
+                "autoDrop": {
+                    "name": "Automatisch droppen"
+                },
+                "endlessMode": {
+                    "name": "Endlosmodus",
+                    "description": "Kann mit ENTER Ein- oder Ausgeschaltet werden. Ist diese Option deaktiviert, muss ENTER manuell gedrückt werden, um eine Portion zu craften."
+                },
+                "onlyFullStacks": {
+                    "name": "Nur ganze Stacks nehmen"
+                },
+                "finalActionV2": {
+                    "name": "Schlussaktion",
+                    "description": "Legt fest, ob bei Nutzung des Autocrafters V2 (/autocraft) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen.",
+                    "entries": {
+                        "comp": "KOMPRIMIEREN",
+                        "drop": "DROPPEN"
+                    }
+                },
+                "finalActionV3": {
+                    "name": "Schlussaktion",
+                    "description": "Legt fest, ob bei Nutzung des Autocrafters V3 (/craftV3) die gecrafteten Items aus dem Inventar geworfen oder komprimiert werden sollen.",
+                    "entries": {
+                        "comp": "KOMPRIMIEREN",
+                        "drop": "DROPPEN"
+                    }
+                },
+                "autoCompHotkey": {
+                    "name": "Hotkey für Autokomprimierer"
+                },
+                "autoDecompHotkey": {
+                    "name": "Hotkey für Autodekomprimierer"
+                },
+                "delay": {
+                    "name": "Verzögerung",
+                    "description": "Wenn es zu Problemen kommt, erhöhe die Verzögerung um den Crafter zu verlangsamen."
+                },
+                "goldBlockToIngot": {
+                    "name": "Goldbarren aus Goldblöcken craften",
+                    "description": "Aktiviere diese Option, um Goldbarren aus Blöcken herzustellen.\nDeaktiviere diese Option, um Goldbarren aus Nuggets herzustellen."
+                },
+                "header": {
+                    "v1": {
+                        "name": "V1 (/craft)"
+                    },
+                    "v2": {
+                        "name": "V2 (/autocraft)"
+                    },
+                    "v3": {
+                        "name": "V3 (/craftV3)"
+                    },
+                    "autocomp": {
+                        "name": "Autokomprimierer"
+                    }
+                }
+            },
+            "autoLoot": {
+                "name": "Auto Loot",
+                "description": "Holt automatisch deine /freekiste und deinen /grieferboost ab."
+            },
+            "accountUnitySubConfig": {
+                "name": "Account Unity",
+                "description": "Enthält Optionen, die das Zusammenspiel deiner Accounts verbessern.",
+                "tpAccept": {
+                    "name": "Auto /tpaccept (nur für deine Accounts)",
+                    "description": "/tpa und /tpahere automatisch annehmen, wenn diese von einem deiner eigenen Accounts gesendet werden."
+                },
+                "voteBooster": {
+                    "name": "Vote Booster",
+                    "description": "Wenn einer deiner eigenen Accounts einen /startkick oder /startjail startet, voten deine übrigen Accounts automatisch /ja."
+                },
+                "mainAccount": {
+                    "name": "Zahlung an Hauptaccount",
+                    "description": "Trage hier den Namen deines Hauptaccounts ein, damit alle deine Accounts ihre Einnahmen direkt an ihn überweisen."
+                }
+            },
+            "openDocs": {
+                "name": "Alle Befehle",
+                "text": "anzeigen"
+            },
+            "tmbDC": {
+                "name": "TMB Discord",
+                "text": "beitreten"
+            },
+            "autoFisherSubConfig":{
+                "name": "Auto Angler",
+                "enabled": {
+                    "name": "Aktiviert"
+                },
+                "allowEC": {
+                    "name": "Items in die EC bewegen.",
+                    "description": "Bewegt deinen geangelten Loot automatisch in deine EC, falls diese geöffnet ist."
+                },
+                "autoDropRods": {
+                    "name": "Angeln wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist. Es werden nur nicht umbenannte Angeln weggeworfen."
+                },
+                "autoDropBows": {
+                    "name": "Bögen wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "autoDropSaddle": {
+                    "name": "Sattel wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "autoDropFish": {
+                    "name": "Fische wegwerfen",
+                    "description": "Nur Kabeljau und Lachs."
+                },
+                "autoDropBooks": {
+                    "name": "Zauberbücher wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "autoDropLilypads": {
+                    "name": "Seerosenblätter wegwerfen",
+                    "description": "Erfordert, dass dein Inventar oder deine EC geöffnet ist."
+                },
+                "header": {
+                    "rubbish": {
+                        "name": "Müll Items"
+                    }
+                }
+            },
+            "infinityMiner": {
+                "name": "InfinityMiner Hotkey",
+                "description": "InfnityMiner baut fortlaufend Blöcke ab, bis dein Werkzeug am Ende seiner Haltbarkeit ist."
+            },
+            "inventoryDrop": {
+                "name": "Hotkey zum Inventar Drop"
+            }
+        },
+        "functions": {
+            "enable": "%s §a§lAKTIVIERT",
+            "disable": "%s §c§lDEAKTIVIERT",
+            "playertracer": {
+                "name": "Fahndung"
+            },
+            "craftv2": {
+                "name": "AutoCrafter V2"
+            },
+            "craftv3": {
+                "name": "AutoCrafter V3"
+            },
+            "comp": {
+                "name": "AutoKomprimierer"
+            },
+            "decomp": {
+                "name": "AutoDekomprimierer"
+            },
+            "eject": {
+                "name": "Auswurf"
+            },
+            "vabk": {
+                "name": "VABK"
+            },
+            "naturebordersrenderer": {
+                "name": "Sichtbare Plotgrenzen"
+            },
+            "potionTimer": {
+                "flyPotion": "Flugtrank",
+                "breakPotion": "Abbautrank",
+                "flyPotionUsed": "Flugtrank benutzt.",
+                "breakPotionUsed": "Abbautrank benutzt.",
+                "flyPotionExpired": "Flugtrank abgelaufen.",
+                "breakPotionExpired": "Abbautrank abgelaufen."
+            },
+            "infinityminer": {
+                "name": "InfinityMiner"
+            }
+        },
+        "chat": {
+            "realMoney": "VERIFIZIERT",
+            "fakeMoney": "FAKE MONEY",
+            "cooldownWand": "Der Cooldown für /wand ist abgelaufen.",
+            "cooldownRand": "Der Cooldown für /rand ist abgelaufen.",
+            "cooldownBoden": "Der Cooldown für /boden ist abgelaufen.",
+            "cooldownSign": "Der Cooldown für /sign ist abgelaufen.",
+            "cooldownAnticopy": "Der Cooldown für /anticopy ist abgelaufen.",
+            "cooldownAushöhlen": "Der Cooldown für /aushöhlen ist abgelaufen."
+        },
+        "itemSaver": {
+            "item_saver_message_sword": "Dieses Schwert ist zu wertvoll, um es zu benutzen!",
+            "item_saver_message_sos": "Diesen Kürbis zu setzen wäre ein gruselig teurer Spaß!",
+            "item_saver_message_birth_bow": "Manche Bögen sind zum Schießen da. Dieser hier eher nicht!"
+        },
+        "tooltip": {
+            "compressedTooltip": "§6%s §eDKs §6%s §eStacks §6%s §eItems",
+            "adventurerTooltipOneLine": "§6%s%% §f| §eRest: §6 %s §eDKs §6%s §eStacks §6 %s §eItems",
+            "adventurerTooltipMultiLine": "\n§6%s%%\n§6%s §eDKs\n§6%s §eStacks\n§6%s §eItems"
+        },
+        "payAll": {
+            "amountTooLow": "Der abgerundete Betrag pro Spieler liegt bei 0$!",
+            "response": "%s Spieler * %s$ = %s$."
+        },
+        "playerTracer": {
+            "startedHopping": "CB Hopping gestartet",
+            "lookingForPlayer": "Fahndung nach Spieler %s läuft...",
+            "tooManyArguments": "Zu viele Argumente!",
+            "foundPlayer": "Spieler gefunden!",
+            "tracingEnded": "Fahndung beendet."
+        },
+        "itemRemover": {
+            "itemRemover": "Item remover"
+        },
+        "nearby": {
+            "nearby": "In der Nähe"
+        },
+        "hudWidget": {
+            "potiontimer": {
+                "name": "Trank Timer"
+            },
+            "itemclear": {
+                "name": "Item remover"
+            },
+            "gameinfo": {
+                "name": "GG Scoreboard",
+                "showBank": {
+                    "name": "Kontostand anzeigen"
+                }
+            },
+            "nearby": {
+                "name": "In der Nähe",
+                "showMobs": {
+                    "name": "Mobs zeigen"
+                }
+            },
+            "adventure": {
+                "name": "Abenteuer",
+                "oneLine": {
+                    "name": "Eine Zeile"
+                }
+            },
+            "activefunctions": {
+                "name": "Aktive Funktionen"
+            }
+        },
+        "autoComp": {
+            "list": "Liste #%s"
+        },
+        "autoCrafter": {
+            "recipeSaved": "Rezept gespeichert",
+            "active": "Endlosmodus §a§lAKTIV",
+            "inactive": "Endlosmodus §c§lDEAKTIVIERT",
+            "recipeSavedV3": "Rezept gespeichert. Öffne jetzt nacheinander alle Kisten für das Quellmaterial!",
+            "noItemFound": "Lege erst das zu craftende Item in deinen ersten Slot!",
+            "startedCrafting": "Alle benötigten Materialien wurden erfasst. Crafte...",
+            "setChestForMaterial": "Quellkiste für %s festgelegt.",
+            "mixedChest": "Die Kiste enthält verschiedene Items und kann daher nicht als Quellkiste verwendet werden.",
+            "noSourceFound": "Keine Quellkiste gefunden.",
+            "chooseVariant": "Es gibt mehrere mögliche Rezepte für dieses Item. Bitte wähle eines aus und halte ENTER gedrückt, bis das Rezept gespeichert wurde."
+        },
+        "mobs": {
+            "spawn": "Erschaffe",
+            "chicken": "Huhn",
+            "cow": "Kuh",
+            "pig": "Schwein",
+            "sheep": "Schaf",
+            "rabbit": "Hase",
+            "bat": "Fledermaus",
+            "squid": "Tintenfisch",
+            "mooshroom": "Pilzkuh",
+            "villager": "Dorfbewohner",
+            "horse": "Pferd",
+            "donkey": "Esel",
+            "mule": "Maultier",
+            "ocelot": "Ozelot",
+            "wolf": "Wolf",
+            "spider": "Spinne",
+            "cave_spider": "Höhlenspinne",
+            "enderman": "Enderman",
+            "pigman": "Pigman",
+            "zombie": "Zombie",
+            "skeleton": "Skelett",
+            "creeper": "Creeper",
+            "spider_jockey": "Spinnenreiter",
+            "slime": "Schleim",
+            "ghast": "Ghast",
+            "zombie_villager": "Zombie-Dorfbewohner",
+            "blaze": "Lohe",
+            "witch": "Hexe",
+            "endermite": "Endermilbe",
+            "silverfish": "Silberfisch",
+            "guardian": "Wächter",
+            "elder_guardian": "Großer Wächter",
+            "wither_skeleton": "Witherskelett",
+            "wither": "Wither",
+            "ender_dragon": "Enderdrache",
+            "magma_cube": "Magmawürfel",
+            "iron_golem": "Eisengolem",
+            "snow_golem": "Schneemann"
+        },
+        "autoLoot": {
+            "skullAvailable": "Du hast wieder /kopf frei!"
+        },
+        "plotWheel": {
+            "addPlot": "Plot hinzufügen",
+            "name": "Name",
+            "optional": "optional",
+            "cb": "CB",
+            "all": "[ALLE]",
+            "command": "Befehl",
+            "thisAccountOnly": "Nur dieser Account",
+            "add": "Hinzufügen",
+            "delete": "löschen"
+        },
+        "commands": {
+            "dks": "Ein simpler Command, um auszurechnen, wie du komprimieren musst, um eine bestimmte Anzahl an DKs zu bekommen.\n\nGib den Command '/dks <Anzahl>' ein. Du erhältst direkt im Chat die benötigten Komprimierungsstufen. Beispiel: '/dks 50' ergibt die Ausgabe '50 DKs = 2 * V • 8 * IV • 3 * III • 3 * I'",
+            "fahndung": "Sucht alle CBs nach einem gesuchten Spieler ab.\n\nGib den Command und dahinter den Namen des gesuchten Spielers ein (z.B. '/fahndung RypexYT'). Es werden automatisch der Reihe nach alle CBs kurz aufgesucht. Sollte der gesuchte Spieler auf einem CB gefunden werden, wird die Fahndung beendet. Der Befehl kann auch ohne die Eingabe eines Spielernamens genutzt werden. Dadurch werden alle CBs kurz besucht. Ideal, um eine Werbebotschaft per Status zu verbreiten.\n\nDie Fahndung kann durch Bewegung (W, A, S, D) beendet werden.",
+            "craftv3": "Der fortschrittlichste Autocrafter (V3) nimmt automatisch Items aus verschiedenen Kisten und vercraftet diese anschließend.\n\nLeere dein Inventar, lege das zu craftende Item in deinen 1. Slot und startte den Autocrafter V3 per Command. Es öffnet sich kurz das /rezepte Menü, um alle benötigten Materialien zu erfassen. Öffne nun nacheinander alle Kisten, in denen sich Quellitems befinden. Sobale alle nötigen Items erfasst wurden, legt der Autocrafter los. Er nimmt sich nacheinander die Items im benötigten Mischverhältnis aus den Kisten. Anschließend öffnet er das /rezepte Menü und craftet das Rezept. Die fertigen Items können wahlweise komprimiert oder gedroppt werden. Sollte es zu Fehlern kommen, stelle den Cooldown in den Einstellungen langsamer.\n\nDer Autocrafter V3 kann durch ESC beendet werden.",
+            "auswurf": "Startet den Auswurf Modus.\n\nDer Auswurf Modus kann automatisch endlose Lager leeren. Aktiviere den Modus und öffne ein endloses Lager. Die enthaltenen Items werden herausgeworfen, bis du den Modus beendest. Geeignet, um nicht komprimierbare Items aus einem endlosen Lager in ein anderes umzuschichten. Aktiviere hierzu bei deinem neuen, endlosen Lager den Einsaugmodus und starte den Auswurf beim alten, endlosen Lager.\n\nDer Auswurf Modus kann durch ESC beendet werden.",
+            "autocraft": "Der fortgeschrittene Autocrafter (V2) craftet Items, die dir zugedroppt werden.\n\nLege das Zielitem das du craften willst in deinen 1. Slot. Stelle dich nun in eine Werferanlage, die dir die Quellitems zuwirft und starte per Command den Autocrafter V2. Das /rezepte Menü wird genutzt, um permanent zu craften. Sobald dein Inventar voll läuft, werden die Items wahlweise komprimiert oder weggeworfen.\n\nDer Autocrafter V2 kann durch ESC beendet werden.",
+            "pay": "Das Gegenstück zu /pay * ist /pay **. Anstatt den angegebenen Betrag mit der Spielerzahl zu multiplizieren, wird er durch die Spielerzahl geteilt.\n\nBeispiel: Wenn 100 Spieler auf dem CB sind, erhalten alle Spieler durch den Command '/pay ** 10000' genau 100$."
+        }
+    },
+    "labymod": {
+        "hudWidgetCategory": {
+            "tmbgriefergames": {
+                "name": "GrieferGames Addon",
+                "description": "by §d§l§oT§b§l§oM§d§l§oB"
+            }
+        }
+    }
+
+}

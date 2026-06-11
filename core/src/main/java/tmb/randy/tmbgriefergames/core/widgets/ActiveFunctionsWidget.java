@@ -1,0 +1,110 @@
+package tmb.randy.tmbgriefergames.core.widgets;
+
+import java.util.List;
+import javax.inject.Singleton;
+import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
+import net.labymod.api.client.gui.hud.binding.dropzone.NamedHudWidgetDropzones;
+import net.labymod.api.client.gui.hud.hudwidget.HudWidgetConfig;
+import net.labymod.api.client.gui.hud.hudwidget.SimpleHudWidget;
+import net.labymod.api.client.gui.hud.position.HudSize;
+import net.labymod.api.client.gui.icon.Icon;
+import net.labymod.api.client.gui.screen.ScreenContext;
+import net.labymod.api.client.render.matrix.Stack;
+import net.labymod.api.client.resources.ResourceLocation;
+import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.enums.Functions;
+import tmb.randy.tmbgriefergames.api.enums.HopperState;
+import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.helper.HopperTracker;
+
+@Singleton
+public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
+    private static final int ICON_SIZE = 32;
+    private static final int SPACE = 2;
+    private static final Icon HOPPER_CONNECT_ICON =  Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/hopper_connect.png"));
+    private static final Icon HOPPER_MULTI_CONNECT_ICON =  Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/hopper_multiconnect.png"));
+    public static ActiveFunctionsWidget sharedInstance;
+
+    public ActiveFunctionsWidget(HudWidgetCategory category) {
+        super("activefunctions", HudWidgetConfig.class);
+        sharedInstance = this;
+        bindDropzones(NamedHudWidgetDropzones.ACTION_BAR);
+        this.bindCategory(category);
+    }
+
+    @Override
+    public Icon getIcon() {
+        return Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status.png"));
+    }
+
+    public void render(RenderPhase phase, ScreenContext context, boolean isEditorContext, HudSize size) {
+        if(context.stack() instanceof Stack stack) {
+            List<ActiveFunction> active = isEditorContext ? getDemoFunctions() : Addon.getActiveFunctions();
+
+            int xPos = 0;
+            int yPos = 0;
+
+            for (ActiveFunction function : active) {
+                if(function.hasIcon()) {
+                    function.getIcon().render(stack, xPos, yPos, ICON_SIZE);
+                }
+
+                if(anchor().isRight() || anchor.isLeft()) {
+                    yPos += (ICON_SIZE + SPACE);
+                } else {
+                    xPos += (ICON_SIZE + SPACE);
+                }
+            }
+
+            if(HopperTracker.getCurrentHopperState() == HopperState.CONNECT) {
+                HOPPER_CONNECT_ICON.render(stack, xPos, yPos, ICON_SIZE);
+
+                if(anchor().isRight() || anchor.isLeft()) {
+                    yPos += (ICON_SIZE + SPACE);
+                } else {
+                    xPos += (ICON_SIZE + SPACE);
+                }
+            } else if(HopperTracker.getCurrentHopperState() == HopperState.MULTICONNECT) {
+                HOPPER_MULTI_CONNECT_ICON.render(stack, xPos, yPos, ICON_SIZE);
+
+                if(anchor().isRight() || anchor.isLeft()) {
+                    yPos += (ICON_SIZE + SPACE);
+                } else {
+                    xPos += (ICON_SIZE + SPACE);
+                }
+            }
+
+            size.setHeight((float)Math.max(ICON_SIZE, yPos));
+            size.setWidth((float)Math.max(ICON_SIZE, xPos));
+        }
+    }
+
+    @Subscribe
+    public void messageReceived(ChatReceiveEvent event) {
+        if(this.isEnabled() && Addon.isGG()) {
+            String message = event.chatMessage().getPlainText();
+            if (message.equals(Const.Chat.TRICHTER_MULTI_CONNECT_START) ||
+                message.equals(Const.Chat.TRICHTER_CONNECT_START) ||
+                message.equals(Const.Chat.TRICHTER_CONNECTED) ||
+                message.equals(Const.Chat.TRICHTER_CONNECT_ENDED) ||
+                message.equals(Const.Chat.TRICHTER_START_TOO_FAR)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @Override
+    public boolean isVisibleInGame() {
+        return Addon.isGG();
+    }
+
+    private List<ActiveFunction> getDemoFunctions() {
+        return List.of(
+            Addon.getActiveFunction(Functions.PLAYERTRACER.name()),
+            Addon.getActiveFunction(Functions.COMP.name()),
+            Addon.getActiveFunction(Functions.CRAFTV3.name()));
+    }
+}

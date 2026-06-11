@@ -1,0 +1,542 @@
+{
+    "tmbgriefergames": {
+        "settings": {
+            "name": "GrieferGames Addon",
+            "plotSwitchSubConfig": {
+                "name": "Quick plot switch",
+                "description": "Set a pair of keys to switch through the plots of a player.",
+                "plotWheelHotkey": {
+                    "name": "Open PlotWheel"
+                },
+                "nextPlot": {
+                    "name": "Next plot",
+                    "description": "Go to the next plot (/p h <player> +1)"
+                },
+                "previousPlot": {
+                    "name": "Previous plot",
+                    "description": "Go to the previous plot (/p h <player> -1)"
+                }
+            },
+            "enabled": {
+                "name": "Enabled",
+                "description": "Activates or disables the functionality of this addon."
+            },
+            "skipHub": {
+                "name": "Spawn on"
+            },
+            "natureSubConfig": {
+                "name": "Show plot borders on CB Nature",
+                "description": "Settings for the rendered borders on CB Nature and Extreme.",
+                "borderRadius": {
+                    "name": "Radius",
+                    "description": "Sets the distance around you where the borders should shall appear."
+                },
+                "borderheight": {
+                    "name": "Height",
+                    "description": "Sets the height for the border lines."
+                },
+                "borderMaxHeight": {
+                    "name": "Max height",
+                    "description": "Maximum height for the borders"
+                },
+                "hotkey": {
+                    "name": "Nature borders Hotkey"
+                },
+                "rainbow": {
+                    "name": "Change colors"
+                },
+                "borderColor": {
+                    "name": "Color"
+                }
+            },
+            "hopperSubConfig": {
+                "name": "Hoppers",
+                "description": "Automates the settings within the hopper menu.",
+                "filterItem":{
+                    "name": "Filter item",
+                    "description": "Sets the first item in your hotbar as filter item."
+                },
+                "radius": {
+                    "name": "Radius",
+                    "description": "Sets the radius for the hopper to catch items. -1 means no change."
+                },
+                "finalAction": {
+                    "name": "Final action",
+                    "description": "Sets the last action to execute.",
+                    "entries": {
+                        "none": "DON'T CHANGE",
+                        "close": "CLOSE MENU",
+                        "connect": "CONNECT",
+                        "multiconnection": "MULTI CONNECTION"
+                    }
+                },
+                "stackSize": {
+                    "name": "Stack size",
+                    "description": "Which stack size should the hopper pass each tick.",
+                    "entries": {
+                        "none": "DON'T CHANGE",
+                        "singleitem": "1",
+                        "twelve": "12",
+                        "fullstack": "64"
+                    }
+                },
+                "autoSneak": {
+                    "name": "Auto sneak when right clicking."
+                },
+                "showRadius": {
+                    "name": "Show connection range"
+                },
+                "showLines": {
+                    "name": "Show connection lines"
+                },
+                "header": {
+                    "auto": {
+                        "name": "Automatic settings"
+                    },
+                    "visual": {
+                        "name": "Visual settings"
+                    }
+                },
+                "resetLines": {
+                    "name": "Lines",
+                    "text": "reset"
+                }
+            },
+            "swordsSubConfig": {
+                "name": "Automatic sword",
+                "description": "Put your Bonze or BIRTH sword into your first slot, your arrows into your second slot and a bow into the third slot of your hotbar. After you fired an arrow, the sword will be selected and after a set cooldown the bow will be selected again.",
+                "HABKenabled": {
+                    "name": "Enabled"
+                },
+                "HABKcooldown": {
+                    "name": "Switch cooldown",
+                    "description": "The time in ms until the bow will be selected."
+                },
+                "VABKloadTime": {
+                    "name": "Loading time",
+                    "description": "the higher the value, the higher the arrow will fly. Lower values increase the shot rate by far,"
+                },
+                "VABKswitchCooldown": {
+                    "name": "Switch cooldown",
+                    "description": "The time until the next arrow will be loaded."
+                },
+                "VABKhotkey": {
+                    "name": "VABK Hotkey",
+                    "description": "With this hotkey you can toggle the full automatic sword."
+                },
+                "header": {
+                    "habk": {
+                        "name": "Half automatic Bonze sword (HABK)"
+                    },
+                    "vabk": {
+                        "name": "Full automatic Bonze sword (VABK)"
+                    }
+                }
+            },
+            "spawn": {
+                "spawnat": "Spawn at",
+                "entries": {
+
+                }
+            },
+            "chatConfig": {
+                "name": "Chat",
+                "typeCorrection": {
+                    "name": "Type correction",
+                    "description": "This will prevent you from common typing errors like 7ec, (msg or t/r"
+                },
+                "messageSplit": {
+                    "name": "/msg splitter",
+                    "description": "Splits a /msg or /r message into multiple messages if it is longer than the 100 character limit of GrieferGames."
+                },
+                "hideNews": {
+                    "name": "Hide news",
+                    "description": "Removes the GrieferGames news ticker from the chat."
+                },
+                "antiFakeMoney": {
+                    "name": "Anti fake money",
+                    "description": "Verifies incoming payments and detects fake money."
+                },
+                "cooldownNotifier": {
+                    "name": "Cooldown notification",
+                    "description": "Shows a notification as soon as a cooldown like /wand /rand /boden /sign /anticopy is over."
+                },
+                "cleanChat": {
+                    "name": "Clean chat",
+                    "description": "GrieferGames sends some unimportant messages in the chat. This function removes such messages and makes the chat much cleaner."
+                },
+                "hideEmptyLines": {
+                    "name": "Hide empty lines",
+                    "description": "Removes empty lines from the chat."
+                },
+                "muteStreamer": {
+                    "name": "Remove streamer messages",
+                    "description": "removes the messages that appear, when a streamer goes live."
+                },
+                "msgTabMode": {
+                    "name": "/msg in tabs"
+                },
+                "muteCaseOpening": {
+                    "name": "Hide Case Opening messages"
+                },
+                "muteLuckyBlocks": {
+                    "name": "Hide Lucky Block messages"
+                }
+            },
+            "itemProtection": {
+                "name": "Item protection",
+                "description": "Prevents you from using expensive farming items like Bonze Klinge, Birth Klinge, Birth Bogen, placing of SoS. CAUTION! This function will only work for clicks performed by the user. Software based clicks (performed by an auto clicker) will still damage or set your item."
+            },
+            "blockMarker": {
+                "name": "Block marker",
+                "description": "Highlights all affected blocks while using special tools (e.g. Orb-Spitzhacke, Orb-Schaufel, Baumeisterpicke, Abrissschaufel...)."
+            },
+            "tooltipConfig": {
+                "name": "Tooltip info",
+                "showCompTooltip": {
+                    "name": "Tooltip info for compressed items",
+                    "description": "Hover over compressed items or blocks to see how many double chests, stacks and single items the item contains."
+                },
+                "showAdventurerTooltip": {
+                    "name": "Tooltip info for adventurer tools",
+                    "description": "Hover over an adventurer tool to see your farming progress in percent and the remaining number in double chests, stacks and single items."
+                }
+            },
+            "autoCrafterConfig": {
+                "name": "Auto-crafter & auto-(de)compressor",
+                "description": "There are 2 different Autocrafters:\n\nV1 uses the Vanilla Crafting menu (Workbench). Place your recipe in the Workbench and save with SHIFT + ENTER. Then press ENTER to craft the recipe.\n\nV2 uses the /recipes menu. Place the item you want to craft in your first hotbar slot. Then type /autocraft in the chat. The /recipes menu will open automatically and craft your items.",
+                "autoCraftSpeed": {
+                    "name": "Speed",
+                    "entries": {
+                        "slow": "SLOW",
+                        "medium": "MEDIUM",
+                        "fast": "FAST"
+                    }
+                },
+                "autoDrop": {
+                    "name": "Auto-drop"
+                },
+                "endlessMode": {
+                    "name": "Endless mode",
+                    "description": "Can be toggled on or off with ENTER. If this option is disabled, ENTER must be manually pressed to craft a batch."
+                },
+                "onlyFullStacks": {
+                    "name": "Take only full stacks"
+                },
+                "finalActionV2": {
+                    "name": "Final action",
+                    "description": "Specifies whether, when using Autocrafter V2 (/autocraft), the crafted items should be dropped or compressed in the inventory.",
+                    "entries": {
+                        "comp": "COMPRESS",
+                        "drop": "DROP"
+                    }
+                },
+                "finalActionV3": {
+                    "name": "Final action",
+                    "description": "Specifies whether, when using Autocrafter V3 (/craftV3), the crafted items should be dropped or compressed in the inventory.",
+                    "entries": {
+                        "comp": "COMPRESS",
+                        "drop": "DROP"
+                    }
+                },
+                "autoCompHotkey": {
+                    "name": "Hotkey for auto-compressor"
+                },
+                "autoDecompHotkey": {
+                    "name": "Hotkey for auto-decompressor"
+                },
+                "delay": {
+                    "name": "Delay",
+                    "description": "If it is buggy increase the delay to make it slower."
+                },
+                "goldBlockToIngot": {
+                    "name": "Craft gold ingots from blocks",
+                    "description": "Activate this to craft gold ingots from gold blocks.\nDeactivate this to craft gold ingots from gold nuggets."
+                },
+                "header": {
+                    "v1": {
+                        "name": "V1 (/craft)"
+                    },
+                    "v2": {
+                        "name": "V2 (/autocraft)"
+                    },
+                    "v3": {
+                        "name": "V3 (/craftV3)"
+                    },
+                    "autocomp": {
+                        "name": "auto compressor"
+                    }
+                }
+            },
+            "autoLoot": {
+                "name": "Auto Loot",
+                "description": "Automatically gets your /freekiste and /grieferboost."
+            },
+            "accountUnitySubConfig": {
+                "name": "Account unity",
+                "description": "Contains options that improve the teamwork of your accounts.",
+                "tpAccept": {
+                    "name": "Auto /tpaccept (for your own accounts only)",
+                    "description": "Auto accept /tpa and /tpahere, if they are sent by one of your own accounts."
+                },
+                "voteBooster": {
+                    "name": "Vote booster",
+                    "description": "It one of your accounts starts a /startjail or /startkick, all of your accounts will vote /ja."
+                },
+                "mainAccount": {
+                    "name": "Pay to main account",
+                    "description": "Enter the name of your main account to make all your accounts pay their income directly to you."
+                }
+            },
+            "openDocs": {
+                "name": "All commands",
+                "text": "show"
+            },
+            "tmbDC": {
+                "name": "TMB Discord",
+                "text": "join"
+            },
+            "autoFisherSubConfig":{
+                "name": "Auto Fisher",
+                "enabled": {
+                    "name": "Enabled"
+                },
+                "allowEC": {
+                    "name": "Move items to EC.",
+                    "description": "Automatically moves your fished loot into your EC if it's open."
+                },
+                "autoDropRods": {
+                    "name": "Discard fishing rods",
+                    "description": "Your inventory or enderchest must be open. Rods with custom name will not be dropped."
+                },
+                "autoDropBows": {
+                    "name": "Discard bows",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "autoDropSaddle": {
+                    "name": "Discard saddles",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "autoDropFish": {
+                    "name": "Discard fish",
+                    "description": "Only cod and salmon."
+                },
+                "autoDropBooks": {
+                    "name": "Discard enchanted books",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "autoDropLilypads": {
+                    "name": "Discard lily pads",
+                    "description": "Your inventory or enderchest must be open."
+                },
+                "header": {
+                    "rubbish": {
+                        "name": "Trash Items"
+                    }
+                }
+            },
+            "infinityMiner": {
+                "name": "InfinityMiner Hotkey",
+                "description": "InfnityMiner keeps mining blocks until your tool has reached it's maximum duration."
+            },
+            "inventoryDrop": {
+                "name": "Hotkey for inventory drop"
+            }
+        },
+        "functions": {
+            "enable": "%s §a§lENABLED",
+            "disable": "%s §c§lDISABLED",
+            "playertracer": {
+                "name": "Player tracer"
+            },
+            "craftv2": {
+                "name": "AutoCrafter V2"
+            },
+            "craftv3": {
+                "name": "AutoCrafter V3"
+            },
+            "comp": {
+                "name": "AutoCompressor"
+            },
+            "decomp": {
+                "name": "AutoDecompressor"
+            },
+            "eject": {
+                "name": "Eject"
+            },
+            "vabk": {
+                "name": "VABK"
+            },
+            "naturebordersrenderer": {
+                "name": "Visual borders"
+            },
+            "potionTimer": {
+                "flyPotion": "Fly potion",
+                "breakPotion": "Break potion",
+                "flyPotionUsed": "Fly potion used.",
+                "breakPotionUsed": "Break potion used.",
+                "flyPotionExpired": "Fly potion expired.",
+                "breakPotionExpired": "Break potion expired."
+            },
+            "infinityminer": {
+                "name": "InfinityMiner"
+            }
+        },
+        "chat": {
+            "realMoney": "VERIFIED",
+            "fakeMoney": "FAKE MONEY",
+            "cooldownWand": "The cooldown for /wand is over.",
+            "cooldownRand": "The cooldown for /rand is over.",
+            "cooldownBoden": "The cooldown for /boden is over.",
+            "cooldownSign": "The cooldown for /sign is over.",
+            "cooldownAnticopy": "The cooldown for /anticopy is over.",
+            "cooldownAushöhlen": "The cooldown for /aushöhlen is over."
+        },
+        "itemSaver": {
+            "item_saver_message_sword": "This sword is too valuable to use it!",
+            "item_saver_message_sos": "This pumpkin doesn't want to be placed!",
+            "item_saver_message_birth_bow": "This bow is too valuable to shoot with it!"
+        },
+        "tooltip": {
+            "compressedTooltip": "§6%s §eDKs §6%s §e stacks §6%s §eitems",
+            "adventurerTooltipOneLine": "§6%s%% §f| §erest: §6 %s §eDKs §6%s §estacks §6 %s §eitems",
+            "adventurerTooltipMultiLine": "\n§6%s%%\n§6%s §eDKs\n§6%s §eStacks\n§6%s §eItems"
+        },
+        "payAll": {
+            "amountTooLow": "The rounded amount per player is $0!",
+            "response": "%s players * %s$ = %s$."
+        },
+        "playerTracer": {
+            "startedHopping": "Started CB hopping",
+            "lookingForPlayer": "Looking for player %s ...",
+            "tooManyArguments": "Too many arguments!",
+            "foundPlayer": "Player found!",
+            "tracingEnded": "Tracing ended."
+        },
+        "itemRemover": {
+            "itemRemover": "Item remover"
+        },
+        "nearby": {
+            "nearby": "Nearby"
+        },
+        "natureBorders": {
+            "plotBordersVisible": "Plot borders §a§lVISIBLE",
+            "plotBordersInvisible": "Plot borders §c§lINVISIBLE"
+        },
+        "hudWidget": {
+            "potiontimer": {
+                "name": "Potion timer"
+            },
+            "itemclear": {
+                "name": "Item remover"
+            },
+            "gameinfo": {
+                "name": "GG scoreboard",
+                "showBank": {
+                    "name": "Show bank balance"
+                }
+            },
+            "nearby": {
+                "name": "Nearby",
+                "showMobs": {
+                    "name": "Show mobs"
+                }
+            },
+            "adventure": {
+                "name": "Adventure",
+                "oneLine": {
+                    "name": "One Line"
+                }
+            },
+            "activefunctions": {
+                "name": "Active functions"
+            }
+        },
+        "autoComp": {
+            "list": "list #%s"
+        },
+        "autoCrafter": {
+            "recipeSaved": "Recipe saved",
+            "recipeSavedV3": "Recipe saved! Now open all chests for the source material.",
+            "noItemFound": "Put the item you want to craft into the first slot.",
+            "startedCrafting": "Found all needed materials. Crafting...",
+            "setChestForMaterial": "Source chest for %s has been set.",
+            "mixedChest": "This chest contains several items and can't be used as source chest.",
+            "V3started": "Auto crafter V3 started...",
+            "V3stopped": "Autocrafter V3 stopped.",
+            "noSourceFound": "No source chest found.",
+            "chooseVariant": "There are several possible recipes for this item. Please select one and press ENTER"
+        },
+        "mobs": {
+            "spawn": "Spawn",
+            "chicken": "Chicken",
+            "cow": "Cow",
+            "pig": "Pig",
+            "sheep": "Sheep",
+            "rabbit": "Rabbit",
+            "bat": "Bat",
+            "squid": "Squid",
+            "mooshroom": "Mooshroom Cow",
+            "villager": "Villager",
+            "horse": "Horse",
+            "donkey": "Donkey",
+            "mule": "Mule",
+            "ocelot": "Ocelot",
+            "wolf": "Wolf",
+            "spider": "Spider",
+            "cave_spider": "Cave Spider",
+            "enderman": "Enderman",
+            "pigman": "Pigman",
+            "zombie": "Zombie",
+            "skeleton": "Skeleton",
+            "creeper": "Creeper",
+            "spider_jockey": "Spider Jockey",
+            "slime": "Slime",
+            "ghast": "Ghast",
+            "zombie_villager": "Zombie Villager",
+            "blaze": "Blaze",
+            "witch": "Witch",
+            "endermite": "Endermite",
+            "silverfish": "Silverfish",
+            "guardian": "Guardian",
+            "elder_guardian": "Elder Guardian",
+            "wither_skeleton": "Wither Skeleton",
+            "wither": "Wither",
+            "ender_dragon": "Ender Dragon",
+            "magma_cube": "Magma Cube",
+            "iron_golem": "Iron Golem",
+            "snow_golem": "Snow Golem"
+        },
+        "autoLoot": {
+            "skullAvailable": "/kopf is available!"
+        },
+        "plotWheel": {
+            "addPlot": "Add plot",
+            "name": "Name",
+            "optional": "optional",
+            "cb": "CB",
+            "all": "[ALL]",
+            "command": "Command",
+            "thisAccountOnly": "This account only",
+            "add": "Add",
+            "delete": "delete"
+        },
+        "commands": {
+            "dks": "A simple command to calculate how you need to compress to get a specific number of DKs.\n\nEnter the command '/dks <amount>'. You will receive the required compression levels directly in chat. Example: '/dks 50' results in the output '50 DKs = 2 * V • 8 * IV • 3 * III • 3 * I'",
+            "fahndung": "Searches all CBs for a specific player.\n\nEnter the command followed by the name of the player you are looking for (e.g., '/fahndung RypexYT'). All CBs will be visited briefly in sequence. If the target player is found on a CB, the search will end. The command can also be used without entering a player name. In this case, all CBs will be visited briefly—ideal for spreading an advertisement via status.\n\nThe search can be stopped by moving (W, A, S, D).",
+            "craftv3": "The most advanced autocrafter (V3) automatically takes items from different chests and crafts them.\n\nEmpty your inventory, place the item you want to craft in your first slot, and start the Autocrafter V3 with the command. The /rezepte menu will briefly open to register all required materials. Now open all chests that contain source items one by one. Once all required items are registered, the autocrafter will start. It will take the items in the necessary mix ratio from the chests, then open the /rezepte menu and craft the recipe. The crafted items can either be compressed or dropped. If errors occur, adjust the cooldown in the settings to a slower value.\n\nThe Autocrafter V3 can be stopped by pressing ESC.",
+            "auswurf": "Starts the ejection mode.\n\nThe ejection mode can automatically empty infinite storages. Activate the mode and open an infinite storage. The contained items will be thrown out until you stop the mode. Suitable for transferring non-compressible items from one infinite storage to another. To do this, activate the suction mode on your new infinite storage and start ejection on the old infinite storage.\n\nThe ejection mode can be stopped by pressing ESC.",
+            "autocraft": "The advanced autocrafter (V2) crafts items that are dropped to you.\n\nPlace the target item you want to craft in your first slot. Then, stand in a dropper system that throws source items at you and start the Autocrafter V2 with the command. The /rezepte menu is used to craft continuously. Once your inventory fills up, the items can either be compressed or discarded.\n\nThe Autocrafter V2 can be stopped by pressing ESC.",
+            "pay": "The counterpart to /pay * is /pay **. Instead of multiplying the specified amount by the number of players, it is divided by the number of players.\n\nExample: If there are 100 players on the CB, all players will receive exactly $100 by using the command '/pay ** 10000'."
+        }
+
+    },
+    "labymod": {
+        "hudWidgetCategory": {
+            "tmbgriefergames": {
+                "name": "GrieferGames Addon",
+                "description": "by §d§l§oT§b§l§oM§d§l§oB"
+            }
+        }
+    }
+}
