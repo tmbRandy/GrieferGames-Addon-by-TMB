@@ -567,9 +567,11 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private int slotsNeededForCrafts(int crafts) {
-        return recipe.entrySet().stream()
-            .mapToInt(e -> (int) Math.ceil((double) crafts * e.getValue() / maxStackSizes.getOrDefault(e.getKey(), 64)))
-            .sum();
+        int totalSlots = 0;
+        for (Map.Entry<String, Integer> entry : recipe.entrySet()) {
+            totalSlots += (int) Math.ceil((double) crafts * entry.getValue() / maxStackSizes.getOrDefault(entry.getKey(), 64));
+        }
+        return totalSlots;
     }
 
     private ItemStack allItemsAreEqual(IInventory inventory) {
@@ -618,7 +620,12 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private boolean allSourceChestsScanned() {
-        return recipe.keySet().stream().allMatch(sourceChests::containsKey);
+        for (String itemKey : recipe.keySet()) {
+            if (!sourceChests.containsKey(itemKey)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void closeChest() {
@@ -627,9 +634,13 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private int getCountOfItemKeyStacksInInventory(String itemKey) {
-        return (int) Helper.getPlayer().inventory.mainInventory.stream()
-            .filter(stack -> itemKey.equals(getItemKey(stack)))
-            .count();
+        int count = 0;
+        for (ItemStack stack : Helper.getPlayer().inventory.mainInventory) {
+            if (itemKey.equals(getItemKey(stack))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public static boolean isContainerOpen() {
@@ -638,15 +649,14 @@ public class AutoCrafterV3 extends ActiveFunction {
     }
 
     private String getNextItemToTake() {
-        return recipe.entrySet().stream()
-            .filter(entry -> {
-                int maxStackSize = maxStackSizes.getOrDefault(entry.getKey(), 64);
-                int targetStacks = (int) Math.ceil((double) maxRecipeCount * entry.getValue() / maxStackSize);
-                return getCountOfItemKeyStacksInInventory(entry.getKey()) < targetStacks;
-            })
-            .map(Map.Entry::getKey)
-            .findFirst()
-            .orElse(null);
+        for (Map.Entry<String, Integer> entry : recipe.entrySet()) {
+            int maxStackSize = maxStackSizes.getOrDefault(entry.getKey(), 64);
+            int targetStacks = (int) Math.ceil((double) maxRecipeCount * entry.getValue() / maxStackSize);
+            if (getCountOfItemKeyStacksInInventory(entry.getKey()) < targetStacks) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     private int getFirstSlotForCraftItem() {
@@ -666,9 +676,13 @@ public class AutoCrafterV3 extends ActiveFunction {
 
     private int getNumberOfRecipeStacksInInventory() {
         String recipeKey = getItemKey(craftItem);
-        return (int) Helper.getPlayer().inventory.mainInventory.stream()
-            .filter(stack -> recipeKey.equals(getItemKey(stack)))
-            .count();
+        int count = 0;
+        for (ItemStack stack : Helper.getPlayer().inventory.mainInventory) {
+            if (recipeKey.equals(getItemKey(stack))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void click(int slot) {
