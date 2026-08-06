@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
-import net.labymod.api.client.component.TextComponent;
+import net.labymod.api.client.component.serializer.plain.PlainTextComponentSerializer;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.hudwidget.text.Formatting;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
@@ -190,7 +190,7 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
         for (ScoreboardTeam team : scoreboard.getTeams()) {
             if (team.getTeamName().equals("money_value")) {
-                String newValue = ((TextComponent) team.getPrefix()).getText();
+                String newValue = PlainTextComponentSerializer.plainText().serialize(team.getPrefix());
 
                 try {
                     double newBalance = moneyStringToDouble(newValue);
@@ -203,11 +203,11 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
                 moneyValue = newValue;
             } else if (team.getTeamName().equals("online_value")) {
-                playersValue = ((TextComponent) team.getPrefix()).getText();
+                playersValue = PlainTextComponentSerializer.plainText().serialize(team.getPrefix());
             } else if (team.getTeamName().equals("playtime_value")) {
-                playtimeValue = ((TextComponent) team.getPrefix()).getText();
+                playtimeValue = PlainTextComponentSerializer.plainText().serialize(team.getPrefix());
             } else if (team.getTeamName().equals("server_value")) {
-                cbValue = ((TextComponent) team.getPrefix()).getText();
+                cbValue = PlainTextComponentSerializer.plainText().serialize(team.getPrefix());
             }
         }
     }

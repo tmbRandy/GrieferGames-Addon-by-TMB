@@ -1,15 +1,21 @@
 package tmb.randy.tmbgriefergames.core.helper;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import javax.inject.Singleton;
 import net.labymod.api.Laby;
-import net.labymod.api.client.component.TextComponent;
+import net.labymod.api.client.component.serializer.plain.PlainTextComponentSerializer;
+import net.labymod.api.client.scoreboard.DisplaySlot;
 import net.labymod.api.client.scoreboard.Scoreboard;
+import net.labymod.api.client.scoreboard.ScoreboardObjective;
+import net.labymod.api.client.scoreboard.ScoreboardScore;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.scoreboard.ScoreboardTeamUpdateEvent;
-import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.api.enums.CBs;
 import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
-import javax.inject.Singleton;
+import tmb.randy.tmbgriefergames.core.Addon;
 
 @Singleton
 public class CBtracker {
@@ -19,27 +25,45 @@ public class CBtracker {
     public void worldEnterEvent(ScoreboardTeamUpdateEvent event) {
         if(!Addon.isGG()) return;
         Scoreboard scoreboard = Laby.labyAPI().minecraft().getScoreboard();
-            if(scoreboard != null) {
-                for (ScoreboardTeam team : scoreboard.getTeams()) {
-                    if(team.getTeamName().equals("server_value")) {
-                        String CBString = ((TextComponent)team.getPrefix()).getText();
+        if(scoreboard == null) return;
 
-                        CBs newCB = CBs.NONE;
+        ScoreboardObjective sidebar = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+        if(sidebar == null) return;
 
-                        try {
-                            newCB = CBs.valueOf(CBString.toUpperCase());
-                        } catch (IllegalArgumentException e) {
-                            Addon.log().warn(e.getMessage());
-                        }
+        CBs newCB = findCB(scoreboard, sidebar);
 
-                        if(newCB != currentCB) {
-                            currentCB = newCB;
-                            Addon.log().info("Joined " + newCB.getName());
-                            Laby.fireEvent(new CbChangedEvent(newCB));
-                        }
-                    }
-                }
+        if(newCB != currentCB) {
+            currentCB = newCB;
+            Addon.log().info("Joined " + newCB.getName());
+            Laby.fireEvent(new CbChangedEvent(newCB));
+        }
+    }
+
+    private static CBs findCB(Scoreboard scoreboard, ScoreboardObjective sidebar) {
+        List<ScoreboardScore> scores = new ArrayList<>(scoreboard.getScores(sidebar));
+        scores.sort(Comparator.comparingInt(ScoreboardScore::getValue).reversed()
+            .thenComparing(ScoreboardScore::getName));
+
+        for (ScoreboardScore score : scores) {
+            String cleaned = renderLine(scoreboard, score).replaceAll("§.", "").trim().toUpperCase();
+            if(cleaned.isEmpty()) continue;
+
+            try {
+                return CBs.valueOf(cleaned);
+            } catch (IllegalArgumentException ignored) {
             }
+        }
+
+        return CBs.NONE;
+    }
+
+    private static String renderLine(Scoreboard scoreboard, ScoreboardScore score) {
+        ScoreboardTeam team = scoreboard.teamByEntry(score.getName());
+        if(team == null) return score.getName();
+
+        return PlainTextComponentSerializer.plainText().serialize(team.getPrefix())
+            + score.getName()
+            + PlainTextComponentSerializer.plainText().serialize(team.getSuffix());
     }
 
     public static CBs getCurrentCB() {return currentCB;}
