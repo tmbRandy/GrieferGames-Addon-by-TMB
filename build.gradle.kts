@@ -6,7 +6,7 @@ plugins {
 val versions = providers.gradleProperty("net.labymod.minecraft-versions").get().split(";")
 
 group = "tmb.randy"
-version = providers.environmentVariable("VERSION").getOrElse("2.2.1")
+version = providers.environmentVariable("VERSION").getOrElse("2.2.2")
 
 labyMod {
     defaultPackageName = "tmb.randy.tmbgriefergames"
