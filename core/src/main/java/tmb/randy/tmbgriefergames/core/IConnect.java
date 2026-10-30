@@ -36,4 +36,50 @@ public interface IConnect {
     void useHeldItem();
 
     void closeScreen();
+
+    /** Number of slots of the open container (chest part plus player inventory). */
+    int getContainerSize();
+
+    /** Number of chest slots of the open container, 0 if no chest is open. */
+    int getChestSize();
+
+    /** GrieferGames compression level (0-7) of the item in a slot of the open container. */
+    int getSlotCompressionLevel(int slot);
+
+    /** Registry name of the held item, null if the hand is empty. */
+    String getHeldItem();
+
+    /** Remaining uses of the held item, -1 if it has no durability. */
+    int getHeldItemDurability();
+
+    int getHotbarSlot();
+
+    /** Registry name of the block at the position. */
+    String getBlockAt(int x, int y, int z);
+
+    /** {x, y, z} of the player. */
+    double[] getPlayerPosition();
+
+    void setRotation(float yaw, float pitch);
+
+    /** Holds or releases a movement/interaction key: sneak, jump, sprint, forward, back, left, right, attack, use. */
+    void setKeyPressed(String key, boolean pressed);
+
+    void leftClickBlockLookingAt();
+
+    /** Continues breaking the block the player looks at, returns true while it is being broken. */
+    boolean breakBlockLookingAt();
+
+    /** Releases a drawn bow (or stops using the held item). */
+    void releaseUseItem();
+
+    void swingArm();
+
+    void openInventory();
+
+    /** "inventory", "chest", "crafting", "other" or "none". */
+    String getScreenType();
+
+    /** True while the own fishing hook has a fish on the hook. */
+    boolean isFishBiting();
 }

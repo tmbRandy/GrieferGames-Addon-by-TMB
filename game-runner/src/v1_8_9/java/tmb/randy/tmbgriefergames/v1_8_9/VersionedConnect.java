@@ -6,6 +6,9 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.models.Implements;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import tmb.randy.tmbgriefergames.api.enums.FunctionState;
@@ -123,6 +126,121 @@ public class VersionedConnect implements IConnect {
     @Override
     public void closeScreen() {
         Helper.closeScreen();
+    }
+
+    @Override
+    public int getContainerSize() {
+        return Helper.getContainerSize();
+    }
+
+    @Override
+    public int getChestSize() {
+        return Helper.getChestSize();
+    }
+
+    @Override
+    public int getSlotCompressionLevel(int slot) {
+        return Helper.getCompressionLevel(getStack(slot)).getLevel();
+    }
+
+    @Override
+    public String getHeldItem() {
+        ItemStack stack = Helper.getHeldItem();
+        return Helper.isEmpty(stack) ? null : Helper.getRegistryName(stack);
+    }
+
+    @Override
+    public int getHeldItemDurability() {
+        ItemStack stack = Helper.getHeldItem();
+        return Helper.isEmpty(stack) || stack.getMaxDamage() <= 0 ? -1 : stack.getMaxDamage() - stack.getItemDamage();
+    }
+
+    @Override
+    public int getHotbarSlot() {
+        return Helper.getHotbarSlot();
+    }
+
+    @Override
+    public String getBlockAt(int x, int y, int z) {
+        return Helper.getBlockName(new BlockPos(x, y, z));
+    }
+
+    @Override
+    public double[] getPlayerPosition() {
+        return new double[] {Helper.getPlayer().posX, Helper.getPlayer().posY, Helper.getPlayer().posZ};
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        Helper.getPlayer().rotationYaw = yaw;
+        Helper.getPlayer().rotationPitch = pitch;
+    }
+
+    @Override
+    public void setKeyPressed(String key, boolean pressed) {
+        GameSettings settings = Helper.mc().gameSettings;
+        KeyBinding binding = switch (key.toLowerCase()) {
+            case "sneak" -> settings.keyBindSneak;
+            case "jump" -> settings.keyBindJump;
+            case "sprint" -> settings.keyBindSprint;
+            case "forward" -> settings.keyBindForward;
+            case "back" -> settings.keyBindBack;
+            case "left" -> settings.keyBindLeft;
+            case "right" -> settings.keyBindRight;
+            case "attack" -> settings.keyBindAttack;
+            case "use" -> settings.keyBindUseItem;
+            default -> null;
+        };
+        if (binding != null)
+            KeyBinding.setKeyBindState(binding.getKeyCode(), pressed);
+    }
+
+    @Override
+    public void leftClickBlockLookingAt() {
+        Helper.clickBlockLookingAt();
+        Helper.swingArm();
+    }
+
+    @Override
+    public boolean breakBlockLookingAt() {
+        boolean breaking = Helper.damageBlockLookingAt();
+        if (breaking)
+            Helper.swingArm();
+        return breaking;
+    }
+
+    @Override
+    public void releaseUseItem() {
+        Helper.releaseBow();
+    }
+
+    @Override
+    public void swingArm() {
+        Helper.swingArm();
+    }
+
+    @Override
+    public void openInventory() {
+        Helper.openInventory();
+    }
+
+    @Override
+    public String getScreenType() {
+        if (Helper.mc().currentScreen == null)
+            return "none";
+        if (Helper.isInventoryScreen())
+            return "inventory";
+        if (Helper.isChestScreen())
+            return "chest";
+        if (Helper.isCraftingScreen())
+            return "crafting";
+        return "other";
+    }
+
+    @Override
+    public boolean isFishBiting() {
+        EntityFishHook hook = Helper.getFishHook();
+        return hook != null && hook.motionY < Helper.FISH_BITE_MOTION_Y && hook.isInWater() && hook.motionX == 0 && hook.motionZ == 0;
     }
 
     @Subscribe

@@ -319,8 +319,12 @@ public class Helper extends BaseHelper {
         return getWorld().getBlockState(pos).getBlock();
     }
 
+    public static String getBlockName(BlockPos pos) {
+        return Block.blockRegistry.getNameForObject(getBlock(pos)).toString();
+    }
+
     public static boolean isBlock(BlockPos pos, String registryName) {
-        return pos != null && Block.blockRegistry.getNameForObject(getBlock(pos)).toString().equals(registryName);
+        return pos != null && getBlockName(pos).equals(registryName);
     }
 
     public static void lookAtBlockPos(BlockPos pos) {

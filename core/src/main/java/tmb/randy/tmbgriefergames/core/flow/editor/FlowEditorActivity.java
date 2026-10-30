@@ -144,10 +144,12 @@ public class FlowEditorActivity extends SimpleActivity {
         }
         sidebar.addChild(ButtonWidget.i18n(key("newFlow"), () -> switchTo(createFlow())));
 
-        sidebar.addChild(ComponentWidget.i18n(key("blocks")).addId("section"));
-        for (NodeType type : NodeTypes.all()) {
-            if (!type.id().equals(NodeTypes.START))
-                sidebar.addChild(ButtonWidget.text(type.displayName(), () -> addNode(type)));
+        for (NodeType.Category category : NodeType.Category.values()) {
+            sidebar.addChild(ComponentWidget.i18n(Addon.getNamespace() + ".flow.category." + category.name().toLowerCase()).addId("section"));
+            for (NodeType type : NodeTypes.all()) {
+                if (type.category() == category && !type.id().equals(NodeTypes.START))
+                    sidebar.addChild(ButtonWidget.text(type.displayName(), () -> addNode(type)));
+            }
         }
         return sidebar;
     }

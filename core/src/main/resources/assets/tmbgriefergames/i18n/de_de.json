@@ -520,9 +520,12 @@
             "started": "Ablauf §e%s §fgestartet.",
             "stopped": "Ablauf §e%s §fgestoppt.",
             "finished": "Ablauf §e%s §fbeendet.",
-            "noStart": "Der Ablauf §e%s §fhat keinen Start-Block.",
+            "noStart": "Der Ablauf §e%s §fhat keinen verbundenen Start-Block.",
             "unknown": "Es gibt keinen Ablauf namens §e%s§f. Alle Abläufe: /flow list",
             "noFlows": "Du hast noch keine Abläufe. Öffne den Editor mit /flow",
+            "param": {
+                "autostart": "Autostart"
+            },
             "editor": {
                 "newFlowName": "Ablauf %s",
                 "hotkey": "Hotkey:",
@@ -532,8 +535,16 @@
                 "delete": "Löschen",
                 "flows": "Abläufe",
                 "newFlow": "+ Neuer Ablauf",
-                "blocks": "Blöcke",
                 "deleteBlock": "Block löschen"
+            },
+            "category": {
+                "trigger": "Auslöser",
+                "action": "Chat",
+                "player": "Spieler",
+                "menu": "Menüs",
+                "inventory": "Inventar",
+                "logic": "Logik",
+                "data": "Variablen"
             },
             "output": {
                 "next": "weiter",
@@ -542,26 +553,306 @@
                 "ok": "ok",
                 "timeout": "Timeout",
                 "loop": "Schleife",
-                "done": "fertig"
+                "done": "fertig",
+                "found": "gefunden",
+                "none": "keiner",
+                "reached": "erreicht"
             },
             "node": {
-                "start": { "name": "Start" },
-                "command": { "name": "Befehl senden", "param": { "command": "Befehl" } },
-                "message": { "name": "Nachricht anzeigen", "param": { "text": "Text" } },
-                "look_at": { "name": "Block ansehen", "param": { "x": "X", "y": "Y", "z": "Z" } },
-                "right_click_block": { "name": "Block rechtsklicken" },
-                "use_item": { "name": "Item benutzen" },
-                "select_slot": { "name": "Hotbar-Slot wählen", "param": { "slot": "Slot (1-9)" } },
-                "click_slot": { "name": "Menü-Slot klicken", "param": { "slot": "Slot", "shift": "Shift" } },
-                "close_menu": { "name": "Menü schließen" },
-                "wait_for_menu": { "name": "Auf Menü warten", "param": { "title": "Titel", "timeout": "Timeout (Ticks)" } },
-                "if_menu": { "name": "Wenn Menü offen", "param": { "title": "Titel" } },
-                "if_slot": { "name": "Wenn Slot enthält", "param": { "slot": "Slot", "item": "Item" } },
-                "wait": { "name": "Warten", "param": { "ticks": "Ticks" } },
-                "wait_for_chat": { "name": "Auf Chat warten", "param": { "contains": "Enthält", "timeout": "Timeout (Ticks)" } },
-                "if_inventory_full": { "name": "Wenn Inventar voll" },
-                "repeat": { "name": "Wiederholen", "param": { "count": "Anzahl" } },
-                "stop": { "name": "Stopp" }
+                "start": {
+                    "name": "Start"
+                },
+                "on_inventory_full": {
+                    "name": "Bei vollem Inventar"
+                },
+                "on_chat": {
+                    "name": "Bei Chatnachricht",
+                    "param": {
+                        "contains": "Enthält"
+                    }
+                },
+                "on_menu_open": {
+                    "name": "Bei Menü geöffnet",
+                    "param": {
+                        "title": "Titel"
+                    }
+                },
+                "on_cb_change": {
+                    "name": "Bei CB-Wechsel",
+                    "param": {
+                        "cb": "CB (leer = alle)"
+                    }
+                },
+                "on_key": {
+                    "name": "Bei Taste",
+                    "param": {
+                        "key": "Taste"
+                    }
+                },
+                "on_fish_bite": {
+                    "name": "Wenn Fisch beißt"
+                },
+                "on_timer": {
+                    "name": "Alle X Ticks",
+                    "param": {
+                        "ticks": "Ticks"
+                    }
+                },
+                "command": {
+                    "name": "Befehl senden",
+                    "param": {
+                        "command": "Befehl"
+                    }
+                },
+                "chat": {
+                    "name": "Chat schreiben",
+                    "param": {
+                        "text": "Text"
+                    }
+                },
+                "message": {
+                    "name": "Nachricht anzeigen",
+                    "param": {
+                        "text": "Text"
+                    }
+                },
+                "look_at": {
+                    "name": "Block ansehen",
+                    "param": {
+                        "x": "X",
+                        "y": "Y",
+                        "z": "Z"
+                    }
+                },
+                "look_direction": {
+                    "name": "Blickrichtung",
+                    "param": {
+                        "yaw": "Yaw",
+                        "pitch": "Pitch"
+                    }
+                },
+                "right_click_block": {
+                    "name": "Block rechtsklicken"
+                },
+                "left_click_block": {
+                    "name": "Block linksklicken"
+                },
+                "break_block": {
+                    "name": "Block abbauen",
+                    "param": {
+                        "ticks": "Dauer (Ticks)"
+                    }
+                },
+                "use_item": {
+                    "name": "Item benutzen"
+                },
+                "release_item": {
+                    "name": "Item loslassen"
+                },
+                "select_slot": {
+                    "name": "Hotbar-Slot wählen",
+                    "param": {
+                        "slot": "Slot (1-9)"
+                    }
+                },
+                "hold_key": {
+                    "name": "Taste halten",
+                    "param": {
+                        "key": "Taste (sneak, jump, …)",
+                        "pressed": "Gedrückt"
+                    }
+                },
+                "click_slot": {
+                    "name": "Menü-Slot klicken",
+                    "param": {
+                        "slot": "Slot",
+                        "shift": "Shift"
+                    }
+                },
+                "drop_slot": {
+                    "name": "Slot wegwerfen",
+                    "param": {
+                        "slot": "Slot"
+                    }
+                },
+                "wait_for_clicks": {
+                    "name": "Auf Klicks warten"
+                },
+                "close_menu": {
+                    "name": "Menü schließen"
+                },
+                "open_inventory": {
+                    "name": "Inventar öffnen"
+                },
+                "wait_for_menu": {
+                    "name": "Auf Menü warten",
+                    "param": {
+                        "title": "Titel",
+                        "timeout": "Timeout (Ticks)"
+                    }
+                },
+                "if_menu": {
+                    "name": "Wenn Menü offen",
+                    "param": {
+                        "title": "Titel"
+                    }
+                },
+                "if_screen": {
+                    "name": "Wenn Bildschirm",
+                    "param": {
+                        "screen": "Bildschirm"
+                    }
+                },
+                "if_slot": {
+                    "name": "Wenn Slot enthält",
+                    "param": {
+                        "slot": "Slot",
+                        "item": "Item"
+                    }
+                },
+                "navigate_page": {
+                    "name": "Menüseite ansteuern",
+                    "param": {
+                        "indicator": "Anzeige-Slot",
+                        "prefix": "Präfix",
+                        "target": "Zielseite",
+                        "previous": "Zurück-Slot",
+                        "next": "Weiter-Slot",
+                        "timeout": "Timeout (Ticks)"
+                    }
+                },
+                "find_slot": {
+                    "name": "Slot suchen",
+                    "param": {
+                        "item": "Item",
+                        "area": "Bereich",
+                        "variable": "Variable",
+                        "full_stack": "Nur volle Stacks",
+                        "max_level": "Max. Komprimierung"
+                    }
+                },
+                "count_items": {
+                    "name": "Items zählen",
+                    "param": {
+                        "item": "Item",
+                        "area": "Bereich",
+                        "variable": "Variable"
+                    }
+                },
+                "drop_items": {
+                    "name": "Items wegwerfen",
+                    "param": {
+                        "item": "Item",
+                        "keep_one": "Einen behalten"
+                    }
+                },
+                "move_items": {
+                    "name": "Items verschieben",
+                    "param": {
+                        "item": "Item",
+                        "from": "Von",
+                        "max_stacks": "Max. Stacks (0 = alle)",
+                        "full_only": "Nur volle Stacks"
+                    }
+                },
+                "if_inventory_full": {
+                    "name": "Wenn Inventar voll"
+                },
+                "if_holding": {
+                    "name": "Wenn in der Hand",
+                    "param": {
+                        "item": "Item"
+                    }
+                },
+                "if_durability": {
+                    "name": "Wenn Haltbarkeit",
+                    "param": {
+                        "min": "Mindestens"
+                    }
+                },
+                "wait": {
+                    "name": "Warten",
+                    "param": {
+                        "ticks": "Ticks"
+                    }
+                },
+                "wait_for_chat": {
+                    "name": "Auf Chat warten",
+                    "param": {
+                        "contains": "Enthält",
+                        "timeout": "Timeout (Ticks)",
+                        "variable": "Variable"
+                    }
+                },
+                "repeat": {
+                    "name": "Wiederholen",
+                    "param": {
+                        "count": "Anzahl"
+                    }
+                },
+                "if_compare": {
+                    "name": "Vergleichen",
+                    "param": {
+                        "a": "Wert A",
+                        "operator": "Operator",
+                        "b": "Wert B"
+                    }
+                },
+                "run_flow": {
+                    "name": "Ablauf starten",
+                    "param": {
+                        "flow": "Ablauf"
+                    }
+                },
+                "stop_flow": {
+                    "name": "Ablauf stoppen",
+                    "param": {
+                        "flow": "Ablauf"
+                    }
+                },
+                "stop": {
+                    "name": "Stopp"
+                },
+                "set_variable": {
+                    "name": "Variable setzen",
+                    "param": {
+                        "name": "Name",
+                        "value": "Wert"
+                    }
+                },
+                "calculate": {
+                    "name": "Rechnen",
+                    "param": {
+                        "name": "Variable",
+                        "operator": "Operator",
+                        "value": "Wert"
+                    }
+                },
+                "store_looked_block": {
+                    "name": "Angesehenen Block merken",
+                    "param": {
+                        "name": "Name"
+                    }
+                },
+                "store_slot": {
+                    "name": "Slot-Inhalt merken",
+                    "param": {
+                        "slot": "Slot",
+                        "name": "Name"
+                    }
+                },
+                "store_position": {
+                    "name": "Position merken",
+                    "param": {
+                        "name": "Name"
+                    }
+                },
+                "store_info": {
+                    "name": "Spielinfos merken",
+                    "param": {
+                        "name": "Name"
+                    }
+                }
             }
         },
         "commands": {
