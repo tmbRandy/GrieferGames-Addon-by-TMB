@@ -26,6 +26,8 @@ import tmb.randy.tmbgriefergames.core.flow.editor.FlowEditorActivity;
  *   <li>{@code wait <ticks>} pauses</li>
  *   <li>{@code screenshot <name>} saves a screenshot to {@code screenshots/<name>.png}</li>
  *   <li>{@code close} closes the open screen</li>
+ *   <li>{@code connect <host>} / {@code disconnect} joins or leaves a server</li>
+ *   <li>{@code click <x> <y>} / {@code rightclick <x> <y>} clicks into the flow editor, {@code dump} logs its widgets</li>
  *   <li>everything else is sent like typed into the chat (addon commands are executed directly)</li>
  * </ul>
  * Every executed line is appended to {@code tmb-dev/log.txt}.
@@ -80,6 +82,8 @@ public class DevBridge {
             case "wait" -> waitTicks = Math.max(0, Integer.parseInt(argument));
             case "screenshot" -> Laby.labyAPI().minecraft().executeOnRenderThread(() -> Addon.getConnection().takeScreenshot(argument));
             case "close" -> Addon.getConnection().closeScreen();
+            case "connect" -> Laby.labyAPI().minecraft().executeOnRenderThread(() -> Laby.labyAPI().serverController().joinServer(argument));
+            case "disconnect" -> Laby.labyAPI().minecraft().executeOnRenderThread(() -> Laby.labyAPI().serverController().leaveServer());
             case "click", "rightclick" -> click(argument, parts[0].equalsIgnoreCase("rightclick") ? (MouseButton) MouseButton.RIGHT : (MouseButton) MouseButton.LEFT);
             case "dump" -> {
                 if (FlowEditorActivity.getOpenEditor() != null)
