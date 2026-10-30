@@ -11,6 +11,7 @@ public final class HopperMenu {
     public static final int RADIUS_DECREASE = 30;
     public static final int RADIUS = 31;
     public static final int RADIUS_INCREASE = 32;
+    // TODO: Find out what this button does and give the constant a fitting name
     /** Clicked by the ItemShifter "arrow up" shortcut before the radius is maxed out. */
     public static final int SHORTCUT_SLOT = 49;
     /** Player inventory slot whose item is used as filter item. */
