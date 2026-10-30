@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
@@ -49,6 +47,7 @@ import tmb.randy.tmbgriefergames.core.functions.chat.MsgTabs;
 import tmb.randy.tmbgriefergames.core.functions.chat.PaymentValidator;
 import tmb.randy.tmbgriefergames.core.functions.chat.TypeCorrection;
 import tmb.randy.tmbgriefergames.core.generated.DefaultReferenceStorage;
+import tmb.randy.tmbgriefergames.core.helper.BaseHelper;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.core.helper.HopperTracker;
@@ -155,7 +154,7 @@ public class Addon extends LabyAddon<Configuration> {
         if (event.CB() != CBs.LOBBY || skipHub == CBs.NONE || skipHub == CBs.LOBBY || !isGG())
             return;
 
-        schedule(() -> {
+        BaseHelper.schedule(() -> {
             CBs target = settings().getSkipHub().get();
             if (target == CBs.PORTAL)
                 Commander.queue(Const.Cmd.PORTAL);
@@ -169,21 +168,12 @@ public class Addon extends LabyAddon<Configuration> {
         if (queuedPlot == null || !isGG() || !event.chatMessage().getPlainText().equals(Const.Chat.SWITCHER_DATA_DOWNLOADED) || !CBtracker.isPlotworldCB(CBtracker.getCurrentCB()))
             return;
 
-        schedule(() -> {
+        BaseHelper.schedule(() -> {
             if (queuedPlot != null && isGG() && (queuedPlot.cb() == CBs.NONE || CBtracker.getCurrentCB() == queuedPlot.cb())) {
                 Laby.references().chatExecutor().chat(queuedPlot.command());
                 queuedPlot = null;
             }
         }, 500);
-    }
-
-    private static void schedule(Runnable task, long delayMs) {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                task.run();
-            }
-        }, delayMs);
     }
 
     // ---------------------------------------------------------------- Static access

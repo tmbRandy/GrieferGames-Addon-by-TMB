@@ -2,8 +2,6 @@ package tmb.randy.tmbgriefergames.core.functions;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Timer;
-import java.util.TimerTask;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.serializer.plain.PlainTextComponentSerializer;
 import net.labymod.api.client.network.ClientPacketListener;
@@ -14,6 +12,7 @@ import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
+import tmb.randy.tmbgriefergames.core.helper.BaseHelper;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.core.helper.FileManager;
@@ -63,22 +62,19 @@ public class AutoLoot extends Function {
         if (!chestAvailable && !skullAvailable)
             return;
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (!CBtracker.isPlotworldCB())
-                    return;
+        BaseHelper.schedule(() -> {
+            if (!CBtracker.isPlotworldCB())
+                return;
 
-                if (chestAvailable) {
-                    if (isDue(FREE_BOOSTER, true))
-                        Commander.queue(Const.Cmd.GRIEFERBOOST);
-                    if (isDue(FREE_CHEST, true))
-                        Commander.queue(Const.Cmd.FREEKISTE);
-                }
-
-                if (skullAvailable && isDue(FREE_SKULL, false))
-                    Addon.displayNotification(Addon.translate("autoLoot.skullAvailable"));
+            if (chestAvailable) {
+                if (isDue(FREE_BOOSTER, true))
+                    Commander.queue(Const.Cmd.GRIEFERBOOST);
+                if (isDue(FREE_CHEST, true))
+                    Commander.queue(Const.Cmd.FREEKISTE);
             }
+
+            if (skullAvailable && isDue(FREE_SKULL, false))
+                Addon.displayNotification(Addon.translate("autoLoot.skullAvailable"));
         }, DELAY_AFTER_JOIN_MS);
     }
 

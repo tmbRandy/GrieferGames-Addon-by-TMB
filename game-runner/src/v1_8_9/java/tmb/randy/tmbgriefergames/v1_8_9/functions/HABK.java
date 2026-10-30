@@ -1,8 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_8_9.functions;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.minecraft.item.ItemBow;
@@ -18,8 +15,6 @@ import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 /** Half automatic bow sword: after shooting the bow it switches to the sword in slot 1 and back. */
 public class HABK extends Function {
     private static final long SWITCH_DELAY_MS = 5;
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public HABK() {
         super(Functions.HABK.name());
@@ -39,10 +34,10 @@ public class HABK extends Function {
             event.setCancelled(true);
         } else if (!Helper.isEmpty(heldItem) && heldItem.getItem() instanceof ItemBow && !Helper.isEmpty(Helper.getInventoryStack(0))
             && Helper.getInventoryStack(0).getItem() instanceof ItemSword) {
-            scheduler.schedule(() -> {
+            Helper.schedule(() -> {
                 Helper.setHotbarSlot(0);
-                scheduler.schedule(() -> Helper.setHotbarSlot(selectedSlot), Addon.settings().getSwordsSubConfig().getHABKcooldown().get(), TimeUnit.MILLISECONDS);
-            }, SWITCH_DELAY_MS, TimeUnit.MILLISECONDS);
+                Helper.schedule(() -> Helper.setHotbarSlot(selectedSlot), Addon.settings().getSwordsSubConfig().getHABKcooldown().get());
+            }, SWITCH_DELAY_MS);
         }
     }
 }

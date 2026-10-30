@@ -1,7 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
@@ -43,12 +41,7 @@ public class AutoHopper extends Function {
         Helper.clickBlockLookingAt();
         sneakToggled = true;
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                releaseSneak();
-            }
-        }, SNEAK_RELEASE_DELAY_MS);
+        Helper.schedule(this::releaseSneak, SNEAK_RELEASE_DELAY_MS);
     }
 
     @Override

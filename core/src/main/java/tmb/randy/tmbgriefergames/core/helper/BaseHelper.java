@@ -2,6 +2,10 @@ package tmb.randy.tmbgriefergames.core.helper;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.click.ClickManager;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 
@@ -15,7 +19,26 @@ public abstract class BaseHelper {
 
     private static final String[] ROMAN_NUMERALS = {"", "I", "II", "III", "IV", "V", "VI", "VII"};
 
+    private static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor(runnable -> {
+        Thread thread = new Thread(runnable, "TMB-Addon-Scheduler");
+        thread.setDaemon(true);
+        return thread;
+    });
+
     protected BaseHelper() {}
+
+    // ---------------------------------------------------------------- Scheduling
+
+    /** Runs the task once after the delay on the shared addon scheduler thread. */
+    public static void schedule(Runnable task, long delayMs) {
+        SCHEDULER.schedule(() -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                Addon.log().error("Scheduled task failed", e);
+            }
+        }, delayMs, TimeUnit.MILLISECONDS);
+    }
 
     // ---------------------------------------------------------------- Clicks
 

@@ -1,8 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.entity.projectile.EntityFishHook;
@@ -21,7 +18,6 @@ public class AutoFisher extends ActiveFunction {
     private static final long ROD_SWITCH_DELAY_MS = 200;
     private static final long ITEM_REMOVER_RETRY_MS = 4000;
 
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private boolean fished = false;
     private boolean waitForItemRemover = false;
 
@@ -52,7 +48,7 @@ public class AutoFisher extends ActiveFunction {
         // Pull the hook in before the item remover runs, otherwise it would be removed as well
         if (message.endsWith(Const.Chat.AUTOFISHER_ITEMS_WARNING)) {
             pullInBeforeItemRemover();
-            scheduler.schedule(this::pullInBeforeItemRemover, ITEM_REMOVER_RETRY_MS, TimeUnit.MILLISECONDS);
+            Helper.schedule(this::pullInBeforeItemRemover, ITEM_REMOVER_RETRY_MS);
         } else if (message.endsWith(Const.Chat.AUTOFISHER_ITEMS_REMOVED) && waitForItemRemover) {
             waitForItemRemover = false;
             Helper.sendUseItemPacket();
@@ -71,20 +67,20 @@ public class AutoFisher extends ActiveFunction {
 
         if (!fished) {
             fished = true;
-            scheduler.schedule(() -> fished = false, RECAST_DELAY_MS, TimeUnit.MILLISECONDS);
+            Helper.schedule(() -> fished = false, RECAST_DELAY_MS);
         }
 
         if (Helper.isEmpty(Helper.getHeldItem()))
             return;
 
-        scheduler.schedule(() -> {
+        Helper.schedule(() -> {
             if (Helper.hasDurabilityLeft(Helper.getHeldItem()) && !waitForItemRemover) {
                 Helper.sendUseItemPacket();
                 dropRubbish();
             } else {
                 selectNextRod();
             }
-        }, RECAST_DELAY_MS, TimeUnit.MILLISECONDS);
+        }, RECAST_DELAY_MS);
     }
 
     private void selectNextRod() {
@@ -92,10 +88,10 @@ public class AutoFisher extends ActiveFunction {
             ItemStack stack = Helper.getInventoryStack(i);
             if (Helper.isItem(stack, Const.Id.FISHING_ROD) && Helper.hasDurabilityLeft(stack)) {
                 Helper.setHotbarSlot(i);
-                scheduler.schedule(() -> {
+                Helper.schedule(() -> {
                     Helper.sendUseItemPacket();
                     fished = false;
-                }, ROD_SWITCH_DELAY_MS, TimeUnit.MILLISECONDS);
+                }, ROD_SWITCH_DELAY_MS);
                 return;
             }
         }

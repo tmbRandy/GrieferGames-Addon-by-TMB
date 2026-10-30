@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core;
 
+import java.util.function.BiConsumer;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
@@ -17,119 +18,58 @@ import tmb.randy.tmbgriefergames.api.events.ResetLinesEvent;
 import tmb.randy.tmbgriefergames.api.events.ToggleFunctionEvent;
 import tmb.randy.tmbgriefergames.api.functions.Function;
 
+/** Forwards all events to the registered functions while the player is on GrieferGames. */
 public class Listener {
 
-    @Subscribe
-    public void gameTickEvent(GameTickEvent e) {
-        if(!Addon.isGG()) return;
+    private static <E> void dispatch(E event, BiConsumer<Function, E> handler) {
+        if (!Addon.isGG())
+            return;
 
         for (Function function : Addon.getFunctions())
-            function.tickEvent(e);
+            handler.accept(function, event);
     }
 
     @Subscribe
-    public void chatReceiveEvent(ChatReceiveEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.chatReceiveEvent(e);
-    }
+    public void gameTickEvent(GameTickEvent e) { dispatch(e, Function::tickEvent); }
 
     @Subscribe
-    public void chatMessageSendEvent(ChatMessageSendEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.chatMessageSendEvent(e);
-    }
+    public void chatReceiveEvent(ChatReceiveEvent e) { dispatch(e, Function::chatReceiveEvent); }
 
     @Subscribe
-    public void renderWorldEvent(RenderWorldEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.renderWorldEvent(e);
-    }
+    public void chatMessageSendEvent(ChatMessageSendEvent e) { dispatch(e, Function::chatMessageSendEvent); }
 
     @Subscribe
-    public void keyEvent(KeyEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.keyEvent(e);
-    }
+    public void renderWorldEvent(RenderWorldEvent e) { dispatch(e, Function::renderWorldEvent); }
 
     @Subscribe
-    public void mouseButtonEvent(MouseButtonEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.mouseButtonEvent(e);
-    }
+    public void keyEvent(KeyEvent e) { dispatch(e, Function::keyEvent); }
 
     @Subscribe
-    public void itemStackTooltipEvent(ItemStackTooltipEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.itemStackTooltipEvent(e);
-    }
+    public void mouseButtonEvent(MouseButtonEvent e) { dispatch(e, Function::mouseButtonEvent); }
 
     @Subscribe
-    public void serverDisconnectEvent(ServerDisconnectEvent e) {
-        if(!Addon.isGG()) return;
+    public void itemStackTooltipEvent(ItemStackTooltipEvent e) { dispatch(e, Function::itemStackTooltipEvent); }
 
-        for (Function function : Addon.getFunctions())
-            function.serverDisconnectEvent(e);
-    }
+    @Subscribe
+    public void serverDisconnectEvent(ServerDisconnectEvent e) { dispatch(e, Function::serverDisconnectEvent); }
+
+    @Subscribe
+    public void scoreboardTeamEntryAddEvent(ScoreboardTeamEntryAddEvent e) { dispatch(e, Function::scoreboardTeamEntryAddEvent); }
 
     // Custom events
 
     @Subscribe
-    public void cbChangedEvent(CbChangedEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.cbChangedEvent(e);
-    }
+    public void cbChangedEvent(CbChangedEvent e) { dispatch(e, Function::cbChangedEvent); }
 
     @Subscribe
-    public void resetLinesEvent(ResetLinesEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.resetLinesEvent(e);
-    }
+    public void resetLinesEvent(ResetLinesEvent e) { dispatch(e, Function::resetLinesEvent); }
 
     @Subscribe
-    public void hopperStateChangedEvent(HopperStateChangedEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.hopperStateChangedEvent(e);
-    }
+    public void hopperStateChangedEvent(HopperStateChangedEvent e) { dispatch(e, Function::hopperStateChangedEvent); }
 
     @Subscribe
-    public void toggleFunctionEvent(ToggleFunctionEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.toggleFunctionEvent(e);
-    }
+    public void toggleFunctionEvent(ToggleFunctionEvent e) { dispatch(e, Function::toggleFunctionEvent); }
 
     @Subscribe
-    public void scoreboardTeamEntryAddEvent(ScoreboardTeamEntryAddEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.scoreboardTeamEntryAddEvent(e);
-    }
-
-    @Subscribe
-    public void fishEvent(FishEvent e) {
-        if(!Addon.isGG()) return;
-
-        for (Function function : Addon.getFunctions())
-            function.fishEvent(e);
-    }
+    public void fishEvent(FishEvent e) { dispatch(e, Function::fishEvent); }
 }
