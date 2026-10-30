@@ -1,36 +1,29 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.core.config.HopperSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.HopperFinalAction;
-import tmb.randy.tmbgriefergames.core.enums.HopperItemStackSizeEnum;
-import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.core.menu.HopperMenu;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
+/** Applies the saved hopper settings as soon as the hopper menu opens. */
 public class AutoHopper extends Function {
-    boolean receivedPlotBorderMessage = false;
-    private boolean toggeledSneak = false;
+    private static final long SNEAK_RELEASE_DELAY_MS = 10;
+
+    private boolean reachedPlotBorder = false;
+    private boolean sneakToggled = false;
 
     public AutoHopper() {
         super(Functions.AUTOHOPPER.name());
@@ -38,144 +31,127 @@ public class AutoHopper extends Function {
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if(event.button().isRight() && event.action() == Action.CLICK && isLookingAtHopper() && Addon.settings().getHopperSubConfig().getAutoSneak().get()) {
-            RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
+        if (!event.button().isRight() || event.action() != Action.CLICK || !config().getAutoSneak().get() || !Helper.isBlock(Helper.getBlockPosLookingAt(), Const.Id.HOPPER))
+            return;
 
-            if(trace != null) {
-                Keyboard.enableRepeatEvents(true);
-                KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-                KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
-                KeyBinding.setKeyBindState(sneakKey.getKeyCode(), true);
-                if(!Helper.getPlayer().onGround) {
-                    KeyBinding.setKeyBindState(jumpKey.getKeyCode(), true);
-                }
-                Minecraft.getMinecraft().playerController.clickBlock(trace.getBlockPos(), trace.sideHit);
-                toggeledSneak = true;
+        // Sneaking while clicking a hopper opens the GrieferGames settings instead of the hopper inventory
+        Keyboard.enableRepeatEvents(true);
+        KeyBinding.setKeyBindState(Helper.mc().gameSettings.keyBindSneak.getKeyCode(), true);
+        if (!Helper.getPlayer().onGround)
+            KeyBinding.setKeyBindState(Helper.mc().gameSettings.keyBindJump.getKeyCode(), true);
 
-                new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            if(toggeledSneak) {
-                                KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-                                KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
-                                KeyBinding.setKeyBindState(sneakKey.getKeyCode(), false);
-                                KeyBinding.setKeyBindState(jumpKey.getKeyCode(), false);
-                                Keyboard.enableRepeatEvents(false);
-                                toggeledSneak = false;
-                            }
-                        }
-                    }, 10
-                );
+        Helper.clickBlockLookingAt();
+        sneakToggled = true;
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                releaseSneak();
             }
-        }
-    }
-
-    @Override
-    public void tickEvent(GameTickEvent event) {
-        if(Addon.settings().getHopperSubConfig().getEnabled().get()) {
-            Container cont = Helper.getPlayer().openContainer;
-            if (cont instanceof ContainerChest chest) {
-                IInventory inv = chest.getLowerChestInventory();
-                if (inv.getName().equalsIgnoreCase(Const.Menu.TRICHTER_EINSTELLUNGEN)) {
-
-                    if(toggeledSneak) {
-                        KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-                        KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
-                        KeyBinding.setKeyBindState(sneakKey.getKeyCode(), false);
-                        KeyBinding.setKeyBindState(jumpKey.getKeyCode(), false);
-                        Keyboard.enableRepeatEvents(false);
-                        toggeledSneak = false;
-                    }
-
-                    boolean clicked = false;
-                    if (ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        if (Addon.settings().getHopperSubConfig().getFilterItem().get() &&
-                            (((!chest.getSlot(28).getStack().getItem().equals(chest.getSlot(72).getStack().getItem())) &&
-                            !(Block.getBlockFromItem(chest.getSlot(28).getStack().getItem()) == Blocks.BARRIER && !chest.getSlot(72).getHasStack())) ||
-                                (chest.getSlot(28).getStack().getMetadata() != chest.getSlot(72).getStack().getMetadata()))) {
-                            ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 72, 0, ClickType.QUICK_MOVE));
-                            clicked = true;
-                        }
-
-                        if (Addon.settings().getHopperSubConfig().getRadius().get() > -1 && !receivedPlotBorderMessage && !clicked) {
-                            if (Addon.settings().getHopperSubConfig().getRadius().get() == 0) {
-                                if (chest.getSlot(30).getStack().getItem() instanceof ItemSkull) {
-                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, ClickType.QUICK_MOVE));
-                                    clicked = true;
-                                }
-                            } else {
-                                if (Addon.settings().getHopperSubConfig().getRadius().get() > chest.getSlot(31).getStack().getCount()) {
-                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 32, 0, ClickType.QUICK_MOVE));
-                                    clicked = true;
-                                } else if (Addon.settings().getHopperSubConfig().getRadius().get() < chest.getSlot(31).getStack().getCount()) {
-                                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 30, 0, ClickType.QUICK_MOVE));
-                                    clicked = true;
-                                }
-                            }
-                        }
-
-                        if(!clicked && Addon.settings().getHopperSubConfig().getStackSize().get() != HopperItemStackSizeEnum.NONE && chest.inventorySlots.get(10).getHasStack()) {
-                            int currentStackSize = chest.getSlot(10).getStack().getCount();
-                            switch (Addon.settings().getHopperSubConfig().getStackSize().get()) {
-                                case SINGLEITEM:
-                                    if(currentStackSize != 1) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, ClickType.QUICK_MOVE));
-                                        clicked = true;
-                                    }
-                                    break;
-                                case TWELVE:
-                                    if(currentStackSize != 12) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, ClickType.QUICK_MOVE));
-                                        clicked = true;
-                                    }
-                                    break;
-                                case FULLSTACK:
-                                    if(currentStackSize != 64) {
-                                        ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 10, 0, ClickType.QUICK_MOVE));
-                                        clicked = true;
-                                    }
-                                    break;
-                            }
-                        }
-
-                        if (!clicked && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.settings().getHopperSubConfig().getFinalAction().get() != HopperFinalAction.NONE && chest.inventorySlots.get(10).getHasStack()) {
-                            if (Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CLOSE) {
-                                Helper.getPlayer().closeScreen();
-                            } else if (Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.CONNECT) {
-                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 16, 0, ClickType.PICKUP));
-                            } else if (Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
-                                ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(chest.windowId, 15, 0, ClickType.PICKUP));
-                            }
-                        }
-                    }
-
-                } else if (inv.getName().equalsIgnoreCase(Const.Menu.TRICHTER_MEHRFACH_VERBINDUNGEN) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Addon.settings().getHopperSubConfig().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
-                    ClickManager.getSharedInstance().addClick(
-                        QueueType.MEDIUM, new Click(chest.windowId, 53, 0, ClickType.PICKUP));
-                }
-            } else {
-                if(receivedPlotBorderMessage) {
-                    receivedPlotBorderMessage = false;
-                }
-            }
-        }
+        }, SNEAK_RELEASE_DELAY_MS);
     }
 
     @Override
     public void chatReceiveEvent(ChatReceiveEvent event) {
-        if(event.chatMessage().getPlainText().endsWith("Das Ende vom Grundstück wurde erreicht.")) {
-            receivedPlotBorderMessage = true;
+        if (event.chatMessage().getPlainText().endsWith(Const.Chat.PLOT_BORDER_REACHED))
+            reachedPlotBorder = true;
+    }
+
+    @Override
+    public void tickEvent(GameTickEvent event) {
+        if (!config().getEnabled().get())
+            return;
+
+        String title = Helper.getChestTitle();
+        if (title == null) {
+            reachedPlotBorder = false;
+            return;
+        }
+
+        if (title.equals(HopperMenu.TITLE))
+            releaseSneak();
+
+        if (!Helper.isClickQueueEmpty())
+            return;
+
+        if (title.equals(HopperMenu.TITLE)) {
+            if (!applyFilter() && !applyRadius() && !applyStackSize())
+                applyFinalAction();
+        } else if (title.equals(HopperMenu.MultiConnections.TITLE) && config().getFinalAction().get() == HopperFinalAction.MULTICONNECTION) {
+            Helper.click(HopperMenu.MultiConnections.ADD_CONNECTION);
         }
     }
 
-    private boolean isLookingAtHopper() {
-        BlockPos blockPos = Helper.getBlockPosLookingAt();
-        if (blockPos != null) {
-            Block block = Helper.getWorld().getBlockState(blockPos).getBlock();
+    private boolean applyFilter() {
+        ItemStack filter = Helper.getContainerStack(HopperMenu.FILTER);
+        ItemStack source = Helper.getContainerStack(HopperMenu.FILTER_SOURCE);
+        if (!config().getFilterItem().get() || filter == null || source == null || Helper.isSameItem(filter, source))
+            return false;
 
-            return (block instanceof BlockHopper);
+        Helper.shiftClick(HopperMenu.FILTER_SOURCE);
+        return true;
+    }
+
+    private boolean applyRadius() {
+        int radius = config().getRadius().get();
+        if (radius < 0 || reachedPlotBorder)
+            return false;
+
+        if (radius == 0) {
+            if (!Helper.isItem(Helper.getContainerStack(HopperMenu.RADIUS_DECREASE), Const.Id.SKULL))
+                return false;
+
+            Helper.shiftClick(HopperMenu.RADIUS_DECREASE);
+            return true;
         }
-        return false;
+
+        int currentRadius = Helper.getCount(Helper.getContainerStack(HopperMenu.RADIUS));
+        if (radius == currentRadius)
+            return false;
+
+        Helper.shiftClick(radius > currentRadius ? HopperMenu.RADIUS_INCREASE : HopperMenu.RADIUS_DECREASE);
+        return true;
+    }
+
+    private boolean applyStackSize() {
+        int wantedSize = switch (config().getStackSize().get()) {
+            case SINGLEITEM -> 1;
+            case TWELVE -> 12;
+            case FULLSTACK -> 64;
+            case NONE -> -1;
+        };
+
+        ItemStack stackSize = Helper.getContainerStack(HopperMenu.STACK_SIZE);
+        if (wantedSize < 0 || stackSize == null || Helper.getCount(stackSize) == wantedSize)
+            return false;
+
+        Helper.shiftClick(HopperMenu.STACK_SIZE);
+        return true;
+    }
+
+    private void applyFinalAction() {
+        if (Helper.getContainerStack(HopperMenu.STACK_SIZE) == null)
+            return;
+
+        switch (config().getFinalAction().get()) {
+            case CLOSE -> Helper.getPlayer().closeScreen();
+            case CONNECT -> Helper.click(HopperMenu.CONNECT);
+            case MULTICONNECTION -> Helper.click(HopperMenu.MULTI_CONNECT);
+            case NONE -> {}
+        }
+    }
+
+    private void releaseSneak() {
+        if (!sneakToggled)
+            return;
+
+        KeyBinding.setKeyBindState(Helper.mc().gameSettings.keyBindSneak.getKeyCode(), false);
+        KeyBinding.setKeyBindState(Helper.mc().gameSettings.keyBindJump.getKeyCode(), false);
+        Keyboard.enableRepeatEvents(false);
+        sneakToggled = false;
+    }
+
+    private static HopperSubConfig config() {
+        return Addon.settings().getHopperSubConfig();
     }
 }

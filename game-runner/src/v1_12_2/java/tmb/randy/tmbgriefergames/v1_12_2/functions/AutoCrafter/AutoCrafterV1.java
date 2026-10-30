@@ -1,277 +1,223 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Map;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.click.Click;
+import tmb.randy.tmbgriefergames.core.click.ClickManager;
+import tmb.randy.tmbgriefergames.core.config.AutoCrafterSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
+/** Repeats a crafting recipe stored with SHIFT + ENTER in the crafting table. */
 public class AutoCrafterV1 extends Function {
-    private ContainerWorkbench inv;
-    private final int[] stored;
-    private final int[] meta;
-    private final String[] names;
-    private String output;
-    private int outputID;
-    private final LinkedList<Click> toSend;
+    // Slots of the crafting table container
+    private static final int RESULT = 0;
+    private static final int GRID_SIZE = 9;
+    private static final int FIRST_INVENTORY_SLOT = 10;
+    private static final int CONTAINER_SIZE = 46;
 
+    private final ItemStack[] recipe = new ItemStack[GRID_SIZE];
+    private ItemStack output;
     private Simulator simulator;
-    private boolean endlessModeToggle = false;
+    private boolean endlessModeActive = false;
 
     public AutoCrafterV1() {
         super(Functions.CRAFTV1.name());
-        stored = new int[9];
-        meta = new int[9];
-        names = new String[9];
-        output = "";
-        toSend = new LinkedList<>();
     }
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(Helper.getPlayer() != null && Helper.getPlayer().openContainer != null && Minecraft.getMinecraft().currentScreen instanceof GuiCrafting) {
-            if(event.key() == Key.ENTER && event.state() == State.PRESS) {
-                if(Key.L_SHIFT.isPressed()) {
-                    storeCrafting();
-                    Addon.displayNotification(Addon.translate("autoCrafter.recipeSaved"));
-                } else if(Addon.settings().getAutoCrafterConfig().getEndlessMode().get() && event.state() == State.PRESS) {
-                    this.setEndlessModeToggle(!endlessModeToggle);
-                } else if(!Addon.settings().getAutoCrafterConfig().getEndlessMode().get() && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed())) {
-                    craft();
-                }
-            }
+        if (!Helper.isCraftingScreen() || event.key() != Key.ENTER || event.state() != State.PRESS)
+            return;
+
+        if (Key.L_SHIFT.isPressed()) {
+            storeRecipe();
+            Addon.displayNotification(Addon.translate("autoCrafter.recipeSaved"));
+        } else if (config().getEndlessMode().get()) {
+            setEndlessModeActive(!endlessModeActive);
+        } else if (isQueueEmpty()) {
+            craft();
         }
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(endlessModeToggle && ClickManager.getSharedInstance().isClickQueueEmpty(getCraftingSpeed()))
+        if (endlessModeActive && isQueueEmpty())
             craft();
     }
 
-    public void storeCrafting() {
-        inv = (ContainerWorkbench)Helper.getPlayer().openContainer;
-
-        if (!(inv.inventorySlots.getFirst()).getHasStack())
-        {
+    private void storeRecipe() {
+        ItemStack result = Helper.getContainerStack(RESULT);
+        if (result == null)
             return;
+
+        for (int i = 0; i < GRID_SIZE; i++) {
+            ItemStack stack = Helper.getContainerStack(i + 1);
+            recipe[i] = stack == null ? null : stack.copy();
         }
-        ItemStack result = (inv.inventorySlots.getFirst()).getStack();
-        for (int i = 0; i < 9; i++)
-        {
-            if (inv.inventorySlots.get(i+1) != null)
-            {
-                ItemStack stack = (inv.inventorySlots.get(i+1)).getStack();
-                if (stack != null) {
-                    stored[i] = Item.getIdFromItem(stack.getItem());
-                    meta[i] = stack.getItemDamage();
-                    names[i] = stack.getDisplayName();
-                } else {
-                    stored[i] = 0;
-                    meta[i] = 0;
-                    names[i] = "";
-                }
-            }
-        }
-        output = result.getDisplayName();
-        outputID = Item.getIdFromItem(result.getItem());
+        output = result.copy();
     }
 
-    public void craft()
-    {
-        if(!(Helper.getPlayer().openContainer instanceof  ContainerWorkbench)) {
+    private void craft() {
+        if (!Helper.isCraftingScreen() || output == null)
+            return;
+
+        depositHeldItem();
+        simulator = new Simulator(CONTAINER_SIZE);
+        dropCraftedItems();
+        simulator = new Simulator(CONTAINER_SIZE);
+
+        if (!hasAllMaterials()) {
+            clearGrid();
             return;
         }
 
-        toSend.clear();
-        inv = (ContainerWorkbench)Helper.getPlayer().openContainer;
-
-        int n = 0;
-        for (int i = 0; i < 9; i++) n += this.stored[i];
-        if (n == 0)	return;
-
-        this.depositHeld();
-
-        this.simulator = new Simulator(this.inv.inventorySlots, 46);
-
-        dropItems();
-        this.simulator = new Simulator(this.inv.inventorySlots, 46);
-
-
-        if (!this.checkMaterials())
-            return;
-
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = this.simulator.stackAt(i+1);
-            if (stack != null) {
-                int currID = Item.getIdFromItem(stack.getItem());
-                int currMeta = stack.getItemDamage();
-                String name = stack.getDisplayName();
-                if (currID == stored[i] && currMeta == meta[i] && name.equals(names[i]))
+        for (int i = 0; i < GRID_SIZE; i++) {
+            int gridSlot = i + 1;
+            ItemStack current = simulator.stackAt(gridSlot);
+            if (current != null) {
+                if (recipe[i] != null && isRecipeItem(current, recipe[i]))
                     continue;
-                else if (stored[i] == 0)
-                {
-                    shiftClick(i+1);
-                    continue;
-                }
-                else
-                    shiftClick(i+1);
+                shiftClick(gridSlot);
             }
 
-            if (stored[i] == 0)
-                continue;
-            boolean found = false;
-            for (int j = 45; j >= 10; j--) {
-                ItemStack curr = this.simulator.stackAt(j);
-                String name = curr.getDisplayName();
-                boolean isFullStack = curr.getCount() == curr.getMaxStackSize() || !Addon.settings().getAutoCrafterConfig().getOnlyFullStacks().get();
-                if (Item.getIdFromItem(curr.getItem()) == stored[i] && curr.getItemDamage() == meta[i] && name.equals(names[i]) && isFullStack) {
-                    click(j);
-                    click(i+1);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                ItemStack displayStack = new ItemStack(Item.getItemById(stored[i]));
-                displayStack.setItemDamage(meta[i]);
-                sendQueue();
+            if (recipe[i] != null && !moveIngredientInto(gridSlot, recipe[i]))
                 return;
-            }
         }
 
-        shiftClick(0);
-        sendQueue();
-
-
+        shiftClick(RESULT);
     }
 
-    private void depositHeld() {
-        for (int i = 10; i < 46; i++) {
-            if (!(inv.inventorySlots.get(i)).getHasStack())
-            {
-                Minecraft.getMinecraft().playerController.windowClick(this.inv.windowId, i, 0, ClickType.PICKUP, Helper.getPlayer());
+    /** Puts a stack the player might be holding on the cursor back into the inventory (or drops it). */
+    private void depositHeldItem() {
+        for (int i = FIRST_INVENTORY_SLOT; i < CONTAINER_SIZE; i++) {
+            if (Helper.getContainerStack(i) == null) {
+                sendDirect(i);
                 return;
             }
         }
 
-        for (int i = 1; i < 10; i++) {
-            if (!(inv.inventorySlots.get(i)).getHasStack())
-            {
-                Minecraft.getMinecraft().playerController.windowClick(this.inv.windowId, i, 0, ClickType.PICKUP, Helper.getPlayer());
+        for (int i = 1; i <= GRID_SIZE; i++) {
+            if (Helper.getContainerStack(i) == null) {
+                sendDirect(i);
                 return;
             }
         }
 
-        for (int i = 10; i < 46; i++) {
-            if (ArrayUtils.contains(stored, Item.getIdFromItem(this.inv.inventorySlots.get(i).getStack().getItem())))
-            {
-                Minecraft.getMinecraft().playerController.windowClick(this.inv.windowId, i, 0, ClickType.PICKUP, Helper.getPlayer());
-                Minecraft.getMinecraft().playerController.windowClick(this.inv.windowId, -999, 0, ClickType.PICKUP, Helper.getPlayer());
+        for (int i = FIRST_INVENTORY_SLOT; i < CONTAINER_SIZE; i++) {
+            if (isIngredient(Helper.getContainerStack(i))) {
+                sendDirect(i);
+                sendDirect(ClickManager.OUTSIDE_SLOT);
                 return;
             }
         }
     }
 
-    private boolean checkMaterials() {
-        HashMap<String, Integer> needed = new HashMap<>();
-        for (int i = 0; i < 9; i++) {
-            if (this.stored[i] != 0) {
-                needed.merge(stored[i] + ":" + meta[i], 1, Integer::sum);
+    private boolean moveIngredientInto(int gridSlot, ItemStack ingredient) {
+        boolean onlyFullStacks = config().getOnlyFullStacks().get();
+
+        for (int i = CONTAINER_SIZE - 1; i >= FIRST_INVENTORY_SLOT; i--) {
+            ItemStack stack = simulator.stackAt(i);
+            if (stack != null && isRecipeItem(stack, ingredient) && (Helper.isFullStack(stack) || !onlyFullStacks)) {
+                click(i);
+                click(gridSlot);
+                return true;
             }
         }
-        for (int i = 1; i <= 45; i++) {
-            this.inv = (ContainerWorkbench)Helper.getPlayer().openContainer;
-            if (this.simulator.stackAt(i) == null)
-                continue;
-            ItemStack stack = this.simulator.stackAt(i);
-            if (stack == null)
-                continue;
-            String item = Item.getIdFromItem(stack.getItem()) + ":" + stack.getItemDamage();
-            Integer count = needed.get(item);
-            if (count == null)
-                continue;
-            else
-            {
-                if (stack.getCount() >= count)
-                    needed.remove(item);
-                else
-                    needed.put(item, count - stack.getCount());
-            }
-            if (needed.isEmpty())
-                break;
-        }
-
-        if (!needed.isEmpty()) {
-            String item = needed.keySet().iterator().next();
-            ItemStack displayStack = new ItemStack(Item.getItemById(Integer.parseInt(item.split(":")[0])));
-            displayStack.setItemDamage(Integer.parseInt(item.split(":")[1]));
-            this.toSend.clear();
-            for (int k = 1; k < 10; k++)
-                if (this.simulator.stackAt(k) != null)
-                    this.shiftClick(k);
-            this.sendQueue();
-            return false;
-        }
-        return true;
+        return false;
     }
 
-    private void shiftClick(int slot) {
-        this.toSend.addLast(new Click(this.inv.windowId, slot, 0, ClickType.QUICK_MOVE));
-        this.simulator.shiftClick(slot);
+    private boolean hasAllMaterials() {
+        Map<String, Integer> needed = new HashMap<>();
+        for (ItemStack ingredient : recipe) {
+            if (ingredient != null)
+                needed.merge(getKey(ingredient), 1, Integer::sum);
+        }
+
+        for (int i = 1; i < CONTAINER_SIZE && !needed.isEmpty(); i++) {
+            ItemStack stack = simulator.stackAt(i);
+            if (stack != null)
+                needed.computeIfPresent(getKey(stack), (key, count) -> count > Helper.getCount(stack) ? count - Helper.getCount(stack) : null);
+        }
+        return needed.isEmpty();
     }
 
-    private void dropItems() {
+    private void clearGrid() {
+        for (int i = 1; i <= GRID_SIZE; i++) {
+            if (simulator.stackAt(i) != null)
+                shiftClick(i);
+        }
+    }
 
-        if(Addon.settings().getAutoCrafterConfig().getAutoDrop().get()) {
-            for (int j = 10; j <= 45; j++) {
-                ItemStack curr = simulator.stackAt(j);
-                int currentID = Item.getIdFromItem(curr.getItem());
+    private void dropCraftedItems() {
+        if (!config().getAutoDrop().get())
+            return;
 
-                if (curr.getDisplayName().equals(output) && currentID == outputID) {
-                    dropClick(j);
-                }
+        for (int i = FIRST_INVENTORY_SLOT; i < CONTAINER_SIZE; i++) {
+            ItemStack stack = simulator.stackAt(i);
+            if (stack != null && stack.getItem() == output.getItem() && stack.getDisplayName().equals(output.getDisplayName())) {
+                queue(i, Click.Mode.PICKUP);
+                queue(ClickManager.OUTSIDE_SLOT, Click.Mode.PICKUP);
             }
         }
     }
 
-    private void dropClick(int slot) {
-        this.toSend.addLast(new Click(this.inv.windowId, slot, 0, ClickType.PICKUP));
-        this.toSend.addLast(new Click(this.inv.windowId, -999, 0, ClickType.PICKUP));
+    private boolean isIngredient(ItemStack stack) {
+        for (ItemStack ingredient : recipe) {
+            if (ingredient != null && stack != null && ingredient.getItem() == stack.getItem())
+                return true;
+        }
+        return false;
+    }
+
+    private static boolean isRecipeItem(ItemStack stack, ItemStack ingredient) {
+        return Helper.isSameItem(stack, ingredient) && stack.getDisplayName().equals(ingredient.getDisplayName());
+    }
+
+    private static String getKey(ItemStack stack) {
+        return Helper.getRegistryName(stack) + ":" + stack.getMetadata();
     }
 
     private void click(int slot) {
-        this.toSend.addLast(new Click(this.inv.windowId, slot, 0, ClickType.PICKUP));
-        this.simulator.leftClick(slot);
+        queue(slot, Click.Mode.PICKUP);
+        simulator.leftClick(slot);
     }
 
-    private void sendQueue() {
-        ClickManager.getSharedInstance().queueClicks(getCraftingSpeed(), toSend);
-        this.toSend.clear();
+    private void shiftClick(int slot) {
+        queue(slot, Click.Mode.QUICK_MOVE);
+        simulator.shiftClick(slot);
     }
 
-    private void setEndlessModeToggle(boolean value) {
-        endlessModeToggle = value;
-        Addon.displayNotification(Addon.translate(value ? "autoCrafter.active" : "autoCrafter.inactive"));
+    private void queue(int slot, Click.Mode mode) {
+        Helper.clicks().addClick(getCraftingSpeed(), new Click(Helper.getWindowId(), slot, mode));
     }
 
-    private QueueType getCraftingSpeed() {
-        return Addon.settings().getAutoCrafterConfig().getAutoCraftSpeed().get();
+    private static void sendDirect(int slot) {
+        Helper.windowClick(new Click(Helper.getWindowId(), slot, Click.Mode.PICKUP));
+    }
+
+    private void setEndlessModeActive(boolean active) {
+        endlessModeActive = active;
+        Addon.displayNotification(Addon.translate(active ? "autoCrafter.active" : "autoCrafter.inactive"));
+    }
+
+    private boolean isQueueEmpty() {
+        return Helper.clicks().isClickQueueEmpty(getCraftingSpeed());
+    }
+
+    private static QueueType getCraftingSpeed() {
+        return config().getAutoCraftSpeed().get();
+    }
+
+    private static AutoCrafterSubConfig config() {
+        return Addon.settings().getAutoCrafterConfig();
     }
 }

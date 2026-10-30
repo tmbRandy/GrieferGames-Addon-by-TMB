@@ -1,40 +1,37 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
-import tmb.randy.tmbgriefergames.core.enums.CompressorState;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
-import tmb.randy.tmbgriefergames.core.helper.Commander;
+import tmb.randy.tmbgriefergames.core.menu.RezepteMenu;
+import tmb.randy.tmbgriefergames.core.menu.RezepteMenu.Compression;
+import tmb.randy.tmbgriefergames.core.menu.RezepteMenu.CompressionRecipes;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
 public class AutoComp extends ActiveFunction {
+    private enum Step { IDLE, OPEN_COMPRESSION, COMPRESSING }
 
+    private static final int TICKS_BETWEEN_CLICKS = 8;
+
+    /** The compression levels that are crafted one after another, the player can switch lists with the arrow keys. */
+    private static final int[][] LEVEL_LISTS = {
+        {1, 2, 3, 4, 5},
+        {
+            1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 4,
+            1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 4, 5,
+            1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 4,
+            1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 1, 1, 2, 1, 1, 2, 1, 1, 2, 3, 4, 5, 6
+        }
+    };
+
+    private Step step = Step.IDLE;
     private int counter = 0;
-    private CompressorState compState = CompressorState.NONE;
-    private final LinkedList<Click> toSend = new LinkedList<>();
-    private final List<CompressorState> list1 = Arrays.asList(CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS4, CompressorState.COMPRESS5);
-    private final List<CompressorState> list2 = Arrays.asList(CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS4, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS4, CompressorState.COMPRESS5, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS4, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1, CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS1 , CompressorState.COMPRESS1, CompressorState.COMPRESS2, CompressorState.COMPRESS3, CompressorState.COMPRESS4, CompressorState.COMPRESS5, CompressorState.COMPRESS6);
-
-    private final List<List<CompressorState>> lists = Arrays.asList(list1, list2);
-
     private int currentList = 0;
     private int currentEntry = 0;
 
@@ -44,204 +41,84 @@ public class AutoComp extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS) {
-            if (isEnabled() && Helper.getPlayer().openContainer != null) {
-                if(Helper.getPlayer().openContainer instanceof ContainerChest chest) {
-                    IInventory inv = chest.getLowerChestInventory();
-                    if(inv.getName().equals(Const.Menu.ITEM_KOMPRIMIERUNG)) {
-                        if (event.key() == Key.ARROW_UP)
-                            changeList(true);
-                         else if (event.key() == Key.ARROW_DOWN)
-                            changeList(false);
-                    }
-                }
-            } else {
-                if (Addon.allKeysPressedAndGuiClosed(Addon.settings().getAutoCrafterConfig().getAutoCompHotkey().get())) {
-                    start();
-                }
-            }
-        }
-    }
+        if (event.state() != State.PRESS)
+            return;
 
-    @Override
-    public void cbChangedEvent(CbChangedEvent event) {
-        stop();
+        if (!isEnabled()) {
+            if (Addon.allKeysPressedAndGuiClosed(Addon.settings().getAutoCrafterConfig().getAutoCompHotkey().get()))
+                start();
+        } else if (Helper.isChestOpen(Compression.TITLE)) {
+            if (event.key() == Key.ARROW_UP)
+                changeList(1);
+            else if (event.key() == Key.ARROW_DOWN)
+                changeList(-1);
+        }
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
-
-        if(compState == CompressorState.NONE) 
-            return;
-        
-        counter++;
-
-        if(counter >= 8) 
-            counter = 0;
-         else 
+        if (step == Step.IDLE || ++counter < TICKS_BETWEEN_CLICKS)
             return;
 
-        Container cont = Helper.getPlayer().openContainer;
-        if(cont instanceof ContainerChest chest) {
+        counter = 0;
+        String title = Helper.getChestTitle();
 
-            IInventory inv = chest.getLowerChestInventory();
-            if(inv.getName().equalsIgnoreCase(Const.Menu.CUSTOM_KATEGORIEN) && compState == CompressorState.WAITING_FOR_MENU1) {
-                compState = CompressorState.WAITING_FOR_MENU2;
-                click(11);
-
-            } else if(inv.getName().equalsIgnoreCase(Const.Menu.ITEM_KOMPRIMIERUNG_BAUANLEITUNG)) {
-                compState = CompressorState.COMPRESS1;
-                click(81);
-            } else if(inv.getName().equalsIgnoreCase(Const.Menu.ITEM_KOMPRIMIERUNG)) {
-                ItemStack pageIndicator = chest.getSlot(49).getStack();
-                if(Item.getIdFromItem(pageIndicator.getItem()) == 397) {
-                    String page = pageIndicator.getDisplayName();
-
-                    int direction = getClickDirection(page);
-
-                    if(direction == -1) {
-                        click(48);
-                    } else if(direction == 0) {
-                        click(52);
-                        if(currentEntry >= lists.get(currentList).size() - 1) {
-                            currentEntry = 0;
-                        } else {
-                            currentEntry++;
-                        }
-                    } else if(direction == 1) {
-                        click(50);
-                    }
-                }
-            }
+        if (RezepteMenu.TITLE.equals(title) && step == Step.OPEN_COMPRESSION) {
+            step = Step.COMPRESSING;
+            Helper.shiftClick(RezepteMenu.COMPRESSION);
+        } else if (CompressionRecipes.TITLE.equals(title)) {
+            Helper.shiftClick(RezepteMenu.FIRST_HOTBAR_SLOT);
+        } else if (Compression.TITLE.equals(title)) {
+            compress();
         }
     }
 
-    @Override
-    public boolean start() {
-        if(super.start()) {
-            compState = CompressorState.WAITING_FOR_MENU1;
-            Commander.queue(Const.Cmd.REZEPTE);
-            return true;
-        }
+    private void compress() {
+        int[] levels = LEVEL_LISTS[currentList];
+        ItemStack indicator = Helper.getContainerStack(RezepteMenu.PAGE_INDICATOR);
+        if (!Helper.isItem(indicator, Const.Id.SKULL))
+            return;
 
-        return false;
+        int level = Compression.parseLevel(indicator.getDisplayName());
+        if (level < 0)
+            return;
+
+        int slot = RezepteMenu.navigate(level, levels[currentEntry]);
+        Helper.shiftClick(slot);
+
+        if (slot == RezepteMenu.CONFIRM)
+            currentEntry = (currentEntry + 1) % levels.length;
+    }
+
+    @Override
+    public boolean start(String[] arguments) {
+        if (!super.start(arguments))
+            return false;
+
+        step = Step.OPEN_COMPRESSION;
+        RezepteMenu.open();
+        return true;
     }
 
     @Override
     public boolean stop() {
-        if(super.stop()) {
-            compState = CompressorState.NONE;
-            currentList = 0;
-            currentEntry = 0;
-            return true;
-        }
-        return false;
-    }
+        if (!super.stop())
+            return false;
 
-    private int getClickDirection(String current) {
-        switch (current) {
-            case Const.Comp.LEVEL_1:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1:
-                        return 0;
-                    case COMPRESS2, COMPRESS3, COMPRESS4, COMPRESS5, COMPRESS6:
-                        return 1;
-                    default:
-                        break;
-                }
-                break;
-            case Const.Comp.LEVEL_2:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1:
-                        return -1;
-                    case COMPRESS2:
-                        return 0;
-                    case COMPRESS3, COMPRESS4, COMPRESS5, COMPRESS6:
-                        return 1;
-                    default:
-                        break;
-                }
-                break;
-            case Const.Comp.LEVEL_3:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1, COMPRESS2:
-                        return -1;
-                    case COMPRESS3:
-                        return 0;
-                    case COMPRESS4, COMPRESS5, COMPRESS6:
-                        return 1;
-                    default:
-                        break;
-                }
-                break;
-            case Const.Comp.LEVEL_4:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1, COMPRESS2, COMPRESS3:
-                        return -1;
-                    case COMPRESS4:
-                        return 0;
-                    case COMPRESS5, COMPRESS6:
-                        return 1;
-                    default:
-                        break;
-                }
-                break;
-            case Const.Comp.LEVEL_5:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1, COMPRESS2, COMPRESS3, COMPRESS4:
-                        return -1;
-                    case COMPRESS5:
-                        return 0;
-                    case COMPRESS6:
-                        return 1;
-                    default:
-                        break;
-                }
-                break;
-            case Const.Comp.LEVEL_6:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1, COMPRESS2, COMPRESS3, COMPRESS4, COMPRESS5:
-                        return -1;
-                    case COMPRESS6:
-                        return 0;
-                    default:
-                        break;
-                }
-                break;
-            case Const.Comp.LEVEL_7:
-                switch (lists.get(currentList).get(currentEntry)) {
-                    case COMPRESS1, COMPRESS2, COMPRESS3, COMPRESS4, COMPRESS5, COMPRESS6:
-                        return -1;
-                    default:
-                        break;
-                }
-                break;
-        }
-
-        return 0;
-    }
-
-    public void changeList(boolean increase) {
-
-        if((currentList >= lists.size()-1 && increase) || (currentList <= 0 && !increase)) {
-            return;
-        }
-
-        counter = 0;
+        step = Step.IDLE;
+        currentList = 0;
         currentEntry = 0;
-
-        if(increase) {
-            currentList++;
-        } else {
-            currentList--;
-        }
-
-        Addon.displayNotification(Addon.translate("autoComp.list", currentList + 1));
+        return true;
     }
 
-    private void click(int slot) {
-        this.toSend.addLast(new Click(Helper.getPlayer().openContainer.windowId, slot, 0, ClickType.QUICK_MOVE));
-        ClickManager.getSharedInstance().queueClicks(QueueType.MEDIUM, this.toSend);
-        this.toSend.clear();
+    private void changeList(int direction) {
+        int newList = currentList + direction;
+        if (newList < 0 || newList >= LEVEL_LISTS.length)
+            return;
+
+        currentList = newList;
+        currentEntry = 0;
+        counter = 0;
+        Addon.displayNotification(Addon.translate("autoComp.list", currentList + 1));
     }
 }

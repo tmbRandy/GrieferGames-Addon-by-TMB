@@ -11,13 +11,11 @@ import tmb.randy.tmbgriefergames.api.events.FishEvent;
 
 @Mixin(SoundManager.class)
 public class MixinSoundManager {
+    private static final String SPLASH_SOUND = "random.splash";
 
     @Inject(method = "playSound", at = @At("HEAD"))
     private void onPlaySound(ISound sound, CallbackInfo ci) {
-        if (sound != null && sound.getSoundLocation() != null) {
-            if (sound.getSoundLocation().getResourcePath().contains("random.splash")) {
-                Laby.fireEvent(new FishEvent(sound.getXPosF(), sound.getYPosF(), sound.getZPosF()));
-            }
-        }
+        if (sound != null && sound.getSoundLocation().getResourcePath().contains(SPLASH_SOUND))
+            Laby.fireEvent(new FishEvent(sound.getXPosF(), sound.getYPosF(), sound.getZPosF()));
     }
 }

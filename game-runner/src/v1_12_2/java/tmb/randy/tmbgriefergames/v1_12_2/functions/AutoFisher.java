@@ -1,38 +1,29 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.projectile.EntityFishHook;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
-import net.minecraft.util.EnumHand;
+import tmb.randy.tmbgriefergames.api.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.enums.QueueType;
-import tmb.randy.tmbgriefergames.api.events.FishEvent;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
+/** Catches fish automatically, drops rubbish and optionally stores the catch in the ender chest. */
 public class AutoFisher extends ActiveFunction {
+    private static final long RECAST_DELAY_MS = 1000;
+    private static final long ROD_SWITCH_DELAY_MS = 200;
+    private static final long ITEM_REMOVER_RETRY_MS = 4000;
 
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private boolean fished = false;
-    private boolean waitForFishingAfterRemover = false;
+    private boolean waitForItemRemover = false;
 
     public AutoFisher() {
         super(Functions.AUTOFISHER.name());
@@ -40,215 +31,120 @@ public class AutoFisher extends ActiveFunction {
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(!Addon.settings().getAutoFisherSubConfig().getEnabled().get()) return;
-        if(!(Helper.getPlayer().getHeldItemMainhand().getItem() instanceof ItemFishingRod)) return;
+        if (!config().getEnabled().get() || fished || !Helper.isItem(Helper.getHeldItem(), Const.Id.FISHING_ROD))
+            return;
 
-        if(Helper.getPlayer().fishEntity == null) return;
-
-        if(fished) return;
-        EntityFishHook fishingHook = Helper.getPlayer().fishEntity;
-        double x = fishingHook.motionX;
-        double z = fishingHook.motionZ;
-        double y = fishingHook.motionY;
-        if(y < -0.05 && Helper.getPlayer().fishEntity.isInWater() && x == 0 && z == 0) {
+        EntityFishHook hook = Helper.getFishHook();
+        if (hook != null && hook.motionY < Helper.FISH_BITE_MOTION_Y && hook.isInWater() && hook.motionX == 0 && hook.motionZ == 0)
             catchFish();
-        }
-    }
-
-    @Override
-    public void chatReceiveEvent(ChatReceiveEvent event) {
-        if(event.chatMessage().getPlainText().endsWith(Const.Chat.AUTOFISHER_ITEMS_WARNING)) {
-            if(Helper.getPlayer().fishEntity != null) {
-                NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                if(nethandler != null) {
-                    nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                } else {
-                    ClickManager.getSharedInstance().rightClick();
-                }
-                waitForFishingAfterRemover = true;
-            }
-
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(Helper.getPlayer().fishEntity != null) {
-                        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                        if(nethandler != null) {
-                            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                        } else
-                            ClickManager.getSharedInstance().rightClick();
-
-                        waitForFishingAfterRemover = true;
-                    }
-                }
-            }, 4000);
-
-        } else if(event.chatMessage().getPlainText().endsWith(Const.Chat.AUTOFISHER_ITEMS_REMOVED)) {
-            if(waitForFishingAfterRemover) {
-                waitForFishingAfterRemover = false;
-                NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                if(nethandler != null) {
-                    nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                } else {
-                    ClickManager.getSharedInstance().rightClick();
-                }
-            }
-        }
     }
 
     @Override
     public void fishEvent(FishEvent event) {
-        catchFish();
+        if (Helper.getFishHook() != null)
+            catchFish();
     }
 
-    private void dropRubbishFishedItems() {
-        if(Helper.getPlayer().openContainer instanceof ContainerPlayer container) {
-            int size = container.inventorySlots.size();
-            dropRubbish(container, 9, size);
-        } else if(Helper.getPlayer().openContainer instanceof ContainerChest container) {
-            IInventory lowerChestInventory = container.getLowerChestInventory();
+    @Override
+    public void chatReceiveEvent(ChatReceiveEvent event) {
+        String message = event.chatMessage().getPlainText();
 
-            if (lowerChestInventory.getDisplayName().getUnformattedText().equals(Const.Item.ENDERTRUHE) &&
-                Addon.settings().getAutoFisherSubConfig().getAllowEC().get()) {
-
-                int ecSize = lowerChestInventory.getSizeInventory();
-                int containerSize = container.inventorySlots.size();
-
-                dropRubbish(container, ecSize, containerSize);
-
-                int maxShifts = getEmptySlotsInInventory(lowerChestInventory);
-                int executedShifts = 0;
-
-                for (int i = ecSize; i < containerSize; i++) {
-                    ItemStack stack = container.getSlot(i).getStack();
-                    if (!stack.isEmpty() && stack.getItem() != Items.FISHING_ROD &&
-                        !shouldDropItem(stack) && executedShifts < maxShifts) {
-                        ClickManager.getSharedInstance().addClick(
-                            QueueType.MEDIUM, new Click(container.windowId, i, 0, ClickType.QUICK_MOVE));
-                        executedShifts++;
-                    }
-                }
-            }
+        // Pull the hook in before the item remover runs, otherwise it would be removed as well
+        if (message.endsWith(Const.Chat.AUTOFISHER_ITEMS_WARNING)) {
+            pullInBeforeItemRemover();
+            scheduler.schedule(this::pullInBeforeItemRemover, ITEM_REMOVER_RETRY_MS, TimeUnit.MILLISECONDS);
+        } else if (message.endsWith(Const.Chat.AUTOFISHER_ITEMS_REMOVED) && waitForItemRemover) {
+            waitForItemRemover = false;
+            Helper.sendUseItemPacket();
         }
     }
 
-    private boolean shouldDropItem(ItemStack stack) {
-        if (stack.isEmpty() || stack.hasDisplayName()) {
-            return false;
-        }
-
-        Item item = stack.getItem();
-        int meta = stack.getMetadata();
-        AutoFisherSubConfig subConfig = Addon.settings().getAutoFisherSubConfig();
-
-        return (item == Items.FISHING_ROD && subConfig.getAutoDropRods().get()) ||
-            (item == Items.BOW && subConfig.getAutoDropBows().get()) ||
-            (item == Items.ENCHANTED_BOOK && subConfig.getAutoDropBooks().get()) ||
-            (item == Items.SADDLE && subConfig.getAutoDropSaddle().get()) ||
-            (Item.getIdFromItem(item) == 111 && subConfig.getAutoDropLilypads().get()) ||
-            ((item == Items.FISH || item == Items.COOKED_FISH) && subConfig.getAutoDropFish().get() && (meta == 0 || meta == 1));
-    }
-
-    private void dropRubbish(Container container, int minSlot, int maxSlot) {
-        for(int i = minSlot; i < maxSlot; i++) {
-            if(container.getSlot(i).getHasStack()) {
-                ItemStack stack = container.getSlot(i).getStack();
-                if (shouldDropItem(stack)) {
-                    ClickManager.getSharedInstance().dropClick(i);
-                }
-            }
-        }
-    }
-
-    private int getEmptySlotsInInventory(IInventory inventory) {
-        int count = 0;
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            if(inventory.getStackInSlot(i).isEmpty()) count++;
-        }
-
-        return count;
-    }
-
-    private void startTimer() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                fished = false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
-
-    public void selectSimilarItem() {
-        Minecraft mc = Minecraft.getMinecraft();
-        if (mc.player != null) {
-            boolean rodFound = false;
-            for (int i = 0; i < 9; i++) {
-                ItemStack stack = mc.player.inventory.getStackInSlot(i);
-
-                if (!stack.isEmpty() && stack.getItem().equals(Items.FISHING_ROD)) {
-                    int itemDamage = stack.getItemDamage();
-                    int maxDamage = stack.getMaxDamage();
-                    if(itemDamage < maxDamage) {
-                        Helper.getPlayer().inventory.currentItem = i;
-                        rodFound = true;
-
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(200);
-                                NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
-                                if(nethandler != null)
-                                    nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                                else
-                                    ClickManager.getSharedInstance().rightClick();
-
-                                fished = false;
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }).start();
-
-                        break;
-                    }
-                }
-            }
-
-            if (!rodFound) {
-                fished = false;
-            }
+    private void pullInBeforeItemRemover() {
+        if (Helper.getPlayer() != null && Helper.getFishHook() != null) {
+            Helper.sendUseItemPacket();
+            waitForItemRemover = true;
         }
     }
 
     private void catchFish() {
-        NetHandlerPlayClient nethandler = Minecraft.getMinecraft().getConnection();
+        Helper.sendUseItemPacket();
 
-        if(nethandler != null)
-            nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-        else
-            ClickManager.getSharedInstance().rightClick();
-
-        if(!fished) {
+        if (!fished) {
             fished = true;
-            startTimer();
+            scheduler.schedule(() -> fished = false, RECAST_DELAY_MS, TimeUnit.MILLISECONDS);
         }
-        if(Helper.getPlayer().getHeldItemMainhand().isEmpty()) return;
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
 
-                if(Helper.getPlayer().getHeldItemMainhand().getItemDamage() < Helper.getPlayer().getHeldItemMainhand().getMaxDamage() && !waitForFishingAfterRemover) {
-                    if(nethandler != null) {
-                        nethandler.sendPacket(new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND));
-                        dropRubbishFishedItems();
-                    } else
-                        ClickManager.getSharedInstance().rightClick();
-                } else
-                    selectSimilarItem();
+        if (Helper.isEmpty(Helper.getHeldItem()))
+            return;
 
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+        scheduler.schedule(() -> {
+            if (Helper.hasDurabilityLeft(Helper.getHeldItem()) && !waitForItemRemover) {
+                Helper.sendUseItemPacket();
+                dropRubbish();
+            } else {
+                selectNextRod();
             }
-        }).start();
+        }, RECAST_DELAY_MS, TimeUnit.MILLISECONDS);
+    }
+
+    private void selectNextRod() {
+        for (int i = 0; i < Helper.HOTBAR_SIZE; i++) {
+            ItemStack stack = Helper.getInventoryStack(i);
+            if (Helper.isItem(stack, Const.Id.FISHING_ROD) && Helper.hasDurabilityLeft(stack)) {
+                Helper.setHotbarSlot(i);
+                scheduler.schedule(() -> {
+                    Helper.sendUseItemPacket();
+                    fished = false;
+                }, ROD_SWITCH_DELAY_MS, TimeUnit.MILLISECONDS);
+                return;
+            }
+        }
+        fished = false;
+    }
+
+    private void dropRubbish() {
+        if (!Helper.isContainerOpen()) {
+            Helper.dropItems(this::isRubbish, false);
+        } else if (Const.Item.ENDERTRUHE.equals(Helper.getChestDisplayName()) && config().getAllowEC().get()) {
+            Helper.dropItems(this::isRubbish, false);
+            storeCatchInEnderChest();
+        }
+    }
+
+    private void storeCatchInEnderChest() {
+        int freeSlots = 0;
+        for (int i = 0; i < Helper.getChestSize(); i++) {
+            if (Helper.getContainerStack(i) == null)
+                freeSlots++;
+        }
+
+        for (int slot = Helper.getChestSize(); slot < Helper.getContainerSize() && freeSlots > 0; slot++) {
+            ItemStack stack = Helper.getContainerStack(slot);
+            if (stack != null && !Helper.isItem(stack, Const.Id.FISHING_ROD) && !isRubbish(stack)) {
+                Helper.shiftClick(slot);
+                freeSlots--;
+            }
+        }
+    }
+
+    private boolean isRubbish(ItemStack stack) {
+        if (Helper.isEmpty(stack) || stack.hasDisplayName())
+            return false;
+
+        AutoFisherSubConfig config = config();
+        String id = Helper.getRegistryName(stack);
+        return switch (id) {
+            case Const.Id.FISHING_ROD -> config.getAutoDropRods().get();
+            case Const.Id.BOW -> config.getAutoDropBows().get();
+            case Const.Id.ENCHANTED_BOOK -> config.getAutoDropBooks().get();
+            case Const.Id.SADDLE -> config.getAutoDropSaddle().get();
+            case Const.Id.LILY_PAD -> config.getAutoDropLilypads().get();
+            case Const.Id.FISH, Const.Id.COOKED_FISH -> config.getAutoDropFish().get() && stack.getMetadata() <= 1;
+            default -> false;
+        };
+    }
+
+    private static AutoFisherSubConfig config() {
+        return Addon.settings().getAutoFisherSubConfig();
     }
 }

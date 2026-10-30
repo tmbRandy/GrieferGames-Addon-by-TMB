@@ -5,21 +5,13 @@ import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.minecraft.block.BlockChest;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.menu.StorageMenus.Storage;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
-import tmb.randy.tmbgriefergames.v1_8_9.click.ClickManager;
 
+/** /auswurf: empties a storage chest by dropping its content, then reopens it until it stays empty. */
 public class Eject extends ActiveFunction {
     private BlockPos chestPos;
 
@@ -29,56 +21,45 @@ public class Eject extends ActiveFunction {
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if(Helper.getPlayer().openContainer instanceof ContainerChest chest && isEnabled()) {
-            IInventory inv = chest.getLowerChestInventory();
-            if(inv.getName().startsWith(Const.Menu.LAGER_PREFIX)) {
-                if(chestPos == null) {
-                    chestPos = getChestPos();
-                } else {
-                    if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                        for (int i = 0; i < 25; i++) {
-                            Slot slot = chest.getSlot(i);
-                            if(slot.getHasStack()) {
-                                ClickManager.getSharedInstance().dropClick(i);
-                            }
-                        }
+        String title = Helper.getChestTitle();
+        if (!isEnabled() || title == null || !title.startsWith(Storage.TITLE_PREFIX))
+            return;
 
-                        if(ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) {
-                            Minecraft.getMinecraft().displayGuiScreen(null);
-                            Helper.getPlayer().closeScreen();
-                            MovingObjectPosition rayTraceResult = Minecraft.getMinecraft().objectMouseOver;
-                            if(rayTraceResult.typeOfHit == MovingObjectType.BLOCK && rayTraceResult.getBlockPos().equals(chestPos)) {
-                                Minecraft.getMinecraft().playerController.onPlayerRightClick(Helper.getPlayer(), Helper.getWorld(), Helper.getPlayer().getHeldItem(), chestPos, rayTraceResult.sideHit, rayTraceResult.hitVec);
-                            }
-                        }
-                    }
-                }
-            }
+        if (chestPos == null) {
+            BlockPos lookingAt = Helper.getBlockPosLookingAt();
+            if (lookingAt != null && Helper.getBlock(lookingAt) instanceof BlockChest)
+                chestPos = lookingAt;
+            return;
+        }
+
+        if (!Helper.isClickQueueEmpty())
+            return;
+
+        for (int i = 0; i < Storage.STORAGE_SLOTS; i++) {
+            if (Helper.getContainerStack(i) != null)
+                Helper.dropClick(i);
+        }
+
+        if (Helper.isClickQueueEmpty()) {
+            Helper.closeScreen();
+            if (chestPos.equals(Helper.getBlockPosLookingAt()))
+                Helper.rightClickBlockLookingAt();
         }
     }
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS && event.key() == Key.ESCAPE) {
-            if(super.stop()) {
-                ClickManager.getSharedInstance().clearAllQueues();
-                chestPos = null;
-            }
-        }
+        if (event.state() == State.PRESS && event.key() == Key.ESCAPE)
+            stop();
     }
 
-    private static BlockPos getChestPos() {
-        MovingObjectPosition rayTraceResult = Minecraft.getMinecraft().objectMouseOver;
+    @Override
+    public boolean stop() {
+        if (!super.stop())
+            return false;
 
-        if (rayTraceResult != null && rayTraceResult.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            BlockPos blockPosition = rayTraceResult.getBlockPos();
-            IBlockState blockState = Helper.getWorld().getBlockState(blockPosition);
-
-            if (blockState.getBlock() instanceof BlockChest) {
-                return blockPosition;
-            }
-        }
-
-        return null;
+        Helper.clicks().clearAllQueues();
+        chestPos = null;
+        return true;
     }
 }

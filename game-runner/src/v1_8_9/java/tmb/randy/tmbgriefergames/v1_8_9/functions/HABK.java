@@ -1,7 +1,5 @@
 package tmb.randy.tmbgriefergames.v1_8_9.functions;
 
-import static tmb.randy.tmbgriefergames.core.functions.ItemSaver.findHotbarSlotforItem;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +15,9 @@ import tmb.randy.tmbgriefergames.core.functions.ItemSaver;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver.ProtectionItems;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 
+/** Half automatic bow sword: after shooting the bow it switches to the sword in slot 1 and back. */
 public class HABK extends Function {
+    private static final long SWITCH_DELAY_MS = 5;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -27,35 +27,22 @@ public class HABK extends Function {
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if (Addon.settings().getSwordsSubConfig().getHABKenabled().get() && event.button().isRight() && event.action() == Action.RELEASE) {
-            int selectedSlot = Helper.getPlayer().inventory.currentItem;
+        if (!Addon.settings().getSwordsSubConfig().getHABKenabled().get() || !event.button().isRight() || event.action() != Action.RELEASE)
+            return;
 
-            ItemStack heldItemStack = Helper.getPlayer().inventory.getStackInSlot(selectedSlot);
-            ItemStack firstItemStack = Helper.getPlayer().inventory.getStackInSlot(0);
+        int selectedSlot = Helper.getHotbarSlot();
+        ItemStack heldItem = Helper.getInventoryStack(selectedSlot);
 
-            String enchantments = getEnchantments(heldItemStack);
-
-            if(enchantments != null && enchantments.equals(ItemSaver.getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW))) {
-                Addon.getConnection().changeSlot(findHotbarSlotforItem());
-                Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_birth_bow"));
-                event.setCancelled(true);
-            } else if (heldItemStack != null && heldItemStack.getItem() instanceof ItemBow && firstItemStack.getItem() instanceof ItemSword) {
-
-                scheduler.schedule(() -> {
-                    Helper.getPlayer().inventory.currentItem = 0;
-                    scheduler.schedule(() -> Helper.getPlayer().inventory.currentItem = selectedSlot,
-                        Addon.settings().getSwordsSubConfig().getHABKcooldown().get(), TimeUnit.MILLISECONDS);
-                }, 5, TimeUnit.MILLISECONDS);
-            }
+        if (ItemSaver.getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW).equals(Helper.getEnchantments(heldItem))) {
+            Helper.setHotbarSlot(ItemSaver.findHotbarSlotforItem());
+            Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_birth_bow"));
+            event.setCancelled(true);
+        } else if (!Helper.isEmpty(heldItem) && heldItem.getItem() instanceof ItemBow && !Helper.isEmpty(Helper.getInventoryStack(0))
+            && Helper.getInventoryStack(0).getItem() instanceof ItemSword) {
+            scheduler.schedule(() -> {
+                Helper.setHotbarSlot(0);
+                scheduler.schedule(() -> Helper.setHotbarSlot(selectedSlot), Addon.settings().getSwordsSubConfig().getHABKcooldown().get(), TimeUnit.MILLISECONDS);
+            }, SWITCH_DELAY_MS, TimeUnit.MILLISECONDS);
         }
-    }
-
-    private String getEnchantments(ItemStack itemStack) {
-        if(itemStack != null && itemStack.getTagCompound() != null) {
-            if(itemStack.getTagCompound().hasKey("ench")) {
-                return itemStack.getTagCompound().getTag("ench").toString();
-            }
-        }
-        return null;
     }
 }

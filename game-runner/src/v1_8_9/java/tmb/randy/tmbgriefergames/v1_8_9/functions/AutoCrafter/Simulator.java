@@ -1,60 +1,43 @@
 package tmb.randy.tmbgriefergames.v1_8_9.functions.AutoCrafter;
 
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import java.util.List;
+import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 
-public class Simulator
-{
-    private final int size;
+/** Simulates the clicks queued by the AutoCrafter, so later clicks can be planned before earlier ones are sent. */
+public class Simulator {
     private final ItemStack[] slots;
     private ItemStack held;
 
-    public Simulator(List<Slot> inventorySlots, int size) {
-        this.size = size;
-        this.slots = new ItemStack[size];
+    public Simulator(int size) {
+        slots = new ItemStack[size];
         for (int i = 0; i < size; i++)
-        {
-            this.slots[i] = inventorySlots.get(i).getStack();
-        }
+            slots[i] = Helper.getContainerStack(i);
     }
 
-    public ItemStack stackAt(int slot)
-    {
-        return this.slots[slot];
+    public ItemStack stackAt(int slot) {
+        return slots[slot];
     }
 
     public void leftClick(int slot) {
-        if (this.held != null) {
-            if (this.slots[slot] != null)
-                return;
-
-            this.slots[slot] = this.held;
-            this.held = null;
-        } else {
-            if (this.slots[slot] == null)
-                return;
-
-            this.held = this.slots[slot];
-            this.slots[slot] = null;
+        if (held != null) {
+            if (slots[slot] == null) {
+                slots[slot] = held;
+                held = null;
+            }
+        } else if (slots[slot] != null) {
+            held = slots[slot];
+            slots[slot] = null;
         }
     }
 
+    /** Moves the stack into the first free slot of the player inventory part. */
     public void shiftClick(int slot) {
-        int destination = this.findFirstFreeSlot();
-        if (destination == 0)
-            return;
-
-        this.slots[destination] = this.slots[slot];
-        this.slots[slot] = null;
-    }
-
-    private int findFirstFreeSlot() {
-        for (int i = this.size - 36; i < this.size; i++)
-        {
-            if (this.slots[i] == null)
-                return i;
+        for (int i = slots.length - Helper.INVENTORY_SIZE; i < slots.length; i++) {
+            if (slots[i] == null) {
+                slots[i] = slots[slot];
+                slots[slot] = null;
+                return;
+            }
         }
-        return 0;
     }
 }

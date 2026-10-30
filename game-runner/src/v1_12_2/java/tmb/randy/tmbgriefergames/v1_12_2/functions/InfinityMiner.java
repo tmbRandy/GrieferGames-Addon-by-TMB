@@ -1,19 +1,17 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
+import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.RayTraceResult;
-import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
+/** Keeps breaking the block the player looks at while the held tool still has durability. */
 public class InfinityMiner extends ActiveFunction {
-    private boolean didBreakLastTick;
+    private boolean startedBreaking;
 
     public InfinityMiner() {
         super(Functions.INFINITYMINER.name());
@@ -27,30 +25,23 @@ public class InfinityMiner extends ActiveFunction {
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if (event.state() == State.PRESS && Addon.allKeysPressedAndGuiClosed(Addon.settings().getInfinityMiner().get())) {
-            if (!isEnabled() && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-                return;
-
+        // Starting requires SHIFT, so the miner is not started by accident
+        if (event.state() == State.PRESS && Addon.allKeysPressedAndGuiClosed(Addon.settings().getInfinityMiner().get()) && (isEnabled() || Key.L_SHIFT.isPressed()))
             toggle();
-        }
     }
 
-    public void breakBlock() {
-        if(Helper.getPlayer().getHeldItemMainhand().getItemDamage() < Helper.getPlayer().getHeldItemMainhand().getMaxDamage()) {
-            RayTraceResult trace = Helper.getPlayer().rayTrace(5, 1.0F);
+    private void breakBlock() {
+        if (!Helper.hasDurabilityLeft(Helper.getHeldItem()) || Helper.getBlockPosLookingAt() == null)
+            return;
 
-            if(trace != null) {
-                if (!didBreakLastTick) {
-                    Minecraft.getMinecraft().playerController.clickBlock(trace.getBlockPos(), trace.sideHit);
-                    Helper.getPlayer().swingArm(EnumHand.MAIN_HAND);
-                }
-
-                // Attempt to break the block
-                if (Minecraft.getMinecraft().playerController.onPlayerDamageBlock(trace.getBlockPos(), trace.sideHit))
-                    Helper.getPlayer().swingArm(EnumHand.MAIN_HAND);
-
-                didBreakLastTick = true;
-            }
+        if (!startedBreaking) {
+            Helper.clickBlockLookingAt();
+            Helper.swingArm();
         }
+
+        if (Helper.damageBlockLookingAt())
+            Helper.swingArm();
+
+        startedBreaking = true;
     }
 }

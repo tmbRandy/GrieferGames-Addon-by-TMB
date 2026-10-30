@@ -5,27 +5,23 @@ import net.labymod.api.event.Phase;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.Commander;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
-import tmb.randy.tmbgriefergames.v1_8_9.click.Click;
-import tmb.randy.tmbgriefergames.v1_8_9.click.ClickManager;
 
 public class AutoDecomp extends ActiveFunction {
+    private static final int TICKS_BETWEEN_STEPS = 5;
+    private static final int MAX_LEVEL = 7;
+    // Slots of the crafting table container
+    private static final int RESULT = 0;
+    private static final int FIRST_GRID_SLOT = 1;
+    private static final int CENTER_GRID_SLOT = 5;
+    private static final int FIRST_INVENTORY_SLOT = 10;
 
-    private static final String[] ROMAN = {"", "I", "II", "III", "IV", "V", "VI", "VII"};
-
-    private Item compItem;
-    private int compSubID;
+    private ItemStack compItem;
     private int counter;
 
     public AutoDecomp() {
@@ -42,125 +38,100 @@ public class AutoDecomp extends ActiveFunction {
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if (event.phase() == Phase.PRE && isEnabled()) {
-            if (++counter >= 5) {
-                decomp();
-                counter = 0;
-            }
-        }
-    }
-
-    private void decomp() {
-        if (Helper.getPlayer().openContainer == null
-                || !(Minecraft.getMinecraft().currentScreen instanceof GuiCrafting)) {
-            Commander.queue("/craft");
-            return;
-        }
-        Container container = Helper.getPlayer().openContainer;
-        if (!ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM)) return;
-
-        if (compItem == null) {
-            ItemStack slot0 = Helper.getPlayer().inventory.mainInventory[0];
-            if (slot0 != null && slot0.stackSize > 0) {
-                compItem = slot0.getItem();
-                compSubID = slot0.getMetadata();
-            }
-            return;
-        }
-
-        if (container.getSlot(0).getHasStack()) {
-            ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(container.windowId, 0, 0, 1));
-            return;
-        }
-        if (doesCraftingFieldContainItems()) {
-            for (int i = 1; i < 10; i++) {
-                if (container.getSlot(i).getHasStack())
-                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(container.windowId, i, 0, 1));
-            }
-            return;
-        }
-
-        int[] compSteps = getCompCountForItem();
-        if (compSteps[0] > 0) {
-            dropUncompressedItems();
-            return;
-        }
-        for (int step = 1; step <= 7; step++) {
-            if (compSteps[step] > 0) {
-                int slot = getBestSlotForCompStep(step);
-                if (slot >= 10) {
-                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(container.windowId, slot, 0, 0));
-                    ClickManager.getSharedInstance().addClick(QueueType.MEDIUM, new Click(container.windowId, 5, 0, 0));
-                }
-                break;
-            }
+        if (event.phase() == Phase.PRE && isEnabled() && ++counter >= TICKS_BETWEEN_STEPS) {
+            counter = 0;
+            decomp();
         }
     }
 
     @Override
     public boolean stop() {
-        if (super.stop()) {
-            compItem = null;
-            compSubID = 0;
-            return true;
-        }
-        return false;
+        if (!super.stop())
+            return false;
+
+        compItem = null;
+        return true;
     }
 
-    private int[] getCompCountForItem() {
-        int[] output = new int[8];
-        for (ItemStack stack : Helper.getPlayer().inventory.mainInventory) {
-            if (stack == null || stack.stackSize <= 0) continue;
-            if (!stack.getItem().equals(compItem) || stack.getMetadata() != compSubID) continue;
-            int level = 0;
-            if (stack.hasDisplayName()) {
-                for (int step = 7; step >= 1; step--) {
-                    if (stack.getDisplayName().endsWith(" " + ROMAN[step])) {
-                        level = step;
-                        break;
-                    }
+    private void decomp() {
+        if (!Helper.isCraftingScreen()) {
+            Commander.queue("/craft");
+            return;
+        }
+
+        if (!Helper.isClickQueueEmpty())
+            return;
+
+        if (compItem == null) {
+            ItemStack firstItem = Helper.getInventoryStack(0);
+            if (!Helper.isEmpty(firstItem))
+                compItem = firstItem.copy();
+            return;
+        }
+
+        if (Helper.getContainerStack(RESULT) != null) {
+            Helper.shiftClick(RESULT);
+            return;
+        }
+
+        if (clearCraftingGrid())
+            return;
+
+        int[] stacksPerLevel = countStacksPerLevel();
+        if (stacksPerLevel[0] > 0) {
+            Helper.dropItems(stack -> Helper.isSameItem(stack, compItem) && !stack.hasDisplayName(), false);
+            return;
+        }
+
+        for (int level = 1; level <= MAX_LEVEL; level++) {
+            if (stacksPerLevel[level] > 0) {
+                int slot = getSmallestStackOfLevel(level);
+                if (slot >= FIRST_INVENTORY_SLOT) {
+                    Helper.click(slot);
+                    Helper.click(CENTER_GRID_SLOT);
                 }
+                return;
             }
-            output[level]++;
+        }
+    }
+
+    /** Moves everything out of the crafting grid, returns true if there was something to move. */
+    private boolean clearCraftingGrid() {
+        boolean clicked = false;
+        for (int i = FIRST_GRID_SLOT; i < FIRST_INVENTORY_SLOT; i++) {
+            if (Helper.getContainerStack(i) != null) {
+                Helper.shiftClick(i);
+                clicked = true;
+            }
+        }
+        return clicked;
+    }
+
+    private int[] countStacksPerLevel() {
+        int[] output = new int[MAX_LEVEL + 1];
+        for (int i = 0; i < Helper.INVENTORY_SIZE; i++) {
+            ItemStack stack = Helper.getInventoryStack(i);
+            if (Helper.isSameItem(stack, compItem))
+                output[stack.hasDisplayName() ? Helper.getRomanSuffixLevel(stack.getDisplayName()) : 0]++;
         }
         return output;
     }
 
-    private boolean doesCraftingFieldContainItems() {
-        if (!(Helper.getPlayer().openContainer instanceof ContainerWorkbench)) return false;
-        for (int i = 1; i < 10; i++) {
-            if (Helper.getPlayer().openContainer.getSlot(i).getHasStack()) return true;
-        }
-        return false;
-    }
+    private int getSmallestStackOfLevel(int level) {
+        String suffix = Helper.getRomanSuffix(level);
+        int smallestSlot = 0;
+        int smallestCount = Integer.MAX_VALUE;
 
-    private void dropUncompressedItems() {
-        if (!(Helper.getPlayer().openContainer instanceof ContainerWorkbench)) return;
-        for (int i = 10; i < 46; i++) {
-            if (!Helper.getPlayer().openContainer.getSlot(i).getHasStack()) continue;
-            ItemStack stack = Helper.getPlayer().openContainer.getSlot(i).getStack();
-            if (stack.getItem().equals(compItem) && stack.getMetadata() == compSubID && !stack.hasDisplayName())
-                ClickManager.getSharedInstance().dropClick(i);
-        }
-    }
+        for (int i = FIRST_INVENTORY_SLOT; i < Helper.getContainerSize(); i++) {
+            ItemStack stack = Helper.getContainerStack(i);
+            if (!Helper.isSameItem(stack, compItem) || !stack.hasDisplayName() || !stack.getDisplayName().endsWith(suffix))
+                continue;
 
-    private int getBestSlotForCompStep(int step) {
-        if (!(Helper.getPlayer().openContainer instanceof ContainerWorkbench)) return 0;
-        Container container = Helper.getPlayer().openContainer;
-        String suffix = " " + ROMAN[step];
-        int lowestSlot = 0;
-        int lowestCount = Integer.MAX_VALUE;
-
-        for (int i = 10; i < container.inventorySlots.size(); i++) {
-            if (!container.inventorySlots.get(i).getHasStack()) continue;
-            ItemStack stack = container.inventorySlots.get(i).getStack();
-            if (!stack.getItem().equals(compItem) || stack.getMetadata() != compSubID) continue;
-            if (!stack.hasDisplayName() || !stack.getDisplayName().endsWith(suffix)) continue;
-            if (stack.stackSize < lowestCount) {
-                lowestCount = stack.stackSize;
-                lowestSlot = i;
+            if (Helper.getCount(stack) < smallestCount) {
+                smallestCount = Helper.getCount(stack);
+                smallestSlot = i;
             }
         }
-        return lowestSlot;
+        return smallestSlot;
     }
 }
