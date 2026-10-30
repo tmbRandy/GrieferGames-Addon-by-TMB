@@ -10,11 +10,14 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import net.labymod.api.Laby;
+import net.labymod.api.client.gui.mouse.MutableMouse;
+import net.labymod.api.client.gui.screen.key.MouseButton;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.commands.DescribedCommand;
+import tmb.randy.tmbgriefergames.core.flow.editor.FlowEditorActivity;
 
 /**
  * Remote control for automated tests, only active in the addon dev environment (never in the released addon).
@@ -77,8 +80,24 @@ public class DevBridge {
             case "wait" -> waitTicks = Math.max(0, Integer.parseInt(argument));
             case "screenshot" -> Laby.labyAPI().minecraft().executeOnRenderThread(() -> Addon.getConnection().takeScreenshot(argument));
             case "close" -> Addon.getConnection().closeScreen();
+            case "click", "rightclick" -> click(argument, parts[0].equalsIgnoreCase("rightclick") ? (MouseButton) MouseButton.RIGHT : (MouseButton) MouseButton.LEFT);
+            case "dump" -> {
+                if (FlowEditorActivity.getOpenEditor() != null)
+                    FlowEditorActivity.getOpenEditor().dumpWidgets(text -> log(text));
+            }
             default -> chat(line);
         }
+    }
+
+    /** Clicks into the open flow editor at GUI coordinates "x y". */
+    private void click(String argument, MouseButton button) {
+        FlowEditorActivity editor = FlowEditorActivity.getOpenEditor();
+        String[] coordinates = argument.split(" ");
+        if (editor == null || coordinates.length < 2)
+            return;
+
+        MutableMouse mouse = new MutableMouse(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]));
+        log("  clicked: " + editor.mouseClicked(mouse, button) + ", released: " + editor.mouseReleased(mouse, button));
     }
 
     /** Addon commands are executed directly, everything else goes through the chat like typed by the player. */

@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.core.flow.editor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.Component;
 import net.labymod.api.client.gui.mouse.MutableMouse;
@@ -15,6 +16,8 @@ import net.labymod.api.client.gui.screen.key.InputType;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.client.gui.screen.key.MouseButton;
 import net.labymod.api.client.gui.screen.widget.Widget;
+import net.labymod.api.client.gui.screen.widget.attributes.bounds.Bounds;
+import net.labymod.api.client.gui.screen.widget.attributes.bounds.BoundsType;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.ButtonWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.input.CheckBoxWidget;
@@ -55,6 +58,8 @@ public class FlowEditorActivity extends SimpleActivity {
     private static final int SELECTED_COLOR = 0xFFFFD54F;
 
     private enum Drag { NONE, NODE, PAN, CONNECTION }
+
+    private static FlowEditorActivity openEditor;
 
     private final FlowManager manager = FlowManager.get();
     private Flow flow;
@@ -263,9 +268,36 @@ public class FlowEditorActivity extends SimpleActivity {
     }
 
     @Override
+    public void onOpenScreen() {
+        super.onOpenScreen();
+        openEditor = this;
+    }
+
+    @Override
     public void onCloseScreen() {
         super.onCloseScreen();
         manager.save(flow);
+        if (openEditor == this)
+            openEditor = null;
+    }
+
+    /** The editor that is currently open, null if none (used by the dev test bridge). */
+    public static FlowEditorActivity getOpenEditor() {
+        return openEditor;
+    }
+
+    /** Describes all widgets with their bounds, for the dev test bridge. */
+    public void dumpWidgets(Consumer<String> output) {
+        dumpWidget(document(), "", output);
+    }
+
+    private static void dumpWidget(Widget widget, String indent, Consumer<String> output) {
+        Bounds bounds = widget.bounds();
+        output.accept(String.format("%s%s %s x=%.0f y=%.0f w=%.0f h=%.0f", indent, widget.getClass().getSimpleName(), widget.getIds(),
+            bounds.getX(BoundsType.OUTER), bounds.getY(BoundsType.OUTER), bounds.getWidth(BoundsType.OUTER), bounds.getHeight(BoundsType.OUTER)));
+        for (Object child : widget.getChildren())
+            if (child instanceof Widget childWidget)
+                dumpWidget(childWidget, indent + "  ", output);
     }
 
     // ---------------------------------------------------------------- Rendering
