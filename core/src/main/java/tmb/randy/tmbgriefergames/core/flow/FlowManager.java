@@ -3,6 +3,8 @@ package tmb.randy.tmbgriefergames.core.flow;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -13,6 +15,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.key.Key;
@@ -49,6 +52,9 @@ public final class FlowManager {
 
     // ---------------------------------------------------------------- Storage
 
+    /** Index of the flows shipped with the addon (one file name per line). */
+    private static final String BUILTIN_INDEX = "/assets/tmbgriefergames/flows/index.txt";
+
     private static Path getDirectory() {
         return Laby.labyAPI().labyModLoader().getGameDirectory().resolve("labymod-neo/configs/" + Addon.getNamespace() + "/flows");
     }
@@ -62,31 +68,67 @@ public final class FlowManager {
             return;
 
         loaded = true;
+        loadBuiltins();
+
         Path directory = getDirectory();
         if (!Files.isDirectory(directory))
             return;
 
         try (Stream<Path> files = Files.list(directory)) {
-            files.filter(file -> file.toString().endsWith(".json")).sorted().forEach(this::load);
+            files.filter(file -> file.toString().endsWith(".json")).sorted().forEach(file -> {
+                try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
+                    register(reader, false);
+                } catch (Exception e) {
+                    Addon.log().error("Could not load flow " + file, e);
+                }
+            });
         } catch (IOException e) {
             Addon.log().error("Could not list the flows", e);
         }
     }
 
-    private void load(Path file) {
-        try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
-            Flow flow = GSON.fromJson(reader, Flow.class);
-            if (flow != null && flow.getName() != null) {
-                flow.ensureDefaults();
-                flows.put(flow.getName(), flow);
+    private void loadBuiltins() {
+        try (InputStream index = FlowManager.class.getResourceAsStream(BUILTIN_INDEX)) {
+            if (index == null)
+                return;
+
+            for (String file : new String(index.readAllBytes(), StandardCharsets.UTF_8).split("\\R")) {
+                if (file.isBlank())
+                    continue;
+
+                try (InputStream stream = FlowManager.class.getResourceAsStream("/assets/tmbgriefergames/flows/" + file.trim());
+                     Reader reader = new InputStreamReader(Objects.requireNonNull(stream, file), StandardCharsets.UTF_8)) {
+                    register(reader, true);
+                }
             }
         } catch (Exception e) {
-            Addon.log().error("Could not load flow " + file, e);
+            Addon.log().error("Could not load the built-in flows", e);
         }
     }
 
+    /** Built-in flows win, an own flow with the same name is ignored. */
+    private void register(Reader reader, boolean builtin) {
+        Flow flow = GSON.fromJson(reader, Flow.class);
+        if (flow == null || flow.getName() == null || (!builtin && isBuiltin(flow.getName())))
+            return;
+
+        flow.ensureDefaults();
+        if (builtin)
+            flow.markBuiltin();
+        flows.put(flow.getName(), flow);
+    }
+
+    private boolean isBuiltin(String name) {
+        Flow existing = getFlow(name);
+        return existing != null && existing.isBuiltin();
+    }
+
+    /** Saves an own flow. Built-in flows are read only and never written. */
     public void save(Flow flow) {
         ensureLoaded();
+        if (flow.isBuiltin())
+            return;
+
         flows.put(flow.getName(), flow);
         try {
             Files.createDirectories(getDirectory());
@@ -99,6 +141,9 @@ public final class FlowManager {
     }
 
     public void delete(Flow flow) {
+        if (flow.isBuiltin())
+            return;
+
         stop(flow.getName());
         flows.remove(flow.getName());
         try {
@@ -109,15 +154,19 @@ public final class FlowManager {
     }
 
     public void rename(Flow flow, String newName) {
+        if (flow.isBuiltin() || getFlow(newName) != null)
+            return;
+
         delete(flow);
         flow.setName(newName);
         save(flow);
     }
 
+    /** All flows, built-in flows first. */
     public List<Flow> getFlows() {
         ensureLoaded();
         List<Flow> list = new ArrayList<>(flows.values());
-        list.sort(Comparator.comparing(Flow::getName, String.CASE_INSENSITIVE_ORDER));
+        list.sort(Comparator.comparing((Flow flow) -> !flow.isBuiltin()).thenComparing(Flow::getName, String.CASE_INSENSITIVE_ORDER));
         return list;
     }
 

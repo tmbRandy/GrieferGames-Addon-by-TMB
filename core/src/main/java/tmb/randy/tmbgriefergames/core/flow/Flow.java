@@ -13,9 +13,28 @@ public class Flow {
     private List<String> hotkey = new ArrayList<>();
     private List<FlowNode> nodes = new ArrayList<>();
     private List<FlowConnection> connections = new ArrayList<>();
+    /** Shipped with the addon: read only, never saved. Transient, so it is not part of the JSON. */
+    private transient boolean builtin;
 
     public Flow(String name) {
         this.name = name;
+    }
+
+    public boolean isBuiltin() {
+        return builtin;
+    }
+
+    void markBuiltin() {
+        builtin = true;
+    }
+
+    /** A modifiable copy, e.g. to use a built-in flow as template for an own one. */
+    public Flow copy(String newName) {
+        Flow copy = new Flow(newName);
+        copy.hotkey = new ArrayList<>(hotkey);
+        copy.nodes = new ArrayList<>(nodes.stream().map(FlowNode::copy).toList());
+        copy.connections = new ArrayList<>(connections);
+        return copy;
     }
 
     public String getName() {

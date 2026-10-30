@@ -81,11 +81,19 @@ public final class NodeTypes {
         return text == null ? "" : text.replaceAll("§.", "");
     }
 
-    /** Case insensitive "contains" without color codes, so titles can be typed without § codes. Empty matches everything that exists. */
+    /**
+     * Case insensitive "contains" without color codes, so titles can be typed without § codes. Empty matches everything
+     * that exists, a leading "=" requires the whole text to match (e.g. "=Item-Komprimierung").
+     */
     public static boolean textMatches(String actual, String expected) {
         if (actual == null)
             return false;
-        return expected.isBlank() || stripColors(actual).toLowerCase().contains(stripColors(expected).toLowerCase().trim());
+
+        String text = stripColors(actual).toLowerCase().trim();
+        String wanted = stripColors(expected).toLowerCase().trim();
+        if (wanted.startsWith("="))
+            return text.equals(wanted.substring(1).trim());
+        return wanted.isEmpty() || text.contains(wanted);
     }
 
     /** Matches a slot by registry name ("stone" / "minecraft:stone") or a part of the display name. Empty matches every non empty slot. */

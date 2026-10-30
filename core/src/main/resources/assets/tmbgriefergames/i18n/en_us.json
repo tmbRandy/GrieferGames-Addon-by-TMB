@@ -540,7 +540,9 @@
                 "delete": "Delete",
                 "flows": "Flows",
                 "newFlow": "+ New flow",
-                "deleteBlock": "Delete block"
+                "deleteBlock": "Delete block",
+                "readOnly": "Built-in, read only",
+                "copy": "Edit as copy"
             },
             "category": {
                 "trigger": "Triggers",
@@ -804,15 +806,16 @@
                     }
                 },
                 "run_flow": {
-                    "name": "Start flow",
+                    "name": "Start flow/function",
                     "param": {
-                        "flow": "Flow"
+                        "flow": "Name (e.g. AutoComp, CRAFTV3)",
+                        "wait": "Wait until finished"
                     }
                 },
                 "stop_flow": {
-                    "name": "Stop flow",
+                    "name": "Stop flow/function",
                     "param": {
-                        "flow": "Flow"
+                        "flow": "Name"
                     }
                 },
                 "stop": {

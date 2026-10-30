@@ -76,14 +76,18 @@ public class FlowEditorActivity extends SimpleActivity {
     }
 
     private Flow createFlow() {
-        int number = manager.getFlows().size() + 1;
-        while (manager.getFlow(Addon.translate("flow.editor.newFlowName", number)) != null)
-            number++;
-
-        Flow newFlow = new Flow(Addon.translate("flow.editor.newFlowName", number));
+        Flow newFlow = new Flow(createName(Addon.translate("flow.editor.newFlowName", "").trim()));
         newFlow.getNodes().add(new FlowNode(NodeTypes.get(NodeTypes.START), 0, 0));
         manager.save(newFlow);
         return newFlow;
+    }
+
+    /** "base 1", "base 2", ... the first name that is not taken yet. */
+    private String createName(String base) {
+        int number = 1;
+        while (manager.getFlow(base + " " + number) != null)
+            number++;
+        return base + " " + number;
     }
 
     @Override
@@ -99,12 +103,18 @@ public class FlowEditorActivity extends SimpleActivity {
         textFields.clear();
         document().addChild(createToolbar());
         document().addChild(new ScrollWidget(createSidebar()).addId("sidebar"));
-        if (selected != null && selected.getType() != null && !selected.getType().parameters().isEmpty())
+        if (hasPropertiesPanel())
             document().addChild(createProperties(selected));
+    }
+
+    private boolean hasPropertiesPanel() {
+        return !flow.isBuiltin() && selected != null && selected.getType() != null && !selected.getType().parameters().isEmpty();
     }
 
     private HorizontalListWidget createToolbar() {
         HorizontalListWidget toolbar = new HorizontalListWidget().addId("toolbar");
+        if (flow.isBuiltin())
+            return createBuiltinToolbar(toolbar);
 
         nameField = new TextFieldWidget().addId("name-field");
         nameField.setText(flow.getName());
@@ -134,17 +144,35 @@ public class FlowEditorActivity extends SimpleActivity {
         return toolbar;
     }
 
+    /** Built-in flows can only be run or copied. */
+    private HorizontalListWidget createBuiltinToolbar(HorizontalListWidget toolbar) {
+        nameField = null;
+        hotkeyField = null;
+        toolbar.addEntry(ComponentWidget.text("🔒 " + flow.getName()).addId("title"));
+        toolbar.addEntry(ComponentWidget.i18n(key("readOnly")).addId("label"));
+        toolbar.addEntry(ButtonWidget.i18n(key(manager.isRunning(flow.getName()) ? "stop" : "run"), () -> {
+            manager.toggle(flow);
+            reload();
+        }));
+        toolbar.addEntry(ButtonWidget.i18n(key("copy"), () -> {
+            Flow copy = flow.copy(createName(flow.getName()));
+            manager.save(copy);
+            switchTo(copy);
+        }));
+        return toolbar;
+    }
+
     private VerticalListWidget<Widget> createSidebar() {
         VerticalListWidget<Widget> sidebar = new VerticalListWidget<>().addId("sidebar-list");
 
         sidebar.addChild(ComponentWidget.i18n(key("flows")).addId("section"));
         for (Flow other : manager.getFlows()) {
-            String prefix = other == flow ? "» " : manager.isRunning(other.getName()) ? "▶ " : "";
+            String prefix = (other == flow ? "» " : manager.isRunning(other.getName()) ? "▶ " : "") + (other.isBuiltin() ? "🔒 " : "");
             sidebar.addChild(ButtonWidget.text(prefix + other.getName(), () -> switchTo(other)));
         }
         sidebar.addChild(ButtonWidget.i18n(key("newFlow"), () -> switchTo(createFlow())));
 
-        for (NodeType.Category category : NodeType.Category.values()) {
+        for (NodeType.Category category : flow.isBuiltin() ? new NodeType.Category[0] : NodeType.Category.values()) {
             sidebar.addChild(ComponentWidget.i18n(Addon.getNamespace() + ".flow.category." + category.name().toLowerCase()).addId("section"));
             for (NodeType type : NodeTypes.all()) {
                 if (type.category() == category && !type.id().equals(NodeTypes.START))
@@ -190,6 +218,9 @@ public class FlowEditorActivity extends SimpleActivity {
     // ---------------------------------------------------------------- Actions
 
     private void save() {
+        if (flow.isBuiltin() || nameField == null)
+            return;
+
         String name = nameField.getText().trim();
         flow.setHotkey(Arrays.stream(hotkeyField.getText().toUpperCase().split("\\+")).map(String::trim).filter(text -> !text.isEmpty()).toList());
 
@@ -307,7 +338,7 @@ public class FlowEditorActivity extends SimpleActivity {
     // ---------------------------------------------------------------- Input
 
     private boolean isOnCanvas(float x, float y) {
-        float right = getScreenWidth() - (selected != null && selected.getType() != null && !selected.getType().parameters().isEmpty() ? PROPERTIES_WIDTH : 0);
+        float right = getScreenWidth() - (hasPropertiesPanel() ? PROPERTIES_WIDTH : 0);
         return x > SIDEBAR_WIDTH && x < right && y > TOOLBAR_HEIGHT;
     }
 
@@ -320,7 +351,7 @@ public class FlowEditorActivity extends SimpleActivity {
 
         document().unfocus();
         List<FlowNode> nodes = flow.getNodes();
-        for (int i = nodes.size() - 1; i >= 0; i--) {
+        for (int i = flow.isBuiltin() ? -1 : nodes.size() - 1; i >= 0; i--) {
             FlowNode node = nodes.get(i);
             if (node.getType() == null)
                 continue;
@@ -410,7 +441,7 @@ public class FlowEditorActivity extends SimpleActivity {
     @Override
     public boolean keyPressed(Key key, InputType type) {
         boolean typing = textFields.stream().anyMatch(TextFieldWidget::isFocused);
-        if (key == Key.DELETE && selected != null && !typing && !selected.getType().id().equals(NodeTypes.START)) {
+        if (key == Key.DELETE && selected != null && !typing && !flow.isBuiltin() && !selected.getType().id().equals(NodeTypes.START)) {
             deleteNode(selected);
             return true;
         }

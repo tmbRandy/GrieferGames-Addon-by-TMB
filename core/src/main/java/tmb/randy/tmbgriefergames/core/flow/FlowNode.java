@@ -24,6 +24,19 @@ public class FlowNode {
             params.put(parameter.key(), parameter.defaultValue());
     }
 
+    private FlowNode(FlowNode other) {
+        this.id = other.id;
+        this.type = other.type;
+        this.x = other.x;
+        this.y = other.y;
+        this.params = new HashMap<>(other.params);
+    }
+
+    /** Copy with the same id, so connections stay valid. */
+    FlowNode copy() {
+        return new FlowNode(this);
+    }
+
     public String getId() {
         return id;
     }

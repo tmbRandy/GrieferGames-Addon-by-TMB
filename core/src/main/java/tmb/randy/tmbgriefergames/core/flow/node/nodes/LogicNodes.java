@@ -4,10 +4,14 @@ import static tmb.randy.tmbgriefergames.core.flow.node.NodeContext.WAIT;
 import static tmb.randy.tmbgriefergames.core.flow.node.NodeType.NEXT;
 import static tmb.randy.tmbgriefergames.core.flow.node.NodeTypes.OK;
 import static tmb.randy.tmbgriefergames.core.flow.node.NodeTypes.TIMEOUT;
+import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.bool;
 import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.number;
 import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.text;
 
 import java.util.List;
+import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.flow.Flow;
 import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.flow.node.NodeContext;
@@ -48,17 +52,51 @@ public final class LogicNodes {
         NodeTypes.condition("if_compare", Category.LOGIC, List.of(text("a", "${slot}"), text("operator", "="), text("b", "0")),
             context -> compare(context.text("a"), context.text("operator").trim(), context.text("b")));
 
-        NodeTypes.action("run_flow", Category.LOGIC, List.of(text("flow", "")), context -> {
-            Flow flow = FlowManager.get().getFlow(context.text("flow").trim());
-            if (flow != null && !FlowManager.get().isRunning(flow.getName()))
-                FlowManager.get().start(flow);
-            return NEXT;
+        // Starts a built-in flow, an own flow or one of the classic addon functions (e.g. CRAFTV3)
+        NodeTypes.action("run_flow", Category.LOGIC, List.of(text("flow", ""), bool("wait", false)), context -> {
+            String name = context.text("flow").trim();
+            if (context.isFirstTick())
+                start(name);
+            return context.bool("wait") && isRunning(name) ? WAIT : NEXT;
         });
         NodeTypes.action("stop_flow", Category.LOGIC, List.of(text("flow", "")), context -> {
-            FlowManager.get().stop(context.text("flow").trim());
+            String name = context.text("flow").trim();
+            Flow flow = FlowManager.get().getFlow(name);
+            if (flow != null)
+                FlowManager.get().stop(flow.getName());
+            else if (findFunction(name) instanceof ActiveFunction function)
+                function.stop();
             return NEXT;
         });
         NodeTypes.register("stop", Category.LOGIC, List.of(), List.of(), true, context -> DONE);
+    }
+
+    private static void start(String name) {
+        Flow flow = FlowManager.get().getFlow(name);
+        if (flow != null) {
+            if (!FlowManager.get().isRunning(flow.getName()))
+                FlowManager.get().start(flow);
+        } else if (findFunction(name) instanceof ActiveFunction function) {
+            function.start();
+        } else {
+            Addon.displayNotification(Addon.translate("flow.unknown", name));
+        }
+    }
+
+    private static boolean isRunning(String name) {
+        Flow flow = FlowManager.get().getFlow(name);
+        if (flow != null)
+            return FlowManager.get().isRunning(flow.getName());
+        return findFunction(name) instanceof ActiveFunction function && function.isEnabled();
+    }
+
+    /** A classic addon function by its id (e.g. "CRAFTV3") or its displayed name. */
+    private static ActiveFunction findFunction(String name) {
+        for (Functions function : Functions.values()) {
+            if (function.name().equalsIgnoreCase(name) || function.getLocalizedName().equalsIgnoreCase(name))
+                return Addon.getActiveFunction(function.name());
+        }
+        return null;
     }
 
     /** Compares numerically if both sides are numbers, otherwise as text. */

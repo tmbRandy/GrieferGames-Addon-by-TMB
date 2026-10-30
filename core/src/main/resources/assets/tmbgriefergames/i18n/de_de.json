@@ -535,7 +535,9 @@
                 "delete": "Löschen",
                 "flows": "Abläufe",
                 "newFlow": "+ Neuer Ablauf",
-                "deleteBlock": "Block löschen"
+                "deleteBlock": "Block löschen",
+                "readOnly": "Vorgefertigt, nicht veränderbar",
+                "copy": "Als Kopie bearbeiten"
             },
             "category": {
                 "trigger": "Auslöser",
@@ -799,15 +801,16 @@
                     }
                 },
                 "run_flow": {
-                    "name": "Ablauf starten",
+                    "name": "Ablauf/Funktion starten",
                     "param": {
-                        "flow": "Ablauf"
+                        "flow": "Name (z. B. AutoComp, CRAFTV3)",
+                        "wait": "Warten bis fertig"
                     }
                 },
                 "stop_flow": {
-                    "name": "Ablauf stoppen",
+                    "name": "Ablauf/Funktion stoppen",
                     "param": {
-                        "flow": "Ablauf"
+                        "flow": "Name"
                     }
                 },
                 "stop": {
