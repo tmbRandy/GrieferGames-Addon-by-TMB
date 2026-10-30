@@ -1,37 +1,35 @@
 package tmb.randy.tmbgriefergames.core.activities.plotwheel;
 
+import java.util.List;
 import net.labymod.api.Laby;
 import net.labymod.api.client.gui.lss.property.annotation.AutoWidget;
 import net.labymod.api.client.gui.screen.Parent;
 import net.labymod.api.client.gui.screen.activity.Link;
 import net.labymod.api.client.gui.screen.widget.widgets.ComponentWidget;
 import net.labymod.api.client.gui.screen.widget.widgets.WheelWidget;
-import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.api.enums.CBs;
+import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 
+/** Outer wheel of the plot wheel: one segment per CB, clicking switches to that CB. */
 @AutoWidget
 @Link("cbwheel.lss")
 public class CBwheel extends WheelWidget {
 
+    @Override
     public void initialize(Parent parent) {
-        this.refresh();
+        refresh();
         super.initialize(parent);
     }
 
     public void refresh() {
-        this.removeChildIf((widget) -> widget instanceof Segment);
+        removeChildIf(widget -> widget instanceof Segment);
 
-        CBs[] cbs = CBs.values();
-        for (int i = cbs.length - 1; i >= 0; i--) {
-            CBs cb = cbs[i];
-            if (cb == CBs.EVENT || !CBtracker.isPlotworldCB(cb)) continue;
-
-            CBsegment segment = new CBsegment(cb);
-            segment.addId("segment-" + cb, "cb-segment");
-            this.addSegment(segment);
-
-            if (CBtracker.getCurrentCB() == cb)
+        List<CBs> cbs = CBtracker.getSwitchablePlotworldCBs();
+        for (int i = cbs.size() - 1; i >= 0; i--) {
+            CBsegment segment = new CBsegment(cbs.get(i));
+            addSegment(segment);
+            if (cbs.get(i) == CBtracker.getCurrentCB())
                 segment.setSelected(true);
         }
     }
@@ -41,15 +39,12 @@ public class CBwheel extends WheelWidget {
 
         public CBsegment(CBs cb) {
             this.cb = cb;
-            ComponentWidget display = ComponentWidget.text(cb.getName());
+            addId("segment-" + cb, "cb-segment");
+            addChild(ComponentWidget.text(cb.getName()).addId("cb-segment-display"));
 
-            display.addId("cb-segment-display");
-            this.addChild(display);
-
-            this.setPressable(() -> {
-                if(cb != CBtracker.getCurrentCB()) {
+            setPressable(() -> {
+                if (cb != CBtracker.getCurrentCB())
                     Laby.references().chatExecutor().chat(Const.Cmd.SWITCH + cb);
-                }
             });
         }
 
