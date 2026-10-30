@@ -274,11 +274,12 @@ public class FlowEditorActivity extends SimpleActivity {
     public void render(ScreenContext context) {
         mouseX = context.mouse().getX();
         mouseY = context.mouse().getY();
-        renderCanvas(context.canvas());
+        renderCanvas(context);
         super.render(context);
     }
 
-    private void renderCanvas(ScreenCanvas canvas) {
+    private void renderCanvas(ScreenContext context) {
+        ScreenCanvas canvas = context.canvas();
         float width = getScreenWidth();
         float height = getScreenHeight();
         canvas.submitRelativeRect(0, 0, width, height, BACKGROUND);
@@ -298,14 +299,14 @@ public class FlowEditorActivity extends SimpleActivity {
             if (from != null && to != null && from.getType() != null && to.getType() != null) {
                 NodeLayout fromLayout = layout(from);
                 NodeLayout toLayout = layout(to);
-                drawCurve(canvas, fromLayout.outputX(), fromLayout.outputY(connection.output()), toLayout.inputX(), toLayout.inputY(),
+                drawCurve(context, fromLayout.outputX(), fromLayout.outputY(connection.output()), toLayout.inputX(), toLayout.inputY(),
                     NodeLayout.outputColor(connection.output()));
             }
         }
 
         if (drag == Drag.CONNECTION && dragNode != null) {
             NodeLayout layout = layout(dragNode);
-            drawCurve(canvas, layout.outputX(), layout.outputY(dragOutput), mouseX, mouseY, SELECTED_COLOR);
+            drawCurve(context, layout.outputX(), layout.outputY(dragOutput), mouseX, mouseY, SELECTED_COLOR);
         }
 
         boolean running = manager.isRunning(flow.getName());
@@ -319,7 +320,7 @@ public class FlowEditorActivity extends SimpleActivity {
      * S-curve like in n8n, approximated with short lines. Connections that lead backwards get bigger handles,
      * so they bend around the blocks instead of crossing them.
      */
-    private void drawCurve(ScreenCanvas canvas, float x1, float y1, float x2, float y2, int color) {
+    private void drawCurve(ScreenContext context, float x1, float y1, float x2, float y2, int color) {
         float dx = x2 - x1;
         float dy = y2 - y1;
         float handle = Math.max(40 * zoom, dx < 0 ? Math.max(-dx / 2, Math.abs(dy) / 2) : dx / 2);
@@ -333,12 +334,25 @@ public class FlowEditorActivity extends SimpleActivity {
             float u = 1 - t;
             float x = u * u * u * x1 + 3 * u * u * t * (x1 + handle) + 3 * u * t * t * (x2 - handle) + t * t * t * x2;
             float y = u * u * u * y1 + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y2;
-            canvas.submitLine(lastX, lastY, x, y, lineWidth, color);
+            drawSegment(context, lastX, lastY, x, y, lineWidth, color);
             // Round joints, otherwise thick segments leave small gaps at the bends
-            canvas.submitCircle(x, y, lineWidth / 2, color);
+            context.canvas().submitCircle(x, y, lineWidth / 2, color);
             lastX = x;
             lastY = y;
         }
+    }
+
+    /** A thick straight line as rotated rectangle (line widths of the line renderer are not reliable in the GUI). */
+    private static void drawSegment(ScreenContext context, float x1, float y1, float x2, float y2, float width, int color) {
+        float length = (float) Math.hypot(x2 - x1, y2 - y1);
+        if (length < 0.01F)
+            return;
+
+        context.pushStack();
+        context.translate(x1, y1, 0);
+        context.rotateRadiansZ((float) Math.atan2(y2 - y1, x2 - x1));
+        context.canvas().submitRelativeRect(0, -width / 2, length, width, color);
+        context.popStack();
     }
 
     private NodeLayout layout(FlowNode node) {

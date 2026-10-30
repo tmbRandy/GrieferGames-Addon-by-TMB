@@ -10,6 +10,16 @@ public abstract class DescribedCommand extends Command {
         super(prefix, aliases);
     }
 
+    public boolean matches(String name) {
+        if (prefix.equalsIgnoreCase(name))
+            return true;
+        for (String alias : aliases) {
+            if (alias.equalsIgnoreCase(name))
+                return true;
+        }
+        return false;
+    }
+
     public String getDescription() {
         return Addon.translate("commands." + this.prefix);
     }

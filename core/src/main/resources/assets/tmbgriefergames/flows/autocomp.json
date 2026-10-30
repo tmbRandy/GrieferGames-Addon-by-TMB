@@ -17,9 +17,9 @@
     { "id": "nextLevel", "type": "calculate", "x": 800, "y": 180, "params": { "name": "level", "operator": "+", "value": "1" } },
     { "id": "lastLevel", "type": "if_compare", "x": 960, "y": 180, "params": { "a": "${level}", "operator": ">", "b": "5" } },
     { "id": "restart", "type": "set_variable", "x": 960, "y": 280, "params": { "name": "level", "value": "1" } },
-    { "id": "error", "type": "message", "x": 320, "y": 300, "params": { "text": "§cAutoComp: Das Menü hat nicht reagiert." } },
-    { "id": "end", "type": "stop", "x": 160, "y": 300, "params": {} },
-    { "id": "escape", "type": "on_key", "x": 0, "y": 300, "params": { "key": "ESCAPE", "autostart": "false" } }
+    { "id": "error", "type": "message", "x": 480, "y": 420, "params": { "text": "§cAutoComp: Das Menü hat nicht reagiert." } },
+    { "id": "end", "type": "stop", "x": 800, "y": 420, "params": {} },
+    { "id": "escape", "type": "on_key", "x": 480, "y": 330, "params": { "key": "ESCAPE", "autostart": "false" } }
   ],
   "connections": [
     { "from": "start", "output": "next", "to": "open" },

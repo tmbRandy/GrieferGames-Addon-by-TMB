@@ -36,6 +36,7 @@ import tmb.randy.tmbgriefergames.core.commands.FlowCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
+import tmb.randy.tmbgriefergames.core.dev.DevBridge;
 import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.functions.AccountUnity;
 import tmb.randy.tmbgriefergames.core.functions.AutoLoot;
@@ -99,6 +100,8 @@ public class Addon extends LabyAddon<Configuration> {
         registerListener(new ItemClearTimerListener());
         registerListener(Commander.INSTANCE());
         registerListener(FlowManager.get());
+        if (DevBridge.isEnabled())
+            registerListener(new DevBridge());
         registerListener(this);
 
         registerCommand(new DKsCommand());

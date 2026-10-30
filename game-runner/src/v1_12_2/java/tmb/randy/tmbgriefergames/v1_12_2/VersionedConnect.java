@@ -5,11 +5,13 @@ import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.models.Implements;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.math.BlockPos;
 import tmb.randy.tmbgriefergames.api.enums.FunctionState;
 import tmb.randy.tmbgriefergames.api.events.MoneyBalanceChangedEvent;
@@ -235,6 +237,12 @@ public class VersionedConnect implements IConnect {
         if (Helper.isCraftingScreen())
             return "crafting";
         return "other";
+    }
+
+    @Override
+    public void takeScreenshot(String name) {
+        Minecraft mc = Helper.mc();
+        ScreenShotHelper.saveScreenshot(mc.gameDir, name + ".png", mc.displayWidth, mc.displayHeight, mc.getFramebuffer());
     }
 
     @Override

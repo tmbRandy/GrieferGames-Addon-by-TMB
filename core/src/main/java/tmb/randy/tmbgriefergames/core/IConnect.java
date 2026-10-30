@@ -82,4 +82,7 @@ public interface IConnect {
 
     /** True while the own fishing hook has a fish on the hook. */
     boolean isFishBiting();
+
+    /** Saves a screenshot to screenshots/&lt;name&gt;.png (must be called on the render thread). */
+    void takeScreenshot(String name);
 }
