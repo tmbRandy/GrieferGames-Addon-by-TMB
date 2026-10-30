@@ -1,0 +1,36 @@
+{
+  "name": "Auswurf",
+  "hotkey": [],
+  "nodes": [
+    { "id": "start", "type": "start", "x": 0, "y": 0, "params": {} },
+    { "id": "remember", "type": "store_looked_block", "x": 160, "y": 0, "params": { "name": "chest" } },
+    { "id": "noChest", "type": "message", "x": 160, "y": 110, "params": { "text": "§cAuswurf: Schau beim Starten auf das endlose Lager." } },
+    { "id": "waitStorage", "type": "wait_for_menu", "x": 320, "y": 0, "params": { "title": "Lager: ", "timeout": "100" } },
+    { "id": "drop", "type": "drop_items", "x": 480, "y": 0, "params": { "item": "", "keep_one": "false", "area": "chest", "slots": "0-24", "min_level": "0", "max_level": "7" } },
+    { "id": "count", "type": "count_items", "x": 640, "y": 0, "params": { "item": "", "variable": "left", "area": "chest", "slots": "0-24", "min_level": "0", "max_level": "7" } },
+    { "id": "anyLeft", "type": "if_compare", "x": 800, "y": 0, "params": { "a": "${left}", "operator": ">", "b": "0" } },
+    { "id": "close", "type": "close_menu", "x": 960, "y": 0, "params": {} },
+    { "id": "look", "type": "look_at", "x": 1120, "y": 0, "params": { "x": "${chest.x}", "y": "${chest.y}", "z": "${chest.z}" } },
+    { "id": "reopen", "type": "right_click_block", "x": 1280, "y": 0, "params": {} },
+    { "id": "error", "type": "message", "x": 480, "y": 170, "params": { "text": "§cAuswurf: Das Lager hat sich nicht geöffnet." } },
+    { "id": "end", "type": "stop", "x": 640, "y": 170, "params": {} },
+    { "id": "escape", "type": "on_key", "x": 320, "y": 170, "params": { "key": "ESCAPE", "autostart": "false" } }
+  ],
+  "connections": [
+    { "from": "start", "output": "next", "to": "remember" },
+    { "from": "remember", "output": "found", "to": "waitStorage" },
+    { "from": "remember", "output": "none", "to": "noChest" },
+    { "from": "noChest", "output": "next", "to": "end" },
+    { "from": "waitStorage", "output": "ok", "to": "drop" },
+    { "from": "waitStorage", "output": "timeout", "to": "error" },
+    { "from": "drop", "output": "next", "to": "count" },
+    { "from": "count", "output": "next", "to": "anyLeft" },
+    { "from": "anyLeft", "output": "yes", "to": "drop" },
+    { "from": "anyLeft", "output": "no", "to": "close" },
+    { "from": "close", "output": "next", "to": "look" },
+    { "from": "look", "output": "next", "to": "reopen" },
+    { "from": "reopen", "output": "next", "to": "waitStorage" },
+    { "from": "error", "output": "next", "to": "end" },
+    { "from": "escape", "output": "next", "to": "end" }
+  ]
+}

@@ -157,7 +157,7 @@ public class FlowEditorActivity extends SimpleActivity {
     private HorizontalListWidget createBuiltinToolbar(HorizontalListWidget toolbar) {
         nameField = null;
         hotkeyField = null;
-        toolbar.addEntry(ComponentWidget.text("🔒 " + flow.getName()).addId("title"));
+        toolbar.addEntry(ComponentWidget.text("§6" + flow.getName()).addId("title"));
         toolbar.addEntry(ComponentWidget.i18n(key("readOnly")).addId("label"));
         toolbar.addEntry(ButtonWidget.i18n(key(manager.isRunning(flow.getName()) ? "stop" : "run"), () -> {
             manager.toggle(flow);
@@ -176,7 +176,8 @@ public class FlowEditorActivity extends SimpleActivity {
 
         sidebar.addChild(ComponentWidget.i18n(key("flows")).addId("section"));
         for (Flow other : manager.getFlows()) {
-            String prefix = (other == flow ? "» " : manager.isRunning(other.getName()) ? "▶ " : "") + (other.isBuiltin() ? "🔒 " : "");
+            // Built-in flows are shown in gold (the font has no lock symbol)
+            String prefix = (other == flow ? "» " : manager.isRunning(other.getName()) ? "▶ " : "") + (other.isBuiltin() ? "§6" : "");
             sidebar.addChild(ButtonWidget.text(prefix + other.getName(), () -> switchTo(other)));
         }
         sidebar.addChild(ButtonWidget.i18n(key("newFlow"), () -> switchTo(createFlow())));

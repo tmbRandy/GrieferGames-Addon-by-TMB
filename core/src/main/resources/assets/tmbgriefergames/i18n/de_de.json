@@ -727,9 +727,11 @@
                     "name": "Slot suchen",
                     "param": {
                         "item": "Item",
-                        "area": "Bereich",
                         "variable": "Variable",
                         "full_stack": "Nur volle Stacks",
+                        "area": "Bereich (inventory/chest/all)",
+                        "slots": "Slots (z. B. 0-24)",
+                        "min_level": "Min. Komprimierung",
                         "max_level": "Max. Komprimierung"
                     }
                 },
@@ -737,24 +739,34 @@
                     "name": "Items zählen",
                     "param": {
                         "item": "Item",
-                        "area": "Bereich",
-                        "variable": "Variable"
+                        "variable": "Variable",
+                        "area": "Bereich (inventory/chest/all)",
+                        "slots": "Slots (z. B. 0-24)",
+                        "min_level": "Min. Komprimierung",
+                        "max_level": "Max. Komprimierung"
                     }
                 },
                 "drop_items": {
                     "name": "Items wegwerfen",
                     "param": {
                         "item": "Item",
-                        "keep_one": "Einen behalten"
+                        "keep_one": "Einen behalten",
+                        "area": "Bereich (inventory/chest/all)",
+                        "slots": "Slots (z. B. 0-24)",
+                        "min_level": "Min. Komprimierung",
+                        "max_level": "Max. Komprimierung"
                     }
                 },
                 "move_items": {
-                    "name": "Items verschieben",
+                    "name": "Items verschieben (Shift)",
                     "param": {
                         "item": "Item",
-                        "from": "Von",
                         "max_stacks": "Max. Stacks (0 = alle)",
-                        "full_only": "Nur volle Stacks"
+                        "full_only": "Nur volle Stacks",
+                        "area": "Bereich (inventory/chest/all)",
+                        "slots": "Slots (z. B. 0-24)",
+                        "min_level": "Min. Komprimierung",
+                        "max_level": "Max. Komprimierung"
                     }
                 },
                 "if_inventory_full": {

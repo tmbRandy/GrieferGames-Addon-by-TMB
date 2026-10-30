@@ -1,1 +1,3 @@
 autocomp.json
+autodecomp.json
+eject.json

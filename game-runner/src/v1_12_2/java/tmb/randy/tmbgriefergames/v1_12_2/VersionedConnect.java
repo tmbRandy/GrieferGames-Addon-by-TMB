@@ -142,7 +142,10 @@ public class VersionedConnect implements IConnect {
 
     @Override
     public int getSlotCompressionLevel(int slot) {
-        return Helper.getCompressionLevel(getStack(slot)).getLevel();
+        ItemStack stack = getStack(slot);
+        int level = Helper.getCompressionLevel(stack).getLevel();
+        // Decompressed items only carry the level as roman numeral in their name
+        return level == 0 && stack != null && stack.hasDisplayName() ? Helper.getRomanSuffixLevel(stack.getDisplayName()) : level;
     }
 
     @Override

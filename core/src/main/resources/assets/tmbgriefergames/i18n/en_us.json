@@ -732,9 +732,11 @@
                     "name": "Find slot",
                     "param": {
                         "item": "Item",
-                        "area": "Area",
                         "variable": "Variable",
                         "full_stack": "Full stacks only",
+                        "area": "Area (inventory/chest/all)",
+                        "slots": "Slots (e.g. 0-24)",
+                        "min_level": "Min. compression",
                         "max_level": "Max. compression"
                     }
                 },
@@ -742,24 +744,34 @@
                     "name": "Count items",
                     "param": {
                         "item": "Item",
-                        "area": "Area",
-                        "variable": "Variable"
+                        "variable": "Variable",
+                        "area": "Area (inventory/chest/all)",
+                        "slots": "Slots (e.g. 0-24)",
+                        "min_level": "Min. compression",
+                        "max_level": "Max. compression"
                     }
                 },
                 "drop_items": {
                     "name": "Drop items",
                     "param": {
                         "item": "Item",
-                        "keep_one": "Keep one"
+                        "keep_one": "Keep one",
+                        "area": "Area (inventory/chest/all)",
+                        "slots": "Slots (e.g. 0-24)",
+                        "min_level": "Min. compression",
+                        "max_level": "Max. compression"
                     }
                 },
                 "move_items": {
-                    "name": "Move items",
+                    "name": "Move items (shift)",
                     "param": {
                         "item": "Item",
-                        "from": "From",
                         "max_stacks": "Max. stacks (0 = all)",
-                        "full_only": "Full stacks only"
+                        "full_only": "Full stacks only",
+                        "area": "Area (inventory/chest/all)",
+                        "slots": "Slots (e.g. 0-24)",
+                        "min_level": "Min. compression",
+                        "max_level": "Max. compression"
                     }
                 },
                 "if_inventory_full": {

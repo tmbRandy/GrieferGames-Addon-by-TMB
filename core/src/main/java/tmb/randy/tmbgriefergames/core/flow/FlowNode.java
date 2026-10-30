@@ -59,8 +59,20 @@ public class FlowNode {
         this.y = y;
     }
 
+    /** The value of a parameter; parameters missing in older files fall back to the default of the block type. */
     public String getParam(String key) {
-        return params.getOrDefault(key, "");
+        String value = params.get(key);
+        if (value != null)
+            return value;
+
+        NodeType nodeType = getType();
+        if (nodeType != null) {
+            for (Parameter parameter : nodeType.parameters()) {
+                if (parameter.key().equals(key))
+                    return parameter.defaultValue();
+            }
+        }
+        return "";
     }
 
     public void setParam(String key, String value) {
