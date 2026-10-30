@@ -45,10 +45,13 @@ public class FlowEditorActivity extends SimpleActivity {
     private static final float SIDEBAR_WIDTH = 120;
     private static final float PROPERTIES_WIDTH = 160;
 
-    private static final int BACKGROUND = 0xFF1E1E24;
-    private static final int GRID = 0xFF2A2A32;
+    private static final int BACKGROUND = 0xFF1B1B21;
+    private static final int GRID = 0xFF23232B;
+    private static final int GRID_STRONG = 0xFF2D2D37;
     private static final int GRID_SIZE = 20;
-    private static final int LINE_COLOR = 0xFFB0B0B0;
+    private static final float MIN_ZOOM = 0.3F;
+    private static final float MAX_ZOOM = 2.5F;
+    private static final float ZOOM_STEP = 1.1F;
     private static final int SELECTED_COLOR = 0xFFFFD54F;
 
     private enum Drag { NONE, NODE, PAN, CONNECTION }
@@ -58,6 +61,7 @@ public class FlowEditorActivity extends SimpleActivity {
     private FlowNode selected;
     private float panX = SIDEBAR_WIDTH + 40;
     private float panY = TOOLBAR_HEIGHT + 40;
+    private float zoom = 1;
 
     private Drag drag = Drag.NONE;
     private FlowNode dragNode;
@@ -239,8 +243,8 @@ public class FlowEditorActivity extends SimpleActivity {
     }
 
     private void addNode(NodeType type) {
-        float centerX = (SIDEBAR_WIDTH + getScreenWidth() - PROPERTIES_WIDTH) / 2 - panX - NodeLayout.WIDTH / 2;
-        float centerY = (TOOLBAR_HEIGHT + getScreenHeight()) / 2 - panY;
+        float centerX = toWorldX((SIDEBAR_WIDTH + getScreenWidth() - PROPERTIES_WIDTH) / 2) - NodeLayout.WIDTH / 2;
+        float centerY = toWorldY((TOOLBAR_HEIGHT + getScreenHeight()) / 2);
         FlowNode node = new FlowNode(type, snap(centerX), snap(centerY));
         flow.getNodes().add(node);
         selected = node;
@@ -279,20 +283,23 @@ public class FlowEditorActivity extends SimpleActivity {
         float height = getScreenHeight();
         canvas.submitRelativeRect(0, 0, width, height, BACKGROUND);
 
-        float offsetX = panX % GRID_SIZE;
-        float offsetY = panY % GRID_SIZE;
-        for (float x = offsetX; x < width; x += GRID_SIZE)
-            canvas.submitRelativeRect(x, 0, 1, height, GRID);
-        for (float y = offsetY; y < height; y += GRID_SIZE)
-            canvas.submitRelativeRect(0, y, width, 1, GRID);
+        // Fine grid plus a stronger line every fifth cell
+        float gridSize = GRID_SIZE * zoom;
+        int firstX = (int) Math.floor(-panX / gridSize);
+        int firstY = (int) Math.floor(-panY / gridSize);
+        for (int i = firstX; i * gridSize + panX < width; i++)
+            canvas.submitRelativeRect(i * gridSize + panX, 0, 1, height, i % 5 == 0 ? GRID_STRONG : GRID);
+        for (int i = firstY; i * gridSize + panY < height; i++)
+            canvas.submitRelativeRect(0, i * gridSize + panY, width, 1, i % 5 == 0 ? GRID_STRONG : GRID);
 
         for (FlowConnection connection : flow.getConnections()) {
             FlowNode from = flow.getNode(connection.from());
             FlowNode to = flow.getNode(connection.to());
-            if (from != null && to != null && from.getType() != null) {
+            if (from != null && to != null && from.getType() != null && to.getType() != null) {
                 NodeLayout fromLayout = layout(from);
                 NodeLayout toLayout = layout(to);
-                drawCurve(canvas, fromLayout.outputX(), fromLayout.outputY(connection.output()), toLayout.inputX(), toLayout.inputY(), LINE_COLOR);
+                drawCurve(canvas, fromLayout.outputX(), fromLayout.outputY(connection.output()), toLayout.inputX(), toLayout.inputY(),
+                    NodeLayout.outputColor(connection.output()));
             }
         }
 
@@ -301,30 +308,49 @@ public class FlowEditorActivity extends SimpleActivity {
             drawCurve(canvas, layout.outputX(), layout.outputY(dragOutput), mouseX, mouseY, SELECTED_COLOR);
         }
 
+        boolean running = manager.isRunning(flow.getName());
         for (FlowNode node : flow.getNodes()) {
             if (node.getType() != null)
-                layout(node).render(canvas, node == selected, manager.isRunning(flow.getName()));
+                layout(node).render(canvas, node == selected, running, output -> flow.getTarget(node, output) != null);
         }
     }
 
-    /** Horizontal S-curve like in n8n, approximated with short lines. */
-    private static void drawCurve(ScreenCanvas canvas, float x1, float y1, float x2, float y2, int color) {
-        float handle = Math.max(30, Math.abs(x2 - x1) / 2);
+    /**
+     * S-curve like in n8n, approximated with short lines. Connections that lead backwards get bigger handles,
+     * so they bend around the blocks instead of crossing them.
+     */
+    private void drawCurve(ScreenCanvas canvas, float x1, float y1, float x2, float y2, int color) {
+        float dx = x2 - x1;
+        float dy = y2 - y1;
+        float handle = Math.max(40 * zoom, dx < 0 ? Math.max(-dx / 2, Math.abs(dy) / 2) : dx / 2);
+        float lineWidth = Math.max(1.2F, 2 * zoom);
+        int segments = (int) Math.max(16, Math.min(80, (Math.abs(dx) + Math.abs(dy) + 2 * handle) / 6));
+
         float lastX = x1;
         float lastY = y1;
-        for (int i = 1; i <= 24; i++) {
-            float t = i / 24F;
+        for (int i = 1; i <= segments; i++) {
+            float t = (float) i / segments;
             float u = 1 - t;
             float x = u * u * u * x1 + 3 * u * u * t * (x1 + handle) + 3 * u * t * t * (x2 - handle) + t * t * t * x2;
             float y = u * u * u * y1 + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y2;
-            canvas.submitLine(lastX, lastY, x, y, 2, color);
+            canvas.submitLine(lastX, lastY, x, y, lineWidth, color);
+            // Round joints, otherwise thick segments leave small gaps at the bends
+            canvas.submitCircle(x, y, lineWidth / 2, color);
             lastX = x;
             lastY = y;
         }
     }
 
     private NodeLayout layout(FlowNode node) {
-        return new NodeLayout(node, node.getX() + panX, node.getY() + panY);
+        return new NodeLayout(node, node.getX() * zoom + panX, node.getY() * zoom + panY, zoom);
+    }
+
+    private float toWorldX(float screenX) {
+        return (screenX - panX) / zoom;
+    }
+
+    private float toWorldY(float screenY) {
+        return (screenY - panY) / zoom;
     }
 
     private static float getScreenWidth() {
@@ -380,8 +406,8 @@ public class FlowEditorActivity extends SimpleActivity {
                 nodes.add(node);
                 drag = Drag.NODE;
                 dragNode = node;
-                dragOffsetX = x - node.getX();
-                dragOffsetY = y - node.getY();
+                dragOffsetX = toWorldX(x) - node.getX();
+                dragOffsetY = toWorldY(y) - node.getY();
                 if (selected != node) {
                     selected = node;
                     reload();
@@ -405,7 +431,7 @@ public class FlowEditorActivity extends SimpleActivity {
         float x = mouse.getX();
         float y = mouse.getY();
         switch (drag) {
-            case NODE -> dragNode.setPosition(snap(x - dragOffsetX), snap(y - dragOffsetY));
+            case NODE -> dragNode.setPosition(snap(toWorldX(x) - dragOffsetX), snap(toWorldY(y) - dragOffsetY));
             case PAN -> {
                 panX = x - dragOffsetX;
                 panY = y - dragOffsetY;
@@ -436,6 +462,21 @@ public class FlowEditorActivity extends SimpleActivity {
         drag = Drag.NONE;
         dragNode = null;
         return consumed || super.mouseReleased(mouse, button);
+    }
+
+    /** Zooms around the mouse position, so the point under the cursor stays where it is. */
+    @Override
+    public boolean mouseScrolled(MutableMouse mouse, double scrollDelta) {
+        float x = mouse.getX();
+        float y = mouse.getY();
+        if (!isOnCanvas(x, y) || scrollDelta == 0)
+            return super.mouseScrolled(mouse, scrollDelta);
+
+        float oldZoom = zoom;
+        zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * (scrollDelta > 0 ? ZOOM_STEP : 1 / ZOOM_STEP)));
+        panX = x - (x - panX) * zoom / oldZoom;
+        panY = y - (y - panY) * zoom / oldZoom;
+        return true;
     }
 
     @Override
