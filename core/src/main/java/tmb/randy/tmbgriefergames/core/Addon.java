@@ -32,9 +32,11 @@ import tmb.randy.tmbgriefergames.core.commands.AutocraftV3Command;
 import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
 import tmb.randy.tmbgriefergames.core.commands.DescribedCommand;
 import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
+import tmb.randy.tmbgriefergames.core.commands.FlowCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
+import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.functions.AccountUnity;
 import tmb.randy.tmbgriefergames.core.functions.AutoLoot;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver;
@@ -96,6 +98,7 @@ public class Addon extends LabyAddon<Configuration> {
         registerListener(new HopperTracker());
         registerListener(new ItemClearTimerListener());
         registerListener(Commander.INSTANCE());
+        registerListener(FlowManager.get());
         registerListener(this);
 
         registerCommand(new DKsCommand());
@@ -104,6 +107,7 @@ public class Addon extends LabyAddon<Configuration> {
         registerCommand(new AutocraftV2Command());
         registerCommand(new AutocraftV3Command());
         registerCommand(new EjectCommand());
+        registerCommand(new FlowCommand());
 
         HudWidgetCategory category = new HudWidgetCategory(getNamespace());
         labyAPI().hudWidgetRegistry().categoryRegistry().register(category);

@@ -6,6 +6,8 @@ import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.models.Implements;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import tmb.randy.tmbgriefergames.api.enums.FunctionState;
 import tmb.randy.tmbgriefergames.api.events.MoneyBalanceChangedEvent;
 import tmb.randy.tmbgriefergames.api.events.ToggleFunctionEvent;
@@ -59,6 +61,68 @@ public class VersionedConnect implements IConnect {
     @Override
     public void changeSlot(int slot) {
         Helper.setHotbarSlot(slot);
+    }
+
+    @Override
+    public String getChestTitle() {
+        return Helper.getChestTitle();
+    }
+
+    @Override
+    public String getSlotItem(int slot) {
+        ItemStack stack = getStack(slot);
+        return stack == null ? null : Helper.getRegistryName(stack);
+    }
+
+    @Override
+    public String getSlotItemName(int slot) {
+        ItemStack stack = getStack(slot);
+        return stack == null ? null : stack.getDisplayName();
+    }
+
+    @Override
+    public int getSlotCount(int slot) {
+        return Helper.getCount(getStack(slot));
+    }
+
+    private static ItemStack getStack(int slot) {
+        return slot >= 0 && slot < Helper.getContainerSize() ? Helper.getContainerStack(slot) : null;
+    }
+
+    @Override
+    public boolean isInventoryFull() {
+        return Helper.isInventoryFull();
+    }
+
+    @Override
+    public int countInventoryStacks(String registryName) {
+        return Helper.countInventory(stack -> Helper.isItem(stack, registryName));
+    }
+
+    @Override
+    public int[] getBlockLookingAt() {
+        BlockPos pos = Helper.getBlockPosLookingAt();
+        return pos == null ? null : new int[] {pos.getX(), pos.getY(), pos.getZ()};
+    }
+
+    @Override
+    public void lookAtBlock(int x, int y, int z) {
+        Helper.lookAtBlockPos(new BlockPos(x, y, z));
+    }
+
+    @Override
+    public void rightClickBlockLookingAt() {
+        Helper.rightClickBlockLookingAt();
+    }
+
+    @Override
+    public void useHeldItem() {
+        Helper.rightClick();
+    }
+
+    @Override
+    public void closeScreen() {
+        Helper.closeScreen();
     }
 
     @Subscribe

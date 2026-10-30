@@ -1,0 +1,93 @@
+// Sizes must match the constants in FlowEditorActivity (toolbar 24, sidebar 120, properties 160)
+
+.toolbar {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 24;
+  padding: 2;
+  space-between-entries: 3;
+  background-color: rgba(15, 15, 20, 230);
+
+  .name-field {
+    width: 120;
+    height: 18;
+  }
+
+  .hotkey-field {
+    width: 80;
+    height: 18;
+  }
+
+  .label {
+    alignment-y: center;
+    text-color: gray;
+  }
+
+  Button {
+    height: 18;
+    width: fit-content;
+    padding-left: 4;
+    padding-right: 4;
+  }
+}
+
+.sidebar {
+  left: 0;
+  top: 24;
+  width: 120;
+  bottom: 0;
+  background-color: rgba(15, 15, 20, 230);
+
+  .sidebar-list {
+    width: 100%;
+    padding: 3;
+    space-between-entries: 2;
+
+    .section {
+      text-color: gold;
+      margin-top: 4;
+    }
+
+    Button {
+      width: 100%;
+      height: 16;
+    }
+  }
+}
+
+.properties {
+  right: 0;
+  top: 24;
+  width: 160;
+  height: fit-content;
+  padding: 4;
+  space-between-entries: 3;
+  background-color: rgba(15, 15, 20, 230);
+
+  .section {
+    text-color: gold;
+  }
+
+  .property-row {
+    width: 100%;
+    height: 18;
+    space-between-entries: 2;
+
+    .label {
+      width: 45%;
+      alignment-y: center;
+      text-color: gray;
+    }
+
+    .property-field {
+      width: 52%;
+      height: 16;
+    }
+  }
+
+  Button {
+    width: 100%;
+    height: 16;
+  }
+}

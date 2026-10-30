@@ -521,7 +521,56 @@
             "add": "Add",
             "delete": "delete"
         },
+        "flow": {
+            "started": "Flow §e%s §fstarted.",
+            "stopped": "Flow §e%s §fstopped.",
+            "finished": "Flow §e%s §ffinished.",
+            "noStart": "The flow §e%s §fhas no start block.",
+            "unknown": "There is no flow named §e%s§f. All flows: /flow list",
+            "noFlows": "You have no flows yet. Open the editor with /flow",
+            "editor": {
+                "newFlowName": "Flow %s",
+                "hotkey": "Hotkey:",
+                "save": "Save",
+                "run": "▶ Run",
+                "stop": "■ Stop",
+                "delete": "Delete",
+                "flows": "Flows",
+                "newFlow": "+ New flow",
+                "blocks": "Blocks",
+                "deleteBlock": "Delete block"
+            },
+            "output": {
+                "next": "next",
+                "yes": "yes",
+                "no": "no",
+                "ok": "ok",
+                "timeout": "timeout",
+                "loop": "loop",
+                "done": "done"
+            },
+            "node": {
+                "start": { "name": "Start" },
+                "command": { "name": "Send command", "param": { "command": "Command" } },
+                "message": { "name": "Show message", "param": { "text": "Text" } },
+                "look_at": { "name": "Look at block", "param": { "x": "X", "y": "Y", "z": "Z" } },
+                "right_click_block": { "name": "Right click block" },
+                "use_item": { "name": "Use item" },
+                "select_slot": { "name": "Select hotbar slot", "param": { "slot": "Slot (1-9)" } },
+                "click_slot": { "name": "Click menu slot", "param": { "slot": "Slot", "shift": "Shift" } },
+                "close_menu": { "name": "Close menu" },
+                "wait_for_menu": { "name": "Wait for menu", "param": { "title": "Title", "timeout": "Timeout (ticks)" } },
+                "if_menu": { "name": "If menu open", "param": { "title": "Title" } },
+                "if_slot": { "name": "If slot contains", "param": { "slot": "Slot", "item": "Item" } },
+                "wait": { "name": "Wait", "param": { "ticks": "Ticks" } },
+                "wait_for_chat": { "name": "Wait for chat", "param": { "contains": "Contains", "timeout": "Timeout (ticks)" } },
+                "if_inventory_full": { "name": "If inventory full" },
+                "repeat": { "name": "Repeat", "param": { "count": "Count" } },
+                "stop": { "name": "Stop" }
+            }
+        },
         "commands": {
+            "flow": "Opens the flow editor where you build your own flows out of blocks.\n\n'/flow' opens the editor, '/flow <name>' starts or stops a flow, '/flow list' lists all flows and '/flow stop' stops all running flows.",
             "dks": "A simple command to calculate how you need to compress to get a specific number of DKs.\n\nEnter the command '/dks <amount>'. You will receive the required compression levels directly in chat. Example: '/dks 50' results in the output '50 DKs = 2 * V • 8 * IV • 3 * III • 3 * I'",
             "fahndung": "Searches all CBs for a specific player.\n\nEnter the command followed by the name of the player you are looking for (e.g., '/fahndung RypexYT'). All CBs will be visited briefly in sequence. If the target player is found on a CB, the search will end. The command can also be used without entering a player name. In this case, all CBs will be visited briefly—ideal for spreading an advertisement via status.\n\nThe search can be stopped by moving (W, A, S, D).",
             "craftv3": "The most advanced autocrafter (V3) automatically takes items from different chests and crafts them.\n\nEmpty your inventory, place the item you want to craft in your first slot, and start the Autocrafter V3 with the command. The /rezepte menu will briefly open to register all required materials. Now open all chests that contain source items one by one. Once all required items are registered, the autocrafter will start. It will take the items in the necessary mix ratio from the chests, then open the /rezepte menu and craft the recipe. The crafted items can either be compressed or dropped. If errors occur, adjust the cooldown in the settings to a slower value.\n\nThe Autocrafter V3 can be stopped by pressing ESC.",
