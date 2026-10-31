@@ -16,7 +16,7 @@ labyMod {
             runs {
                 getByName("client") {
                     // When the property is set to true, you can log in with a Minecraft account
-                    // devLogin = true
+                    devLogin = true
                 }
             }
         }
