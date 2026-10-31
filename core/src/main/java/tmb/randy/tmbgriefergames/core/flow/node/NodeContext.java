@@ -14,7 +14,10 @@ public final class NodeContext {
     /** Returned by a block that is not finished yet; it is executed again in the next tick. */
     public static final String WAIT = null;
 
-    private static final Pattern VARIABLE = Pattern.compile("\\$\\{([^}]+)}");
+    private static final String TIME_NOW = "time.now";
+    /** Only placeholders without other placeholders inside, so nested ones are resolved from the inside out. */
+    private static final Pattern VARIABLE = Pattern.compile("\\$\\{([^${}]+)}");
+    private static final int MAX_NESTING = 5;
 
     private final FlowRunner runner;
     private final FlowNode node;
@@ -83,17 +86,30 @@ public final class NodeContext {
         runner.setCounter(node.getId(), value);
     }
 
+    /**
+     * Replaces all ${name} placeholders. Inner placeholders are replaced first, so ${cb.${index}} reads the
+     * variable whose name contains the value of ${index}.
+     */
     public String resolve(String text) {
-        Matcher matcher = VARIABLE.matcher(text);
-        StringBuilder result = new StringBuilder();
-        while (matcher.find())
-            matcher.appendReplacement(result, Matcher.quoteReplacement(lookup(matcher.group(1).trim())));
-        matcher.appendTail(result);
-        return result.toString();
+        String current = text;
+        for (int depth = 0; depth < MAX_NESTING && current.contains("${"); depth++) {
+            Matcher matcher = VARIABLE.matcher(current);
+            StringBuilder result = new StringBuilder();
+            while (matcher.find())
+                matcher.appendReplacement(result, Matcher.quoteReplacement(lookup(matcher.group(1).trim())));
+            matcher.appendTail(result);
+
+            if (result.toString().equals(current))
+                break;
+            current = result.toString();
+        }
+        return current;
     }
 
-    /** A variable of the flow or, with the prefix "setting.", one of the addon settings. */
+    /** A variable of the flow, one of the addon settings ("setting.x") or the current time in seconds ("time.now"). */
     private String lookup(String name) {
+        if (name.equals(TIME_NOW))
+            return String.valueOf(System.currentTimeMillis() / 1000);
         return name.startsWith(FlowSettings.PREFIX) ? FlowSettings.get(name.substring(FlowSettings.PREFIX.length())) : runner.getVariable(name);
     }
 

@@ -12,6 +12,8 @@ public class Flow {
     private String name;
     /** Keys that start/stop the flow (LabyMod key names), may be empty. */
     private List<String> hotkey = new ArrayList<>();
+    /** No chat messages when the flow starts or ends, for flows that react to events all the time. */
+    private boolean silent;
     /** Optional: name of an addon setting that holds the hotkey (built-in flows use the key the player configured). */
     private String hotkeySetting;
     private List<FlowNode> nodes = new ArrayList<>();
@@ -21,6 +23,10 @@ public class Flow {
 
     public Flow(String name) {
         this.name = name;
+    }
+
+    public boolean isSilent() {
+        return silent;
     }
 
     public boolean isBuiltin() {

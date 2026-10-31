@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import tmb.randy.tmbgriefergames.core.flow.node.NodeContext;
 import tmb.randy.tmbgriefergames.core.flow.node.NodeType;
+import tmb.randy.tmbgriefergames.core.helper.FileManager;
 
 /**
  * Executes one flow, block by block, driven by the game tick. Trigger blocks of the flow interrupt the
@@ -16,6 +17,9 @@ public class FlowRunner {
     private static final int MAX_INSTANT_NODES_PER_TICK = 50;
     /** Variable that holds the data of the last event that fired a trigger (e.g. the chat message). */
     public static final String EVENT_VARIABLE = "event";
+    public static final String GLOBAL_PREFIX = "global.";
+    public static final String SAVED_PREFIX = "saved.";
+    private static final String SAVED_STORAGE_KEY = "flow.";
 
     private final Flow flow;
     private final Map<String, Integer> counters = new HashMap<>();
@@ -59,12 +63,25 @@ public class FlowRunner {
         return chatMessages;
     }
 
+    /**
+     * A variable of this run. Names starting with "global." are shared by all flows until the game is closed,
+     * names starting with "saved." are stored per account and survive restarts.
+     */
     public String getVariable(String name) {
+        if (name.startsWith(GLOBAL_PREFIX))
+            return FlowManager.get().getGlobalVariable(name);
+        if (name.startsWith(SAVED_PREFIX))
+            return FileManager.getPlayerValue(SAVED_STORAGE_KEY + name) instanceof String value ? value : "";
         return variables.getOrDefault(name, "");
     }
 
     public void setVariable(String name, String value) {
-        variables.put(name, value);
+        if (name.startsWith(GLOBAL_PREFIX))
+            FlowManager.get().setGlobalVariable(name, value);
+        else if (name.startsWith(SAVED_PREFIX))
+            FileManager.setPlayerValue(SAVED_STORAGE_KEY + name, value);
+        else
+            variables.put(name, value);
     }
 
     public int getCounter(String nodeId) {

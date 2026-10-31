@@ -1,5 +1,6 @@
 package tmb.randy.tmbgriefergames.core.commands;
 
+import java.util.Arrays;
 import net.labymod.api.Laby;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.flow.Flow;
@@ -11,7 +12,7 @@ import tmb.randy.tmbgriefergames.core.flow.editor.FlowEditorActivity;
  * /flow edit [name]  opens the editor with the given flow
  * /flow list         lists all flows
  * /flow stop         stops all running flows
- * /flow [name]       starts or stops the flow
+ * /flow [name] [args]  starts (with ${arg1}, ...) or stops the flow
  */
 public class FlowCommand extends DescribedCommand {
 
@@ -38,11 +39,19 @@ public class FlowCommand extends DescribedCommand {
             }
             case "stop" -> manager.stopAll();
             default -> {
-                Flow flow = manager.getFlow(String.join(" ", arguments));
-                if (flow == null)
-                    Addon.displayNotification(Addon.translate("flow.unknown", String.join(" ", arguments)));
-                else
-                    manager.toggle(flow);
+                // Flow names may contain spaces: the longest matching name wins, the rest are arguments
+                for (int words = arguments.length; words > 0; words--) {
+                    Flow flow = manager.getFlow(String.join(" ", Arrays.copyOfRange(arguments, 0, words)));
+                    if (flow == null)
+                        continue;
+
+                    if (manager.isRunning(flow.getName()))
+                        manager.stop(flow.getName());
+                    else
+                        manager.start(flow, Arrays.copyOfRange(arguments, words, arguments.length));
+                    return true;
+                }
+                Addon.displayNotification(Addon.translate("flow.unknown", String.join(" ", arguments)));
             }
         }
         return true;

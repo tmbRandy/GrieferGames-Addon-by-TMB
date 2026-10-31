@@ -81,6 +81,12 @@ public class VersionedConnect implements IConnect {
     }
 
     @Override
+    public boolean hasSlotCustomName(int slot) {
+        ItemStack stack = getStack(slot);
+        return stack != null && stack.hasDisplayName();
+    }
+
+    @Override
     public int getSlotCount(int slot) {
         return Helper.getCount(getStack(slot));
     }

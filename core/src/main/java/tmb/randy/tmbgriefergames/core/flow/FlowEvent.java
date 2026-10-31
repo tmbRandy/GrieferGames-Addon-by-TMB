@@ -14,6 +14,10 @@ public record FlowEvent(Type type, String data) {
         KEY,
         FISH_BITE,
         INVENTORY_FULL,
+        /** data: button and action, e.g. "RIGHT_RELEASE" or "LEFT_CLICK" */
+        MOUSE,
+        /** data: the message or command the player sent */
+        CHAT_SENT,
         /** Fired every tick for running flows (timer triggers) */
         TICK
     }

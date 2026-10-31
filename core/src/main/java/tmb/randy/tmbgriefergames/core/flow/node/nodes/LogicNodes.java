@@ -9,6 +9,9 @@ import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.number;
 import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.text;
 
 import java.util.List;
+import net.labymod.api.Laby;
+import net.labymod.api.client.scoreboard.Scoreboard;
+import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
@@ -53,6 +56,21 @@ public final class LogicNodes {
             context -> compare(context.text("a"), context.text("operator").trim(), context.text("b")));
 
         // Starts a built-in flow, an own flow or one of the classic addon functions (e.g. CRAFTV3)
+        // Checks the scoreboard teams, which contain every player of the current CB
+        NodeTypes.condition("if_player_online", Category.LOGIC, List.of(text("player", "${arg1}")), context -> {
+            Scoreboard scoreboard = Laby.labyAPI().minecraft().getScoreboard();
+            String player = context.text("player").trim();
+            if (scoreboard == null || player.isEmpty())
+                return false;
+            for (ScoreboardTeam team : scoreboard.getTeams()) {
+                for (String entry : team.getEntries()) {
+                    if (entry.equalsIgnoreCase(player))
+                        return true;
+                }
+            }
+            return false;
+        });
+
         NodeTypes.action("run_flow", Category.LOGIC, List.of(text("flow", ""), bool("wait", false)), context -> {
             String name = context.text("flow").trim();
             if (context.isFirstTick())

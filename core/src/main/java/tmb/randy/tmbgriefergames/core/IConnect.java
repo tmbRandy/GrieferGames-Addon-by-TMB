@@ -19,6 +19,9 @@ public interface IConnect {
     /** Display name of the item in a slot of the open container, null if empty. */
     String getSlotItemName(int slot);
 
+    /** True if the item in the slot was renamed (e.g. GrieferGames items with special names). */
+    boolean hasSlotCustomName(int slot);
+
     int getSlotCount(int slot);
 
     boolean isInventoryFull();

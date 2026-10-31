@@ -104,8 +104,14 @@ public final class NodeTypes {
         return expected.isBlank() || itemMatches(item, context.game().getSlotItemName(slot), expected);
     }
 
+    /** Several items can be given separated by commas, e.g. "fishing_rod, bow, saddle". */
     public static boolean itemMatches(String registryName, String displayName, String expected) {
-        String lowerCase = expected.toLowerCase().trim();
-        return registryName.equals(lowerCase) || registryName.equals("minecraft:" + lowerCase) || stripColors(displayName).toLowerCase().contains(lowerCase);
+        for (String part : expected.split(",")) {
+            String lowerCase = part.toLowerCase().trim();
+            if (!lowerCase.isEmpty() && (registryName.equals(lowerCase) || registryName.equals("minecraft:" + lowerCase)
+                || stripColors(displayName).toLowerCase().contains(lowerCase)))
+                return true;
+        }
+        return false;
     }
 }

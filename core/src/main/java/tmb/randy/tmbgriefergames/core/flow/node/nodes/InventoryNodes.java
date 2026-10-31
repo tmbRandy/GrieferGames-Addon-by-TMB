@@ -21,7 +21,8 @@ import tmb.randy.tmbgriefergames.core.helper.BaseHelper;
  * (with only the inventory open: 9-35 storage, 36-44 hotbar).
  *
  * <p>Every block works on an area ("inventory", "chest" or "all"); the optional "slots" parameter
- * (e.g. "0-24") replaces the area by an exact slot range. "min_level"/"max_level" filter by compression level.
+ * (e.g. "0-24") replaces the area by an exact slot range. "min_level"/"max_level" filter by compression level,
+ * "named" (yes/no) by renamed items and "exclude" skips the listed items.
  */
 public final class InventoryNodes {
 
@@ -34,6 +35,8 @@ public final class InventoryNodes {
         parameters.add(text("slots", ""));
         parameters.add(number("min_level", 0));
         parameters.add(number("max_level", 7));
+        parameters.add(text("named", ""));
+        parameters.add(text("exclude", ""));
         return List.copyOf(parameters);
     }
 
@@ -107,10 +110,19 @@ public final class InventoryNodes {
     }
 
     private static boolean matches(NodeContext context, int slot) {
+        String exclude = context.text("exclude");
+        if (!exclude.isBlank() && NodeTypes.slotMatches(context, slot, exclude))
+            return false;
         if (!NodeTypes.slotMatches(context, slot, context.text("item")))
             return false;
         int level = context.game().getSlotCompressionLevel(slot);
-        return level >= context.number("min_level") && level <= context.number("max_level");
+        if (level < context.number("min_level") || level > context.number("max_level"))
+            return false;
+
+        // "yes" only renamed items, "no" only items with their normal name, empty both
+        String named = context.text("named").trim().toLowerCase();
+        boolean renamed = context.game().hasSlotCustomName(slot);
+        return named.isEmpty() || (named.equals("yes") || named.equals("ja")) == renamed;
     }
 
     /** The slots a block works on: the "slots" range if set, otherwise the area (player inventory hotbar first). */

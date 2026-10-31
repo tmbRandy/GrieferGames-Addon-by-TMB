@@ -21,7 +21,9 @@ import net.labymod.api.Laby;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.Phase;
 import net.labymod.api.event.Subscribe;
+import net.labymod.api.event.client.chat.ChatMessageSendEvent;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
+import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
@@ -39,6 +41,7 @@ public final class FlowManager {
 
     private final Map<String, Flow> flows = new LinkedHashMap<>();
     private final Map<String, FlowRunner> running = new LinkedHashMap<>();
+    private final Map<String, String> globalVariables = new LinkedHashMap<>();
     private boolean loaded;
     private boolean wasInventoryFull;
     private boolean wasFishBiting;
@@ -187,11 +190,23 @@ public final class FlowManager {
 
     /** Starts the flow at its start block. */
     public boolean start(Flow flow) {
+        return start(flow, new String[0]);
+    }
+
+    /** Starts the flow with arguments, available as ${arg1}, ${arg2}, ... and ${args} (all together). */
+    public boolean start(Flow flow, String[] arguments) {
         FlowNode startNode = flow.getNodes().stream()
             .filter(node -> node.getType() != null && node.getType().id().equals(NodeTypes.START))
             .findFirst()
             .orElse(null);
-        return start(flow, startNode);
+        if (!start(flow, startNode))
+            return false;
+
+        FlowRunner runner = running.get(flow.getName());
+        runner.setVariable("args", String.join(" ", arguments));
+        for (int i = 0; i < arguments.length; i++)
+            runner.setVariable("arg" + (i + 1), arguments[i]);
+        return true;
     }
 
     private boolean start(Flow flow, FlowNode entry) {
@@ -202,13 +217,28 @@ public final class FlowManager {
         }
 
         running.put(flow.getName(), runner);
-        Addon.displayNotification(Addon.translate("flow.started", flow.getName()));
+        notify(flow, "flow.started");
         return true;
     }
 
+    /** Silent flows (e.g. reactions like HABK) run without chat messages. */
+    private static void notify(Flow flow, String key) {
+        if (!flow.isSilent())
+            Addon.displayNotification(Addon.translate(key, flow.getName()));
+    }
+
+    public String getGlobalVariable(String name) {
+        return globalVariables.getOrDefault(name, "");
+    }
+
+    public void setGlobalVariable(String name, String value) {
+        globalVariables.put(name, value);
+    }
+
     public void stop(String name) {
-        if (running.remove(name) != null)
-            Addon.displayNotification(Addon.translate("flow.stopped", name));
+        FlowRunner runner = running.remove(name);
+        if (runner != null)
+            notify(runner.getFlow(), "flow.stopped");
     }
 
     public void stopAll() {
@@ -263,7 +293,7 @@ public final class FlowManager {
         for (FlowRunner runner : List.copyOf(running.values())) {
             runner.tick();
             if (runner.isFinished() && running.remove(runner.getFlow().getName()) != null)
-                Addon.displayNotification(Addon.translate("flow.finished", runner.getFlow().getName()));
+                notify(runner.getFlow(), "flow.finished");
         }
     }
 
@@ -306,6 +336,18 @@ public final class FlowManager {
         String message = event.chatMessage().getPlainText();
         running.values().forEach(runner -> runner.onChatMessage(message));
         fire(new FlowEvent(FlowEvent.Type.CHAT, message));
+    }
+
+    @Subscribe
+    public void onMouse(MouseButtonEvent event) {
+        if (Laby.labyAPI().minecraft().getClientPlayer() != null)
+            fire(new FlowEvent(FlowEvent.Type.MOUSE, event.button().getActualName() + "_" + event.action().name()));
+    }
+
+    @Subscribe
+    public void onChatSent(ChatMessageSendEvent event) {
+        if (event.getMessage() != null && !event.isCancelled())
+            fire(new FlowEvent(FlowEvent.Type.CHAT_SENT, event.getMessage()));
     }
 
     @Subscribe
