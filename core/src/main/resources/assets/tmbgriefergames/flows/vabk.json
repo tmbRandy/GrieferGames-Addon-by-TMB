@@ -1,0 +1,34 @@
+{
+  "name": "VABK",
+  "hotkey": [],
+  "nodes": [
+    { "id": "start", "type": "start", "x": 0, "y": 0, "params": {} },
+    { "id": "switchTime", "type": "set_variable", "x": 160, "y": 0, "params": { "name": "switch", "value": "${setting.vabk.switchCooldown}" } },
+    { "id": "beforeSwitch", "type": "calculate", "x": 320, "y": 0, "params": { "name": "switch", "operator": "-", "value": "2" } },
+    { "id": "sword", "type": "select_slot", "x": 480, "y": 0, "params": { "slot": "1" } },
+    { "id": "swordTime", "type": "wait", "x": 640, "y": 0, "params": { "ticks": "${switch}" } },
+    { "id": "bow", "type": "select_slot", "x": 800, "y": 0, "params": { "slot": "3" } },
+    { "id": "settle", "type": "wait", "x": 960, "y": 0, "params": { "ticks": "2" } },
+    { "id": "isBow", "type": "if_holding", "x": 960, "y": 110, "params": { "item": "bow" } },
+    { "id": "draw", "type": "use_item", "x": 800, "y": 110, "params": {} },
+    { "id": "load", "type": "wait", "x": 640, "y": 110, "params": { "ticks": "${setting.vabk.loadTime}" } },
+    { "id": "shoot", "type": "release_item", "x": 480, "y": 110, "params": {} },
+    { "id": "end", "type": "stop", "x": 320, "y": 220, "params": {} },
+    { "id": "escape", "type": "on_key", "x": 160, "y": 220, "params": { "key": "ESCAPE", "autostart": "false" } }
+  ],
+  "connections": [
+    { "from": "start", "output": "next", "to": "switchTime" },
+    { "from": "switchTime", "output": "next", "to": "beforeSwitch" },
+    { "from": "beforeSwitch", "output": "next", "to": "sword" },
+    { "from": "sword", "output": "next", "to": "swordTime" },
+    { "from": "swordTime", "output": "next", "to": "bow" },
+    { "from": "bow", "output": "next", "to": "settle" },
+    { "from": "settle", "output": "next", "to": "isBow" },
+    { "from": "isBow", "output": "yes", "to": "draw" },
+    { "from": "isBow", "output": "no", "to": "sword" },
+    { "from": "draw", "output": "next", "to": "load" },
+    { "from": "load", "output": "next", "to": "shoot" },
+    { "from": "shoot", "output": "next", "to": "sword" },
+    { "from": "escape", "output": "next", "to": "end" }
+  ]
+}

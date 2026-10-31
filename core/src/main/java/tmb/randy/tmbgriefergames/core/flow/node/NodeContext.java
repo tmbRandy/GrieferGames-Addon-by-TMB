@@ -7,6 +7,7 @@ import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.IConnect;
 import tmb.randy.tmbgriefergames.core.flow.FlowNode;
 import tmb.randy.tmbgriefergames.core.flow.FlowRunner;
+import tmb.randy.tmbgriefergames.core.flow.FlowSettings;
 
 /** Everything a block needs while it is executed. */
 public final class NodeContext {
@@ -86,9 +87,14 @@ public final class NodeContext {
         Matcher matcher = VARIABLE.matcher(text);
         StringBuilder result = new StringBuilder();
         while (matcher.find())
-            matcher.appendReplacement(result, Matcher.quoteReplacement(runner.getVariable(matcher.group(1).trim())));
+            matcher.appendReplacement(result, Matcher.quoteReplacement(lookup(matcher.group(1).trim())));
         matcher.appendTail(result);
         return result.toString();
+    }
+
+    /** A variable of the flow or, with the prefix "setting.", one of the addon settings. */
+    private String lookup(String name) {
+        return name.startsWith(FlowSettings.PREFIX) ? FlowSettings.get(name.substring(FlowSettings.PREFIX.length())) : runner.getVariable(name);
     }
 
     public static int toNumber(String text) {

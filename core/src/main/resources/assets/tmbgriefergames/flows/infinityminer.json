@@ -1,0 +1,20 @@
+{
+  "name": "InfinityMiner",
+  "hotkey": [],
+  "nodes": [
+    { "id": "start", "type": "start", "x": 0, "y": 0, "params": {} },
+    { "id": "durable", "type": "if_durability", "x": 160, "y": 0, "params": { "min": "2" } },
+    { "id": "mine", "type": "break_block", "x": 320, "y": 0, "params": { "ticks": "20" } },
+    { "id": "broken", "type": "message", "x": 320, "y": 110, "params": { "text": "§cInfinityMiner: Dein Werkzeug ist fast kaputt." } },
+    { "id": "end", "type": "stop", "x": 480, "y": 110, "params": {} },
+    { "id": "escape", "type": "on_key", "x": 160, "y": 110, "params": { "key": "ESCAPE", "autostart": "false" } }
+  ],
+  "connections": [
+    { "from": "start", "output": "next", "to": "durable" },
+    { "from": "durable", "output": "yes", "to": "mine" },
+    { "from": "durable", "output": "no", "to": "broken" },
+    { "from": "mine", "output": "next", "to": "durable" },
+    { "from": "broken", "output": "next", "to": "end" },
+    { "from": "escape", "output": "next", "to": "end" }
+  ]
+}
