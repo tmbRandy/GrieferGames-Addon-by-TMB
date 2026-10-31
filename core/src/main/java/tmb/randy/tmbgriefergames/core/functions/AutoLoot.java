@@ -8,7 +8,8 @@ import net.labymod.api.client.network.ClientPacketListener;
 import net.labymod.api.client.network.NetworkPlayerInfo;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.api.enums.CBs;
-import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
+import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
+import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
@@ -38,8 +39,7 @@ public class AutoLoot extends Function {
         String message = event.chatMessage().getPlainText();
 
         if (message.equals(Const.Chat.SWITCHER_DATA_DOWNLOADED)) {
-            ActiveFunction playerTracer = Addon.getActiveFunction(Functions.PLAYERTRACER.name());
-            if (CBtracker.getCurrentCB() != CBs.NONE && playerTracer != null && !playerTracer.isEnabled())
+            if (CBtracker.getCurrentCB() != CBs.NONE && !FlowManager.get().isRunning(PlayerTracerCommand.FLOW))
                 scheduleLootCheck(getOwnRank());
         } else if (isBetween(message, Const.Chat.CASE_OPENING_TIMER_START, Const.Chat.CASE_OPENING_TIMER_END)) {
             event.setCancelled(true);

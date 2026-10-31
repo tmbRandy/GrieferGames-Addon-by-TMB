@@ -1,6 +1,8 @@
 package tmb.randy.tmbgriefergames.core.widgets;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 import javax.inject.Singleton;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.binding.dropzone.NamedHudWidgetDropzones;
@@ -102,9 +104,9 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
     }
 
     private List<ActiveFunction> getDemoFunctions() {
-        return List.of(
-            Addon.getActiveFunction(Functions.PLAYERTRACER.name()),
-            Addon.getActiveFunction(Functions.CRAFTV2.name()),
-            Addon.getActiveFunction(Functions.CRAFTV3.name()));
+        return Stream.of(Functions.CRAFTV2, Functions.CRAFTV3, Functions.EJECT)
+            .map(function -> Addon.getActiveFunction(function.name()))
+            .filter(Objects::nonNull)
+            .toList();
     }
 }

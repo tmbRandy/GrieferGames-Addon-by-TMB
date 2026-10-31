@@ -41,7 +41,6 @@ import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.functions.AccountUnity;
 import tmb.randy.tmbgriefergames.core.functions.AutoLoot;
 import tmb.randy.tmbgriefergames.core.functions.ItemSaver;
-import tmb.randy.tmbgriefergames.core.functions.PlayerTracer;
 import tmb.randy.tmbgriefergames.core.functions.PlotSwitch;
 import tmb.randy.tmbgriefergames.core.functions.TooltipExtension;
 import tmb.randy.tmbgriefergames.core.functions.chat.ChatCleaner;
@@ -73,7 +72,6 @@ public class Addon extends LabyAddon<Configuration> {
     private IConnect connection;
     private final Set<DescribedCommand> commands = new HashSet<>();
     private final List<Function> functionList = new ArrayList<>(List.of(
-        new PlayerTracer(),
         new PlotSwitch(),
         new ChatCleaner(),
         new CooldownNotifier(),
