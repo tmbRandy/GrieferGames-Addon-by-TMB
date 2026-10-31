@@ -1,0 +1,594 @@
+{
+  "name": "AutoCrafterV1",
+  "silent": true,
+  "hotkey": [],
+  "nodes": [
+    {
+      "id": "saveKey",
+      "type": "on_key",
+      "x": 0,
+      "y": 0,
+      "params": {
+        "key": "L_SHIFT+ENTER",
+        "autostart": "false"
+      }
+    },
+    {
+      "id": "saveInCraft",
+      "type": "if_screen",
+      "x": 170,
+      "y": 0,
+      "params": {
+        "screen": "crafting"
+      }
+    },
+    {
+      "id": "saveResult",
+      "type": "store_slot",
+      "x": 340,
+      "y": 0,
+      "params": {
+        "slot": "0",
+        "name": "global.autocrafter.v1.result"
+      }
+    },
+    {
+      "id": "noResult",
+      "type": "message",
+      "x": 340,
+      "y": 100,
+      "params": {
+        "text": "§cAutoCrafter V1: Lege zuerst ein gültiges Rezept in das Craftingfeld."
+      }
+    },
+    {
+      "id": "saveFirst",
+      "type": "set_variable",
+      "x": 510,
+      "y": 0,
+      "params": {
+        "name": "i",
+        "value": "1"
+      }
+    },
+    {
+      "id": "saveSlot",
+      "type": "store_slot",
+      "x": 680,
+      "y": 0,
+      "params": {
+        "slot": "${i}",
+        "name": "global.autocrafter.v1.${i}"
+      }
+    },
+    {
+      "id": "saveNext",
+      "type": "calculate",
+      "x": 850,
+      "y": 0,
+      "params": {
+        "name": "i",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "saveDone",
+      "type": "if_compare",
+      "x": 1020,
+      "y": 0,
+      "params": {
+        "a": "${i}",
+        "operator": ">",
+        "b": "9"
+      }
+    },
+    {
+      "id": "saved",
+      "type": "message",
+      "x": 1190,
+      "y": 0,
+      "params": {
+        "text": "AutoCrafter V1: Rezept gespeichert."
+      }
+    },
+    {
+      "id": "craftKey",
+      "type": "on_key",
+      "x": 0,
+      "y": 300,
+      "params": {
+        "key": "ENTER",
+        "autostart": "false"
+      }
+    },
+    {
+      "id": "craftInCraft",
+      "type": "if_screen",
+      "x": 170,
+      "y": 300,
+      "params": {
+        "screen": "crafting"
+      }
+    },
+    {
+      "id": "hasRecipe",
+      "type": "if_compare",
+      "x": 340,
+      "y": 300,
+      "params": {
+        "a": "${global.autocrafter.v1.result.id}",
+        "operator": "!=",
+        "b": ""
+      }
+    },
+    {
+      "id": "noRecipe",
+      "type": "message",
+      "x": 340,
+      "y": 400,
+      "params": {
+        "text": "§cAutoCrafter V1: Speichere zuerst ein Rezept mit SHIFT + ENTER."
+      }
+    },
+    {
+      "id": "endless",
+      "type": "if_compare",
+      "x": 510,
+      "y": 300,
+      "params": {
+        "a": "${setting.autoCrafter.endlessMode}",
+        "operator": "=",
+        "b": "true"
+      }
+    },
+    {
+      "id": "isRunning",
+      "type": "if_compare",
+      "x": 680,
+      "y": 200,
+      "params": {
+        "a": "${global.autocrafter.v1.running}",
+        "operator": "=",
+        "b": "1"
+      }
+    },
+    {
+      "id": "stopRunning",
+      "type": "set_variable",
+      "x": 850,
+      "y": 100,
+      "params": {
+        "name": "global.autocrafter.v1.running",
+        "value": "0"
+      }
+    },
+    {
+      "id": "stoppedMessage",
+      "type": "message",
+      "x": 1020,
+      "y": 100,
+      "params": {
+        "text": "AutoCrafter V1: Endlosmodus aus."
+      }
+    },
+    {
+      "id": "startRunning",
+      "type": "set_variable",
+      "x": 850,
+      "y": 200,
+      "params": {
+        "name": "global.autocrafter.v1.running",
+        "value": "1"
+      }
+    },
+    {
+      "id": "startedMessage",
+      "type": "message",
+      "x": 1020,
+      "y": 200,
+      "params": {
+        "text": "AutoCrafter V1: Endlosmodus an."
+      }
+    },
+    {
+      "id": "autoDrop",
+      "type": "if_compare",
+      "x": 680,
+      "y": 300,
+      "params": {
+        "a": "${setting.autoCrafter.autoDrop}",
+        "operator": "=",
+        "b": "true"
+      }
+    },
+    {
+      "id": "dropOutput",
+      "type": "drop_items",
+      "x": 850,
+      "y": 300,
+      "params": {
+        "item": "${global.autocrafter.v1.result.id}",
+        "area": "inventory"
+      }
+    },
+    {
+      "id": "clearGrid",
+      "type": "move_items",
+      "x": 1020,
+      "y": 300,
+      "params": {
+        "item": "",
+        "slots": "1-9"
+      }
+    },
+    {
+      "id": "fillFirst",
+      "type": "set_variable",
+      "x": 1190,
+      "y": 300,
+      "params": {
+        "name": "i",
+        "value": "1"
+      }
+    },
+    {
+      "id": "slotNeeded",
+      "type": "if_compare",
+      "x": 1360,
+      "y": 300,
+      "params": {
+        "a": "${global.autocrafter.v1.${i}.id}",
+        "operator": "!=",
+        "b": ""
+      }
+    },
+    {
+      "id": "findIngredient",
+      "type": "find_slot",
+      "x": 1530,
+      "y": 200,
+      "params": {
+        "item": "${global.autocrafter.v1.${i}.id}",
+        "variable": "source",
+        "area": "inventory",
+        "full_stack": "${setting.autoCrafter.onlyFullStacks}"
+      }
+    },
+    {
+      "id": "pick",
+      "type": "click_slot",
+      "x": 1700,
+      "y": 200,
+      "params": {
+        "slot": "${source}",
+        "shift": "false"
+      }
+    },
+    {
+      "id": "put",
+      "type": "click_slot",
+      "x": 1870,
+      "y": 200,
+      "params": {
+        "slot": "${i}",
+        "shift": "false"
+      }
+    },
+    {
+      "id": "fillNext",
+      "type": "calculate",
+      "x": 1530,
+      "y": 400,
+      "params": {
+        "name": "i",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "fillDone",
+      "type": "if_compare",
+      "x": 1700,
+      "y": 400,
+      "params": {
+        "a": "${i}",
+        "operator": ">",
+        "b": "9"
+      }
+    },
+    {
+      "id": "take",
+      "type": "click_slot",
+      "x": 1870,
+      "y": 400,
+      "params": {
+        "slot": "0",
+        "shift": "true"
+      }
+    },
+    {
+      "id": "again",
+      "type": "if_compare",
+      "x": 2040,
+      "y": 400,
+      "params": {
+        "a": "${global.autocrafter.v1.running}",
+        "operator": "=",
+        "b": "1"
+      }
+    },
+    {
+      "id": "againPause",
+      "type": "wait",
+      "x": 2040,
+      "y": 300,
+      "params": {
+        "ticks": "2"
+      }
+    },
+    {
+      "id": "missing",
+      "type": "message",
+      "x": 1700,
+      "y": 100,
+      "params": {
+        "text": "§cAutoCrafter V1: Es fehlt Material."
+      }
+    },
+    {
+      "id": "missingStop",
+      "type": "set_variable",
+      "x": 1870,
+      "y": 100,
+      "params": {
+        "name": "global.autocrafter.v1.running",
+        "value": "0"
+      }
+    },
+    {
+      "id": "end",
+      "type": "stop",
+      "x": 2210,
+      "y": 400,
+      "params": {}
+    }
+  ],
+  "connections": [
+    {
+      "from": "saveKey",
+      "output": "next",
+      "to": "saveInCraft"
+    },
+    {
+      "from": "saveInCraft",
+      "output": "yes",
+      "to": "saveResult"
+    },
+    {
+      "from": "saveInCraft",
+      "output": "no",
+      "to": "end"
+    },
+    {
+      "from": "saveResult",
+      "output": "found",
+      "to": "saveFirst"
+    },
+    {
+      "from": "saveResult",
+      "output": "none",
+      "to": "noResult"
+    },
+    {
+      "from": "noResult",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "saveFirst",
+      "output": "next",
+      "to": "saveSlot"
+    },
+    {
+      "from": "saveSlot",
+      "output": "found",
+      "to": "saveNext"
+    },
+    {
+      "from": "saveSlot",
+      "output": "none",
+      "to": "saveNext"
+    },
+    {
+      "from": "saveNext",
+      "output": "next",
+      "to": "saveDone"
+    },
+    {
+      "from": "saveDone",
+      "output": "yes",
+      "to": "saved"
+    },
+    {
+      "from": "saveDone",
+      "output": "no",
+      "to": "saveSlot"
+    },
+    {
+      "from": "saved",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "craftKey",
+      "output": "next",
+      "to": "craftInCraft"
+    },
+    {
+      "from": "craftInCraft",
+      "output": "yes",
+      "to": "hasRecipe"
+    },
+    {
+      "from": "craftInCraft",
+      "output": "no",
+      "to": "end"
+    },
+    {
+      "from": "hasRecipe",
+      "output": "yes",
+      "to": "endless"
+    },
+    {
+      "from": "hasRecipe",
+      "output": "no",
+      "to": "noRecipe"
+    },
+    {
+      "from": "noRecipe",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "endless",
+      "output": "yes",
+      "to": "isRunning"
+    },
+    {
+      "from": "endless",
+      "output": "no",
+      "to": "autoDrop"
+    },
+    {
+      "from": "isRunning",
+      "output": "yes",
+      "to": "stopRunning"
+    },
+    {
+      "from": "stopRunning",
+      "output": "next",
+      "to": "stoppedMessage"
+    },
+    {
+      "from": "stoppedMessage",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "isRunning",
+      "output": "no",
+      "to": "startRunning"
+    },
+    {
+      "from": "startRunning",
+      "output": "next",
+      "to": "startedMessage"
+    },
+    {
+      "from": "startedMessage",
+      "output": "next",
+      "to": "autoDrop"
+    },
+    {
+      "from": "autoDrop",
+      "output": "yes",
+      "to": "dropOutput"
+    },
+    {
+      "from": "autoDrop",
+      "output": "no",
+      "to": "clearGrid"
+    },
+    {
+      "from": "dropOutput",
+      "output": "next",
+      "to": "clearGrid"
+    },
+    {
+      "from": "clearGrid",
+      "output": "next",
+      "to": "fillFirst"
+    },
+    {
+      "from": "fillFirst",
+      "output": "next",
+      "to": "slotNeeded"
+    },
+    {
+      "from": "slotNeeded",
+      "output": "yes",
+      "to": "findIngredient"
+    },
+    {
+      "from": "slotNeeded",
+      "output": "no",
+      "to": "fillNext"
+    },
+    {
+      "from": "findIngredient",
+      "output": "found",
+      "to": "pick"
+    },
+    {
+      "from": "findIngredient",
+      "output": "none",
+      "to": "missing"
+    },
+    {
+      "from": "pick",
+      "output": "next",
+      "to": "put"
+    },
+    {
+      "from": "put",
+      "output": "next",
+      "to": "fillNext"
+    },
+    {
+      "from": "fillNext",
+      "output": "next",
+      "to": "fillDone"
+    },
+    {
+      "from": "fillDone",
+      "output": "yes",
+      "to": "take"
+    },
+    {
+      "from": "fillDone",
+      "output": "no",
+      "to": "slotNeeded"
+    },
+    {
+      "from": "take",
+      "output": "next",
+      "to": "again"
+    },
+    {
+      "from": "again",
+      "output": "yes",
+      "to": "againPause"
+    },
+    {
+      "from": "again",
+      "output": "no",
+      "to": "end"
+    },
+    {
+      "from": "againPause",
+      "output": "next",
+      "to": "autoDrop"
+    },
+    {
+      "from": "missing",
+      "output": "next",
+      "to": "missingStop"
+    },
+    {
+      "from": "missingStop",
+      "output": "next",
+      "to": "end"
+    }
+  ]
+}

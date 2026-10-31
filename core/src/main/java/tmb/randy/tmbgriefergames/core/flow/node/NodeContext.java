@@ -61,9 +61,9 @@ public final class NodeContext {
         return resolve(node.getParam(key));
     }
 
-    /** The parameter without replacing placeholders (e.g. the name of a variable to write). */
+    /** The name of a variable to write; placeholders are allowed, e.g. "need.${item}" for one variable per item. */
     public String rawText(String key) {
-        return node.getParam(key).trim();
+        return resolve(node.getParam(key)).trim();
     }
 
     public int number(String key) {

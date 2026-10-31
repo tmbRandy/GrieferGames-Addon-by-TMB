@@ -1,0 +1,1773 @@
+{
+  "name": "AutoCrafterV3",
+  "silent": false,
+  "hotkey": [],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "x": 0,
+      "y": 0,
+      "params": {}
+    },
+    {
+      "id": "craftItem",
+      "type": "store_slot",
+      "x": 170,
+      "y": 0,
+      "params": {
+        "slot": "36",
+        "name": "craft"
+      }
+    },
+    {
+      "id": "noItem",
+      "type": "message",
+      "x": 170,
+      "y": 100,
+      "params": {
+        "text": "§cAutoCrafter V3: Lege das zu craftende Item in deinen ersten Hotbar-Slot."
+      }
+    },
+    {
+      "id": "openRezepte",
+      "type": "command",
+      "x": 340,
+      "y": 0,
+      "params": {
+        "command": "/rezepte"
+      }
+    },
+    {
+      "id": "waitMain",
+      "type": "wait_for_menu",
+      "x": 510,
+      "y": 0,
+      "params": {
+        "title": "=Custom-Kategorien",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "openRecipes",
+      "type": "click_slot",
+      "x": 680,
+      "y": 0,
+      "params": {
+        "slot": "12"
+      }
+    },
+    {
+      "id": "waitRecipes",
+      "type": "wait_for_menu",
+      "x": 850,
+      "y": 0,
+      "params": {
+        "title": "=Minecraft-Rezepte",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "openRecipe",
+      "type": "click_slot",
+      "x": 1020,
+      "y": 0,
+      "params": {
+        "slot": "81"
+      }
+    },
+    {
+      "id": "waitRecipe",
+      "type": "wait_for_menu",
+      "x": 1190,
+      "y": 0,
+      "params": {
+        "title": "=Vanilla Bauanleitung",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "slotList",
+      "type": "set_variable",
+      "x": 1360,
+      "y": 0,
+      "params": {
+        "name": "slotList",
+        "value": "10 11 12 19 20 21 28 29 30"
+      }
+    },
+    {
+      "id": "splitSlots",
+      "type": "split_text",
+      "x": 1530,
+      "y": 0,
+      "params": {
+        "text": "${slotList}",
+        "separator": " ",
+        "name": "grid"
+      }
+    },
+    {
+      "id": "noMaterials",
+      "type": "set_variable",
+      "x": 1700,
+      "y": 0,
+      "params": {
+        "name": "materials",
+        "value": ""
+      }
+    },
+    {
+      "id": "readFirst",
+      "type": "set_variable",
+      "x": 1870,
+      "y": 0,
+      "params": {
+        "name": "j",
+        "value": "1"
+      }
+    },
+    {
+      "id": "readSlot",
+      "type": "store_slot",
+      "x": 2040,
+      "y": 0,
+      "params": {
+        "slot": "${grid.${j}}",
+        "name": "ingredient"
+      }
+    },
+    {
+      "id": "isGlass",
+      "type": "if_compare",
+      "x": 2210,
+      "y": 0,
+      "params": {
+        "a": "${ingredient.id}",
+        "operator": "=",
+        "b": "minecraft:stained_glass_pane"
+      }
+    },
+    {
+      "id": "isNew",
+      "type": "if_compare",
+      "x": 2380,
+      "y": 0,
+      "params": {
+        "a": "${need.${ingredient.id}}",
+        "operator": "=",
+        "b": ""
+      }
+    },
+    {
+      "id": "firstMaterial",
+      "type": "if_compare",
+      "x": 2550,
+      "y": 0,
+      "params": {
+        "a": "${materials}",
+        "operator": "=",
+        "b": ""
+      }
+    },
+    {
+      "id": "setMaterials",
+      "type": "set_variable",
+      "x": 2720,
+      "y": -100,
+      "params": {
+        "name": "materials",
+        "value": "${ingredient.id}"
+      }
+    },
+    {
+      "id": "addMaterial",
+      "type": "set_variable",
+      "x": 2720,
+      "y": 100,
+      "params": {
+        "name": "materials",
+        "value": "${materials} ${ingredient.id}"
+      }
+    },
+    {
+      "id": "countNeed",
+      "type": "calculate",
+      "x": 2890,
+      "y": 0,
+      "params": {
+        "name": "need.${ingredient.id}",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "readNext",
+      "type": "calculate",
+      "x": 3060,
+      "y": 0,
+      "params": {
+        "name": "j",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "readDone",
+      "type": "if_compare",
+      "x": 3230,
+      "y": 0,
+      "params": {
+        "a": "${j}",
+        "operator": ">",
+        "b": "9"
+      }
+    },
+    {
+      "id": "closeRecipe",
+      "type": "close_menu",
+      "x": 3400,
+      "y": 0,
+      "params": {}
+    },
+    {
+      "id": "anyMaterial",
+      "type": "if_compare",
+      "x": 3570,
+      "y": 0,
+      "params": {
+        "a": "${materials}",
+        "operator": "!=",
+        "b": ""
+      }
+    },
+    {
+      "id": "splitMaterials",
+      "type": "split_text",
+      "x": 3740,
+      "y": 0,
+      "params": {
+        "text": "${materials}",
+        "separator": " ",
+        "name": "mat"
+      }
+    },
+    {
+      "id": "recipeSaved",
+      "type": "message",
+      "x": 3910,
+      "y": 0,
+      "params": {
+        "text": "AutoCrafter V3: Rezept gespeichert (${mat.count} Materialien)."
+      }
+    },
+    {
+      "id": "chestFirst",
+      "type": "set_variable",
+      "x": 0,
+      "y": 300,
+      "params": {
+        "name": "k",
+        "value": "1"
+      }
+    },
+    {
+      "id": "askChest",
+      "type": "message",
+      "x": 170,
+      "y": 300,
+      "params": {
+        "text": "AutoCrafter V3: Öffne die Kiste mit §e${mat.${k}}§f."
+      }
+    },
+    {
+      "id": "waitChest",
+      "type": "wait_for_menu",
+      "x": 340,
+      "y": 300,
+      "params": {
+        "title": "",
+        "timeout": "2400"
+      }
+    },
+    {
+      "id": "countInChest",
+      "type": "count_items",
+      "x": 510,
+      "y": 300,
+      "params": {
+        "item": "${mat.${k}}",
+        "area": "chest",
+        "variable": "inChest"
+      }
+    },
+    {
+      "id": "chestHasIt",
+      "type": "if_compare",
+      "x": 680,
+      "y": 300,
+      "params": {
+        "a": "${inChest}",
+        "operator": ">",
+        "b": "0"
+      }
+    },
+    {
+      "id": "wrongChest",
+      "type": "message",
+      "x": 850,
+      "y": 400,
+      "params": {
+        "text": "§cDiese Kiste enthält kein ${mat.${k}}."
+      }
+    },
+    {
+      "id": "closeWrong",
+      "type": "close_menu",
+      "x": 1020,
+      "y": 400,
+      "params": {}
+    },
+    {
+      "id": "rememberChest",
+      "type": "store_looked_block",
+      "x": 850,
+      "y": 300,
+      "params": {
+        "name": "chest.${mat.${k}}"
+      }
+    },
+    {
+      "id": "closeChest",
+      "type": "close_menu",
+      "x": 1020,
+      "y": 300,
+      "params": {}
+    },
+    {
+      "id": "chestNext",
+      "type": "calculate",
+      "x": 1190,
+      "y": 300,
+      "params": {
+        "name": "k",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "chestsDone",
+      "type": "if_compare",
+      "x": 1360,
+      "y": 300,
+      "params": {
+        "a": "${k}",
+        "operator": ">",
+        "b": "${mat.count}"
+      }
+    },
+    {
+      "id": "totalFirst",
+      "type": "set_variable",
+      "x": 1530,
+      "y": 300,
+      "params": {
+        "name": "total",
+        "value": "0"
+      }
+    },
+    {
+      "id": "totalIndex",
+      "type": "set_variable",
+      "x": 1700,
+      "y": 300,
+      "params": {
+        "name": "k",
+        "value": "1"
+      }
+    },
+    {
+      "id": "totalAdd",
+      "type": "calculate",
+      "x": 1870,
+      "y": 300,
+      "params": {
+        "name": "total",
+        "operator": "+",
+        "value": "${need.${mat.${k}}}"
+      }
+    },
+    {
+      "id": "totalNext",
+      "type": "calculate",
+      "x": 2040,
+      "y": 300,
+      "params": {
+        "name": "k",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "totalDone",
+      "type": "if_compare",
+      "x": 2210,
+      "y": 300,
+      "params": {
+        "a": "${k}",
+        "operator": ">",
+        "b": "${mat.count}"
+      }
+    },
+    {
+      "id": "isComp",
+      "type": "if_compare",
+      "x": 2380,
+      "y": 300,
+      "params": {
+        "a": "${setting.autoCrafter.finalActionV3}",
+        "operator": "=",
+        "b": "COMP"
+      }
+    },
+    {
+      "id": "slotsComp",
+      "type": "set_variable",
+      "x": 2550,
+      "y": 200,
+      "params": {
+        "name": "crafts",
+        "value": "26"
+      }
+    },
+    {
+      "id": "slotsDrop",
+      "type": "set_variable",
+      "x": 2550,
+      "y": 400,
+      "params": {
+        "name": "crafts",
+        "value": "34"
+      }
+    },
+    {
+      "id": "craftsStacks",
+      "type": "calculate",
+      "x": 2720,
+      "y": 300,
+      "params": {
+        "name": "crafts",
+        "operator": "*",
+        "value": "64"
+      }
+    },
+    {
+      "id": "craftsDivide",
+      "type": "calculate",
+      "x": 2890,
+      "y": 300,
+      "params": {
+        "name": "crafts",
+        "operator": "/",
+        "value": "${total}"
+      }
+    },
+    {
+      "id": "started",
+      "type": "message",
+      "x": 3060,
+      "y": 300,
+      "params": {
+        "text": "AutoCrafter V3: Starte, ${crafts} Crafts pro Runde."
+      }
+    },
+    {
+      "id": "collectFirst",
+      "type": "set_variable",
+      "x": 0,
+      "y": 600,
+      "params": {
+        "name": "k",
+        "value": "1"
+      }
+    },
+    {
+      "id": "material",
+      "type": "set_variable",
+      "x": 170,
+      "y": 600,
+      "params": {
+        "name": "m",
+        "value": "${mat.${k}}"
+      }
+    },
+    {
+      "id": "target",
+      "type": "set_variable",
+      "x": 340,
+      "y": 600,
+      "params": {
+        "name": "target",
+        "value": "${crafts}"
+      }
+    },
+    {
+      "id": "targetNeed",
+      "type": "calculate",
+      "x": 510,
+      "y": 600,
+      "params": {
+        "name": "target",
+        "operator": "*",
+        "value": "${need.${m}}"
+      }
+    },
+    {
+      "id": "targetRound",
+      "type": "calculate",
+      "x": 680,
+      "y": 600,
+      "params": {
+        "name": "target",
+        "operator": "+",
+        "value": "63"
+      }
+    },
+    {
+      "id": "targetStacks",
+      "type": "calculate",
+      "x": 850,
+      "y": 600,
+      "params": {
+        "name": "target",
+        "operator": "/",
+        "value": "64"
+      }
+    },
+    {
+      "id": "countHave",
+      "type": "count_items",
+      "x": 1020,
+      "y": 600,
+      "params": {
+        "item": "${m}",
+        "area": "inventory",
+        "variable": "have"
+      }
+    },
+    {
+      "id": "enough",
+      "type": "if_compare",
+      "x": 1190,
+      "y": 600,
+      "params": {
+        "a": "${have}",
+        "operator": ">=",
+        "b": "${target}"
+      }
+    },
+    {
+      "id": "missingStacks",
+      "type": "set_variable",
+      "x": 1360,
+      "y": 700,
+      "params": {
+        "name": "missing",
+        "value": "${target}"
+      }
+    },
+    {
+      "id": "missingCalc",
+      "type": "calculate",
+      "x": 1530,
+      "y": 700,
+      "params": {
+        "name": "missing",
+        "operator": "-",
+        "value": "${have}"
+      }
+    },
+    {
+      "id": "lookAtChest",
+      "type": "look_at",
+      "x": 1700,
+      "y": 700,
+      "params": {
+        "x": "${chest.${m}.x}",
+        "y": "${chest.${m}.y}",
+        "z": "${chest.${m}.z}"
+      }
+    },
+    {
+      "id": "lookPause",
+      "type": "wait",
+      "x": 1870,
+      "y": 800,
+      "params": {
+        "ticks": "2"
+      }
+    },
+    {
+      "id": "openSource",
+      "type": "right_click_block",
+      "x": 1870,
+      "y": 700,
+      "params": {}
+    },
+    {
+      "id": "waitSource",
+      "type": "wait_for_menu",
+      "x": 2040,
+      "y": 700,
+      "params": {
+        "title": "",
+        "timeout": "60"
+      }
+    },
+    {
+      "id": "countSource",
+      "type": "count_items",
+      "x": 2210,
+      "y": 700,
+      "params": {
+        "item": "${m}",
+        "area": "chest",
+        "variable": "inSource"
+      }
+    },
+    {
+      "id": "sourceEmpty",
+      "type": "if_compare",
+      "x": 2380,
+      "y": 700,
+      "params": {
+        "a": "${inSource}",
+        "operator": "=",
+        "b": "0"
+      }
+    },
+    {
+      "id": "emptyCount",
+      "type": "calculate",
+      "x": 2550,
+      "y": 800,
+      "params": {
+        "name": "empty",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "tooOftenEmpty",
+      "type": "if_compare",
+      "x": 2720,
+      "y": 800,
+      "params": {
+        "a": "${empty}",
+        "operator": ">=",
+        "b": "3"
+      }
+    },
+    {
+      "id": "emptyMessage",
+      "type": "message",
+      "x": 2890,
+      "y": 800,
+      "params": {
+        "text": "§cAutoCrafter V3: Die Kiste mit ${m} ist leer."
+      }
+    },
+    {
+      "id": "resetEmpty",
+      "type": "set_variable",
+      "x": 2550,
+      "y": 600,
+      "params": {
+        "name": "empty",
+        "value": "0"
+      }
+    },
+    {
+      "id": "takeStacks",
+      "type": "move_items",
+      "x": 2720,
+      "y": 600,
+      "params": {
+        "item": "${m}",
+        "area": "chest",
+        "max_stacks": "${missing}",
+        "full_only": "true"
+      }
+    },
+    {
+      "id": "closeSource",
+      "type": "close_menu",
+      "x": 2890,
+      "y": 600,
+      "params": {}
+    },
+    {
+      "id": "sourcePause",
+      "type": "wait",
+      "x": 3060,
+      "y": 600,
+      "params": {
+        "ticks": "5"
+      }
+    },
+    {
+      "id": "collectNext",
+      "type": "calculate",
+      "x": 1360,
+      "y": 500,
+      "params": {
+        "name": "k",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "collectDone",
+      "type": "if_compare",
+      "x": 1530,
+      "y": 500,
+      "params": {
+        "a": "${k}",
+        "operator": ">",
+        "b": "${mat.count}"
+      }
+    },
+    {
+      "id": "craftOpen",
+      "type": "command",
+      "x": 1700,
+      "y": 500,
+      "params": {
+        "command": "/rezepte"
+      }
+    },
+    {
+      "id": "craftWaitMain",
+      "type": "wait_for_menu",
+      "x": 1870,
+      "y": 500,
+      "params": {
+        "title": "=Custom-Kategorien",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "craftRecipes",
+      "type": "click_slot",
+      "x": 2040,
+      "y": 500,
+      "params": {
+        "slot": "12"
+      }
+    },
+    {
+      "id": "craftWaitRecipes",
+      "type": "wait_for_menu",
+      "x": 2210,
+      "y": 500,
+      "params": {
+        "title": "=Minecraft-Rezepte",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "craftFind",
+      "type": "find_slot",
+      "x": 2380,
+      "y": 500,
+      "params": {
+        "item": "${craft.id}",
+        "variable": "craftSlot",
+        "area": "inventory"
+      }
+    },
+    {
+      "id": "craftChoose",
+      "type": "click_slot",
+      "x": 2550,
+      "y": 500,
+      "params": {
+        "slot": "${craftSlot}"
+      }
+    },
+    {
+      "id": "craftWaitRecipe",
+      "type": "wait_for_menu",
+      "x": 2720,
+      "y": 500,
+      "params": {
+        "title": "=Vanilla Bauanleitung",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "craftClick",
+      "type": "click_slot",
+      "x": 2890,
+      "y": 500,
+      "params": {
+        "slot": "52"
+      }
+    },
+    {
+      "id": "craftPause",
+      "type": "wait",
+      "x": 3060,
+      "y": 500,
+      "params": {
+        "ticks": "10"
+      }
+    },
+    {
+      "id": "craftClose",
+      "type": "close_menu",
+      "x": 3230,
+      "y": 500,
+      "params": {}
+    },
+    {
+      "id": "countMade",
+      "type": "count_items",
+      "x": 3400,
+      "y": 500,
+      "params": {
+        "item": "${craft.id}",
+        "area": "inventory",
+        "variable": "made"
+      }
+    },
+    {
+      "id": "madeSome",
+      "type": "if_compare",
+      "x": 3570,
+      "y": 500,
+      "params": {
+        "a": "${made}",
+        "operator": ">",
+        "b": "1"
+      }
+    },
+    {
+      "id": "finalComp",
+      "type": "if_compare",
+      "x": 3740,
+      "y": 500,
+      "params": {
+        "a": "${setting.autoCrafter.finalActionV3}",
+        "operator": "=",
+        "b": "COMP"
+      }
+    },
+    {
+      "id": "dropInventory",
+      "type": "open_inventory",
+      "x": 3740,
+      "y": 700,
+      "params": {}
+    },
+    {
+      "id": "dropPause",
+      "type": "wait",
+      "x": 3910,
+      "y": 700,
+      "params": {
+        "ticks": "10"
+      }
+    },
+    {
+      "id": "dropCrafted",
+      "type": "drop_items",
+      "x": 4080,
+      "y": 700,
+      "params": {
+        "item": "${craft.id}",
+        "keep_one": "true",
+        "area": "inventory"
+      }
+    },
+    {
+      "id": "dropClose",
+      "type": "close_menu",
+      "x": 4250,
+      "y": 700,
+      "params": {}
+    },
+    {
+      "id": "compOpen",
+      "type": "command",
+      "x": 3740,
+      "y": 300,
+      "params": {
+        "command": "/rezepte"
+      }
+    },
+    {
+      "id": "compWaitMain",
+      "type": "wait_for_menu",
+      "x": 3910,
+      "y": 300,
+      "params": {
+        "title": "=Custom-Kategorien",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "compChoose",
+      "type": "click_slot",
+      "x": 4080,
+      "y": 300,
+      "params": {
+        "slot": "11"
+      }
+    },
+    {
+      "id": "compWaitRecipes",
+      "type": "wait_for_menu",
+      "x": 4250,
+      "y": 300,
+      "params": {
+        "title": "=Item-Komprimierung-Bauanleitung",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "compFind",
+      "type": "find_slot",
+      "x": 4420,
+      "y": 300,
+      "params": {
+        "item": "${craft.id}",
+        "variable": "compSlot",
+        "area": "inventory",
+        "max_level": "0"
+      }
+    },
+    {
+      "id": "compClick",
+      "type": "click_slot",
+      "x": 4590,
+      "y": 300,
+      "params": {
+        "slot": "${compSlot}"
+      }
+    },
+    {
+      "id": "compWait",
+      "type": "wait_for_menu",
+      "x": 4760,
+      "y": 300,
+      "params": {
+        "title": "=Item-Komprimierung",
+        "timeout": "100"
+      }
+    },
+    {
+      "id": "compFirst",
+      "type": "set_variable",
+      "x": 4930,
+      "y": 300,
+      "params": {
+        "name": "level",
+        "value": "1"
+      }
+    },
+    {
+      "id": "compGoto",
+      "type": "navigate_page",
+      "x": 5100,
+      "y": 300,
+      "params": {
+        "target": "${level}"
+      }
+    },
+    {
+      "id": "compConfirm",
+      "type": "click_slot",
+      "x": 5270,
+      "y": 300,
+      "params": {
+        "slot": "52"
+      }
+    },
+    {
+      "id": "compPause",
+      "type": "wait",
+      "x": 5440,
+      "y": 300,
+      "params": {
+        "ticks": "8"
+      }
+    },
+    {
+      "id": "compNext",
+      "type": "calculate",
+      "x": 5610,
+      "y": 300,
+      "params": {
+        "name": "level",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "compDone",
+      "type": "if_compare",
+      "x": 5780,
+      "y": 300,
+      "params": {
+        "a": "${level}",
+        "operator": ">",
+        "b": "6"
+      }
+    },
+    {
+      "id": "compClose",
+      "type": "close_menu",
+      "x": 5950,
+      "y": 300,
+      "params": {}
+    },
+    {
+      "id": "noRecipe",
+      "type": "message",
+      "x": 340,
+      "y": 1000,
+      "params": {
+        "text": "§cAutoCrafter V3: Für dieses Item wurde kein Rezept gefunden."
+      }
+    },
+    {
+      "id": "menuError",
+      "type": "message",
+      "x": 510,
+      "y": 1000,
+      "params": {
+        "text": "§cAutoCrafter V3: Ein Menü hat nicht reagiert."
+      }
+    },
+    {
+      "id": "escape",
+      "type": "on_key",
+      "x": 0,
+      "y": 1000,
+      "params": {
+        "key": "ESCAPE",
+        "autostart": "false"
+      }
+    },
+    {
+      "id": "end",
+      "type": "stop",
+      "x": 680,
+      "y": 1000,
+      "params": {}
+    }
+  ],
+  "connections": [
+    {
+      "from": "start",
+      "output": "next",
+      "to": "craftItem"
+    },
+    {
+      "from": "craftItem",
+      "output": "found",
+      "to": "openRezepte"
+    },
+    {
+      "from": "craftItem",
+      "output": "none",
+      "to": "noItem"
+    },
+    {
+      "from": "noItem",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "openRezepte",
+      "output": "next",
+      "to": "waitMain"
+    },
+    {
+      "from": "waitMain",
+      "output": "ok",
+      "to": "openRecipes"
+    },
+    {
+      "from": "waitMain",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "openRecipes",
+      "output": "next",
+      "to": "waitRecipes"
+    },
+    {
+      "from": "waitRecipes",
+      "output": "ok",
+      "to": "openRecipe"
+    },
+    {
+      "from": "waitRecipes",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "openRecipe",
+      "output": "next",
+      "to": "waitRecipe"
+    },
+    {
+      "from": "waitRecipe",
+      "output": "ok",
+      "to": "slotList"
+    },
+    {
+      "from": "waitRecipe",
+      "output": "timeout",
+      "to": "noRecipe"
+    },
+    {
+      "from": "slotList",
+      "output": "next",
+      "to": "splitSlots"
+    },
+    {
+      "from": "splitSlots",
+      "output": "next",
+      "to": "noMaterials"
+    },
+    {
+      "from": "noMaterials",
+      "output": "next",
+      "to": "readFirst"
+    },
+    {
+      "from": "readFirst",
+      "output": "next",
+      "to": "readSlot"
+    },
+    {
+      "from": "readSlot",
+      "output": "found",
+      "to": "isGlass"
+    },
+    {
+      "from": "readSlot",
+      "output": "none",
+      "to": "readNext"
+    },
+    {
+      "from": "isGlass",
+      "output": "yes",
+      "to": "readNext"
+    },
+    {
+      "from": "isGlass",
+      "output": "no",
+      "to": "isNew"
+    },
+    {
+      "from": "isNew",
+      "output": "yes",
+      "to": "firstMaterial"
+    },
+    {
+      "from": "isNew",
+      "output": "no",
+      "to": "countNeed"
+    },
+    {
+      "from": "firstMaterial",
+      "output": "yes",
+      "to": "setMaterials"
+    },
+    {
+      "from": "firstMaterial",
+      "output": "no",
+      "to": "addMaterial"
+    },
+    {
+      "from": "setMaterials",
+      "output": "next",
+      "to": "countNeed"
+    },
+    {
+      "from": "addMaterial",
+      "output": "next",
+      "to": "countNeed"
+    },
+    {
+      "from": "countNeed",
+      "output": "next",
+      "to": "readNext"
+    },
+    {
+      "from": "readNext",
+      "output": "next",
+      "to": "readDone"
+    },
+    {
+      "from": "readDone",
+      "output": "yes",
+      "to": "closeRecipe"
+    },
+    {
+      "from": "readDone",
+      "output": "no",
+      "to": "readSlot"
+    },
+    {
+      "from": "closeRecipe",
+      "output": "next",
+      "to": "anyMaterial"
+    },
+    {
+      "from": "anyMaterial",
+      "output": "yes",
+      "to": "splitMaterials"
+    },
+    {
+      "from": "anyMaterial",
+      "output": "no",
+      "to": "noRecipe"
+    },
+    {
+      "from": "splitMaterials",
+      "output": "next",
+      "to": "recipeSaved"
+    },
+    {
+      "from": "recipeSaved",
+      "output": "next",
+      "to": "chestFirst"
+    },
+    {
+      "from": "chestFirst",
+      "output": "next",
+      "to": "askChest"
+    },
+    {
+      "from": "askChest",
+      "output": "next",
+      "to": "waitChest"
+    },
+    {
+      "from": "waitChest",
+      "output": "ok",
+      "to": "countInChest"
+    },
+    {
+      "from": "waitChest",
+      "output": "timeout",
+      "to": "end"
+    },
+    {
+      "from": "countInChest",
+      "output": "next",
+      "to": "chestHasIt"
+    },
+    {
+      "from": "chestHasIt",
+      "output": "yes",
+      "to": "rememberChest"
+    },
+    {
+      "from": "chestHasIt",
+      "output": "no",
+      "to": "wrongChest"
+    },
+    {
+      "from": "wrongChest",
+      "output": "next",
+      "to": "closeWrong"
+    },
+    {
+      "from": "closeWrong",
+      "output": "next",
+      "to": "askChest"
+    },
+    {
+      "from": "rememberChest",
+      "output": "found",
+      "to": "closeChest"
+    },
+    {
+      "from": "rememberChest",
+      "output": "none",
+      "to": "closeWrong"
+    },
+    {
+      "from": "closeChest",
+      "output": "next",
+      "to": "chestNext"
+    },
+    {
+      "from": "chestNext",
+      "output": "next",
+      "to": "chestsDone"
+    },
+    {
+      "from": "chestsDone",
+      "output": "no",
+      "to": "askChest"
+    },
+    {
+      "from": "chestsDone",
+      "output": "yes",
+      "to": "totalFirst"
+    },
+    {
+      "from": "totalFirst",
+      "output": "next",
+      "to": "totalIndex"
+    },
+    {
+      "from": "totalIndex",
+      "output": "next",
+      "to": "totalAdd"
+    },
+    {
+      "from": "totalAdd",
+      "output": "next",
+      "to": "totalNext"
+    },
+    {
+      "from": "totalNext",
+      "output": "next",
+      "to": "totalDone"
+    },
+    {
+      "from": "totalDone",
+      "output": "no",
+      "to": "totalAdd"
+    },
+    {
+      "from": "totalDone",
+      "output": "yes",
+      "to": "isComp"
+    },
+    {
+      "from": "isComp",
+      "output": "yes",
+      "to": "slotsComp"
+    },
+    {
+      "from": "isComp",
+      "output": "no",
+      "to": "slotsDrop"
+    },
+    {
+      "from": "slotsComp",
+      "output": "next",
+      "to": "craftsStacks"
+    },
+    {
+      "from": "slotsDrop",
+      "output": "next",
+      "to": "craftsStacks"
+    },
+    {
+      "from": "craftsStacks",
+      "output": "next",
+      "to": "craftsDivide"
+    },
+    {
+      "from": "craftsDivide",
+      "output": "next",
+      "to": "started"
+    },
+    {
+      "from": "started",
+      "output": "next",
+      "to": "collectFirst"
+    },
+    {
+      "from": "collectFirst",
+      "output": "next",
+      "to": "material"
+    },
+    {
+      "from": "material",
+      "output": "next",
+      "to": "target"
+    },
+    {
+      "from": "target",
+      "output": "next",
+      "to": "targetNeed"
+    },
+    {
+      "from": "targetNeed",
+      "output": "next",
+      "to": "targetRound"
+    },
+    {
+      "from": "targetRound",
+      "output": "next",
+      "to": "targetStacks"
+    },
+    {
+      "from": "targetStacks",
+      "output": "next",
+      "to": "countHave"
+    },
+    {
+      "from": "countHave",
+      "output": "next",
+      "to": "enough"
+    },
+    {
+      "from": "enough",
+      "output": "yes",
+      "to": "collectNext"
+    },
+    {
+      "from": "enough",
+      "output": "no",
+      "to": "missingStacks"
+    },
+    {
+      "from": "missingStacks",
+      "output": "next",
+      "to": "missingCalc"
+    },
+    {
+      "from": "missingCalc",
+      "output": "next",
+      "to": "lookAtChest"
+    },
+    {
+      "from": "lookAtChest",
+      "output": "next",
+      "to": "lookPause"
+    },
+    {
+      "from": "lookPause",
+      "output": "next",
+      "to": "openSource"
+    },
+    {
+      "from": "openSource",
+      "output": "next",
+      "to": "waitSource"
+    },
+    {
+      "from": "waitSource",
+      "output": "ok",
+      "to": "countSource"
+    },
+    {
+      "from": "waitSource",
+      "output": "timeout",
+      "to": "emptyCount"
+    },
+    {
+      "from": "countSource",
+      "output": "next",
+      "to": "sourceEmpty"
+    },
+    {
+      "from": "sourceEmpty",
+      "output": "yes",
+      "to": "emptyCount"
+    },
+    {
+      "from": "sourceEmpty",
+      "output": "no",
+      "to": "resetEmpty"
+    },
+    {
+      "from": "emptyCount",
+      "output": "next",
+      "to": "tooOftenEmpty"
+    },
+    {
+      "from": "tooOftenEmpty",
+      "output": "yes",
+      "to": "emptyMessage"
+    },
+    {
+      "from": "tooOftenEmpty",
+      "output": "no",
+      "to": "closeSource"
+    },
+    {
+      "from": "emptyMessage",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "resetEmpty",
+      "output": "next",
+      "to": "takeStacks"
+    },
+    {
+      "from": "takeStacks",
+      "output": "next",
+      "to": "closeSource"
+    },
+    {
+      "from": "closeSource",
+      "output": "next",
+      "to": "sourcePause"
+    },
+    {
+      "from": "sourcePause",
+      "output": "next",
+      "to": "material"
+    },
+    {
+      "from": "collectNext",
+      "output": "next",
+      "to": "collectDone"
+    },
+    {
+      "from": "collectDone",
+      "output": "no",
+      "to": "material"
+    },
+    {
+      "from": "collectDone",
+      "output": "yes",
+      "to": "craftOpen"
+    },
+    {
+      "from": "craftOpen",
+      "output": "next",
+      "to": "craftWaitMain"
+    },
+    {
+      "from": "craftWaitMain",
+      "output": "ok",
+      "to": "craftRecipes"
+    },
+    {
+      "from": "craftWaitMain",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "craftRecipes",
+      "output": "next",
+      "to": "craftWaitRecipes"
+    },
+    {
+      "from": "craftWaitRecipes",
+      "output": "ok",
+      "to": "craftFind"
+    },
+    {
+      "from": "craftWaitRecipes",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "craftFind",
+      "output": "found",
+      "to": "craftChoose"
+    },
+    {
+      "from": "craftFind",
+      "output": "none",
+      "to": "menuError"
+    },
+    {
+      "from": "craftChoose",
+      "output": "next",
+      "to": "craftWaitRecipe"
+    },
+    {
+      "from": "craftWaitRecipe",
+      "output": "ok",
+      "to": "craftClick"
+    },
+    {
+      "from": "craftWaitRecipe",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "craftClick",
+      "output": "next",
+      "to": "craftPause"
+    },
+    {
+      "from": "craftPause",
+      "output": "next",
+      "to": "craftClose"
+    },
+    {
+      "from": "craftClose",
+      "output": "next",
+      "to": "countMade"
+    },
+    {
+      "from": "countMade",
+      "output": "next",
+      "to": "madeSome"
+    },
+    {
+      "from": "madeSome",
+      "output": "yes",
+      "to": "finalComp"
+    },
+    {
+      "from": "madeSome",
+      "output": "no",
+      "to": "collectFirst"
+    },
+    {
+      "from": "finalComp",
+      "output": "yes",
+      "to": "compOpen"
+    },
+    {
+      "from": "finalComp",
+      "output": "no",
+      "to": "dropInventory"
+    },
+    {
+      "from": "dropInventory",
+      "output": "next",
+      "to": "dropPause"
+    },
+    {
+      "from": "dropPause",
+      "output": "next",
+      "to": "dropCrafted"
+    },
+    {
+      "from": "dropCrafted",
+      "output": "next",
+      "to": "dropClose"
+    },
+    {
+      "from": "dropClose",
+      "output": "next",
+      "to": "collectFirst"
+    },
+    {
+      "from": "compOpen",
+      "output": "next",
+      "to": "compWaitMain"
+    },
+    {
+      "from": "compWaitMain",
+      "output": "ok",
+      "to": "compChoose"
+    },
+    {
+      "from": "compWaitMain",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "compChoose",
+      "output": "next",
+      "to": "compWaitRecipes"
+    },
+    {
+      "from": "compWaitRecipes",
+      "output": "ok",
+      "to": "compFind"
+    },
+    {
+      "from": "compWaitRecipes",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "compFind",
+      "output": "found",
+      "to": "compClick"
+    },
+    {
+      "from": "compFind",
+      "output": "none",
+      "to": "compClose"
+    },
+    {
+      "from": "compClick",
+      "output": "next",
+      "to": "compWait"
+    },
+    {
+      "from": "compWait",
+      "output": "ok",
+      "to": "compFirst"
+    },
+    {
+      "from": "compWait",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "compFirst",
+      "output": "next",
+      "to": "compGoto"
+    },
+    {
+      "from": "compGoto",
+      "output": "reached",
+      "to": "compConfirm"
+    },
+    {
+      "from": "compGoto",
+      "output": "timeout",
+      "to": "compClose"
+    },
+    {
+      "from": "compConfirm",
+      "output": "next",
+      "to": "compPause"
+    },
+    {
+      "from": "compPause",
+      "output": "next",
+      "to": "compNext"
+    },
+    {
+      "from": "compNext",
+      "output": "next",
+      "to": "compDone"
+    },
+    {
+      "from": "compDone",
+      "output": "yes",
+      "to": "compClose"
+    },
+    {
+      "from": "compDone",
+      "output": "no",
+      "to": "compGoto"
+    },
+    {
+      "from": "compClose",
+      "output": "next",
+      "to": "collectFirst"
+    },
+    {
+      "from": "noRecipe",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "menuError",
+      "output": "next",
+      "to": "end"
+    },
+    {
+      "from": "escape",
+      "output": "next",
+      "to": "end"
+    }
+  ]
+}

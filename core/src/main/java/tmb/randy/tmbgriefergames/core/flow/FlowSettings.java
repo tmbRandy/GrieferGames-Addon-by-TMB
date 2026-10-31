@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.labymod.api.client.gui.screen.key.Key;
 import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.config.AutoCrafterSubConfig;
 import tmb.randy.tmbgriefergames.core.config.AutoFisherSubConfig;
 import tmb.randy.tmbgriefergames.core.config.HopperSubConfig;
 import tmb.randy.tmbgriefergames.core.config.SwordsSubConfig;
@@ -41,7 +42,13 @@ public final class FlowSettings {
         register("autoFisher.dropBooks", () -> fisher().getAutoDropBooks().get());
         register("autoFisher.dropLilypads", () -> fisher().getAutoDropLilypads().get());
 
-        register("autoCrafter.finalActionV2", () -> Addon.settings().getAutoCrafterConfig().getFinalActionV2().get());
+        register("autoCrafter.finalActionV2", () -> crafter().getFinalActionV2().get());
+        register("autoCrafter.finalActionV3", () -> crafter().getFinalActionV3().get());
+        register("autoCrafter.onlyFullStacks", () -> crafter().getOnlyFullStacks().get());
+        register("autoCrafter.endlessMode", () -> crafter().getEndlessMode().get());
+        register("autoCrafter.autoDrop", () -> crafter().getAutoDrop().get());
+        register("autoCrafter.delay", () -> crafter().getDelay().get());
+        register("autoCrafter.goldBlockToIngot", () -> crafter().getGoldBlockToIngot().get());
         register("autoLoot", () -> Addon.settings().getAutoLoot().get());
         register("cooldownNotifier", () -> Addon.settings().getChatConfig().getCooldownNotifier().get());
     }
@@ -76,6 +83,10 @@ public final class FlowSettings {
 
     private static SwordsSubConfig swords() {
         return Addon.settings().getSwordsSubConfig();
+    }
+
+    private static AutoCrafterSubConfig crafter() {
+        return Addon.settings().getAutoCrafterConfig();
     }
 
     private static AutoFisherSubConfig fisher() {

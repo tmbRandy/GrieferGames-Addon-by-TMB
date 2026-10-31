@@ -1,5 +1,7 @@
 autocomp.json
+autocrafterv1.json
 autocrafterv2.json
+autocrafterv3.json
 autodecomp.json
 autofisher.json
 autohopper.json
