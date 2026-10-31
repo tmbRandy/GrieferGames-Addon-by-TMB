@@ -753,7 +753,8 @@
                         "min_level": "Min. compression",
                         "max_level": "Max. compression",
                         "named": "Renamed (yes/no)",
-                        "exclude": "Except"
+                        "exclude": "Except",
+                        "amount": "Exact amount (0 = any)"
                     }
                 },
                 "count_items": {
@@ -766,7 +767,8 @@
                         "min_level": "Min. compression",
                         "max_level": "Max. compression",
                         "named": "Renamed (yes/no)",
-                        "exclude": "Except"
+                        "exclude": "Except",
+                        "amount": "Exact amount (0 = any)"
                     }
                 },
                 "drop_items": {
@@ -779,7 +781,8 @@
                         "min_level": "Min. compression",
                         "max_level": "Max. compression",
                         "named": "Renamed (yes/no)",
-                        "exclude": "Except"
+                        "exclude": "Except",
+                        "amount": "Exact amount (0 = any)"
                     }
                 },
                 "move_items": {
@@ -793,7 +796,8 @@
                         "min_level": "Min. compression",
                         "max_level": "Max. compression",
                         "named": "Renamed (yes/no)",
-                        "exclude": "Except"
+                        "exclude": "Except",
+                        "amount": "Exact amount (0 = any)"
                     }
                 },
                 "if_inventory_full": {
@@ -815,6 +819,13 @@
                     "name": "Wait",
                     "param": {
                         "ticks": "Ticks"
+                    }
+                },
+                "wait_for_key": {
+                    "name": "Wait for key",
+                    "param": {
+                        "key": "Key(s), e.g. L_SHIFT+K",
+                        "timeout": "Timeout (ticks)"
                     }
                 },
                 "wait_for_chat": {

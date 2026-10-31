@@ -24,6 +24,9 @@ public interface IConnect {
 
     int getSlotCount(int slot);
 
+    /** The maximum stack size of the item in the slot (e.g. 16 for eggs), 64 for an empty slot. */
+    int getSlotMaxStackSize(int slot);
+
     boolean isInventoryFull();
 
     /** Number of inventory stacks of the given registry name. */

@@ -36,6 +36,22 @@ class FlowBuilder {
 
 const out = process.argv[2];
 
+// Opens the gold ingot recipe the "gold block to ingot" setting asks for (9 ingots from a block, otherwise
+// 1 from nuggets) in the "Minecraft-Rezepte" menu and continues with next. Ids start with prefix + "Gold" (or "gold" without prefix).
+function goldRecipe(f, prefix, column, row, next) {
+  const id = name => (prefix ? prefix + 'Gold' : 'gold') + name;
+  f.n(id('Setting'), 'if_compare', { a: '${setting.autoCrafter.goldBlockToIngot}', operator: '=', b: 'true' }, column, row)
+   .n(id('Block'), 'set_variable', { name: 'goldCount', value: 9 }, column + 1, row)
+   .n(id('Nuggets'), 'set_variable', { name: 'goldCount', value: 1 }, column + 1, row + 1)
+   .n(id('Find'), 'find_slot', { item: 'minecraft:gold_ingot', variable: 'goldSlot', area: 'chest', slots: '10-43', amount: '${goldCount}' }, column + 2, row)
+   .n(id('Click'), 'click_slot', { slot: '${goldSlot}' }, column + 3, row)
+   .n(id('Fallback'), 'click_slot', { slot: 53 }, column + 3, row + 1);
+  f.l(id('Setting') + '.yes', id('Block')).l(id('Setting') + '.no', id('Nuggets'))
+   .l(id('Block'), id('Find')).l(id('Nuggets'), id('Find'))
+   .l(id('Find') + '.found', id('Click')).l(id('Find') + '.none', id('Fallback'))
+   .l(id('Click'), next).l(id('Fallback'), next);
+}
+
 // ------------------------------------------------------------------ AutoCrafter V1
 // Crafting table: 0 result, 1-9 grid, 10-36 inventory, 37-45 hotbar
 {
@@ -112,6 +128,7 @@ const out = process.argv[2];
    .n('waitMain', 'wait_for_menu', { title: '=Custom-Kategorien', timeout: 100 }, 3, 0)
    .n('openRecipes', 'click_slot', { slot: 12 }, 4, 0)
    .n('waitRecipes', 'wait_for_menu', { title: '=Minecraft-Rezepte', timeout: 100 }, 5, 0)
+   .n('isGold', 'if_compare', { a: '${craft.id}', operator: '=', b: 'minecraft:gold_ingot' }, 5, 1)
    .n('openRecipe', 'click_slot', { slot: 81 }, 6, 0)
    .n('waitRecipe', 'wait_for_menu', { title: '=Vanilla Bauanleitung', timeout: 100 }, 7, 0)
    .n('slotList', 'set_variable', { name: 'slotList', value: '10 11 12 19 20 21 28 29 30' }, 8, 0)
@@ -125,6 +142,7 @@ const out = process.argv[2];
    .n('setMaterials', 'set_variable', { name: 'materials', value: '${ingredient.id}' }, 16, -1)
    .n('addMaterial', 'set_variable', { name: 'materials', value: '${materials} ${ingredient.id}' }, 16, 1)
    .n('countNeed', 'calculate', { name: 'need.${ingredient.id}', operator: '+', value: 1 }, 17, 0)
+   .n('maxStack', 'set_variable', { name: 'max.${ingredient.id}', value: '${ingredient.maxStack}' }, 17, 1)
    .n('readNext', 'calculate', { name: 'j', operator: '+', value: 1 }, 18, 0)
    .n('readDone', 'if_compare', { a: '${j}', operator: '>', b: 9 }, 19, 0)
    .n('closeRecipe', 'close_menu', {}, 20, 0)
@@ -133,17 +151,35 @@ const out = process.argv[2];
    .n('recipeSaved', 'message', { text: 'AutoCrafter V3: Rezept gespeichert (${mat.count} Materialien).' }, 23, 0);
   f.chain('start', 'craftItem').l('craftItem.found', 'openRezepte').l('craftItem.none', 'noItem').l('noItem', 'end')
    .l('openRezepte', 'waitMain').l('waitMain.ok', 'openRecipes').l('waitMain.timeout', 'menuError')
-   .l('openRecipes', 'waitRecipes').l('waitRecipes.ok', 'openRecipe').l('waitRecipes.timeout', 'menuError')
-   .l('openRecipe', 'waitRecipe').l('waitRecipe.ok', 'slotList').l('waitRecipe.timeout', 'noRecipe')
+   .l('openRecipes', 'waitRecipes').l('waitRecipes.ok', 'isGold').l('waitRecipes.timeout', 'menuError')
+   .l('isGold.yes', 'goldSetting').l('isGold.no', 'openRecipe')
+   .l('openRecipe', 'waitRecipe').l('waitRecipe.ok', 'variantCheck').l('waitRecipe.timeout', 'noRecipe')
    .chain('slotList', 'splitSlots', 'noMaterials', 'readFirst', 'readSlot')
    .l('readSlot.found', 'isGlass').l('readSlot.none', 'readNext')
    .l('isGlass.yes', 'readNext').l('isGlass.no', 'isNew')
    .l('isNew.yes', 'firstMaterial').l('isNew.no', 'countNeed')
    .l('firstMaterial.yes', 'setMaterials').l('firstMaterial.no', 'addMaterial')
-   .l('setMaterials', 'countNeed').l('addMaterial', 'countNeed').chain('countNeed', 'readNext', 'readDone')
+   .l('setMaterials', 'countNeed').l('addMaterial', 'countNeed').chain('countNeed', 'maxStack', 'readNext', 'readDone')
    .l('readDone.yes', 'closeRecipe').l('readDone.no', 'readSlot')
    .l('closeRecipe', 'anyMaterial').l('anyMaterial.yes', 'splitMaterials').l('anyMaterial.no', 'noRecipe')
    .chain('splitMaterials', 'recipeSaved', 'chestFirst');
+
+  // Gold ingots have two recipes (nuggets / gold block), the setting decides which one is crafted
+  goldRecipe(f, '', 6, 1, 'waitRecipe');
+
+  // Items with several recipes show "Variante X" in slot 49: the player picks one and confirms with ENTER
+  f.n('variantCheck', 'store_slot', { slot: 49, name: 'indicator' }, 8, -2)
+   .n('isVariant', 'if_compare', { a: '${indicator.id}', operator: '=', b: 'minecraft:skull' }, 9, -2)
+   .n('askVariant', 'message', { text: 'AutoCrafter V3: Wähle die Rezept-Variante und drücke §eENTER§f.' }, 10, -3)
+   .n('waitVariant', 'wait_for_key', { key: 'ENTER', timeout: 2400 }, 11, -3)
+   .n('readVariant', 'store_slot', { slot: 49, name: 'indicator' }, 12, -3)
+   .n('variantNumber', 'extract_text', { text: '${indicator.name}', after: 'Variante ', before: '', name: 'variant' }, 13, -3)
+   .n('noVariant', 'set_variable', { name: 'variant', value: '' }, 10, -1);
+  f.l('variantCheck.found', 'isVariant').l('variantCheck.none', 'noVariant')
+   .l('isVariant.yes', 'askVariant').l('isVariant.no', 'noVariant').l('askVariant', 'waitVariant')
+   .l('waitVariant.ok', 'readVariant').l('waitVariant.timeout', 'end')
+   .l('readVariant.found', 'variantNumber').l('readVariant.none', 'noVariant')
+   .l('variantNumber.found', 'slotList').l('variantNumber.none', 'noVariant').l('noVariant', 'slotList');
 
   // B: the player opens one source chest per material
   f.n('chestFirst', 'set_variable', { name: 'k', value: 1 }, 0, 3)
@@ -163,30 +199,56 @@ const out = process.argv[2];
    .l('rememberChest.found', 'closeChest').l('rememberChest.none', 'closeWrong')
    .chain('closeChest', 'chestNext', 'chestsDone').l('chestsDone.no', 'askChest').l('chestsDone.yes', 'totalFirst');
 
-  // C: how many crafts fit into the inventory (materials of max. stack size 64)
+  // C: how many crafts fit into the inventory. Every material weighs 64 / max. stack size per item (an egg 4),
+  // the estimate is then lowered until the rounded up stacks of all materials fit into the free slots.
   f.n('totalFirst', 'set_variable', { name: 'total', value: 0 }, 9, 3)
    .n('totalIndex', 'set_variable', { name: 'k', value: 1 }, 10, 3)
-   .n('totalAdd', 'calculate', { name: 'total', operator: '+', value: '${need.${mat.${k}}}' }, 11, 3)
-   .n('totalNext', 'calculate', { name: 'k', operator: '+', value: 1 }, 12, 3)
-   .n('totalDone', 'if_compare', { a: '${k}', operator: '>', b: '${mat.count}' }, 13, 3)
-   .n('isComp', 'if_compare', { a: '${setting.autoCrafter.finalActionV3}', operator: '=', b: 'COMP' }, 14, 3)
-   .n('slotsComp', 'set_variable', { name: 'crafts', value: 26 }, 15, 2)
-   .n('slotsDrop', 'set_variable', { name: 'crafts', value: 34 }, 15, 4)
-   .n('craftsStacks', 'calculate', { name: 'crafts', operator: '*', value: 64 }, 16, 3)
-   .n('craftsDivide', 'calculate', { name: 'crafts', operator: '/', value: '${total}' }, 17, 3)
-   .n('started', 'message', { text: 'AutoCrafter V3: Starte, ${crafts} Crafts pro Runde.' }, 18, 3);
-  f.chain('totalFirst', 'totalIndex', 'totalAdd', 'totalNext', 'totalDone')
-   .l('totalDone.no', 'totalAdd').l('totalDone.yes', 'isComp')
-   .l('isComp.yes', 'slotsComp').l('isComp.no', 'slotsDrop').l('slotsComp', 'craftsStacks').l('slotsDrop', 'craftsStacks')
-   .chain('craftsStacks', 'craftsDivide', 'started', 'collectFirst');
+   .n('weight', 'set_variable', { name: 'w', value: '${need.${mat.${k}}}' }, 11, 3)
+   .n('weightStacks', 'calculate', { name: 'w', operator: '*', value: 64 }, 12, 3)
+   .n('weightMax', 'calculate', { name: 'w', operator: '/', value: '${max.${mat.${k}}}' }, 13, 3)
+   .n('totalAdd', 'calculate', { name: 'total', operator: '+', value: '${w}' }, 14, 3)
+   .n('totalNext', 'calculate', { name: 'k', operator: '+', value: 1 }, 15, 3)
+   .n('totalDone', 'if_compare', { a: '${k}', operator: '>', b: '${mat.count}' }, 16, 3)
+   .n('isComp', 'if_compare', { a: '${setting.autoCrafter.finalActionV3}', operator: '=', b: 'COMP' }, 17, 3)
+   .n('slotsComp', 'set_variable', { name: 'slots', value: 26 }, 18, 2)
+   .n('slotsDrop', 'set_variable', { name: 'slots', value: 34 }, 18, 4)
+   .n('craftsSlots', 'set_variable', { name: 'crafts', value: '${slots}' }, 19, 3)
+   .n('craftsStacks', 'calculate', { name: 'crafts', operator: '*', value: 64 }, 20, 3)
+   .n('craftsDivide', 'calculate', { name: 'crafts', operator: '/', value: '${total}' }, 21, 3)
+   .n('checkFirst', 'set_variable', { name: 'used', value: 0 }, 9, 1)
+   .n('checkIndex', 'set_variable', { name: 'k', value: 1 }, 10, 1)
+   .n('checkMaterial', 'set_variable', { name: 'm', value: '${mat.${k}}' }, 11, 1)
+   .n('checkAmount', 'set_variable', { name: 't', value: '${crafts}' }, 12, 1)
+   .n('checkNeed', 'calculate', { name: 't', operator: '*', value: '${need.${m}}' }, 13, 1)
+   .n('checkRound', 'calculate', { name: 't', operator: '+', value: '${max.${m}}' }, 14, 1)
+   .n('checkRoundDown', 'calculate', { name: 't', operator: '-', value: 1 }, 15, 1)
+   .n('checkStacks', 'calculate', { name: 't', operator: '/', value: '${max.${m}}' }, 16, 1)
+   .n('checkUsed', 'calculate', { name: 'used', operator: '+', value: '${t}' }, 17, 1)
+   .n('checkNext', 'calculate', { name: 'k', operator: '+', value: 1 }, 18, 1)
+   .n('checkDone', 'if_compare', { a: '${k}', operator: '>', b: '${mat.count}' }, 19, 1)
+   .n('tooMany', 'if_compare', { a: '${used}', operator: '>', b: '${slots}' }, 20, 1)
+   .n('craftsLess', 'calculate', { name: 'crafts', operator: '-', value: 1 }, 21, 0)
+   .n('craftsLeft', 'if_compare', { a: '${crafts}', operator: '<', b: 1 }, 22, 0)
+   .n('doesNotFit', 'message', { text: '§cAutoCrafter V3: Das Material für einen Craft passt nicht ins Inventar.' }, 23, 0)
+   .n('started', 'message', { text: 'AutoCrafter V3: Starte, ${crafts} Crafts pro Runde.' }, 22, 1);
+  f.chain('totalFirst', 'totalIndex', 'weight', 'weightStacks', 'weightMax', 'totalAdd', 'totalNext', 'totalDone')
+   .l('totalDone.no', 'weight').l('totalDone.yes', 'isComp')
+   .l('isComp.yes', 'slotsComp').l('isComp.no', 'slotsDrop').l('slotsComp', 'craftsSlots').l('slotsDrop', 'craftsSlots')
+   .chain('craftsSlots', 'craftsStacks', 'craftsDivide', 'checkFirst', 'checkIndex', 'checkMaterial', 'checkAmount', 'checkNeed',
+     'checkRound', 'checkRoundDown', 'checkStacks', 'checkUsed', 'checkNext', 'checkDone')
+   .l('checkDone.no', 'checkMaterial').l('checkDone.yes', 'tooMany')
+   .l('tooMany.yes', 'craftsLess').l('tooMany.no', 'started').l('craftsLess', 'craftsLeft')
+   .l('craftsLeft.yes', 'doesNotFit').l('craftsLeft.no', 'checkFirst').l('doesNotFit', 'end')
+   .l('started', 'collectFirst');
 
   // D: take the missing materials out of their chests
   f.n('collectFirst', 'set_variable', { name: 'k', value: 1 }, 0, 6)
    .n('material', 'set_variable', { name: 'm', value: '${mat.${k}}' }, 1, 6)
    .n('target', 'set_variable', { name: 'target', value: '${crafts}' }, 2, 6)
    .n('targetNeed', 'calculate', { name: 'target', operator: '*', value: '${need.${m}}' }, 3, 6)
-   .n('targetRound', 'calculate', { name: 'target', operator: '+', value: 63 }, 4, 6)
-   .n('targetStacks', 'calculate', { name: 'target', operator: '/', value: 64 }, 5, 6)
+   .n('targetRound', 'calculate', { name: 'target', operator: '+', value: '${max.${m}}' }, 4, 6)
+   .n('targetRoundDown', 'calculate', { name: 'target', operator: '-', value: 1 }, 4, 7)
+   .n('targetStacks', 'calculate', { name: 'target', operator: '/', value: '${max.${m}}' }, 5, 6)
    .n('countHave', 'count_items', { item: '${m}', area: 'inventory', variable: 'have' }, 6, 6)
    .n('enough', 'if_compare', { a: '${have}', operator: '>=', b: '${target}' }, 7, 6)
    .n('missingStacks', 'set_variable', { name: 'missing', value: '${target}' }, 8, 7)
@@ -206,7 +268,7 @@ const out = process.argv[2];
    .n('sourcePause', 'wait', { ticks: 5 }, 18, 6)
    .n('collectNext', 'calculate', { name: 'k', operator: '+', value: 1 }, 8, 5)
    .n('collectDone', 'if_compare', { a: '${k}', operator: '>', b: '${mat.count}' }, 9, 5);
-  f.chain('collectFirst', 'material', 'target', 'targetNeed', 'targetRound', 'targetStacks', 'countHave', 'enough')
+  f.chain('collectFirst', 'material', 'target', 'targetNeed', 'targetRound', 'targetRoundDown', 'targetStacks', 'countHave', 'enough')
    .l('enough.yes', 'collectNext').l('enough.no', 'missingStacks')
    .chain('missingStacks', 'missingCalc', 'lookAtChest', 'lookPause', 'openSource', 'waitSource')
    .l('waitSource.ok', 'countSource').l('waitSource.timeout', 'emptyCount')
@@ -220,6 +282,9 @@ const out = process.argv[2];
    .n('craftWaitMain', 'wait_for_menu', { title: '=Custom-Kategorien', timeout: 100 }, 11, 5)
    .n('craftRecipes', 'click_slot', { slot: 12 }, 12, 5)
    .n('craftWaitRecipes', 'wait_for_menu', { title: '=Minecraft-Rezepte', timeout: 100 }, 13, 5)
+   .n('craftIsGold', 'if_compare', { a: '${craft.id}', operator: '=', b: 'minecraft:gold_ingot' }, 14, 4.2)
+   .n('craftHasVariant', 'if_compare', { a: '${variant}', operator: '!=', b: '' }, 19, 4.2)
+   .n('craftVariant', 'navigate_page', { prefix: 'Variante ', target: '${variant}' }, 20, 4.2)
    .n('craftFind', 'find_slot', { item: '${craft.id}', variable: 'craftSlot', area: 'inventory' }, 14, 5)
    .n('craftChoose', 'click_slot', { slot: '${craftSlot}' }, 15, 5)
    .n('craftWaitRecipe', 'wait_for_menu', { title: '=Vanilla Bauanleitung', timeout: 100 }, 16, 5)
@@ -230,12 +295,16 @@ const out = process.argv[2];
    .n('madeSome', 'if_compare', { a: '${made}', operator: '>', b: 1 }, 21, 5)
    .n('finalComp', 'if_compare', { a: '${setting.autoCrafter.finalActionV3}', operator: '=', b: 'COMP' }, 22, 5);
   f.l('craftOpen', 'craftWaitMain').l('craftWaitMain.ok', 'craftRecipes').l('craftWaitMain.timeout', 'menuError')
-   .l('craftRecipes', 'craftWaitRecipes').l('craftWaitRecipes.ok', 'craftFind').l('craftWaitRecipes.timeout', 'menuError')
+   .l('craftRecipes', 'craftWaitRecipes').l('craftWaitRecipes.ok', 'craftIsGold').l('craftWaitRecipes.timeout', 'menuError')
+   .l('craftIsGold.yes', 'craftGoldSetting').l('craftIsGold.no', 'craftFind')
    .l('craftFind.found', 'craftChoose').l('craftFind.none', 'menuError')
-   .l('craftChoose', 'craftWaitRecipe').l('craftWaitRecipe.ok', 'craftClick').l('craftWaitRecipe.timeout', 'menuError')
+   .l('craftChoose', 'craftWaitRecipe').l('craftWaitRecipe.ok', 'craftHasVariant').l('craftWaitRecipe.timeout', 'menuError')
+   .l('craftHasVariant.yes', 'craftVariant').l('craftHasVariant.no', 'craftClick')
+   .l('craftVariant.reached', 'craftClick').l('craftVariant.timeout', 'menuError')
    .chain('craftClick', 'craftPause', 'craftClose', 'countMade', 'madeSome')
    .l('madeSome.yes', 'finalComp').l('madeSome.no', 'collectFirst')
    .l('finalComp.yes', 'compOpen').l('finalComp.no', 'dropInventory');
+  goldRecipe(f, 'craft', 15, 4.2, 'craftWaitRecipe');
 
   // F1: drop the crafted items (one stack stays as reference)
   f.n('dropInventory', 'open_inventory', {}, 22, 7)

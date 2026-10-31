@@ -8,8 +8,10 @@ import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.bool;
 import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.number;
 import static tmb.randy.tmbgriefergames.core.flow.node.Parameter.text;
 
+import java.util.Arrays;
 import java.util.List;
 import net.labymod.api.Laby;
+import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
@@ -39,6 +41,14 @@ public final class LogicNodes {
                     return OK;
                 }
             }
+            return context.ticksInNode() >= context.number("timeout") ? TIMEOUT : WAIT;
+        });
+
+        // Waits until all keys of a combination like "ENTER" or "L_SHIFT+K" are held down, also while a menu is open
+        NodeTypes.register("wait_for_key", Category.LOGIC, List.of(text("key", "ENTER"), number("timeout", 2400)), List.of(OK, TIMEOUT), false, context -> {
+            Key[] keys = Arrays.stream(context.text("key").split("\\+")).map(name -> Key.getByName(name.trim().toUpperCase())).filter(key -> key != null).toArray(Key[]::new);
+            if (Addon.allKeysPressed(keys))
+                return OK;
             return context.ticksInNode() >= context.number("timeout") ? TIMEOUT : WAIT;
         });
 

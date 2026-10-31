@@ -22,7 +22,8 @@ import tmb.randy.tmbgriefergames.core.helper.BaseHelper;
  *
  * <p>Every block works on an area ("inventory", "chest" or "all"); the optional "slots" parameter
  * (e.g. "0-24") replaces the area by an exact slot range. "min_level"/"max_level" filter by compression level,
- * "named" (yes/no) by renamed items and "exclude" skips the listed items.
+ * "named" (yes/no) by renamed items, "exclude" skips the listed items and "amount" (if not 0) only accepts stacks of
+ * exactly that size.
  */
 public final class InventoryNodes {
 
@@ -37,6 +38,7 @@ public final class InventoryNodes {
         parameters.add(number("max_level", 7));
         parameters.add(text("named", ""));
         parameters.add(text("exclude", ""));
+        parameters.add(number("amount", 0));
         return List.copyOf(parameters);
     }
 
@@ -44,7 +46,7 @@ public final class InventoryNodes {
         NodeTypes.register("find_slot", Category.INVENTORY, withFilter(text("item", ""), text("variable", "slot"), bool("full_stack", false)),
             List.of(FOUND, NONE), true, context -> {
                 for (int slot : slots(context)) {
-                    if (matches(context, slot) && (!context.bool("full_stack") || context.game().getSlotCount(slot) >= 64)) {
+                    if (matches(context, slot) && (!context.bool("full_stack") || isFullStack(context, slot))) {
                         context.setVariable(context.rawText("variable"), slot);
                         return FOUND;
                     }
@@ -93,7 +95,7 @@ public final class InventoryNodes {
                     for (int slot : slots(context)) {
                         if (maxStacks > 0 && moved >= maxStacks)
                             break;
-                        if (matches(context, slot) && (!context.bool("full_only") || context.game().getSlotCount(slot) >= 64)) {
+                        if (matches(context, slot) && (!context.bool("full_only") || isFullStack(context, slot))) {
                             BaseHelper.shiftClick(slot);
                             moved++;
                         }
@@ -113,6 +115,10 @@ public final class InventoryNodes {
         });
     }
 
+    private static boolean isFullStack(NodeContext context, int slot) {
+        return context.game().getSlotCount(slot) >= context.game().getSlotMaxStackSize(slot);
+    }
+
     private static boolean matches(NodeContext context, int slot) {
         String exclude = context.text("exclude");
         if (!exclude.isBlank() && NodeTypes.slotMatches(context, slot, exclude))
@@ -121,6 +127,9 @@ public final class InventoryNodes {
             return false;
         int level = context.game().getSlotCompressionLevel(slot);
         if (level < context.number("min_level") || level > context.number("max_level"))
+            return false;
+        int amount = context.number("amount");
+        if (amount > 0 && context.game().getSlotCount(slot) != amount)
             return false;
 
         // "yes" only renamed items, "no" only items with their normal name, empty both

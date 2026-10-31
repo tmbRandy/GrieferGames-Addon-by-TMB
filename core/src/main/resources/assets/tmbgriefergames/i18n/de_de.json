@@ -748,7 +748,8 @@
                         "min_level": "Min. Komprimierung",
                         "max_level": "Max. Komprimierung",
                         "named": "Umbenannt (yes/no)",
-                        "exclude": "Außer"
+                        "exclude": "Außer",
+                        "amount": "Genaue Anzahl (0 = egal)"
                     }
                 },
                 "count_items": {
@@ -761,7 +762,8 @@
                         "min_level": "Min. Komprimierung",
                         "max_level": "Max. Komprimierung",
                         "named": "Umbenannt (yes/no)",
-                        "exclude": "Außer"
+                        "exclude": "Außer",
+                        "amount": "Genaue Anzahl (0 = egal)"
                     }
                 },
                 "drop_items": {
@@ -774,7 +776,8 @@
                         "min_level": "Min. Komprimierung",
                         "max_level": "Max. Komprimierung",
                         "named": "Umbenannt (yes/no)",
-                        "exclude": "Außer"
+                        "exclude": "Außer",
+                        "amount": "Genaue Anzahl (0 = egal)"
                     }
                 },
                 "move_items": {
@@ -788,7 +791,8 @@
                         "min_level": "Min. Komprimierung",
                         "max_level": "Max. Komprimierung",
                         "named": "Umbenannt (yes/no)",
-                        "exclude": "Außer"
+                        "exclude": "Außer",
+                        "amount": "Genaue Anzahl (0 = egal)"
                     }
                 },
                 "if_inventory_full": {
@@ -810,6 +814,13 @@
                     "name": "Warten",
                     "param": {
                         "ticks": "Ticks"
+                    }
+                },
+                "wait_for_key": {
+                    "name": "Auf Taste warten",
+                    "param": {
+                        "key": "Taste(n), z. B. L_SHIFT+K",
+                        "timeout": "Timeout (Ticks)"
                     }
                 },
                 "wait_for_chat": {

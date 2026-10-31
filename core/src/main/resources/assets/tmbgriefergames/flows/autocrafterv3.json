@@ -68,6 +68,17 @@
       }
     },
     {
+      "id": "isGold",
+      "type": "if_compare",
+      "x": 850,
+      "y": 100,
+      "params": {
+        "a": "${craft.id}",
+        "operator": "=",
+        "b": "minecraft:gold_ingot"
+      }
+    },
+    {
       "id": "openRecipe",
       "type": "click_slot",
       "x": 1020,
@@ -202,6 +213,16 @@
       }
     },
     {
+      "id": "maxStack",
+      "type": "set_variable",
+      "x": 2890,
+      "y": 100,
+      "params": {
+        "name": "max.${ingredient.id}",
+        "value": "${ingredient.maxStack}"
+      }
+    },
+    {
       "id": "readNext",
       "type": "calculate",
       "x": 3060,
@@ -259,6 +280,140 @@
       "y": 0,
       "params": {
         "text": "AutoCrafter V3: Rezept gespeichert (${mat.count} Materialien)."
+      }
+    },
+    {
+      "id": "goldSetting",
+      "type": "if_compare",
+      "x": 1020,
+      "y": 100,
+      "params": {
+        "a": "${setting.autoCrafter.goldBlockToIngot}",
+        "operator": "=",
+        "b": "true"
+      }
+    },
+    {
+      "id": "goldBlock",
+      "type": "set_variable",
+      "x": 1190,
+      "y": 100,
+      "params": {
+        "name": "goldCount",
+        "value": "9"
+      }
+    },
+    {
+      "id": "goldNuggets",
+      "type": "set_variable",
+      "x": 1190,
+      "y": 200,
+      "params": {
+        "name": "goldCount",
+        "value": "1"
+      }
+    },
+    {
+      "id": "goldFind",
+      "type": "find_slot",
+      "x": 1360,
+      "y": 100,
+      "params": {
+        "item": "minecraft:gold_ingot",
+        "variable": "goldSlot",
+        "area": "chest",
+        "slots": "10-43",
+        "amount": "${goldCount}"
+      }
+    },
+    {
+      "id": "goldClick",
+      "type": "click_slot",
+      "x": 1530,
+      "y": 100,
+      "params": {
+        "slot": "${goldSlot}"
+      }
+    },
+    {
+      "id": "goldFallback",
+      "type": "click_slot",
+      "x": 1530,
+      "y": 200,
+      "params": {
+        "slot": "53"
+      }
+    },
+    {
+      "id": "variantCheck",
+      "type": "store_slot",
+      "x": 1360,
+      "y": -200,
+      "params": {
+        "slot": "49",
+        "name": "indicator"
+      }
+    },
+    {
+      "id": "isVariant",
+      "type": "if_compare",
+      "x": 1530,
+      "y": -200,
+      "params": {
+        "a": "${indicator.id}",
+        "operator": "=",
+        "b": "minecraft:skull"
+      }
+    },
+    {
+      "id": "askVariant",
+      "type": "message",
+      "x": 1700,
+      "y": -300,
+      "params": {
+        "text": "AutoCrafter V3: Wähle die Rezept-Variante und drücke §eENTER§f."
+      }
+    },
+    {
+      "id": "waitVariant",
+      "type": "wait_for_key",
+      "x": 1870,
+      "y": -300,
+      "params": {
+        "key": "ENTER",
+        "timeout": "2400"
+      }
+    },
+    {
+      "id": "readVariant",
+      "type": "store_slot",
+      "x": 2040,
+      "y": -300,
+      "params": {
+        "slot": "49",
+        "name": "indicator"
+      }
+    },
+    {
+      "id": "variantNumber",
+      "type": "extract_text",
+      "x": 2210,
+      "y": -300,
+      "params": {
+        "text": "${indicator.name}",
+        "after": "Variante ",
+        "before": "",
+        "name": "variant"
+      }
+    },
+    {
+      "id": "noVariant",
+      "type": "set_variable",
+      "x": 1700,
+      "y": -100,
+      "params": {
+        "name": "variant",
+        "value": ""
       }
     },
     {
@@ -387,20 +542,52 @@
       }
     },
     {
+      "id": "weight",
+      "type": "set_variable",
+      "x": 1870,
+      "y": 300,
+      "params": {
+        "name": "w",
+        "value": "${need.${mat.${k}}}"
+      }
+    },
+    {
+      "id": "weightStacks",
+      "type": "calculate",
+      "x": 2040,
+      "y": 300,
+      "params": {
+        "name": "w",
+        "operator": "*",
+        "value": "64"
+      }
+    },
+    {
+      "id": "weightMax",
+      "type": "calculate",
+      "x": 2210,
+      "y": 300,
+      "params": {
+        "name": "w",
+        "operator": "/",
+        "value": "${max.${mat.${k}}}"
+      }
+    },
+    {
       "id": "totalAdd",
       "type": "calculate",
-      "x": 1870,
+      "x": 2380,
       "y": 300,
       "params": {
         "name": "total",
         "operator": "+",
-        "value": "${need.${mat.${k}}}"
+        "value": "${w}"
       }
     },
     {
       "id": "totalNext",
       "type": "calculate",
-      "x": 2040,
+      "x": 2550,
       "y": 300,
       "params": {
         "name": "k",
@@ -411,7 +598,7 @@
     {
       "id": "totalDone",
       "type": "if_compare",
-      "x": 2210,
+      "x": 2720,
       "y": 300,
       "params": {
         "a": "${k}",
@@ -422,7 +609,7 @@
     {
       "id": "isComp",
       "type": "if_compare",
-      "x": 2380,
+      "x": 2890,
       "y": 300,
       "params": {
         "a": "${setting.autoCrafter.finalActionV3}",
@@ -433,27 +620,37 @@
     {
       "id": "slotsComp",
       "type": "set_variable",
-      "x": 2550,
+      "x": 3060,
       "y": 200,
       "params": {
-        "name": "crafts",
+        "name": "slots",
         "value": "26"
       }
     },
     {
       "id": "slotsDrop",
       "type": "set_variable",
-      "x": 2550,
+      "x": 3060,
       "y": 400,
       "params": {
-        "name": "crafts",
+        "name": "slots",
         "value": "34"
+      }
+    },
+    {
+      "id": "craftsSlots",
+      "type": "set_variable",
+      "x": 3230,
+      "y": 300,
+      "params": {
+        "name": "crafts",
+        "value": "${slots}"
       }
     },
     {
       "id": "craftsStacks",
       "type": "calculate",
-      "x": 2720,
+      "x": 3400,
       "y": 300,
       "params": {
         "name": "crafts",
@@ -464,7 +661,7 @@
     {
       "id": "craftsDivide",
       "type": "calculate",
-      "x": 2890,
+      "x": 3570,
       "y": 300,
       "params": {
         "name": "crafts",
@@ -473,10 +670,169 @@
       }
     },
     {
+      "id": "checkFirst",
+      "type": "set_variable",
+      "x": 1530,
+      "y": 100,
+      "params": {
+        "name": "used",
+        "value": "0"
+      }
+    },
+    {
+      "id": "checkIndex",
+      "type": "set_variable",
+      "x": 1700,
+      "y": 100,
+      "params": {
+        "name": "k",
+        "value": "1"
+      }
+    },
+    {
+      "id": "checkMaterial",
+      "type": "set_variable",
+      "x": 1870,
+      "y": 100,
+      "params": {
+        "name": "m",
+        "value": "${mat.${k}}"
+      }
+    },
+    {
+      "id": "checkAmount",
+      "type": "set_variable",
+      "x": 2040,
+      "y": 100,
+      "params": {
+        "name": "t",
+        "value": "${crafts}"
+      }
+    },
+    {
+      "id": "checkNeed",
+      "type": "calculate",
+      "x": 2210,
+      "y": 100,
+      "params": {
+        "name": "t",
+        "operator": "*",
+        "value": "${need.${m}}"
+      }
+    },
+    {
+      "id": "checkRound",
+      "type": "calculate",
+      "x": 2380,
+      "y": 100,
+      "params": {
+        "name": "t",
+        "operator": "+",
+        "value": "${max.${m}}"
+      }
+    },
+    {
+      "id": "checkRoundDown",
+      "type": "calculate",
+      "x": 2550,
+      "y": 100,
+      "params": {
+        "name": "t",
+        "operator": "-",
+        "value": "1"
+      }
+    },
+    {
+      "id": "checkStacks",
+      "type": "calculate",
+      "x": 2720,
+      "y": 100,
+      "params": {
+        "name": "t",
+        "operator": "/",
+        "value": "${max.${m}}"
+      }
+    },
+    {
+      "id": "checkUsed",
+      "type": "calculate",
+      "x": 2890,
+      "y": 100,
+      "params": {
+        "name": "used",
+        "operator": "+",
+        "value": "${t}"
+      }
+    },
+    {
+      "id": "checkNext",
+      "type": "calculate",
+      "x": 3060,
+      "y": 100,
+      "params": {
+        "name": "k",
+        "operator": "+",
+        "value": "1"
+      }
+    },
+    {
+      "id": "checkDone",
+      "type": "if_compare",
+      "x": 3230,
+      "y": 100,
+      "params": {
+        "a": "${k}",
+        "operator": ">",
+        "b": "${mat.count}"
+      }
+    },
+    {
+      "id": "tooMany",
+      "type": "if_compare",
+      "x": 3400,
+      "y": 100,
+      "params": {
+        "a": "${used}",
+        "operator": ">",
+        "b": "${slots}"
+      }
+    },
+    {
+      "id": "craftsLess",
+      "type": "calculate",
+      "x": 3570,
+      "y": 0,
+      "params": {
+        "name": "crafts",
+        "operator": "-",
+        "value": "1"
+      }
+    },
+    {
+      "id": "craftsLeft",
+      "type": "if_compare",
+      "x": 3740,
+      "y": 0,
+      "params": {
+        "a": "${crafts}",
+        "operator": "<",
+        "b": "1"
+      }
+    },
+    {
+      "id": "doesNotFit",
+      "type": "message",
+      "x": 3910,
+      "y": 0,
+      "params": {
+        "text": "§cAutoCrafter V3: Das Material für einen Craft passt nicht ins Inventar."
+      }
+    },
+    {
       "id": "started",
       "type": "message",
-      "x": 3060,
-      "y": 300,
+      "x": 3740,
+      "y": 100,
       "params": {
         "text": "AutoCrafter V3: Starte, ${crafts} Crafts pro Runde."
       }
@@ -530,7 +886,18 @@
       "params": {
         "name": "target",
         "operator": "+",
-        "value": "63"
+        "value": "${max.${m}}"
+      }
+    },
+    {
+      "id": "targetRoundDown",
+      "type": "calculate",
+      "x": 680,
+      "y": 700,
+      "params": {
+        "name": "target",
+        "operator": "-",
+        "value": "1"
       }
     },
     {
@@ -541,7 +908,7 @@
       "params": {
         "name": "target",
         "operator": "/",
-        "value": "64"
+        "value": "${max.${m}}"
       }
     },
     {
@@ -776,6 +1143,38 @@
       }
     },
     {
+      "id": "craftIsGold",
+      "type": "if_compare",
+      "x": 2380,
+      "y": 420,
+      "params": {
+        "a": "${craft.id}",
+        "operator": "=",
+        "b": "minecraft:gold_ingot"
+      }
+    },
+    {
+      "id": "craftHasVariant",
+      "type": "if_compare",
+      "x": 3230,
+      "y": 420,
+      "params": {
+        "a": "${variant}",
+        "operator": "!=",
+        "b": ""
+      }
+    },
+    {
+      "id": "craftVariant",
+      "type": "navigate_page",
+      "x": 3400,
+      "y": 420,
+      "params": {
+        "prefix": "Variante ",
+        "target": "${variant}"
+      }
+    },
+    {
       "id": "craftFind",
       "type": "find_slot",
       "x": 2380,
@@ -861,6 +1260,68 @@
         "a": "${setting.autoCrafter.finalActionV3}",
         "operator": "=",
         "b": "COMP"
+      }
+    },
+    {
+      "id": "craftGoldSetting",
+      "type": "if_compare",
+      "x": 2550,
+      "y": 420,
+      "params": {
+        "a": "${setting.autoCrafter.goldBlockToIngot}",
+        "operator": "=",
+        "b": "true"
+      }
+    },
+    {
+      "id": "craftGoldBlock",
+      "type": "set_variable",
+      "x": 2720,
+      "y": 420,
+      "params": {
+        "name": "goldCount",
+        "value": "9"
+      }
+    },
+    {
+      "id": "craftGoldNuggets",
+      "type": "set_variable",
+      "x": 2720,
+      "y": 520,
+      "params": {
+        "name": "goldCount",
+        "value": "1"
+      }
+    },
+    {
+      "id": "craftGoldFind",
+      "type": "find_slot",
+      "x": 2890,
+      "y": 420,
+      "params": {
+        "item": "minecraft:gold_ingot",
+        "variable": "goldSlot",
+        "area": "chest",
+        "slots": "10-43",
+        "amount": "${goldCount}"
+      }
+    },
+    {
+      "id": "craftGoldClick",
+      "type": "click_slot",
+      "x": 3060,
+      "y": 420,
+      "params": {
+        "slot": "${goldSlot}"
+      }
+    },
+    {
+      "id": "craftGoldFallback",
+      "type": "click_slot",
+      "x": 3060,
+      "y": 520,
+      "params": {
+        "slot": "53"
       }
     },
     {
@@ -1112,12 +1573,22 @@
     {
       "from": "waitRecipes",
       "output": "ok",
-      "to": "openRecipe"
+      "to": "isGold"
     },
     {
       "from": "waitRecipes",
       "output": "timeout",
       "to": "menuError"
+    },
+    {
+      "from": "isGold",
+      "output": "yes",
+      "to": "goldSetting"
+    },
+    {
+      "from": "isGold",
+      "output": "no",
+      "to": "openRecipe"
     },
     {
       "from": "openRecipe",
@@ -1127,7 +1598,7 @@
     {
       "from": "waitRecipe",
       "output": "ok",
-      "to": "slotList"
+      "to": "variantCheck"
     },
     {
       "from": "waitRecipe",
@@ -1207,6 +1678,11 @@
     {
       "from": "countNeed",
       "output": "next",
+      "to": "maxStack"
+    },
+    {
+      "from": "maxStack",
+      "output": "next",
       "to": "readNext"
     },
     {
@@ -1248,6 +1724,106 @@
       "from": "recipeSaved",
       "output": "next",
       "to": "chestFirst"
+    },
+    {
+      "from": "goldSetting",
+      "output": "yes",
+      "to": "goldBlock"
+    },
+    {
+      "from": "goldSetting",
+      "output": "no",
+      "to": "goldNuggets"
+    },
+    {
+      "from": "goldBlock",
+      "output": "next",
+      "to": "goldFind"
+    },
+    {
+      "from": "goldNuggets",
+      "output": "next",
+      "to": "goldFind"
+    },
+    {
+      "from": "goldFind",
+      "output": "found",
+      "to": "goldClick"
+    },
+    {
+      "from": "goldFind",
+      "output": "none",
+      "to": "goldFallback"
+    },
+    {
+      "from": "goldClick",
+      "output": "next",
+      "to": "waitRecipe"
+    },
+    {
+      "from": "goldFallback",
+      "output": "next",
+      "to": "waitRecipe"
+    },
+    {
+      "from": "variantCheck",
+      "output": "found",
+      "to": "isVariant"
+    },
+    {
+      "from": "variantCheck",
+      "output": "none",
+      "to": "noVariant"
+    },
+    {
+      "from": "isVariant",
+      "output": "yes",
+      "to": "askVariant"
+    },
+    {
+      "from": "isVariant",
+      "output": "no",
+      "to": "noVariant"
+    },
+    {
+      "from": "askVariant",
+      "output": "next",
+      "to": "waitVariant"
+    },
+    {
+      "from": "waitVariant",
+      "output": "ok",
+      "to": "readVariant"
+    },
+    {
+      "from": "waitVariant",
+      "output": "timeout",
+      "to": "end"
+    },
+    {
+      "from": "readVariant",
+      "output": "found",
+      "to": "variantNumber"
+    },
+    {
+      "from": "readVariant",
+      "output": "none",
+      "to": "noVariant"
+    },
+    {
+      "from": "variantNumber",
+      "output": "found",
+      "to": "slotList"
+    },
+    {
+      "from": "variantNumber",
+      "output": "none",
+      "to": "noVariant"
+    },
+    {
+      "from": "noVariant",
+      "output": "next",
+      "to": "slotList"
     },
     {
       "from": "chestFirst",
@@ -1332,6 +1908,21 @@
     {
       "from": "totalIndex",
       "output": "next",
+      "to": "weight"
+    },
+    {
+      "from": "weight",
+      "output": "next",
+      "to": "weightStacks"
+    },
+    {
+      "from": "weightStacks",
+      "output": "next",
+      "to": "weightMax"
+    },
+    {
+      "from": "weightMax",
+      "output": "next",
       "to": "totalAdd"
     },
     {
@@ -1347,7 +1938,7 @@
     {
       "from": "totalDone",
       "output": "no",
-      "to": "totalAdd"
+      "to": "weight"
     },
     {
       "from": "totalDone",
@@ -1367,10 +1958,15 @@
     {
       "from": "slotsComp",
       "output": "next",
-      "to": "craftsStacks"
+      "to": "craftsSlots"
     },
     {
       "from": "slotsDrop",
+      "output": "next",
+      "to": "craftsSlots"
+    },
+    {
+      "from": "craftsSlots",
       "output": "next",
       "to": "craftsStacks"
     },
@@ -1382,7 +1978,97 @@
     {
       "from": "craftsDivide",
       "output": "next",
+      "to": "checkFirst"
+    },
+    {
+      "from": "checkFirst",
+      "output": "next",
+      "to": "checkIndex"
+    },
+    {
+      "from": "checkIndex",
+      "output": "next",
+      "to": "checkMaterial"
+    },
+    {
+      "from": "checkMaterial",
+      "output": "next",
+      "to": "checkAmount"
+    },
+    {
+      "from": "checkAmount",
+      "output": "next",
+      "to": "checkNeed"
+    },
+    {
+      "from": "checkNeed",
+      "output": "next",
+      "to": "checkRound"
+    },
+    {
+      "from": "checkRound",
+      "output": "next",
+      "to": "checkRoundDown"
+    },
+    {
+      "from": "checkRoundDown",
+      "output": "next",
+      "to": "checkStacks"
+    },
+    {
+      "from": "checkStacks",
+      "output": "next",
+      "to": "checkUsed"
+    },
+    {
+      "from": "checkUsed",
+      "output": "next",
+      "to": "checkNext"
+    },
+    {
+      "from": "checkNext",
+      "output": "next",
+      "to": "checkDone"
+    },
+    {
+      "from": "checkDone",
+      "output": "no",
+      "to": "checkMaterial"
+    },
+    {
+      "from": "checkDone",
+      "output": "yes",
+      "to": "tooMany"
+    },
+    {
+      "from": "tooMany",
+      "output": "yes",
+      "to": "craftsLess"
+    },
+    {
+      "from": "tooMany",
+      "output": "no",
       "to": "started"
+    },
+    {
+      "from": "craftsLess",
+      "output": "next",
+      "to": "craftsLeft"
+    },
+    {
+      "from": "craftsLeft",
+      "output": "yes",
+      "to": "doesNotFit"
+    },
+    {
+      "from": "craftsLeft",
+      "output": "no",
+      "to": "checkFirst"
+    },
+    {
+      "from": "doesNotFit",
+      "output": "next",
+      "to": "end"
     },
     {
       "from": "started",
@@ -1411,6 +2097,11 @@
     },
     {
       "from": "targetRound",
+      "output": "next",
+      "to": "targetRoundDown"
+    },
+    {
+      "from": "targetRoundDown",
       "output": "next",
       "to": "targetStacks"
     },
@@ -1562,12 +2253,22 @@
     {
       "from": "craftWaitRecipes",
       "output": "ok",
-      "to": "craftFind"
+      "to": "craftIsGold"
     },
     {
       "from": "craftWaitRecipes",
       "output": "timeout",
       "to": "menuError"
+    },
+    {
+      "from": "craftIsGold",
+      "output": "yes",
+      "to": "craftGoldSetting"
+    },
+    {
+      "from": "craftIsGold",
+      "output": "no",
+      "to": "craftFind"
     },
     {
       "from": "craftFind",
@@ -1587,10 +2288,30 @@
     {
       "from": "craftWaitRecipe",
       "output": "ok",
-      "to": "craftClick"
+      "to": "craftHasVariant"
     },
     {
       "from": "craftWaitRecipe",
+      "output": "timeout",
+      "to": "menuError"
+    },
+    {
+      "from": "craftHasVariant",
+      "output": "yes",
+      "to": "craftVariant"
+    },
+    {
+      "from": "craftHasVariant",
+      "output": "no",
+      "to": "craftClick"
+    },
+    {
+      "from": "craftVariant",
+      "output": "reached",
+      "to": "craftClick"
+    },
+    {
+      "from": "craftVariant",
       "output": "timeout",
       "to": "menuError"
     },
@@ -1633,6 +2354,46 @@
       "from": "finalComp",
       "output": "no",
       "to": "dropInventory"
+    },
+    {
+      "from": "craftGoldSetting",
+      "output": "yes",
+      "to": "craftGoldBlock"
+    },
+    {
+      "from": "craftGoldSetting",
+      "output": "no",
+      "to": "craftGoldNuggets"
+    },
+    {
+      "from": "craftGoldBlock",
+      "output": "next",
+      "to": "craftGoldFind"
+    },
+    {
+      "from": "craftGoldNuggets",
+      "output": "next",
+      "to": "craftGoldFind"
+    },
+    {
+      "from": "craftGoldFind",
+      "output": "found",
+      "to": "craftGoldClick"
+    },
+    {
+      "from": "craftGoldFind",
+      "output": "none",
+      "to": "craftGoldFallback"
+    },
+    {
+      "from": "craftGoldClick",
+      "output": "next",
+      "to": "craftWaitRecipe"
+    },
+    {
+      "from": "craftGoldFallback",
+      "output": "next",
+      "to": "craftWaitRecipe"
     },
     {
       "from": "dropInventory",

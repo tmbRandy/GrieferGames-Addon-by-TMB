@@ -83,6 +83,7 @@ public final class DataNodes {
             context.setVariable(name + ".name", item == null ? "" : NodeTypes.stripColors(context.game().getSlotItemName(slot)));
             context.setVariable(name + ".count", context.game().getSlotCount(slot));
             context.setVariable(name + ".level", context.game().getSlotCompressionLevel(slot));
+            context.setVariable(name + ".maxStack", context.game().getSlotMaxStackSize(slot));
             return item == null ? NONE : FOUND;
         });
 

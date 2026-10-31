@@ -91,6 +91,12 @@ public class VersionedConnect implements IConnect {
         return Helper.getCount(getStack(slot));
     }
 
+    @Override
+    public int getSlotMaxStackSize(int slot) {
+        ItemStack stack = getStack(slot);
+        return Helper.isEmpty(stack) ? 64 : stack.getMaxStackSize();
+    }
+
     private static ItemStack getStack(int slot) {
         return slot >= 0 && slot < Helper.getContainerSize() ? Helper.getContainerStack(slot) : null;
     }
