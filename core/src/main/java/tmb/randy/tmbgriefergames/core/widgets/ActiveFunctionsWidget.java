@@ -104,7 +104,7 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
     private List<ActiveFunction> getDemoFunctions() {
         return List.of(
             Addon.getActiveFunction(Functions.PLAYERTRACER.name()),
-            Addon.getActiveFunction(Functions.COMP.name()),
+            Addon.getActiveFunction(Functions.CRAFTV2.name()),
             Addon.getActiveFunction(Functions.CRAFTV3.name()));
     }
 }

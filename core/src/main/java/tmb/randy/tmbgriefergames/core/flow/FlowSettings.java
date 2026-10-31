@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.core.flow;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import net.labymod.api.client.gui.screen.key.Key;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.config.HopperSubConfig;
 import tmb.randy.tmbgriefergames.core.config.SwordsSubConfig;
@@ -31,6 +32,10 @@ public final class FlowSettings {
         register("autoLoot", () -> Addon.settings().getAutoLoot().get());
     }
 
+    private static final Map<String, Supplier<Key[]>> KEY_SETTINGS = Map.of(
+        "autoComp.hotkey", () -> Addon.settings().getAutoCrafterConfig().getAutoCompHotkey().get()
+    );
+
     private FlowSettings() {}
 
     private static void register(String name, Supplier<Object> value) {
@@ -41,6 +46,12 @@ public final class FlowSettings {
     public static String get(String name) {
         Supplier<Object> value = SETTINGS.get(name);
         return value == null ? "" : String.valueOf(value.get());
+    }
+
+    /** A hotkey setting, an empty array if it does not exist. */
+    public static Key[] getKeys(String name) {
+        Supplier<Key[]> keys = KEY_SETTINGS.get(name);
+        return keys == null ? new Key[0] : keys.get();
     }
 
     private static SwordsSubConfig swords() {

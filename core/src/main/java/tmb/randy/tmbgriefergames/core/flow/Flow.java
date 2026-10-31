@@ -2,6 +2,7 @@ package tmb.randy.tmbgriefergames.core.flow;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.labymod.api.client.gui.screen.key.Key;
 
 /**
  * A player made program: blocks ({@link FlowNode}) connected by {@link FlowConnection}s.
@@ -11,6 +12,8 @@ public class Flow {
     private String name;
     /** Keys that start/stop the flow (LabyMod key names), may be empty. */
     private List<String> hotkey = new ArrayList<>();
+    /** Optional: name of an addon setting that holds the hotkey (built-in flows use the key the player configured). */
+    private String hotkeySetting;
     private List<FlowNode> nodes = new ArrayList<>();
     private List<FlowConnection> connections = new ArrayList<>();
     /** Shipped with the addon: read only, never saved. Transient, so it is not part of the JSON. */
@@ -51,6 +54,13 @@ public class Flow {
 
     public void setHotkey(List<String> hotkey) {
         this.hotkey = hotkey;
+    }
+
+    /** The keys that toggle the flow: the configured setting if the flow names one, otherwise its own hotkey. */
+    public Key[] getHotkeyKeys() {
+        if (hotkeySetting != null && !hotkeySetting.isBlank())
+            return FlowSettings.getKeys(hotkeySetting);
+        return hotkey.stream().map(Key::getByName).filter(key -> key != null && key != Key.NONE).toArray(Key[]::new);
     }
 
     public List<FlowNode> getNodes() {

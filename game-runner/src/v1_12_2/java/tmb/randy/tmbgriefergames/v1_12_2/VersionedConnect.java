@@ -1,7 +1,6 @@
 package tmb.randy.tmbgriefergames.v1_12_2;
 
 import javax.inject.Singleton;
-import net.labymod.api.Laby;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
 import net.labymod.api.models.Implements;
@@ -13,14 +12,11 @@ import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.math.BlockPos;
-import tmb.randy.tmbgriefergames.api.enums.FunctionState;
 import tmb.randy.tmbgriefergames.api.events.MoneyBalanceChangedEvent;
-import tmb.randy.tmbgriefergames.api.events.ToggleFunctionEvent;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.IConnect;
 import tmb.randy.tmbgriefergames.core.click.ClickManager;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
-import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoComp;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV1;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV2;
 import tmb.randy.tmbgriefergames.v1_12_2.functions.AutoCrafter.AutoCrafterV3;
@@ -48,7 +44,6 @@ public class VersionedConnect implements IConnect {
         Addon.registerFunction(new AutoCrafterV1());
         Addon.registerFunction(new AutoCrafterV2());
         Addon.registerFunction(new AutoCrafterV3());
-        Addon.registerFunction(new AutoComp());
         Addon.registerFunction(new AutoDecomp());
         Addon.registerFunction(new AutoHopper());
         Addon.registerFunction(new BlockMarker());
@@ -278,7 +273,6 @@ public class VersionedConnect implements IConnect {
         clickManager.clearAllQueues();
 
         if (!Helper.isClickableScreen()) {
-            Laby.fireEvent(new ToggleFunctionEvent(Functions.COMP.name(), FunctionState.STOP, null));
             if (Addon.getFunction(Functions.ITEMSHIFTER.name()) instanceof ItemShifter itemShifter)
                 itemShifter.stopShifting();
         }

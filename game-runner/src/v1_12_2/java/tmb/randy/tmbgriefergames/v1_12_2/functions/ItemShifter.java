@@ -12,6 +12,7 @@ import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.click.Click;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
+import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.core.menu.HopperMenu;
 import tmb.randy.tmbgriefergames.core.menu.StorageMenus.CompressionSelection;
@@ -27,6 +28,7 @@ import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 public class ItemShifter extends Function {
     private static final int SMALL_CHEST = 27;
     private static final int LARGE_CHEST = 54;
+    private static final String AUTOCOMP_FLOW = "AutoComp";
 
     private ItemStack itemToMove;
 
@@ -50,7 +52,7 @@ public class ItemShifter extends Function {
                 maxOutHopperRadius();
             else
                 shiftIntoChest();
-        } else if (Key.ARROW_DOWN.isPressed() && !Addon.getActiveFunction(Functions.COMP.name()).isEnabled()) {
+        } else if (Key.ARROW_DOWN.isPressed() && !FlowManager.get().isRunning(AUTOCOMP_FLOW)) {
             shiftOutOfChest(title);
         }
     }

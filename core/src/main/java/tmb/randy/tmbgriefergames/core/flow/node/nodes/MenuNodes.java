@@ -67,7 +67,8 @@ public final class MenuNodes {
     }
 
     private static String navigatePage(NodeContext context) {
-        if (context.ticksInNode() >= context.number("timeout"))
+        // A closed menu can not be navigated, so waiting for the timeout would only delay the flow
+        if (context.ticksInNode() >= context.number("timeout") || context.game().getChestTitle() == null)
             return TIMEOUT;
         if (!BaseHelper.isClickQueueEmpty())
             return WAIT;

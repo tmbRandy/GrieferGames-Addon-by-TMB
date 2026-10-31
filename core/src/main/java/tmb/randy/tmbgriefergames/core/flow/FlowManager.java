@@ -295,7 +295,7 @@ public final class FlowManager {
             return;
 
         for (Flow flow : getFlows()) {
-            Key[] keys = flow.getHotkey().stream().map(Key::getByName).filter(key -> key != null && key != Key.NONE).toArray(Key[]::new);
+            Key[] keys = flow.getHotkeyKeys();
             if (keys.length > 0 && List.of(keys).contains(event.key()) && Addon.allKeysPressed(keys))
                 toggle(flow);
         }

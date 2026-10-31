@@ -1,6 +1,7 @@
 {
   "name": "AutoComp",
   "hotkey": [],
+  "hotkeySetting": "autoComp.hotkey",
   "nodes": [
     { "id": "start", "type": "start", "x": 0, "y": 0, "params": {} },
     { "id": "open", "type": "command", "x": 160, "y": 0, "params": { "command": "/rezepte" } },
@@ -36,7 +37,7 @@
     { "from": "stillOpen", "output": "yes", "to": "gotoLevel" },
     { "from": "stillOpen", "output": "no", "to": "end" },
     { "from": "gotoLevel", "output": "reached", "to": "compress" },
-    { "from": "gotoLevel", "output": "timeout", "to": "error" },
+    { "from": "gotoLevel", "output": "timeout", "to": "stillOpen" },
     { "from": "compress", "output": "next", "to": "pause" },
     { "from": "pause", "output": "next", "to": "nextLevel" },
     { "from": "nextLevel", "output": "next", "to": "lastLevel" },
