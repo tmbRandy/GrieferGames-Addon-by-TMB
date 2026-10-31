@@ -1,5 +1,6 @@
 autocomp.json
 autodecomp.json
+autohopper.json
 eject.json
 infinityminer.json
 vabk.json
