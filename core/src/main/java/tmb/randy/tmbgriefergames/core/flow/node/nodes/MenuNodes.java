@@ -23,6 +23,8 @@ public final class MenuNodes {
 
     public static void register() {
         NodeTypes.register("click_slot", Category.MENU, List.of(number("slot", 0), bool("shift", true)), List.of(NEXT), false, context -> {
+            if (!context.canClick())
+                return NEXT;
             if (context.isFirstTick()) {
                 if (context.bool("shift"))
                     BaseHelper.shiftClick(context.number("slot"));
@@ -32,6 +34,8 @@ public final class MenuNodes {
             return BaseHelper.isClickQueueEmpty() ? NEXT : WAIT;
         });
         NodeTypes.register("drop_slot", Category.MENU, List.of(number("slot", 0)), List.of(NEXT), false, context -> {
+            if (!context.canClick())
+                return NEXT;
             if (context.isFirstTick())
                 BaseHelper.dropClick(context.number("slot"));
             return BaseHelper.isClickQueueEmpty() ? NEXT : WAIT;

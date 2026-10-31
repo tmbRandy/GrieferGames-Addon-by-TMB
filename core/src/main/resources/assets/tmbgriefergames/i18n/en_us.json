@@ -593,7 +593,21 @@
                 "on_key": {
                     "name": "On key",
                     "param": {
-                        "key": "Key"
+                        "key": "Key(s), e.g. L_SHIFT+K",
+                        "setting": "or hotkey setting"
+                    }
+                },
+                "on_mouse": {
+                    "name": "On mouse button",
+                    "param": {
+                        "button": "Button (LEFT/RIGHT)",
+                        "action": "Action (CLICK/RELEASE)"
+                    }
+                },
+                "on_chat_sent": {
+                    "name": "On sent message",
+                    "param": {
+                        "contains": "Contains"
                     }
                 },
                 "on_fish_bite": {
@@ -737,7 +751,9 @@
                         "area": "Area (inventory/chest/all)",
                         "slots": "Slots (e.g. 0-24)",
                         "min_level": "Min. compression",
-                        "max_level": "Max. compression"
+                        "max_level": "Max. compression",
+                        "named": "Renamed (yes/no)",
+                        "exclude": "Except"
                     }
                 },
                 "count_items": {
@@ -748,7 +764,9 @@
                         "area": "Area (inventory/chest/all)",
                         "slots": "Slots (e.g. 0-24)",
                         "min_level": "Min. compression",
-                        "max_level": "Max. compression"
+                        "max_level": "Max. compression",
+                        "named": "Renamed (yes/no)",
+                        "exclude": "Except"
                     }
                 },
                 "drop_items": {
@@ -759,7 +777,9 @@
                         "area": "Area (inventory/chest/all)",
                         "slots": "Slots (e.g. 0-24)",
                         "min_level": "Min. compression",
-                        "max_level": "Max. compression"
+                        "max_level": "Max. compression",
+                        "named": "Renamed (yes/no)",
+                        "exclude": "Except"
                     }
                 },
                 "move_items": {
@@ -771,7 +791,9 @@
                         "area": "Area (inventory/chest/all)",
                         "slots": "Slots (e.g. 0-24)",
                         "min_level": "Min. compression",
-                        "max_level": "Max. compression"
+                        "max_level": "Max. compression",
+                        "named": "Renamed (yes/no)",
+                        "exclude": "Except"
                     }
                 },
                 "if_inventory_full": {
@@ -871,6 +893,37 @@
                     "name": "Store game info",
                     "param": {
                         "name": "Name"
+                    }
+                },
+                "split_text": {
+                    "name": "Split text",
+                    "param": {
+                        "text": "Text",
+                        "separator": "Separator",
+                        "name": "Name"
+                    }
+                },
+                "extract_text": {
+                    "name": "Extract text",
+                    "param": {
+                        "text": "Text",
+                        "after": "After",
+                        "before": "Before",
+                        "name": "Name"
+                    }
+                },
+                "parse_date": {
+                    "name": "Parse date",
+                    "param": {
+                        "text": "Text",
+                        "format": "Format",
+                        "name": "Name"
+                    }
+                },
+                "if_player_online": {
+                    "name": "If player online",
+                    "param": {
+                        "player": "Player"
                     }
                 }
             }

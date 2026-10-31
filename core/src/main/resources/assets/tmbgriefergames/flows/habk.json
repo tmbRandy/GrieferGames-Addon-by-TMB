@@ -1,0 +1,33 @@
+{
+  "name": "HABK",
+  "silent": true,
+  "hotkey": [],
+  "nodes": [
+    { "id": "released", "type": "on_mouse", "x": 0, "y": 0, "params": { "button": "RIGHT", "action": "RELEASE", "autostart": "false" } },
+    { "id": "enabled", "type": "if_compare", "x": 160, "y": 0, "params": { "a": "${setting.habk.enabled}", "operator": "=", "b": "true" } },
+    { "id": "holdingBow", "type": "if_holding", "x": 320, "y": 0, "params": { "item": "bow" } },
+    { "id": "swordInFirst", "type": "if_slot", "x": 480, "y": 0, "params": { "slot": "36", "item": "wooden_sword, stone_sword, iron_sword, golden_sword, diamond_sword" } },
+    { "id": "remember", "type": "store_info", "x": 640, "y": 0, "params": { "name": "info" } },
+    { "id": "sword", "type": "select_slot", "x": 800, "y": 0, "params": { "slot": "1" } },
+    { "id": "cooldown", "type": "set_variable", "x": 960, "y": 0, "params": { "name": "ticks", "value": "${setting.habk.cooldown}" } },
+    { "id": "toTicks", "type": "calculate", "x": 1120, "y": 0, "params": { "name": "ticks", "operator": "/", "value": "50" } },
+    { "id": "hold", "type": "wait", "x": 1280, "y": 0, "params": { "ticks": "${ticks}" } },
+    { "id": "back", "type": "select_slot", "x": 1440, "y": 0, "params": { "slot": "${info.hotbar}" } },
+    { "id": "end", "type": "stop", "x": 640, "y": 120, "params": {} }
+  ],
+  "connections": [
+    { "from": "released", "output": "next", "to": "enabled" },
+    { "from": "enabled", "output": "yes", "to": "holdingBow" },
+    { "from": "enabled", "output": "no", "to": "end" },
+    { "from": "holdingBow", "output": "yes", "to": "swordInFirst" },
+    { "from": "holdingBow", "output": "no", "to": "end" },
+    { "from": "swordInFirst", "output": "yes", "to": "remember" },
+    { "from": "swordInFirst", "output": "no", "to": "end" },
+    { "from": "remember", "output": "next", "to": "sword" },
+    { "from": "sword", "output": "next", "to": "cooldown" },
+    { "from": "cooldown", "output": "next", "to": "toTicks" },
+    { "from": "toTicks", "output": "next", "to": "hold" },
+    { "from": "hold", "output": "next", "to": "back" },
+    { "from": "back", "output": "next", "to": "end" }
+  ]
+}

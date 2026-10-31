@@ -1,0 +1,48 @@
+{
+  "name": "ItemShifter",
+  "silent": true,
+  "hotkey": [],
+  "nodes": [
+    { "id": "down", "type": "on_key", "x": 0, "y": 0, "params": { "key": "ARROW_DOWN", "setting": "", "autostart": "false" } },
+    { "id": "downInChest", "type": "if_screen", "x": 160, "y": 0, "params": { "screen": "chest" } },
+    { "id": "compRunning", "type": "if_menu", "x": 320, "y": 0, "params": { "title": "=Item-Komprimierung" } },
+    { "id": "takeAll", "type": "move_items", "x": 480, "y": 0, "params": { "item": "", "max_stacks": "0", "full_only": "false", "area": "chest", "slots": "", "min_level": "0", "max_level": "7", "named": "", "exclude": "" } },
+
+    { "id": "up", "type": "on_key", "x": 0, "y": 200, "params": { "key": "ARROW_UP", "setting": "", "autostart": "false" } },
+    { "id": "upInChest", "type": "if_screen", "x": 160, "y": 200, "params": { "screen": "chest" } },
+    { "id": "hopperMenu", "type": "if_menu", "x": 320, "y": 200, "params": { "title": "=Trichter-Einstellungen" } },
+    { "id": "hopperShortcut", "type": "click_slot", "x": 480, "y": 120, "params": { "slot": "49", "shift": "true" } },
+    { "id": "maxRadius", "type": "repeat", "x": 640, "y": 120, "params": { "count": "15" } },
+    { "id": "increaseRadius", "type": "click_slot", "x": 800, "y": 60, "params": { "slot": "32", "shift": "true" } },
+    { "id": "putAll", "type": "move_items", "x": 480, "y": 260, "params": { "item": "", "max_stacks": "0", "full_only": "false", "area": "inventory", "slots": "", "min_level": "0", "max_level": "7", "named": "", "exclude": "" } },
+
+    { "id": "dropKey", "type": "on_key", "x": 0, "y": 400, "params": { "key": "", "setting": "inventoryDrop.hotkey", "autostart": "false" } },
+    { "id": "inInventory", "type": "if_screen", "x": 160, "y": 400, "params": { "screen": "inventory" } },
+    { "id": "dropAll", "type": "drop_items", "x": 320, "y": 400, "params": { "item": "", "keep_one": "false", "area": "inventory", "slots": "", "min_level": "0", "max_level": "7", "named": "", "exclude": "" } },
+
+    { "id": "end", "type": "stop", "x": 960, "y": 260, "params": {} }
+  ],
+  "connections": [
+    { "from": "down", "output": "next", "to": "downInChest" },
+    { "from": "downInChest", "output": "yes", "to": "compRunning" },
+    { "from": "downInChest", "output": "no", "to": "end" },
+    { "from": "compRunning", "output": "yes", "to": "end" },
+    { "from": "compRunning", "output": "no", "to": "takeAll" },
+    { "from": "takeAll", "output": "next", "to": "end" },
+
+    { "from": "up", "output": "next", "to": "upInChest" },
+    { "from": "upInChest", "output": "yes", "to": "hopperMenu" },
+    { "from": "upInChest", "output": "no", "to": "end" },
+    { "from": "hopperMenu", "output": "yes", "to": "hopperShortcut" },
+    { "from": "hopperMenu", "output": "no", "to": "putAll" },
+    { "from": "hopperShortcut", "output": "next", "to": "maxRadius" },
+    { "from": "maxRadius", "output": "loop", "to": "increaseRadius" },
+    { "from": "maxRadius", "output": "done", "to": "end" },
+    { "from": "increaseRadius", "output": "next", "to": "maxRadius" },
+    { "from": "putAll", "output": "next", "to": "end" },
+
+    { "from": "dropKey", "output": "next", "to": "inInventory" },
+    { "from": "inInventory", "output": "yes", "to": "dropAll" },
+    { "from": "inInventory", "output": "no", "to": "end" }
+  ]
+}

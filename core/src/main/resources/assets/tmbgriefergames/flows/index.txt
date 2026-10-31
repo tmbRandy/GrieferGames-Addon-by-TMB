@@ -1,6 +1,13 @@
 autocomp.json
+autocrafterv2.json
 autodecomp.json
+autofisher.json
 autohopper.json
+autoloot.json
+cooldownnotifier.json
 eject.json
+habk.json
 infinityminer.json
+itemshifter.json
+playertracer.json
 vabk.json

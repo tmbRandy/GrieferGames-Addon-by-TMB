@@ -40,6 +40,12 @@ public final class NodeContext {
         return runner.getTicksInNode() == 0;
     }
 
+    /** Clicks are only sent while an inventory, chest or crafting table is open; without one they are skipped. */
+    public boolean canClick() {
+        String screen = game().getScreenType();
+        return screen.equals("inventory") || screen.equals("chest") || screen.equals("crafting");
+    }
+
     /** Ticks since the flow reached this block. */
     public int ticksInNode() {
         return runner.getTicksInNode();

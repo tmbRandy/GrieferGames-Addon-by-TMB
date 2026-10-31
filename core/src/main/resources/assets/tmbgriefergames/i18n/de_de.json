@@ -588,7 +588,21 @@
                 "on_key": {
                     "name": "Bei Taste",
                     "param": {
-                        "key": "Taste"
+                        "key": "Taste(n), z. B. L_SHIFT+K",
+                        "setting": "oder Hotkey-Einstellung"
+                    }
+                },
+                "on_mouse": {
+                    "name": "Bei Maustaste",
+                    "param": {
+                        "button": "Taste (LEFT/RIGHT)",
+                        "action": "Aktion (CLICK/RELEASE)"
+                    }
+                },
+                "on_chat_sent": {
+                    "name": "Bei gesendetem Befehl",
+                    "param": {
+                        "contains": "Enthält"
                     }
                 },
                 "on_fish_bite": {
@@ -732,7 +746,9 @@
                         "area": "Bereich (inventory/chest/all)",
                         "slots": "Slots (z. B. 0-24)",
                         "min_level": "Min. Komprimierung",
-                        "max_level": "Max. Komprimierung"
+                        "max_level": "Max. Komprimierung",
+                        "named": "Umbenannt (yes/no)",
+                        "exclude": "Außer"
                     }
                 },
                 "count_items": {
@@ -743,7 +759,9 @@
                         "area": "Bereich (inventory/chest/all)",
                         "slots": "Slots (z. B. 0-24)",
                         "min_level": "Min. Komprimierung",
-                        "max_level": "Max. Komprimierung"
+                        "max_level": "Max. Komprimierung",
+                        "named": "Umbenannt (yes/no)",
+                        "exclude": "Außer"
                     }
                 },
                 "drop_items": {
@@ -754,7 +772,9 @@
                         "area": "Bereich (inventory/chest/all)",
                         "slots": "Slots (z. B. 0-24)",
                         "min_level": "Min. Komprimierung",
-                        "max_level": "Max. Komprimierung"
+                        "max_level": "Max. Komprimierung",
+                        "named": "Umbenannt (yes/no)",
+                        "exclude": "Außer"
                     }
                 },
                 "move_items": {
@@ -766,7 +786,9 @@
                         "area": "Bereich (inventory/chest/all)",
                         "slots": "Slots (z. B. 0-24)",
                         "min_level": "Min. Komprimierung",
-                        "max_level": "Max. Komprimierung"
+                        "max_level": "Max. Komprimierung",
+                        "named": "Umbenannt (yes/no)",
+                        "exclude": "Außer"
                     }
                 },
                 "if_inventory_full": {
@@ -866,6 +888,37 @@
                     "name": "Spielinfos merken",
                     "param": {
                         "name": "Name"
+                    }
+                },
+                "split_text": {
+                    "name": "Text aufteilen",
+                    "param": {
+                        "text": "Text",
+                        "separator": "Trennzeichen",
+                        "name": "Name"
+                    }
+                },
+                "extract_text": {
+                    "name": "Text ausschneiden",
+                    "param": {
+                        "text": "Text",
+                        "after": "Nach",
+                        "before": "Vor",
+                        "name": "Name"
+                    }
+                },
+                "parse_date": {
+                    "name": "Datum lesen",
+                    "param": {
+                        "text": "Text",
+                        "format": "Format",
+                        "name": "Name"
+                    }
+                },
+                "if_player_online": {
+                    "name": "Wenn Spieler online",
+                    "param": {
+                        "player": "Spieler"
                     }
                 }
             }

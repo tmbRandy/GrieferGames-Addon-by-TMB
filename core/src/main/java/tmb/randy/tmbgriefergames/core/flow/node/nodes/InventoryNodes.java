@@ -67,6 +67,8 @@ public final class InventoryNodes {
         });
 
         NodeTypes.register("drop_items", Category.INVENTORY, withFilter(text("item", ""), bool("keep_one", false)), List.of(NEXT), false, context -> {
+            if (!context.canClick())
+                return NEXT;
             if (context.isFirstTick()) {
                 boolean keep = context.bool("keep_one");
                 for (int slot : slots(context)) {
@@ -83,6 +85,8 @@ public final class InventoryNodes {
 
         NodeTypes.register("move_items", Category.INVENTORY, withFilter(text("item", ""), number("max_stacks", 0), bool("full_only", false)),
             List.of(NEXT), false, context -> {
+                if (!context.canClick())
+                    return NEXT;
                 if (context.isFirstTick()) {
                     int maxStacks = context.number("max_stacks");
                     int moved = 0;

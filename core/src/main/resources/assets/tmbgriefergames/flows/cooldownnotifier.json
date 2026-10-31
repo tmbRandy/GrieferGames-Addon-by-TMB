@@ -1,0 +1,40 @@
+{
+  "name": "CooldownNotifier",
+  "silent": true,
+  "hotkey": [],
+  "nodes": [
+    { "id": "wand", "type": "on_chat_sent", "x": 0, "y": 0, "params": { "contains": "=/wand", "autostart": "false" } },
+    { "id": "wandTime", "type": "set_variable", "x": 160, "y": 0, "params": { "name": "ticks", "value": "600" } },
+    { "id": "rand", "type": "on_chat_sent", "x": 0, "y": 90, "params": { "contains": "=/rand", "autostart": "false" } },
+    { "id": "randTime", "type": "set_variable", "x": 160, "y": 90, "params": { "name": "ticks", "value": "600" } },
+    { "id": "boden", "type": "on_chat_sent", "x": 0, "y": 180, "params": { "contains": "=/boden", "autostart": "false" } },
+    { "id": "bodenTime", "type": "set_variable", "x": 160, "y": 180, "params": { "name": "ticks", "value": "600" } },
+    { "id": "sign", "type": "on_chat_sent", "x": 0, "y": 270, "params": { "contains": "/sign", "autostart": "false" } },
+    { "id": "signTime", "type": "set_variable", "x": 160, "y": 270, "params": { "name": "ticks", "value": "60" } },
+    { "id": "anticopy", "type": "on_chat_sent", "x": 0, "y": 360, "params": { "contains": "=/anticopy", "autostart": "false" } },
+    { "id": "anticopyTime", "type": "set_variable", "x": 160, "y": 360, "params": { "name": "ticks", "value": "100" } },
+
+    { "id": "enabled", "type": "if_compare", "x": 320, "y": 180, "params": { "a": "${setting.cooldownNotifier}", "operator": "=", "b": "true" } },
+    { "id": "command", "type": "set_variable", "x": 480, "y": 180, "params": { "name": "command", "value": "${event}" } },
+    { "id": "cooldown", "type": "wait", "x": 640, "y": 180, "params": { "ticks": "${ticks}" } },
+    { "id": "ready", "type": "message", "x": 800, "y": 180, "params": { "text": "§f${command} ist wieder verfügbar." } },
+    { "id": "end", "type": "stop", "x": 960, "y": 180, "params": {} }
+  ],
+  "connections": [
+    { "from": "wand", "output": "next", "to": "wandTime" },
+    { "from": "rand", "output": "next", "to": "randTime" },
+    { "from": "boden", "output": "next", "to": "bodenTime" },
+    { "from": "sign", "output": "next", "to": "signTime" },
+    { "from": "anticopy", "output": "next", "to": "anticopyTime" },
+    { "from": "wandTime", "output": "next", "to": "enabled" },
+    { "from": "randTime", "output": "next", "to": "enabled" },
+    { "from": "bodenTime", "output": "next", "to": "enabled" },
+    { "from": "signTime", "output": "next", "to": "enabled" },
+    { "from": "anticopyTime", "output": "next", "to": "enabled" },
+    { "from": "enabled", "output": "yes", "to": "command" },
+    { "from": "enabled", "output": "no", "to": "end" },
+    { "from": "command", "output": "next", "to": "cooldown" },
+    { "from": "cooldown", "output": "next", "to": "ready" },
+    { "from": "ready", "output": "next", "to": "end" }
+  ]
+}
