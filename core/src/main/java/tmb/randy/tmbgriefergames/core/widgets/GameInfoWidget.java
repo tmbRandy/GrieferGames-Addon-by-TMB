@@ -17,9 +17,7 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine.State;
-import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
-import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.client.scoreboard.Scoreboard;
 import net.labymod.api.client.scoreboard.ScoreboardTeam;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
@@ -67,16 +65,12 @@ public class GameInfoWidget extends TextHudWidget<GameInfoWidgetConfig> {
 
     public GameInfoWidget(HudWidgetCategory category) {
         super("gameinfo", GameInfoWidgetConfig.class);
-        setIcon(icon("gameinfo"));
+        setIcon(Addon.widgetIcon("gameinfo"));
         this.bindCategory(category);
     }
 
-    private static Icon icon(String name) {
-        return Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/" + name + ".png"));
-    }
-
     private TextLine createIconLine(String scoreboardIcon) {
-        return createLine(Component.icon(icon("scoreboard/" + scoreboardIcon)), 0, TextLine::new);
+        return createLine(Component.icon(Addon.widgetIcon("scoreboard/" + scoreboardIcon)), 0, TextLine::new);
     }
 
     @Override

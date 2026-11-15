@@ -8,8 +8,10 @@ import java.util.Set;
 import net.labymod.api.Laby;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
+import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.activity.types.IngameOverlayActivity;
 import net.labymod.api.client.gui.screen.key.Key;
+import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import net.labymod.api.event.client.input.KeyEvent;
@@ -27,16 +29,15 @@ import tmb.randy.tmbgriefergames.api.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.api.functions.Function;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelActivity;
 import tmb.randy.tmbgriefergames.core.activities.plotwheel.PlotWheelPlot;
-import tmb.randy.tmbgriefergames.core.commands.AutocraftV2Command;
-import tmb.randy.tmbgriefergames.core.commands.AutocraftV3Command;
 import tmb.randy.tmbgriefergames.core.commands.DKsCommand;
 import tmb.randy.tmbgriefergames.core.commands.DescribedCommand;
-import tmb.randy.tmbgriefergames.core.commands.EjectCommand;
 import tmb.randy.tmbgriefergames.core.commands.FlowCommand;
 import tmb.randy.tmbgriefergames.core.commands.PayAllCommand;
 import tmb.randy.tmbgriefergames.core.commands.PlayerTracerCommand;
+import tmb.randy.tmbgriefergames.core.commands.ToggleFunctionCommand;
 import tmb.randy.tmbgriefergames.core.config.Configuration;
 import tmb.randy.tmbgriefergames.core.dev.DevBridge;
+import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.flow.FlowManager;
 import tmb.randy.tmbgriefergames.core.functions.AccountUnity;
 import tmb.randy.tmbgriefergames.core.functions.AutoLoot;
@@ -105,9 +106,9 @@ public class Addon extends LabyAddon<Configuration> {
         registerCommand(new DKsCommand());
         registerCommand(new PayAllCommand());
         registerCommand(new PlayerTracerCommand());
-        registerCommand(new AutocraftV2Command());
-        registerCommand(new AutocraftV3Command());
-        registerCommand(new EjectCommand());
+        registerCommand(new ToggleFunctionCommand(Functions.CRAFTV2, "autocraft", "craftv2"));
+        registerCommand(new ToggleFunctionCommand(Functions.CRAFTV3, "craftV3"));
+        registerCommand(new ToggleFunctionCommand(Functions.EJECT, "auswurf"));
         registerCommand(new FlowCommand());
 
         HudWidgetCategory category = new HudWidgetCategory(getNamespace());
@@ -205,6 +206,15 @@ public class Addon extends LabyAddon<Configuration> {
 
     public static void displayNotification(String msg) {
         Laby.labyAPI().minecraft().chatExecutor().displayClientMessage(ADDON_PREFIX + msg);
+    }
+
+    /** Icon of the addon from textures/widgets/&lt;name&gt;.png. */
+    public static Icon widgetIcon(String name) {
+        return Icon.texture(widgetTexture(name));
+    }
+
+    public static ResourceLocation widgetTexture(String name) {
+        return ResourceLocation.create(getNamespace(), "textures/widgets/" + name + ".png");
     }
 
     public static @NotNull String translate(@NotNull String key, Object... args) {

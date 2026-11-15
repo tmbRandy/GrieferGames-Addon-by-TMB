@@ -18,21 +18,23 @@ public abstract class ActiveFunction extends tmb.randy.tmbgriefergames.api.funct
     public boolean start(String[] arguments) {
         if (!CBtracker.isCommandAbleCB()) return false;
         boolean result = super.start(arguments);
-        if (result) {
-            if (!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
-                Addon.displayNotification(Addon.translate("functions.enable", Functions.valueOf(identifier).getLocalizedName()));
-        }
+        if (result)
+            notifyStateChange("functions.enable");
         return result;
     }
 
     @Override
     public boolean stop() {
         boolean result = super.stop();
-        if (result) {
-            if (!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
-                Addon.displayNotification(Addon.translate("functions.disable", Functions.valueOf(identifier).getLocalizedName()));
-        }
+        if (result)
+            notifyStateChange("functions.disable");
         return result;
+    }
+
+    /** Tells the player about the new state in the chat, unless the widget already shows it as an icon. */
+    private void notifyStateChange(String translationKey) {
+        if (!ActiveFunctionsWidget.sharedInstance.isEnabled() || !hasIcon())
+            Addon.displayNotification(Addon.translate(translationKey, Functions.valueOf(identifier).getLocalizedName()));
     }
 
     @Override
@@ -42,7 +44,7 @@ public abstract class ActiveFunction extends tmb.randy.tmbgriefergames.api.funct
 
     @Override
     public Icon getIcon() {
-        ResourceLocation resourceLocation = ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/" + identifier + ".png");
+        ResourceLocation resourceLocation = Addon.widgetTexture("status/" + identifier);
         return resourceLocation.exists() ? Icon.texture(resourceLocation) : null;
     }
 }

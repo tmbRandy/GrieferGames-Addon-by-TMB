@@ -7,8 +7,6 @@ import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine.State;
-import net.labymod.api.client.gui.icon.Icon;
-import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.event.Subscribe;
 import tmb.randy.tmbgriefergames.core.Addon;
 
@@ -25,7 +23,7 @@ public class PotionTimerWidget extends TextHudWidget<TextHudWidgetConfig> {
 
     public PotionTimerWidget(HudWidgetCategory category) {
         super("potiontimer");
-        setIcon(Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/potion.png")));
+        setIcon(Addon.widgetIcon("potion"));
         this.bindCategory(category);
     }
 

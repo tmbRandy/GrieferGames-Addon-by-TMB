@@ -12,7 +12,6 @@ import net.labymod.api.client.gui.hud.position.HudSize;
 import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.ScreenContext;
 import net.labymod.api.client.render.matrix.Stack;
-import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.chat.ChatReceiveEvent;
 import tmb.randy.tmbgriefergames.core.Const;
@@ -26,8 +25,8 @@ import tmb.randy.tmbgriefergames.core.helper.HopperTracker;
 public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
     private static final int ICON_SIZE = 32;
     private static final int SPACE = 2;
-    private static final Icon HOPPER_CONNECT_ICON =  Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/hopper_connect.png"));
-    private static final Icon HOPPER_MULTI_CONNECT_ICON =  Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status/hopper_multiconnect.png"));
+    private static final Icon HOPPER_CONNECT_ICON = Addon.widgetIcon("status/hopper_connect");
+    private static final Icon HOPPER_MULTI_CONNECT_ICON = Addon.widgetIcon("status/hopper_multiconnect");
     public static ActiveFunctionsWidget sharedInstance;
 
     public ActiveFunctionsWidget(HudWidgetCategory category) {
@@ -39,7 +38,7 @@ public class ActiveFunctionsWidget extends SimpleHudWidget<HudWidgetConfig> {
 
     @Override
     public Icon getIcon() {
-        return Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/status.png"));
+        return Addon.widgetIcon("status");
     }
 
     public void render(RenderPhase phase, ScreenContext context, boolean isEditorContext, HudSize size) {

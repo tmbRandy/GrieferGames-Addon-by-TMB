@@ -15,9 +15,7 @@ import net.labymod.api.client.gui.hud.binding.category.HudWidgetCategory;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidget;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextHudWidgetConfig;
 import net.labymod.api.client.gui.hud.hudwidget.text.TextLine;
-import net.labymod.api.client.gui.icon.Icon;
 import net.labymod.api.client.gui.screen.widget.widgets.input.SwitchWidget.SwitchSetting;
-import net.labymod.api.client.resources.ResourceLocation;
 import net.labymod.api.configuration.loader.property.ConfigProperty;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.widgets.NearbyWidget.NearbyWidgetConfig;
@@ -29,7 +27,7 @@ public class NearbyWidget extends TextHudWidget<NearbyWidgetConfig> {
     public NearbyWidget(HudWidgetCategory category) {
         super("nearby", NearbyWidgetConfig.class);
         this.name = Component.text(Laby.labyAPI().getName());
-        setIcon(Icon.texture(ResourceLocation.create(Addon.getNamespace(), "textures/widgets/nearby.png")));
+        setIcon(Addon.widgetIcon("nearby"));
         this.bindCategory(category);
     }
 
