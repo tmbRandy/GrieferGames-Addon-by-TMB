@@ -26,6 +26,7 @@ import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.RayTraceResult;
@@ -304,6 +305,11 @@ public class Helper extends BaseHelper {
 
     public static void showActionBar(String message) {
         mc().ingameGUI.setOverlayMessage(message, true);
+    }
+
+    /** Saves a screenshot to screenshots/&lt;name&gt;.png (must be called on the render thread). */
+    public static void saveScreenshot(String name) {
+        ScreenShotHelper.saveScreenshot(mc().gameDir, name + ".png", mc().displayWidth, mc().displayHeight, mc().getFramebuffer());
     }
 
     // ---------------------------------------------------------------- World

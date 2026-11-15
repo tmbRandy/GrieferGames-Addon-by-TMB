@@ -26,6 +26,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.Vec3;
 import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Const;
@@ -301,6 +302,11 @@ public class Helper extends BaseHelper {
 
     public static void showActionBar(String message) {
         mc().ingameGUI.setRecordPlaying(message, false);
+    }
+
+    /** Saves a screenshot to screenshots/&lt;name&gt;.png (must be called on the render thread). */
+    public static void saveScreenshot(String name) {
+        ScreenShotHelper.saveScreenshot(mc().mcDataDir, name + ".png", mc().displayWidth, mc().displayHeight, mc().getFramebuffer());
     }
 
     // ---------------------------------------------------------------- World
