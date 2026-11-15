@@ -3,6 +3,7 @@ package tmb.randy.tmbgriefergames.core.functions.chat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.labymod.api.Laby;
 import net.labymod.api.client.component.event.ClickEvent;
@@ -15,9 +16,9 @@ import tmb.randy.tmbgriefergames.core.functions.Function;
 public class ChatCleaner extends Function {
 
     private boolean isBlocking = false;
-    private static final java.util.regex.Pattern PLOT_COORDINATES_PATTERN = Pattern.compile("^\\[GrieferGames] \\[(-?\\d+);(-?\\d+)] \\w+ betrat dein Grundstück\\.$");
+    private static final Pattern PLOT_COORDINATES_PATTERN = Pattern.compile("^\\[GrieferGames] \\[(-?\\d+);(-?\\d+)] \\w+ betrat dein Grundstück\\.$");
 
-    private final Set<String> cleanupMessages = new HashSet<>(Arrays.asList(
+    private static final Set<String> CLEANUP_MESSAGES = Set.of(
         Const.Chat.GG_DOWNLOAD,
         Const.Chat.GG_MYSTERYMOD,
         Const.Chat.GG_PORTALRAUM,
@@ -34,7 +35,7 @@ public class ChatCleaner extends Function {
         Const.Chat.SERVER_STATUS,
         Const.Chat.ERGRIFFENE_MASSNAHMEN,
         Const.Chat.PORTALRAUM_CONNECTING
-    ));
+    );
 
     public ChatCleaner() {
         super(Functions.CHATCLEANER.name());
@@ -92,7 +93,7 @@ public class ChatCleaner extends Function {
         }
 
         // Standard cleanup messages
-        if (cleanupMessages.contains(message)) {
+        if (CLEANUP_MESSAGES.contains(message)) {
             event.setCancelled(true);
             return;
         }
@@ -122,20 +123,16 @@ public class ChatCleaner extends Function {
 
         // News filter - toggle blocking state when seeing the delimiter
         if (Addon.settings().getChatConfig().getHideNews().get()) {
-
-            if (isBlocking)
+            boolean delimiter = message.equals(Const.Chat.NEWS_DELIMITER);
+            if (isBlocking || delimiter)
                 event.setCancelled(true);
-
-            if (message.equals(Const.Chat.NEWS_DELIMITER))
+            if (delimiter)
                 isBlocking = !isBlocking;
-
-            if (isBlocking)
-                event.setCancelled(true);
         }
     }
 
     public static String plotEnterCoordinates(String text) {
-        java.util.regex.Matcher matcher = PLOT_COORDINATES_PATTERN.matcher(text);
+        Matcher matcher = PLOT_COORDINATES_PATTERN.matcher(text);
         if (matcher.find()) {
             return matcher.group(1) + ";" + matcher.group(2);
         }

@@ -1,22 +1,29 @@
 package tmb.randy.tmbgriefergames.core.functions;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.function.Predicate;
 import net.labymod.api.Laby;
+import net.labymod.api.client.entity.player.ClientPlayer;
+import net.labymod.api.client.entity.player.Inventory;
 import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.component.data.DataComponentKey;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
+import tmb.randy.tmbgriefergames.core.helper.BaseHelper;
 
+/** Prevents using precious items (bonze/birth sword, SoS, birth bow) by switching away from them. */
 public class ItemSaver extends Function {
-
-    public ItemSaver() {
-        super(Functions.ITEMSAVER.name());
-    }
 
     public enum ProtectionItems {
         BONZE_SWORD, BIRTH_SWORD, SOS, BIRTH_BOW
+    }
+
+    private static final DataComponentKey ENCHANTMENTS = DataComponentKey.simple("ench");
+
+    public ItemSaver() {
+        super(Functions.ITEMSAVER.name());
     }
 
     public static String getVersionizedNbtStringFor(ProtectionItems item) {
@@ -37,96 +44,62 @@ public class ItemSaver extends Function {
         };
     }
 
-
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if(Addon.settings().getItemProtection().get()) {
-            if(Laby.labyAPI().minecraft().getClientPlayer() != null) {
-                if(Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack() != null) {
-                    ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).getMainHandItemStack();
-                    if(stack.hasDataComponentContainer()) {
-                        if(stack.getDataComponentContainer().has(DataComponentKey.simple("ench"))) {
-                            String enchantments = stack.getDataComponentContainer().get(DataComponentKey.simple("ench")).toString();
+        ClientPlayer player = Laby.labyAPI().minecraft().getClientPlayer();
+        if (!Addon.settings().getItemProtection().get() || event.action() != Action.CLICK || player == null)
+            return;
 
-                            if(event.action() == Action.CLICK) {
-                                if((enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BONZE_SWORD)) || enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_SWORD))) && event.button().isLeft()) {
-                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_sword"));
-                                    Addon.getConnection().changeSlot(findHotbarSlotforItem());
-                                    event.setCancelled(true);
-                                } else if(enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.SOS)) && event.button().isRight()) {
-                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_sos"));
-                                    Addon.getConnection().changeSlot(findHotbarSlotforBlock());
-                                    event.setCancelled(true);
-                                } else if(enchantments.equals(getVersionizedNbtStringFor(ProtectionItems.BIRTH_BOW)) && event.button().isRight()) {
-                                    Addon.displayNotification("§4§l" + Addon.translate("itemSaver.item_saver_message_birth_bow"));
-                                    Addon.getConnection().changeSlot(findHotbarSlotforItem());
-                                    event.setCancelled(true);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        ItemStack stack = player.getMainHandItemStack();
+        if (stack == null || !stack.hasDataComponentContainer() || !stack.getDataComponentContainer().has(ENCHANTMENTS))
+            return;
+
+        String enchantments = stack.getDataComponentContainer().get(ENCHANTMENTS).toString();
+        String message = null;
+        int slot = -1;
+
+        if (event.button().isLeft() && (isItem(enchantments, ProtectionItems.BONZE_SWORD) || isItem(enchantments, ProtectionItems.BIRTH_SWORD))) {
+            message = "itemSaver.item_saver_message_sword";
+            slot = findHotbarSlotforItem();
+        } else if (event.button().isRight() && isItem(enchantments, ProtectionItems.SOS)) {
+            message = "itemSaver.item_saver_message_sos";
+            slot = findHotbarSlotforBlock();
+        } else if (event.button().isRight() && isItem(enchantments, ProtectionItems.BIRTH_BOW)) {
+            message = "itemSaver.item_saver_message_birth_bow";
+            slot = findHotbarSlotforItem();
+        }
+
+        if (message != null) {
+            Addon.displayNotification("§4§l" + Addon.translate(message));
+            Addon.getConnection().changeSlot(slot);
+            event.setCancelled(true);
         }
     }
 
+    private static boolean isItem(String enchantments, ProtectionItems item) {
+        return enchantments.equals(getVersionizedNbtStringFor(item));
+    }
+
+    /** Hotbar slot to switch to when a block should be placed instead: empty, then item, then plain block. */
     public static int findHotbarSlotforBlock() {
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
-
-            if (stack.isAir()) {
-                return i;
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
-
-            if(stack.isItem()) {
-                return i;
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
-
-            if(stack.isBlock() && !stack.hasDataComponentContainer()) {
-                return i;
-            }
-        }
-
-        return Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() == 8 ? 0 : Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() + 1;
+        return findHotbarSlot(List.of(ItemStack::isAir, ItemStack::isItem, stack -> stack.isBlock() && !stack.hasDataComponentContainer()));
     }
 
+    /** Hotbar slot to switch to when an item should be used instead: empty, then block, then plain item. */
     public static int findHotbarSlotforItem() {
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
-
-            if (stack.isAir()) {
-                return i;
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
-
-            if(stack.isBlock()) {
-                return i;
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            ItemStack stack = Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().itemStackAt(i);
-
-            if(stack.isItem() && !stack.hasDataComponentContainer()) {
-                return i;
-            }
-        }
-
-        return Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() == 8 ? 0 : Objects.requireNonNull(Laby.labyAPI().minecraft().getClientPlayer()).inventory().getSelectedIndex() + 1;
+        return findHotbarSlot(List.of(ItemStack::isAir, ItemStack::isBlock, stack -> stack.isItem() && !stack.hasDataComponentContainer()));
     }
 
+    /** First hotbar slot matching the first possible filter, otherwise simply the next slot. */
+    private static int findHotbarSlot(List<Predicate<ItemStack>> filtersByPriority) {
+        Inventory inventory = Laby.labyAPI().minecraft().getClientPlayer().inventory();
 
-
+        for (Predicate<ItemStack> filter : filtersByPriority) {
+            for (int i = 0; i < BaseHelper.HOTBAR_SIZE; i++) {
+                if (filter.test(inventory.itemStackAt(i)))
+                    return i;
+            }
+        }
+        return (inventory.getSelectedIndex() + 1) % BaseHelper.HOTBAR_SIZE;
+    }
 }
-

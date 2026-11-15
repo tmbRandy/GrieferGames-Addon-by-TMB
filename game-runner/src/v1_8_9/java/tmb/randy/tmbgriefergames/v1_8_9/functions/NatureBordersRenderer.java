@@ -3,286 +3,162 @@ package tmb.randy.tmbgriefergames.v1_8_9.functions;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
 import net.labymod.api.util.Color;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.world.chunk.Chunk;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector3f;
-import tmb.randy.tmbgriefergames.core.Addon;
-import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.api.events.CbChangedEvent;
+import tmb.randy.tmbgriefergames.core.Addon;
+import tmb.randy.tmbgriefergames.core.config.NatureSubConfig;
+import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.ActiveFunction;
 import tmb.randy.tmbgriefergames.core.helper.CBtracker;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 
+/** Renders the borders of the 42x42 plots in the nature worlds. */
 public class NatureBordersRenderer extends ActiveFunction {
+    private static final int PLOT_SIZE = 42;
+    private static final double MAX_RENDER_DISTANCE_SQ = 192 * 192;
+    private static final float ALPHA = 0.35F;
+    private static final float RAINBOW_SPEED = 0.01F;
 
-    private float lineRed = 1.0F;
-    private float lineGreen = 0.0F;
-    private float lineBlue = 0.0F;
+    private float rainbowHue = 0.0F;
 
     public NatureBordersRenderer() {
         super(Functions.NATUREBORDERSRENDERER.name());
     }
 
-    public static double getDistanceSq(double x1, double z1, double x2, double z2)
-    {
-        double xs = x1 - x2;
-        double zs = z1 - z2;
-        return xs * xs + zs * zs;
-    }
-
     @Override
     public void keyEvent(KeyEvent event) {
-        if(Addon.allKeysPressedAndGuiClosed(Addon.settings().getNatureSubConfig().getHotkey().get()) && CBtracker.isNatureWorldCB()) {
+        if (Addon.allKeysPressedAndGuiClosed(config().getHotkey().get()) && CBtracker.isNatureWorldCB())
             toggle();
-        }
-    }
-
-    public BlockPos getTopLiquidOrSolidBlock2(WorldClient world, BlockPos pos) {
-        Chunk chunk = world.getChunkFromBlockCoords(pos);
-        boolean inBlock = true;
-        BlockPos var3;
-        BlockPos var4;
-
-        for (var3 = new BlockPos(pos.getX(), pos.getY() + 3, pos.getZ()); var3.getY() >= 0; var3 = var4)
-        {
-            var4 = var3.offset(EnumFacing.DOWN);
-            Material material;
-            boolean bool;
-
-            if (inBlock)
-            {
-                material = chunk.getBlockState(var3).getBlock().getMaterial();
-                bool = material == Material.water || material == Material.lava || material.blocksMovement() && material != Material.leaves;
-
-                if (bool)
-                {
-                    continue;
-                }
-            }
-
-            inBlock = false;
-            material = chunk.getBlockState(var4).getBlock().getMaterial();
-            bool = material == Material.water || material == Material.lava || material.blocksMovement() && material != Material.leaves;
-
-            if (bool)
-            {
-                break;
-            }
-        }
-
-        return var3;
-    }
-
-    Vector3f HSV2RGB(float h, float s, float v) {
-        float r = v;
-        float g = v;
-        float b = v;
-
-        if (s > 0.0F)
-        {
-            h *= 6.0F;
-            int i = (int)h;
-            float f = h - i;
-
-            switch (i)
-            {
-                case 1:
-                    r = v * (1.0F - s * f);
-                    b = v * (1.0F - s);
-                    break;
-
-                case 2:
-                    r = v * (1.0F - s);
-                    b = v * (1.0F - s * (1.0F - f));
-                    break;
-
-                case 3:
-                    r = v * (1.0F - s);
-                    g = v * (1.0F - s * f);
-                    break;
-
-                case 4:
-                    r = v * (1.0F - s * (1.0F - f));
-                    g = v * (1.0F - s);
-                    break;
-
-                case 5:
-                    g = v * (1.0F - s);
-                    b = v * (1.0F - s * f);
-
-                case 0:
-                default:
-                    g = v * (1.0F - s * (1.0F - f));
-                    b = v * (1.0F - s);
-                    break;
-            }
-        }
-
-        return new Vector3f(r, g, b);
-    }
-
-    public boolean isPosInRenderableArea(EntityPlayerSP player, int posX, int posZ) {
-        return getDistanceSq(player.posX, player.posZ, posX, posZ) < 36864.0D;
-    }
-
-    @Override
-    public void renderWorldEvent(RenderWorldEvent event) {
-        if (isEnabled() && CBtracker.isNatureWorldCB()) {
-            double x = Helper.getPlayer().prevPosX + (Helper.getPlayer().posX - Helper.getPlayer().prevPosX) * event.getPartialTicks();
-            double y = Helper.getPlayer().prevPosY + (Helper.getPlayer().posY - Helper.getPlayer().prevPosY) * event.getPartialTicks();
-            double z = Helper.getPlayer().prevPosZ + (Helper.getPlayer().posZ - Helper.getPlayer().prevPosZ) * event.getPartialTicks();
-            RenderHelper.disableStandardItemLighting();
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            GL11.glLineWidth(1.0F);
-            GL11.glDepthMask(false);
-            GL11.glPushMatrix();
-            Tessellator tesselator = Tessellator.getInstance();
-            WorldRenderer render = tesselator.getWorldRenderer();
-            if(Addon.settings().getNatureSubConfig().getRainbow().get()) {
-                Vector3f hsv = this.RGB2HSV(this.lineRed, this.lineGreen, this.lineBlue);
-                Vector3f rgb = this.HSV2RGB((hsv.x + 0.01F) % 1.0F, hsv.y, hsv.z);
-                this.lineRed = rgb.x;
-                this.lineGreen = rgb.y;
-                this.lineBlue = rgb.z;
-                GL11.glColor4f(rgb.x, rgb.y, rgb.z, 0.35F);
-            } else {
-                Color color = Color.of(Addon.settings().getNatureSubConfig().getBorderColor().get());
-                GL11.glColor4f(((float) color.getRed())/255, ((float) color.getGreen())/255, ((float) color.getBlue())/255, 0.35F);
-            }
-            render.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-            int rad = 16 * Addon.settings().getNatureSubConfig().getBorderRadius().get();
-            int hrf = rad / 2;
-
-            for (int xx = 0; xx < rad; ++xx)
-            {
-                for (int zz = 0; zz < rad; ++zz)
-                {
-                    if (this.isPosInRenderableArea(Helper.getPlayer(), (int)Helper.getPlayer().posX - hrf + xx, (int)Helper.getPlayer().posZ - hrf + zz))
-                    {
-                        int posX = (int)Helper.getPlayer().posX - hrf + xx;
-                        int posZ = (int)Helper.getPlayer().posZ - hrf + zz;
-                        BlockPos pos = new BlockPos(posX, Helper.getPlayer().posY, posZ);
-
-                        BlockPos posN = new BlockPos(posX, Helper.getPlayer().posY, posZ - 1);
-                        BlockPos posE = new BlockPos(posX + 1, Helper.getPlayer().posY, posZ);
-                        double yy = 1.0D - y;
-                        double yy2 = 256.0D - y;
-
-                        if (!Addon.settings().getNatureSubConfig().getBorderMaxHeight().get())
-                        {
-                            pos = this.getTopLiquidOrSolidBlock2(Helper.getWorld(), pos);
-                            posN = this.getTopLiquidOrSolidBlock2(Helper.getWorld(), posN);
-                            posE = this.getTopLiquidOrSolidBlock2(Helper.getWorld(), posE);
-                        }
-
-                        int additionalOffsetZ = (pos.getZ() < 0 ? -1 : 0);
-
-                        if ((pos.getZ() + additionalOffsetZ) % 42 == 0)
-                        {
-                            if (!Addon.settings().getNatureSubConfig().getBorderMaxHeight().get())
-                            {
-                                yy = Math.max(pos.getY(), posN.getY()) - y;
-                                yy2 = yy + Addon.settings().getNatureSubConfig().getBorderheight().get();
-                            }
-
-                            render.pos(pos.getX() - x, yy, pos.getZ() - z).endVertex();
-                            render.pos(pos.getX() + 1.0D - x, yy, pos.getZ() - z).endVertex();
-                            render.pos(pos.getX() + 1.0D - x, yy2, pos.getZ() - z).endVertex();
-                            render.pos(pos.getX() - x, yy2, pos.getZ() - z).endVertex();
-                        }
-
-                        int additionalOffsetX = (pos.getX() < 0 ? -1 : 0);
-
-                        if ((pos.getX() + 1 + additionalOffsetX) % 42 == 0)
-                        {
-                            if (!Addon.settings().getNatureSubConfig().getBorderMaxHeight().get())
-                            {
-                                yy = Math.max(pos.getY(), posE.getY()) - y;
-                                yy2 = yy + Addon.settings().getNatureSubConfig().getBorderheight().get();
-                            }
-
-                            render.pos(pos.getX() + 1.0D - x, yy, pos.getZ() - z).endVertex();
-                            render.pos(pos.getX() + 1.0D - x, yy, pos.getZ() + 1.0D - z).endVertex();
-                            render.pos(pos.getX() + 1.0D - x, yy2, pos.getZ() + 1.0D - z).endVertex();
-                            render.pos(pos.getX() + 1.0D - x, yy2, pos.getZ() - z).endVertex();
-                        }
-                    }
-                }
-            }
-
-            tesselator.draw();
-            GL11.glEnable(GL11.GL_CULL_FACE);
-            GL11.glDepthFunc(GL11.GL_LEQUAL);
-            GL11.glPopMatrix();
-            GL11.glDepthMask(true);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-            RenderHelper.enableStandardItemLighting();
-        }
     }
 
     @Override
     public void cbChangedEvent(CbChangedEvent event) {
-        // Override to avoid stop() while switching CBs
+        // Stays enabled while switching CBs
     }
 
-    Vector3f RGB2HSV(float r, float g, float b)
-    {
-        float max = Math.max(r, g);
-        max = Math.max(max, b);
-        float min = Math.min(r, g);
-        min = Math.min(min, b);
-        float h = max - min;
+    @Override
+    public void renderWorldEvent(RenderWorldEvent event) {
+        if (!isEnabled() || !CBtracker.isNatureWorldCB())
+            return;
 
-        if (h > 0.0F)
-        {
-            if (max == r)
-            {
-                h = (g - b) / h;
+        float partialTicks = event.getPartialTicks();
+        double viewX = Helper.getPlayer().prevPosX + (Helper.getPlayer().posX - Helper.getPlayer().prevPosX) * partialTicks;
+        double viewY = Helper.getPlayer().prevPosY + (Helper.getPlayer().posY - Helper.getPlayer().prevPosY) * partialTicks;
+        double viewZ = Helper.getPlayer().prevPosZ + (Helper.getPlayer().posZ - Helper.getPlayer().prevPosZ) * partialTicks;
 
-                if (h < 0.0F)
-                {
-                    h += 6.0F;
-                }
-            }
-            else if (max == g)
-            {
-                h = 2.0F + (b - r) / h;
-            }
-            else
-            {
-                h = 4.0F + (r - g) / h;
+        setupRendering();
+        Helper.startQuads();
+
+        int diameter = 16 * config().getBorderRadius().get();
+        int playerX = (int) Helper.getPlayer().posX;
+        int playerZ = (int) Helper.getPlayer().posZ;
+
+        for (int dx = 0; dx < diameter; dx++) {
+            for (int dz = 0; dz < diameter; dz++) {
+                int posX = playerX - diameter / 2 + dx;
+                int posZ = playerZ - diameter / 2 + dz;
+                if (isInRenderDistance(posX, posZ))
+                    addBorderQuads(posX, posZ, viewX, viewY, viewZ);
             }
         }
 
-        h /= 6.0F;
-        float s = max - min;
-
-        if (max != 0.0F)
-        {
-            s /= max;
-        }
-
-        return new Vector3f(h, s, max);
+        Helper.draw();
+        resetRendering();
     }
 
+    private void addBorderQuads(int posX, int posZ, double viewX, double viewY, double viewZ) {
+        boolean maxHeight = config().getBorderMaxHeight().get();
+        double playerY = Helper.getPlayer().posY;
+
+        BlockPos pos = new BlockPos(posX, playerY, posZ);
+        BlockPos north = new BlockPos(posX, playerY, posZ - 1);
+        BlockPos east = new BlockPos(posX + 1, playerY, posZ);
+
+        if (!maxHeight) {
+            pos = Helper.getTopSolidOrLiquidBlock(pos);
+            north = Helper.getTopSolidOrLiquidBlock(north);
+            east = Helper.getTopSolidOrLiquidBlock(east);
+        }
+
+        double x = pos.getX() - viewX;
+        double z = pos.getZ() - viewZ;
+
+        // Border along the x axis (north side of the block)
+        if ((pos.getZ() + (pos.getZ() < 0 ? -1 : 0)) % PLOT_SIZE == 0) {
+            double[] height = getHeightRange(Math.max(pos.getY(), north.getY()), viewY, maxHeight);
+            Helper.vertex(x, height[0], z);
+            Helper.vertex(x + 1, height[0], z);
+            Helper.vertex(x + 1, height[1], z);
+            Helper.vertex(x, height[1], z);
+        }
+
+        // Border along the z axis (east side of the block)
+        if ((pos.getX() + 1 + (pos.getX() < 0 ? -1 : 0)) % PLOT_SIZE == 0) {
+            double[] height = getHeightRange(Math.max(pos.getY(), east.getY()), viewY, maxHeight);
+            Helper.vertex(x + 1, height[0], z);
+            Helper.vertex(x + 1, height[0], z + 1);
+            Helper.vertex(x + 1, height[1], z + 1);
+            Helper.vertex(x + 1, height[1], z);
+        }
+    }
+
+    /** Bottom and top of a border wall relative to the view, either the whole world height or the configured height. */
+    private double[] getHeightRange(int groundY, double viewY, boolean maxHeight) {
+        if (maxHeight)
+            return new double[] {1.0D - viewY, 256.0D - viewY};
+
+        double bottom = groundY - viewY;
+        return new double[] {bottom, bottom + config().getBorderheight().get()};
+    }
+
+    private boolean isInRenderDistance(int posX, int posZ) {
+        double dx = Helper.getPlayer().posX - posX;
+        double dz = Helper.getPlayer().posZ - posZ;
+        return dx * dx + dz * dz < MAX_RENDER_DISTANCE_SQ;
+    }
+
+    private void setupRendering() {
+        RenderHelper.disableStandardItemLighting();
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.0F);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glLineWidth(1.0F);
+        GL11.glDepthMask(false);
+        GL11.glPushMatrix();
+
+        if (config().getRainbow().get()) {
+            rainbowHue = (rainbowHue + RAINBOW_SPEED) % 1.0F;
+            setColor(java.awt.Color.HSBtoRGB(rainbowHue, 1.0F, 1.0F));
+        } else {
+            setColor(config().getBorderColor().get());
+        }
+    }
+
+    private static void setColor(int rgb) {
+        Color color = Color.of(rgb);
+        GL11.glColor4f(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, ALPHA);
+    }
+
+    private void resetRendering() {
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+        GL11.glPopMatrix();
+        GL11.glDepthMask(true);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderHelper.enableStandardItemLighting();
+    }
+
+    private static NatureSubConfig config() {
+        return Addon.settings().getNatureSubConfig();
+    }
 }
-

@@ -3,19 +3,19 @@ package tmb.randy.tmbgriefergames.v1_8_9.functions;
 import java.util.HashSet;
 import java.util.Set;
 import net.labymod.api.event.client.render.world.RenderWorldEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing.Axis;
 import org.lwjgl.opengl.GL11;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
 import tmb.randy.tmbgriefergames.v1_8_9.Helper;
 
+/** Outlines the blocks an orb pickaxe or orb shovel will break. */
 public class BlockMarker extends Function {
 
     public BlockMarker() {
@@ -24,69 +24,56 @@ public class BlockMarker extends Function {
 
     @Override
     public void renderWorldEvent(RenderWorldEvent event) {
-        if(Addon.settings().getBlockMarker().get()) {
-            ItemStack heldItem = Helper.getPlayer().getHeldItem();
-            if (heldItem == null || !heldItem.hasTagCompound())
-                return;
+        if (!Addon.settings().getBlockMarker().get())
+            return;
 
-            NBTTagCompound tag = heldItem.getTagCompound();
-            if (tag == null || (!tag.hasKey("orb_pickaxe") && !tag.hasKey("orb_shovel")))
-                return;
+        ItemStack heldItem = Helper.getHeldItem();
+        int size = getOrbToolSize(heldItem);
+        BlockPos target = Helper.getBlockPosLookingAt();
+        if (size == 0 || target == null)
+            return;
 
-            int size =  3;
-
-            if(tag.hasKey("orb_tool_level")) {
-                size = switch (tag.getString("orb_tool_level")) {
-                    case "LARGE" -> 7;
-                    case "MEDIUM" -> 5;
-                    default -> 3;
-                };
-            }
-
-            MovingObjectPosition rayTrace = Minecraft.getMinecraft().objectMouseOver;
-            if (rayTrace == null || rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
-                return;
-
-            BlockPos target = rayTrace.getBlockPos();
-            Set<BlockPos> blocks = getAffectedBlocks(target, size);
-            blocks.removeIf(pos -> Helper.getWorld().isAirBlock(pos) || heldItem.getStrVsBlock(Helper.getWorld().getBlockState(pos).getBlock()) <= 1.0F);
-
-            renderBlockOutline(blocks);
-        }
+        Set<BlockPos> blocks = getAffectedBlocks(target, size / 2);
+        blocks.removeIf(pos -> Helper.getWorld().isAirBlock(pos) || Helper.getDestroySpeed(heldItem, pos) <= 1.0F);
+        renderBlockOutlines(blocks);
     }
 
-    private Set<BlockPos> getAffectedBlocks(BlockPos center, int radius) {
+    /** Edge length of the area an orb tool breaks, 0 if the stack is no orb tool. */
+    private static int getOrbToolSize(ItemStack stack) {
+        if (Helper.isEmpty(stack) || !stack.hasTagCompound())
+            return 0;
+
+        NBTTagCompound tag = stack.getTagCompound();
+        if (!tag.hasKey("orb_pickaxe") && !tag.hasKey("orb_shovel"))
+            return 0;
+
+        return switch (tag.getString("orb_tool_level")) {
+            case "LARGE" -> 7;
+            case "MEDIUM" -> 5;
+            default -> 3;
+        };
+    }
+
+    /** All blocks in the plane perpendicular to the view axis around the center. */
+    private static Set<BlockPos> getAffectedBlocks(BlockPos center, int range) {
+        Axis axis = Helper.getViewAxis(center);
         Set<BlockPos> blocks = new HashSet<>();
 
-        Vec3 playerPos = Helper.getPlayer().getPositionEyes(1.0f);
-        Vec3 blockCenter = new Vec3(center).addVector(0.5, 0.5, 0.5);
-        Vec3 direction = blockCenter.subtract(playerPos).normalize();
-
-        int range = radius / 2;
-
-        if (Math.abs(direction.xCoord) > Math.abs(direction.yCoord) && Math.abs(direction.xCoord) > Math.abs(direction.zCoord)) {
-            for (int y = -range; y <= range; y++) {
-                for (int z = -range; z <= range; z++) {
-                    blocks.add(center.add(0, y, z));
-                }
-            }
-        } else if (Math.abs(direction.zCoord) > Math.abs(direction.yCoord)) {
-            for (int x = -range; x <= range; x++) {
-                for (int y = -range; y <= range; y++) {
-                    blocks.add(center.add(x, y, 0));
-                }
-            }
-        } else {
-            for (int x = -range; x <= range; x++) {
-                for (int z = -range; z <= range; z++) {
-                    blocks.add(center.add(x, 0, z));
-                }
+        for (int a = -range; a <= range; a++) {
+            for (int b = -range; b <= range; b++) {
+                blocks.add(switch (axis) {
+                    case X -> center.add(0, a, b);
+                    case Z -> center.add(a, b, 0);
+                    case Y -> center.add(a, 0, b);
+                });
             }
         }
         return blocks;
     }
 
-    private void renderBlockOutline(Set<BlockPos> blocks) {
+    private static void renderBlockOutlines(Set<BlockPos> blocks) {
+        RenderManager view = Helper.mc().getRenderManager();
+
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -95,12 +82,8 @@ public class BlockMarker extends Function {
         GlStateManager.color(0.0f, 1.0f, 0.0f, 1.0f);
 
         GL11.glBegin(GL11.GL_LINES);
-        for (BlockPos pos : blocks) {
-            double x = pos.getX() - Minecraft.getMinecraft().getRenderManager().viewerPosX;
-            double y = pos.getY() - Minecraft.getMinecraft().getRenderManager().viewerPosY;
-            double z = pos.getZ() - Minecraft.getMinecraft().getRenderManager().viewerPosZ;
-            drawBlockOutline(x, y, z);
-        }
+        for (BlockPos pos : blocks)
+            drawBlockOutline(pos.getX() - view.viewerPosX, pos.getY() - view.viewerPosY, pos.getZ() - view.viewerPosZ);
         GL11.glEnd();
 
         GlStateManager.enableDepth();
@@ -109,43 +92,20 @@ public class BlockMarker extends Function {
         GlStateManager.popMatrix();
     }
 
-    private void drawBlockOutline(double x, double y, double z) {
-        double s = 1.0;
+    /** The 12 edges of a block cube. */
+    private static void drawBlockOutline(double x, double y, double z) {
+        for (int i = 0; i < 4; i++) {
+            double x1 = x + (i == 1 || i == 2 ? 1 : 0), z1 = z + (i >= 2 ? 1 : 0);
+            double x2 = x + (i == 0 || i == 1 ? 1 : 0), z2 = z + (i == 1 || i == 2 ? 1 : 0);
 
-        GL11.glVertex3d(x, y, z);
-        GL11.glVertex3d(x + s, y, z);
+            line(x1, y, z1, x2, y, z2);
+            line(x1, y + 1, z1, x2, y + 1, z2);
+            line(x1, y, z1, x1, y + 1, z1);
+        }
+    }
 
-        GL11.glVertex3d(x + s, y, z);
-        GL11.glVertex3d(x + s, y, z + s);
-
-        GL11.glVertex3d(x + s, y, z + s);
-        GL11.glVertex3d(x, y, z + s);
-
-        GL11.glVertex3d(x, y, z + s);
-        GL11.glVertex3d(x, y, z);
-
-        GL11.glVertex3d(x, y + s, z);
-        GL11.glVertex3d(x + s, y + s, z);
-
-        GL11.glVertex3d(x + s, y + s, z);
-        GL11.glVertex3d(x + s, y + s, z + s);
-
-        GL11.glVertex3d(x + s, y + s, z + s);
-        GL11.glVertex3d(x, y + s, z + s);
-
-        GL11.glVertex3d(x, y + s, z + s);
-        GL11.glVertex3d(x, y + s, z);
-
-        GL11.glVertex3d(x, y, z);
-        GL11.glVertex3d(x, y + s, z);
-
-        GL11.glVertex3d(x + s, y, z);
-        GL11.glVertex3d(x + s, y + s, z);
-
-        GL11.glVertex3d(x + s, y, z + s);
-        GL11.glVertex3d(x + s, y + s, z + s);
-
-        GL11.glVertex3d(x, y, z + s);
-        GL11.glVertex3d(x, y + s, z + s);
+    private static void line(double x1, double y1, double z1, double x2, double y2, double z2) {
+        GL11.glVertex3d(x1, y1, z1);
+        GL11.glVertex3d(x2, y2, z2);
     }
 }

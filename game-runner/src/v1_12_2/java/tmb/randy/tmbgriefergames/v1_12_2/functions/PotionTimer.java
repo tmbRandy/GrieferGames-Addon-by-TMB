@@ -5,20 +5,17 @@ import net.labymod.api.client.world.item.ItemStack;
 import net.labymod.api.event.client.input.MouseButtonEvent;
 import net.labymod.api.event.client.input.MouseButtonEvent.Action;
 import net.labymod.api.event.client.world.ItemStackTooltipEvent;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.util.EnumHand;
 import tmb.randy.tmbgriefergames.core.Const;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.core.menu.PotionMenu;
 import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget;
 import tmb.randy.tmbgriefergames.core.widgets.PotionTimerWidget.Timer;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
 
+/** Starts the potion timer widget when the use of a fly or break potion is confirmed. */
 public class PotionTimer extends Function {
-
-    private ItemStack lastRenderedTooltipItemStack;
+    private ItemStack lastHoveredStack;
 
     public PotionTimer() {
         super(Functions.POTIONTIMER.name());
@@ -26,31 +23,25 @@ public class PotionTimer extends Function {
 
     @Override
     public void itemStackTooltipEvent(ItemStackTooltipEvent event) {
-        this.lastRenderedTooltipItemStack = event.itemStack();
+        lastHoveredStack = event.itemStack();
     }
 
     @Override
     public void mouseButtonEvent(MouseButtonEvent event) {
-        if (!Laby.labyAPI().minecraft().isIngame())
+        if (!Laby.labyAPI().minecraft().isIngame() || event.action() != Action.CLICK || !event.button().isLeft())
             return;
 
-        if (event.action() == Action.CLICK && event.button().isLeft()) {
-            Container cont = Helper.getPlayer().openContainer;
-            if(cont != null) {
-                if(cont instanceof ContainerChest chest) {
-                    IInventory inv = chest.getLowerChestInventory();
-                    if(inv.getName().equalsIgnoreCase(Const.Menu.TRANK_BENUTZEN)) {
-                        if(lastRenderedTooltipItemStack != null) {
-                            if(lastRenderedTooltipItemStack.getAsItem().getIdentifier().getPath().equals("dye") && lastRenderedTooltipItemStack.getDisplayName().toString().contains("Bestätigen")) {
-                                switch (Helper.getPlayer().getHeldItem(EnumHand.MAIN_HAND).getDisplayName()) {
-                                    case Const.Item.FLUGTRANK -> PotionTimerWidget.startTimer(Timer.FLY);
-                                    case Const.Item.ABBAUTRANK -> PotionTimerWidget.startTimer(Timer.BREAK);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        if (!Helper.isChestOpen(PotionMenu.TITLE) || !isConfirmButton(lastHoveredStack) || Helper.isEmpty(Helper.getHeldItem()))
+            return;
+
+        switch (Helper.getHeldItem().getDisplayName()) {
+            case Const.Item.FLUGTRANK -> PotionTimerWidget.startTimer(Timer.FLY);
+            case Const.Item.ABBAUTRANK -> PotionTimerWidget.startTimer(Timer.BREAK);
         }
+    }
+
+    private static boolean isConfirmButton(ItemStack stack) {
+        return stack != null && stack.getAsItem().getIdentifier().getPath().equals("dye")
+            && stack.getDisplayName().toString().contains(PotionMenu.CONFIRM_KEYWORD);
     }
 }

@@ -1,6 +1,7 @@
 package tmb.randy.tmbgriefergames.core.helper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import javax.inject.Singleton;
@@ -66,14 +67,14 @@ public class CBtracker {
             + PlainTextComponentSerializer.plainText().serialize(team.getSuffix());
     }
 
-    public static CBs getCurrentCB() {return currentCB;}
-    public static boolean isNatureWorldCB() {return currentCB == CBs.NATURE || currentCB == CBs.EXTREME;}
-    public static boolean isPlotworldCB() {
-        return switch (currentCB) {
-            case WASSER, LAVA, PORTAL, LOBBY, NONE -> false;
-            default -> true;
-        };
+    public static CBs getCurrentCB() {
+        return currentCB;
     }
+
+    public static boolean isNatureWorldCB() {
+        return currentCB == CBs.NATURE || currentCB == CBs.EXTREME;
+    }
+
     public static boolean isCommandAbleCB() {
         return switch (currentCB) {
             case PORTAL, LOBBY, NONE -> false;
@@ -81,10 +82,19 @@ public class CBtracker {
         };
     }
 
+    public static boolean isPlotworldCB() {
+        return isPlotworldCB(currentCB);
+    }
+
     public static boolean isPlotworldCB(CBs cb) {
         return switch (cb) {
             case WASSER, LAVA, PORTAL, LOBBY, NONE -> false;
             default -> true;
         };
+    }
+
+    /** All plot world CBs a player can switch to, in enum order. */
+    public static List<CBs> getSwitchablePlotworldCBs() {
+        return Arrays.stream(CBs.values()).filter(cb -> cb != CBs.EVENT && isPlotworldCB(cb)).toList();
     }
 }

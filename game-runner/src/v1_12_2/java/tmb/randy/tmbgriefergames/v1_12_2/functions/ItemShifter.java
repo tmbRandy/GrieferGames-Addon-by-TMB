@@ -1,272 +1,178 @@
 package tmb.randy.tmbgriefergames.v1_12_2.functions;
 
-import java.util.LinkedList;
 import net.labymod.api.client.gui.screen.key.Key;
 import net.labymod.api.event.client.input.KeyEvent;
 import net.labymod.api.event.client.input.KeyEvent.State;
 import net.labymod.api.event.client.lifecycle.GameTickEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.input.Keyboard;
 import tmb.randy.tmbgriefergames.core.Addon;
 import tmb.randy.tmbgriefergames.core.Const;
+import tmb.randy.tmbgriefergames.core.click.Click;
 import tmb.randy.tmbgriefergames.core.enums.Functions;
 import tmb.randy.tmbgriefergames.core.enums.QueueType;
 import tmb.randy.tmbgriefergames.core.functions.Function;
+import tmb.randy.tmbgriefergames.core.menu.HopperMenu;
+import tmb.randy.tmbgriefergames.core.menu.StorageMenus.CompressionSelection;
+import tmb.randy.tmbgriefergames.core.menu.StorageMenus.EndlessChest;
+import tmb.randy.tmbgriefergames.core.menu.StorageMenus.SpawnerStorage;
+import tmb.randy.tmbgriefergames.core.menu.StorageMenus.SpecialItems;
 import tmb.randy.tmbgriefergames.v1_12_2.Helper;
-import tmb.randy.tmbgriefergames.v1_12_2.click.Click;
-import tmb.randy.tmbgriefergames.v1_12_2.click.ClickManager;
 
+/**
+ * Moves stacks between a chest and the inventory with the arrow keys (UP: inventory -> chest, DOWN: chest -> inventory).
+ * If the player holds a stack on the cursor, only stacks of that item are moved.
+ */
 public class ItemShifter extends Function {
+    private static final int SMALL_CHEST = 27;
+    private static final int LARGE_CHEST = 54;
 
-    private String itemToMove = "";
-    private int idToMove = 0;
-
-    private ContainerChest currentChest;
-    private boolean topToBottom = true;
-
-    private final LinkedList<Click> toSend = new LinkedList<>();
-
-    private final int[] spawnerMenuItemIDs = new int[] {160, 384, 347, 76, 54};
-
-    private static ItemShifter sharedInstance;
+    private ItemStack itemToMove;
 
     public ItemShifter() {
         super(Functions.ITEMSHIFTER.name());
     }
 
-    public static ItemShifter getSharedInsance() {
-        if(sharedInstance == null) {
-            sharedInstance = new ItemShifter();
-        }
-        return sharedInstance;
-    }
-
     public void stopShifting() {
-        itemToMove = "";
-        idToMove = 0;
-        currentChest = null;
-        topToBottom = true;
-    }
-
-    public void startShifting() {
-        this.currentChest = (ContainerChest) Helper.getPlayer().openContainer;
-
-        if(currentChest.getLowerChestInventory().getName().equals(Const.Menu.WAEHLE_KOMPRIMIERUNG) && topToBottom) {
-            outerLoop : for (int i = 16; i >= 10 ; i--) {
-                ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
-                if(stack.hasTagCompound() && stack.getTagCompound() != null) {
-                    NBTTagCompound display = stack.getTagCompound().getCompoundTag("display");
-                    NBTTagList lore = display.getTagList("Lore", 8);
-
-                    if(lore.tagCount() > 0) {
-                        for (int j = 0; j < lore.tagCount(); j++) {
-                            String string = lore.getStringTagAt(j);
-
-                            if(string.startsWith(Const.Lore.VERFUEGBAR_COLOR) && string.endsWith(Const.Lore.VERFUEGBAR_SUFFIX)) {
-                                int count = Integer.parseInt(string.replace(Const.Lore.VERFUEGBAR_COLOR, "").replace(Const.Lore.VERFUEGBAR_SUFFIX, ""). replace(".", ""));
-                                if(count > 0) {
-                                    for (int k = 0; k < count; k++) {
-                                        shiftClick(i);
-                                    }
-                                    sendQueue();
-                                    break outerLoop;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else if(currentChest.getLowerChestInventory().getName().equals(Helper.getPlayer().inventory.mainInventory.getFirst().getDisplayName()) && topToBottom) {
-            if(Helper.isInventoryFull())
-                return;
-            shiftClick(11);
-            sendQueue();
-        } else if(currentChest.getLowerChestInventory().getName().equals(Const.Menu.SPEZIELLE_ITEMS) && topToBottom) {
-            if(Helper.isInventoryFull())
-                return;
-            for (int i = 0; i < currentChest.getLowerChestInventory().getSizeInventory(); i++) {
-                ItemStack stack = currentChest.getLowerChestInventory().getStackInSlot(i);
-                if(stack != null && !stack.isEmpty()) {
-                    if(stack.hasDisplayName() && stack.getDisplayName().equals(Helper.getPlayer().inventory.mainInventory.getFirst().getDisplayName())) {
-                        shiftClick(i);
-                        sendQueue();
-                        break;
-                    }
-                }
-            }
-        } else {
-            this.itemToMove = Helper.getPlayer().getHeldItemMainhand().getDisplayName();
-
-            int containerSize = currentChest.inventorySlots.size();
-
-            int fromMin = 0;
-            int fromMax;
-            int destMin = 0;
-            int destMax;
-
-            if(topToBottom) {
-                if(containerSize == 63) {
-                    fromMax = 26;
-                    destMin = 27;
-                    destMax = 62;
-                } else if(containerSize == 90) {
-                    fromMax = 53;
-                    destMin = 54;
-                    destMax = 89;
-                } else {return;}
-            } else {
-                if(containerSize == 63) {
-                    destMax = 26;
-                    fromMin = 27;
-                    fromMax = 62;
-                } else if(containerSize == 90) {
-                    destMax = 53;
-                    fromMin = 54;
-                    fromMax = 89;
-                } else {return;}
-            }
-
-            depositHeld(fromMin, fromMax, destMin, destMax);
-
-            int availableSlots = getEmptySlotsInRange(destMin, destMax);
-            boolean isSpawner = this.checkIfContainerIsSpawner();
-
-            for(int from = fromMin; from <= fromMax; from++) {
-
-                Slot fromSlot = this.currentChest.inventorySlots.get(from);
-
-                int currentItemID = Item.getIdFromItem(fromSlot.getStack().getItem());
-                String currentItemName = fromSlot.getStack().getDisplayName();
-
-                if(fromSlot.getHasStack() && availableSlots > 0) {
-                    if(!(isSpawner && ArrayUtils.contains(spawnerMenuItemIDs, currentItemID))) {
-                        if(this.idToMove == 0 || (this.idToMove == currentItemID && this.itemToMove.equals(currentItemName))) {
-                            this.shiftClick(from);
-                            availableSlots -= 1;
-                        }
-                    }
-                }
-            }
-
-            this.idToMove = 0;
-            this.itemToMove = "";
-            this.sendQueue();
-        }
+        itemToMove = null;
     }
 
     @Override
     public void tickEvent(GameTickEvent event) {
-        if((Keyboard.isKeyDown(Key.ARROW_LEFT.getId()) && Keyboard.isKeyDown(Key.ARROW_UP.getId()) && Keyboard.isKeyDown(Key.ARROW_RIGHT.getId())) || !(Helper.getPlayer().openContainer instanceof ContainerChest chest))
+        String title = Helper.getChestTitle();
+        boolean compHotkeyPressed = Key.ARROW_LEFT.isPressed() && Key.ARROW_UP.isPressed() && Key.ARROW_RIGHT.isPressed();
+        if (compHotkeyPressed || title == null || !Helper.isChestScreen() || !isSlowQueueEmpty())
             return;
 
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiChest) {
-            IInventory inv = chest.getLowerChestInventory();
-
-            if (currentChest != null && inv.getName().contains("Komprimierung")) {
-                stopShifting();
-            }
-
-            if (Keyboard.isKeyDown(Key.ARROW_UP.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
-                if (inv.getName().equalsIgnoreCase(Const.Menu.TRICHTER_EINSTELLUNGEN) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW)) {
-                    shiftClick(49);
-                    for (int i = 0; i < 15; i++) {
-                        shiftClick(32);
-                    }
-                } else {
-                    setTopToBottom(false);
-                    startShifting();
-                }
-            } else if (Keyboard.isKeyDown(Key.ARROW_DOWN.getId()) && ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.SLOW) && !Addon.getActiveFunction(Functions.COMP.name()).isEnabled()) {
-                setTopToBottom(true);
-                startShifting();
-            }
+        if (Key.ARROW_UP.isPressed()) {
+            if (title.equals(HopperMenu.TITLE))
+                maxOutHopperRadius();
+            else
+                shiftIntoChest();
+        } else if (Key.ARROW_DOWN.isPressed() && !Addon.getActiveFunction(Functions.COMP.name()).isEnabled()) {
+            shiftOutOfChest(title);
         }
     }
 
     @Override
     public void keyEvent(KeyEvent event) {
-        if(event.state() == State.PRESS) {
-            if (Addon.allKeysPressed(Addon.settings().getInventoryDrop().get()) &&
-                Helper.getPlayer().openContainer != null &&
-                ClickManager.getSharedInstance().isClickQueueEmpty(QueueType.MEDIUM) && Minecraft.getMinecraft().currentScreen instanceof GuiInventory) {
-                ClickManager.getSharedInstance().dropInventory();
-            }
+        if (event.state() == State.PRESS && Addon.allKeysPressed(Addon.settings().getInventoryDrop().get())
+            && Helper.isInventoryScreen() && Helper.isClickQueueEmpty()) {
+            Helper.dropItems(stack -> true, false);
         }
     }
 
-    private boolean checkIfContainerIsSpawner() {
-        if(Helper.getPlayer().openContainer == null)
-            return false;
-
-        IInventory inv = ((ContainerChest) Helper.getPlayer().openContainer).getLowerChestInventory();
-        return inv.getName().equalsIgnoreCase(Const.Menu.SPAWNER_LAGER);
+    private void maxOutHopperRadius() {
+        shiftClick(HopperMenu.SHORTCUT_SLOT);
+        for (int i = 0; i < HopperMenu.MAX_RADIUS_STEPS; i++)
+            shiftClick(HopperMenu.RADIUS_INCREASE);
     }
 
-    private void shiftClick(int slot) {
-        this.toSend.addLast(new Click(Helper.getPlayer().openContainer.windowId, slot, 0, ClickType.QUICK_MOVE));
+    private void shiftIntoChest() {
+        int chestSize = Helper.getChestSize();
+        if (chestSize == SMALL_CHEST || chestSize == LARGE_CHEST)
+            shiftStacks(chestSize, Helper.getContainerSize() - 1, 0, chestSize - 1);
     }
 
-    private int getEmptySlotsInRange(int start, int end) {
-        int output = 0;
+    private void shiftOutOfChest(String title) {
+        ItemStack firstItem = Helper.getInventoryStack(0);
+        String firstItemName = Helper.isEmpty(firstItem) ? null : firstItem.getDisplayName();
 
-        for(int i = start; i <= end; i++) {
-            if(!this.currentChest.inventorySlots.get(i).getHasStack()) {
-                output++;
+        if (title.equals(CompressionSelection.TITLE)) {
+            takeAvailableCompression();
+        } else if (title.equals(firstItemName)) {
+            if (!Helper.isInventoryFull())
+                shiftClick(EndlessChest.TAKE_ALL);
+        } else if (title.equals(SpecialItems.TITLE)) {
+            if (!Helper.isInventoryFull()) {
+                int slot = Helper.findContainerSlot(0, Helper.getChestSize() - 1, stack -> stack.hasDisplayName() && stack.getDisplayName().equals(firstItemName));
+                if (slot >= 0)
+                    shiftClick(slot);
             }
+        } else {
+            int chestSize = Helper.getChestSize();
+            if (chestSize == SMALL_CHEST || chestSize == LARGE_CHEST)
+                shiftStacks(0, chestSize - 1, chestSize, Helper.getContainerSize() - 1);
         }
-
-        return output;
     }
 
-    private void depositHeld(int fromMin, int fromMax, int destMin, int destMax) {
-        for(int slot = destMin; slot <= destMax; slot++) {
-            if (!(this.currentChest.inventorySlots.get(slot)).getHasStack())
-            {
-                Minecraft.getMinecraft().playerController.windowClick(this.currentChest.windowId, slot, 0, ClickType.PICKUP, Helper.getPlayer());
-                ItemStack stack = (this.currentChest.inventorySlots.get(slot)).getStack();
-
-                this.idToMove = Item.getIdFromItem(stack.getItem());
-                this.itemToMove = stack.getDisplayName();
-
+    /** Takes all available items of the highest compression level that has any. */
+    private void takeAvailableCompression() {
+        for (int slot = CompressionSelection.LAST_OPTION; slot >= CompressionSelection.FIRST_OPTION; slot--) {
+            int available = getAvailableCount(Helper.getContainerStack(slot));
+            if (available > 0) {
+                for (int i = 0; i < available; i++)
+                    shiftClick(slot);
                 return;
             }
         }
+    }
 
-        //Find empty slot in Destination
+    private static int getAvailableCount(ItemStack stack) {
+        for (String line : Helper.getLore(stack)) {
+            if (line.startsWith(Const.Lore.VERFUEGBAR_COLOR) && line.endsWith(Const.Lore.VERFUEGBAR_SUFFIX)) {
+                String number = line.substring(Const.Lore.VERFUEGBAR_COLOR.length(), line.length() - Const.Lore.VERFUEGBAR_SUFFIX.length());
+                return Integer.parseInt(number.replace(".", ""));
+            }
+        }
+        return 0;
+    }
 
-        for(int slot = fromMin; slot <= fromMax; slot++) {
-            if (!(this.currentChest.inventorySlots.get(slot)).getHasStack())
-            {
-                Minecraft.getMinecraft().playerController.windowClick(this.currentChest.windowId, slot, 0, ClickType.PICKUP, Helper.getPlayer());
-                ItemStack stack = (this.currentChest.inventorySlots.get(slot)).getStack();
+    private void shiftStacks(int fromMin, int fromMax, int destMin, int destMax) {
+        depositHeldStack(destMin, destMax, fromMin, fromMax);
 
-                this.idToMove = Item.getIdFromItem(stack.getItem());
-                this.itemToMove = stack.getDisplayName();
+        int freeSlots = countFreeSlots(destMin, destMax);
+        boolean spawnerStorage = Helper.isChestOpen(SpawnerStorage.TITLE);
 
-                return;
+        for (int slot = fromMin; slot <= fromMax && freeSlots > 0; slot++) {
+            ItemStack stack = Helper.getContainerStack(slot);
+            if (stack == null || (spawnerStorage && ArrayUtils.contains(SpawnerStorage.MENU_ITEM_IDS, Item.getIdFromItem(stack.getItem()))))
+                continue;
+
+            if (itemToMove == null || (stack.getItem() == itemToMove.getItem() && stack.getDisplayName().equals(itemToMove.getDisplayName()))) {
+                shiftClick(slot);
+                freeSlots--;
             }
         }
 
+        itemToMove = null;
     }
 
-    public void setTopToBottom(boolean topToBottom) {
-        this.topToBottom = topToBottom;
+    /** Puts a stack held on the cursor into the first free slot and remembers it as the only item to move. */
+    private void depositHeldStack(int destMin, int destMax, int fromMin, int fromMax) {
+        int freeSlot = findFreeSlot(destMin, destMax);
+        if (freeSlot < 0)
+            freeSlot = findFreeSlot(fromMin, fromMax);
+        if (freeSlot < 0)
+            return;
+
+        Helper.windowClick(new Click(Helper.getWindowId(), freeSlot, Click.Mode.PICKUP));
+        itemToMove = Helper.getContainerStack(freeSlot);
     }
 
-    private void sendQueue() {
-        ClickManager.getSharedInstance().queueClicks(QueueType.SLOW, toSend);
-        this.toSend.clear();
+    private static int findFreeSlot(int from, int to) {
+        for (int slot = from; slot <= to; slot++) {
+            if (Helper.getContainerStack(slot) == null)
+                return slot;
+        }
+        return -1;
     }
 
+    private static int countFreeSlots(int from, int to) {
+        int count = 0;
+        for (int slot = from; slot <= to; slot++) {
+            if (Helper.getContainerStack(slot) == null)
+                count++;
+        }
+        return count;
+    }
+
+    private static void shiftClick(int slot) {
+        Helper.clicks().shiftClick(QueueType.SLOW, slot);
+    }
+
+    private static boolean isSlowQueueEmpty() {
+        return Helper.clicks().isClickQueueEmpty(QueueType.SLOW);
+    }
 }

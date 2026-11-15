@@ -4,35 +4,6 @@ public final class Const {
 
     private Const() {}
 
-    public static final class Menu {
-        private Menu() {}
-
-        // Crafting & Recipe Menus
-        public static final String CUSTOM_KATEGORIEN                = "§6Custom-Kategorien";
-        public static final String MINECRAFT_REZEPTE                = "§6Minecraft-Rezepte";
-        public static final String VANILLA_BAUANLEITUNG             = "§6Vanilla Bauanleitung";
-
-        // Compression
-        public static final String ITEM_KOMPRIMIERUNG               = "§6Item-Komprimierung";
-        public static final String ITEM_KOMPRIMIERUNG_BAUANLEITUNG  = "§6Item-Komprimierung-Bauanleitung";
-        public static final String VARIANT_PREFIX                   = "§6Variante ";
-
-        // Hopper
-        public static final String TRICHTER_EINSTELLUNGEN          = "§6Trichter-Einstellungen";
-        public static final String TRICHTER_MEHRFACH_VERBINDUNGEN  = "§6Trichter-Mehrfach-Verbindungen";
-
-        // Item Shifter
-        public static final String WAEHLE_KOMPRIMIERUNG            = "§6Wähle deine Komprimierung";
-        public static final String SPEZIELLE_ITEMS                 = "§6spezielle Items";
-        public static final String SPAWNER_LAGER                   = "§6Spawner - Lager";
-
-        // Potion Timer
-        public static final String TRANK_BENUTZEN                  = "§6Möchtest du den Trank benutzen?";
-
-        // Eject / Storage
-        public static final String LAGER_PREFIX                    = "§0Lager: ";
-    }
-
     public static final class Chat {
         private Chat() {}
 
@@ -124,19 +95,6 @@ public final class Const {
         public static final String FREEKISTE                       = "/freekiste";
     }
 
-    public static final class Comp {
-        private Comp() {}
-
-        public static final String LEVEL_PREFIX                    = "§6Komprimierungsstufe ";
-        public static final String LEVEL_1                         = LEVEL_PREFIX + "1";
-        public static final String LEVEL_2                         = LEVEL_PREFIX + "2";
-        public static final String LEVEL_3                         = LEVEL_PREFIX + "3";
-        public static final String LEVEL_4                         = LEVEL_PREFIX + "4";
-        public static final String LEVEL_5                         = LEVEL_PREFIX + "5";
-        public static final String LEVEL_6                         = LEVEL_PREFIX + "6";
-        public static final String LEVEL_7                         = LEVEL_PREFIX + "7";
-    }
-
     public static final class Lore {
         private Lore() {}
 
@@ -153,5 +111,23 @@ public final class Const {
         public static final String FLUGTRANK                       = "§6Flugtrank";
         public static final String ABBAUTRANK                      = "§6Abbautrank";
         public static final String ENDERTRUHE                      = "Endertruhe";
+    }
+
+    /** Registry names that are identical in 1.8.9 and 1.12.2. */
+    public static final class Id {
+        private Id() {}
+
+        public static final String BARRIER                         = "minecraft:barrier";
+        public static final String BOW                             = "minecraft:bow";
+        public static final String COOKED_FISH                     = "minecraft:cooked_fish";
+        public static final String ENCHANTED_BOOK                  = "minecraft:enchanted_book";
+        public static final String FISH                            = "minecraft:fish";
+        public static final String FISHING_ROD                     = "minecraft:fishing_rod";
+        public static final String GOLD_INGOT                      = "minecraft:gold_ingot";
+        public static final String HOPPER                          = "minecraft:hopper";
+        public static final String LILY_PAD                        = "minecraft:waterlily";
+        public static final String SADDLE                          = "minecraft:saddle";
+        public static final String SKULL                           = "minecraft:skull";
+        public static final String STAINED_GLASS_PANE              = "minecraft:stained_glass_pane";
     }
 }
